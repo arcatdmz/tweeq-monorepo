@@ -6,7 +6,7 @@ import {Popover} from '../Popover'
 import type {PaneExpandableProps} from './types'
 
 const props = withDefaults(defineProps<PaneExpandableProps>(), {
-	openIcon: 'mdi:chevron-up',
+	openIcon: 'mdi:close',
 	placement: 'bottom-end',
 	arrow: true,
 	persistent: false,
@@ -40,14 +40,30 @@ const open = computed<boolean>({
 	},
 })
 
+// Tracks hover over the round button. While open, the icon swaps to the
+// collapse affordance (openIcon) only on hover — when not hovering, the button
+// keeps showing its resting `icon`, so an expanded pane reads as itself rather
+// than as a chevron.
+const hovering = ref(false)
+
 // Hover opens; it deliberately does NOT close on leave. A click on the button
 // explicitly toggles. Dismissal is otherwise the native popover light-dismiss
 // (an outside pointerdown) or Esc. A persistent pane opts out of both: it never
 // hovers open and never light-dismisses, so the click is the only toggle.
 function onPointerEnter() {
+	hovering.value = true
 	if (props.persistent) return
 	open.value = true
 }
+
+function onPointerLeave() {
+	hovering.value = false
+}
+
+// While open, reveal the collapse icon only on hover; otherwise keep `icon`.
+const displayIcon = computed(() =>
+	open.value && hovering.value ? props.openIcon : props.icon
+)
 
 // The button sits outside the popover, so a click on it while open ALSO triggers
 // the native light-dismiss (which closes it and stamps this). Without the guard
@@ -73,9 +89,10 @@ function onPopoverUpdateOpen(value: boolean) {
 			:class="{open}"
 			type="button"
 			@pointerenter="onPointerEnter"
+			@pointerleave="onPointerLeave"
 			@click="onClick"
 		>
-			<Icon class="icon" :icon="open ? openIcon : icon" />
+			<Icon class="icon" :icon="displayIcon" />
 		</button>
 		<Popover
 			:reference="$button ?? null"

@@ -3,7 +3,10 @@ import type {Placement} from '../Popover/types'
 export interface PaneExpandableProps {
 	/** Icon on the trigger button while collapsed. */
 	icon: string
-	/** Icon while expanded — a collapse affordance (defaults to a chevron). */
+	/**
+	 * Collapse affordance shown while expanded, but only when the button is
+	 * hovered (otherwise the resting `icon` stays). Defaults to a close icon.
+	 */
 	openIcon?: string
 	/**
 	 * Controlled open state. Omit for uncontrolled (the component tracks its own
