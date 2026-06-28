@@ -86,6 +86,7 @@ defineExpose({
 			$input.value?.focus()
 		}
 	},
+	blur: () => $input.value?.blur(),
 })
 
 const hasInactiveContent = computed(() => !!slots.inactiveContent)

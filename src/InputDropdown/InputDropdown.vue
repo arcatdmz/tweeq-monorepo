@@ -329,6 +329,10 @@ function onEnter() {
 	// Drop the outside-pointerup guard so a later click doesn't re-confirm.
 	window.removeEventListener('pointerup', onPointerupWhileOpen)
 	emit('confirm')
+	// Blur the field: while focused the inner InputString keeps showing the typed
+	// partial; dropping focus lets it settle to the selected option's full label
+	// (the same reason clicking an option completes it).
+	$input.value?.blur()
 }
 
 function onInputPointerdown(e: PointerEvent) {
