@@ -34,6 +34,10 @@ const props = withDefaults(
 const AW = 14
 const AH = 7
 const TIP = 1.5
+// Breathing room between the arrow tip and the layer edge (i.e. the anchor), so
+// the balloon doesn't sit dead-flush against what it points at. The layer/wrapper
+// grow by this on the arrow side; the arrow still protrudes only AH from the box.
+const GAP = 2
 
 const $content = useTemplateRef<HTMLElement>('$content')
 const {width, height} = useElementSize(
@@ -42,7 +46,7 @@ const {width, height} = useElementSize(
 	{box: 'border-box'}
 )
 
-const arrowDepth = (side: ArrowSide) => (props.arrowSide === side ? AH : 0)
+const arrowDepth = (side: ArrowSide) => (props.arrowSide === side ? AH + GAP : 0)
 
 const layer = computed(() => ({
 	width: width.value + arrowDepth('left') + arrowDepth('right'),
@@ -62,8 +66,8 @@ const d = computed(() => {
 	const offset = props.arrowOffset
 	const r = Math.min(props.radius, w / 2, h / 2)
 	const a = AW / 2
-	const ox = side === 'left' ? AH : 0
-	const oy = side === 'top' ? AH : 0
+	const ox = side === 'left' ? AH + GAP : 0
+	const oy = side === 'top' ? AH + GAP : 0
 	const cx = (x: number) => Math.max(ox + r + a, Math.min(ox + w - r - a, x))
 	const cy = (y: number) => Math.max(oy + r + a, Math.min(oy + h - r - a, y))
 	const p = [`M ${ox + r},${oy}`]
@@ -118,10 +122,10 @@ const d = computed(() => {
 const wrapperStyle = computed(() => {
 	const side = props.arrowSide
 	return {
-		paddingTop: side === 'top' ? `${AH}px` : undefined,
-		paddingBottom: side === 'bottom' ? `${AH}px` : undefined,
-		paddingLeft: side === 'left' ? `${AH}px` : undefined,
-		paddingRight: side === 'right' ? `${AH}px` : undefined,
+		paddingTop: side === 'top' ? `${AH + GAP}px` : undefined,
+		paddingBottom: side === 'bottom' ? `${AH + GAP}px` : undefined,
+		paddingLeft: side === 'left' ? `${AH + GAP}px` : undefined,
+		paddingRight: side === 'right' ? `${AH + GAP}px` : undefined,
 	}
 })
 
@@ -136,13 +140,13 @@ const transformOrigin = computed(() => {
 	const o = `${props.arrowOffset}px`
 	switch (props.arrowSide) {
 		case 'top':
-			return `${o} 0`
+			return `${o} ${GAP}px`
 		case 'bottom':
-			return `${o} 100%`
+			return `${o} calc(100% - ${GAP}px)`
 		case 'left':
-			return `0 ${o}`
+			return `${GAP}px ${o}`
 		case 'right':
-			return `100% ${o}`
+			return `calc(100% - ${GAP}px) ${o}`
 		default:
 			return '50% 50%'
 	}
