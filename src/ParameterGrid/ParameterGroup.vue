@@ -83,4 +83,9 @@ const expanded = appConfig.ref(props.name, true)
 	align-items center
 	gap 0.25em
 	cursor pointer
+	color var(--tq-color-text-mute)
+	hover-transition(color)
+
+	&:hover
+		color var(--tq-color-text)
 </style>
