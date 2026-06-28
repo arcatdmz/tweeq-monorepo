@@ -1,6 +1,6 @@
 <script lang="ts" setup generic="T">
 import {useElementBounding, useResizeObserver} from '@vueuse/core'
-import {computed, onMounted, ref, shallowRef} from 'vue'
+import {computed, onMounted, ref, shallowRef, watch} from 'vue'
 
 import {type InputEmits, useLabelizer} from '../types'
 import {useDrag} from '../use/useDrag'
@@ -25,10 +25,10 @@ const disabled = computed(() => props.disabled ?? false)
 const $root = shallowRef<HTMLElement | null>(null)
 const {width: viewportWidth} = useElementBounding($root)
 
-// Animate the slide ONLY for user-driven changes (drag release, click, wheel,
-// keys). Option-list and layout changes (and the initial mount) reposition
-// instantly — otherwise a value that stays put would slide for no reason when
-// the options around it change.
+// Animate the slide whenever the bound VALUE changes — be it a user gesture
+// (drag release, click, wheel, keys) or an external modelValue reassignment (see
+// the watch below). Option-list and layout changes (and the initial mount) keep
+// the value put, so they repositon instantly instead of sliding for no reason.
 const animating = ref(false)
 let animTimer: ReturnType<typeof setTimeout> | undefined
 function triggerAnim() {
@@ -140,7 +140,6 @@ const {dragging} = useDrag($root, {
 		const x = state.xy[0] - root.getBoundingClientRect().left
 		const offset = Math.round((x - viewportWidth.value / 2) / cellWidth.value)
 		if (offset !== 0) {
-			triggerAnim()
 			setIndex(activeIndex.value + offset)
 		}
 	},
@@ -150,12 +149,21 @@ const displayIndex = computed(() =>
 	dragging.value ? floatIndex.value : Math.max(0, activeIndex.value)
 )
 
+// Animate slides driven from OUTSIDE too (the parent reassigning modelValue),
+// not just the drum's own gestures. Keyed on the value — not the active index —
+// so changing/reordering `options` while the value stays put still repositions
+// instantly (the original intent). Skip while dragging, where the transform must
+// track the pointer and the settle is animated by onDragEnd.
+watch(model, () => {
+	if (!dragging.value) triggerAnim()
+})
+
 const trackStyle = computed(() => ({
 	transform: `translateX(${
 		viewportWidth.value / 2 - cellWidth.value * (displayIndex.value + 0.5)
 	}px)`,
-	// Tween only during a user-driven change (animating); never while dragging
-	// (it would lag the pointer) or for option/layout repositioning.
+	// Tween only on a value change (animating); never while dragging (it would
+	// lag the pointer) or for option/layout repositioning.
 	transition: dragging.value || !animating.value ? 'none' : undefined,
 }))
 
@@ -167,7 +175,6 @@ function onWheel(e: WheelEvent) {
 	const threshold = 24
 	while (Math.abs(wheelAccum) >= threshold) {
 		const dir = Math.sign(wheelAccum)
-		triggerAnim()
 		setIndex(activeIndex.value + dir)
 		wheelAccum -= dir * threshold
 	}
@@ -180,12 +187,10 @@ function onKeyDown(e: KeyboardEvent) {
 		// Don't let the arrow bubble to global shortcuts (frame step etc.) — the
 		// drum handled it.
 		e.stopPropagation()
-		triggerAnim()
 		setIndex(activeIndex.value - 1)
 	} else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
 		e.preventDefault()
 		e.stopPropagation()
-		triggerAnim()
 		setIndex(activeIndex.value + 1)
 	}
 }
