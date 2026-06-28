@@ -68,6 +68,21 @@ watch(
 
 const valueAtStart = ref(model.value) as Ref<T>
 
+// Icon of the currently selected option, shown next to the label in the resting
+// field (not while typing to filter — then the field is a plain text box).
+const currentIcon = computed(() => {
+	if (!props.icons) return undefined
+	const i = props.options.indexOf(model.value)
+	return i >= 0 ? props.icons[i] : undefined
+})
+
+const showValueIcon = computed(() => !!currentIcon.value && !displayEdited.value)
+
+// Label paired with currentIcon — keyed on the model (not `display`, which stays
+// frozen while the popup is open) so icon and label always show the same option,
+// even while hovering options.
+const valueLabel = computed(() => labelizer.value(model.value))
+
 const filteredOptions = computed(() => {
 	if (display.value === '' || !displayEdited.value) return props.options
 
@@ -387,6 +402,7 @@ onBeforeUnmount(() => {
 			ref="$input"
 			:modelValue="display"
 			class="field"
+			:class="{'hide-text': showValueIcon}"
 			:theme="props.theme"
 			:font="font"
 			:align="align"
@@ -402,6 +418,17 @@ onBeforeUnmount(() => {
 			@keydown.up.prevent="onPressArrow(true)"
 			@keydown.down.prevent="onPressArrow(false)"
 		/>
+		<!-- Resting overlay: the selected option's icon beside its label, centred
+			like the options list. Hidden while typing to filter; pointer-events none
+			so clicks still reach the field beneath. -->
+		<div
+			v-if="showValueIcon"
+			class="value-display"
+			:class="{numeric: font === 'numeric'}"
+		>
+			<Icon class="value-icon" :icon="currentIcon!" />
+			<span class="value-label">{{ valueLabel }}</span>
+		</div>
 		<Icon class="chevron" icon="mdi:unfold-more-horizontal" />
 		<Popover
 			:open="open"
@@ -490,6 +517,37 @@ $chevron-width = calc(.7 * var(--tq-input-height))
 	flex-grow 1
 	cursor default
 	padding-right $chevron-width
+
+	// While the resting icon overlay is shown, hide the field's own text so the
+	// overlay's label (next to the icon) is the only one visible.
+	&.hide-text :deep(.input)
+		opacity 0
+
+// Resting overlay: selected option's icon + label, centred over the field.
+.value-display
+	position absolute
+	inset 0
+	padding 0 $chevron-width
+	display flex
+	align-items center
+	justify-content center
+	gap var(--tq-gap-related)
+	pointer-events none
+	color var(--tq-color-text)
+	z-index 5
+
+	&.numeric
+		font-numeric()
+
+.value-icon
+	flex-shrink 0
+	width calc(var(--tq-input-height) - 4px)
+	height calc(var(--tq-input-height) - 4px)
+
+.value-label
+	white-space nowrap
+	overflow hidden
+	text-overflow ellipsis
 
 .chevron
 	position absolute
