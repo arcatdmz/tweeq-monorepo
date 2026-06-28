@@ -10,15 +10,18 @@ defineProps<InputButtonProps>()
 const {flashing, flash} = useFlash()
 
 defineExpose({flash})
+
+// The template root is a single <button> (no sibling comment node) so the
+// component's $el resolves to the button itself — parents anchor popovers and
+// move focus through it.
+//
+// @mousedown.prevent stops a mouse click from focusing the button (the click
+// still fires). Otherwise the button keeps focus after a click and a later
+// Enter/Space re-activates it unexpectedly. Keyboard (Tab) focus is unaffected,
+// so keyboard activation still works — matching :focus-visible.
 </script>
 
 <template>
-	<!--
-		@mousedown.prevent stops a mouse click from focusing the button (the click
-		still fires). Otherwise the button keeps focus after a click and a later
-		Enter/Space re-activates it unexpectedly. Keyboard (Tab) focus is
-		unaffected, so keyboard activation still works — matching :focus-visible.
-	-->
 	<button
 		class="TqInputButton"
 		:class="{blink, subtle, narrow, flashing}"
