@@ -29,11 +29,11 @@ const props = withDefaults(
 	}
 )
 
-// Arrow base width / protrusion depth / tip rounding — fixed to the visual
-// language; the balloon shape itself is generated from the measured content.
+// Arrow base width / protrusion depth — fixed to the visual language; the
+// balloon shape itself is generated from the measured content. The tip is a
+// sharp point (no rounding).
 const AW = 14
 const AH = 7
-const TIP = 1.5
 // Breathing room between the arrow tip and the layer edge (i.e. the anchor), so
 // the balloon doesn't sit dead-flush against what it points at. The layer/wrapper
 // grow by this on the arrow side; the arrow still protrudes only AH from the box.
@@ -74,45 +74,25 @@ const d = computed(() => {
 
 	if (side === 'top') {
 		const c = cx(ox + offset)
-		p.push(
-			`H ${c - a}`,
-			`L ${c - TIP},${oy - AH + TIP}`,
-			`Q ${c},${oy - AH} ${c + TIP},${oy - AH + TIP}`,
-			`L ${c + a},${oy}`
-		)
+		p.push(`H ${c - a}`, `L ${c},${oy - AH}`, `L ${c + a},${oy}`)
 	}
 	p.push(`H ${ox + w - r}`, `A ${r} ${r} 0 0 1 ${ox + w},${oy + r}`)
 
 	if (side === 'right') {
 		const c = cy(oy + offset)
-		p.push(
-			`V ${c - a}`,
-			`L ${ox + w + AH - TIP},${c - TIP}`,
-			`Q ${ox + w + AH},${c} ${ox + w + AH - TIP},${c + TIP}`,
-			`L ${ox + w},${c + a}`
-		)
+		p.push(`V ${c - a}`, `L ${ox + w + AH},${c}`, `L ${ox + w},${c + a}`)
 	}
 	p.push(`V ${oy + h - r}`, `A ${r} ${r} 0 0 1 ${ox + w - r},${oy + h}`)
 
 	if (side === 'bottom') {
 		const c = cx(ox + offset)
-		p.push(
-			`H ${c + a}`,
-			`L ${c + TIP},${oy + h + AH - TIP}`,
-			`Q ${c},${oy + h + AH} ${c - TIP},${oy + h + AH - TIP}`,
-			`L ${c - a},${oy + h}`
-		)
+		p.push(`H ${c + a}`, `L ${c},${oy + h + AH}`, `L ${c - a},${oy + h}`)
 	}
 	p.push(`H ${ox + r}`, `A ${r} ${r} 0 0 1 ${ox},${oy + h - r}`)
 
 	if (side === 'left') {
 		const c = cy(oy + offset)
-		p.push(
-			`V ${c + a}`,
-			`L ${ox - AH + TIP},${c + TIP}`,
-			`Q ${ox - AH},${c} ${ox - AH + TIP},${c - TIP}`,
-			`L ${ox},${c - a}`
-		)
+		p.push(`V ${c + a}`, `L ${ox - AH},${c}`, `L ${ox},${c - a}`)
 	}
 	p.push(`V ${oy + r}`, `A ${r} ${r} 0 0 1 ${ox + r},${oy}`, 'Z')
 
