@@ -186,14 +186,20 @@ function onWheel(e: WheelEvent) {
 // prefixes while a fresh keystroke later starts over.
 let typeBuffer = ''
 let typeTimer: ReturnType<typeof setTimeout> | undefined
-function typeAhead(char: string) {
+// Returns whether the typed buffer matched an option, so the caller can let an
+// unmatched key keep propagating to app-wide shortcuts.
+function typeAhead(char: string): boolean {
 	clearTimeout(typeTimer)
 	typeTimer = setTimeout(() => (typeBuffer = ''), 800)
 	typeBuffer += char.toLowerCase()
 	const i = completeOptions.value.findIndex(o =>
 		o.label.toLowerCase().startsWith(typeBuffer)
 	)
-	if (i >= 0) setIndex(i)
+	if (i >= 0) {
+		setIndex(i)
+		return true
+	}
+	return false
 }
 
 function onKeyDown(e: KeyboardEvent) {
@@ -209,10 +215,12 @@ function onKeyDown(e: KeyboardEvent) {
 		e.stopPropagation()
 		setIndex(activeIndex.value + 1)
 	} else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
-		// A printable character — type-ahead. Stop it bubbling so it doesn't fire
-		// app-wide single-key shortcuts while the drum has focus.
-		e.stopPropagation()
-		typeAhead(e.key)
+		// A printable character — type-ahead. Only swallow it (stopPropagation) when
+		// it actually matched an option; an unmatched key falls through to app-wide
+		// single-key shortcuts as usual.
+		if (typeAhead(e.key)) {
+			e.stopPropagation()
+		}
 	}
 }
 </script>
