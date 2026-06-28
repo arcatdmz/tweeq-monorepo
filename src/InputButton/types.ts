@@ -5,7 +5,14 @@ export interface InputButtonProps {
 	disabled?: boolean
 	inlinePosition?: InputPosition
 	blockPosition?: InputPosition
+	/** Leading icon (before the label). */
 	icon?: string
+	/**
+	 * Trailing icon (after the label), e.g. a dropdown chevron. When set, the
+	 * button switches to a spread layout: the label grows and left-aligns so this
+	 * icon pins to the right edge — mirroring InputNumber's left/right icons.
+	 */
+	rightIcon?: string
 	label?: string
 	tooltip?: string
 	blink?: boolean

@@ -27,8 +27,9 @@ defineExpose({flash})
 		:disabled="disabled"
 		@mousedown.prevent
 	>
-		<Icon v-if="icon" class="icon" :icon="icon" />
+		<Icon v-if="icon" class="icon left" :icon="icon" />
 		<span v-if="label" class="label">{{ label }}</span>
+		<Icon v-if="rightIcon" class="icon right" :icon="rightIcon" />
 	</button>
 </template>
 
@@ -73,8 +74,23 @@ defineExpose({flash})
 	&:has(.label):not(:has(.icon))
 		padding 0 .75em
 
-	&:has(.icon):has(.label)
+	// Leading icon + label (no trailing icon): tighter on the icon side.
+	&:has(.icon.left):has(.label):not(:has(.icon.right))
 		padding 0 .75em 0 0.5em
+
+	// Spread layout: a label with a trailing icon (e.g. a dropdown chevron, with
+	// or without a leading icon). The label grows and left-aligns so the trailing
+	// icon pins to the right edge — like a dropdown trigger.
+	&:has(.icon.right):has(.label)
+		justify-content flex-start
+		padding 0 .5em
+
+		.label
+			flex 1
+			text-align left
+			overflow hidden
+			text-overflow ellipsis
+			white-space nowrap
 
 	// Narrow: shed the square min-width down to a hair of horizontal padding so an
 	// icon-only button nearly hugs its glyph (height is unchanged, so it still
