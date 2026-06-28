@@ -315,6 +315,22 @@ function onPressArrow(isUp: boolean) {
 	nextTick(scrollActiveIntoView)
 }
 
+// Enter confirms: while open (typically after typing to filter) close the
+// popup and commit. Closing fires the open→false watch, which completes the
+// field back to the selected option's full label. While closed, Enter just
+// opens the popup.
+function onEnter() {
+	if (!open.value) {
+		open.value = true
+		return
+	}
+
+	open.value = false
+	// Drop the outside-pointerup guard so a later click doesn't re-confirm.
+	window.removeEventListener('pointerup', onPointerupWhileOpen)
+	emit('confirm')
+}
+
 function onInputPointerdown(e: PointerEvent) {
 	if (e.isPrimary) {
 		open.value = true
@@ -378,7 +394,7 @@ onBeforeUnmount(() => {
 			@pointerdown="onInputPointerdown"
 			@focus="onInputStringFocus"
 			@blur="onInputStringBlur"
-			@keydown.enter.prevent="open = !open"
+			@keydown.enter.prevent="onEnter"
 			@keydown.up.prevent="onPressArrow(true)"
 			@keydown.down.prevent="onPressArrow(false)"
 		/>
