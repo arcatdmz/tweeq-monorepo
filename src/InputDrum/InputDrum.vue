@@ -180,6 +180,22 @@ function onWheel(e: WheelEvent) {
 	}
 }
 
+// Type-ahead: while focused, typing jumps to the option whose label starts with
+// what's been typed ("A" → "Auto", "15" → "150"). Keystrokes accumulate into a
+// buffer that resets after a short pause, so quick typing matches longer
+// prefixes while a fresh keystroke later starts over.
+let typeBuffer = ''
+let typeTimer: ReturnType<typeof setTimeout> | undefined
+function typeAhead(char: string) {
+	clearTimeout(typeTimer)
+	typeTimer = setTimeout(() => (typeBuffer = ''), 800)
+	typeBuffer += char.toLowerCase()
+	const i = completeOptions.value.findIndex(o =>
+		o.label.toLowerCase().startsWith(typeBuffer)
+	)
+	if (i >= 0) setIndex(i)
+}
+
 function onKeyDown(e: KeyboardEvent) {
 	if (disabled.value) return
 	if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
@@ -192,6 +208,11 @@ function onKeyDown(e: KeyboardEvent) {
 		e.preventDefault()
 		e.stopPropagation()
 		setIndex(activeIndex.value + 1)
+	} else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
+		// A printable character — type-ahead. Stop it bubbling so it doesn't fire
+		// app-wide single-key shortcuts while the drum has focus.
+		e.stopPropagation()
+		typeAhead(e.key)
 	}
 }
 </script>
