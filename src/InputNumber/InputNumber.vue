@@ -18,6 +18,7 @@ import {
 	watchSyncEffect,
 } from 'vue'
 
+import {Icon} from '../Icon'
 import {InputTextBase} from '../InputTextBase'
 import {useMultiSelectStore} from '../stores/multiSelect'
 import {InputEmits} from '../types'
@@ -166,17 +167,18 @@ let dragStartedFocused = false
 const {dragging: tweaking} = useDrag($input, {
 	lockPointer: computed(() => !barVisible.value),
 	disabled: computed(() => props.disabled),
-	// While focused, only the grab zones (.scrub) start a drag; pressing the
-	// text area falls through to the <input> to place a caret / edit.
+	// While focused, only the grab affordances (.scrub) start a drag; pressing the
+	// text area falls through to the <input> to place a caret / edit. `closest` so
+	// a press on a child (e.g. the grip's hint icon / its inner SVG) still counts.
 	shouldDrag(event) {
 		if (!focused.value) return true
-		return !!(event.target as Element | null)?.classList.contains('scrub')
+		return !!(event.target as Element | null)?.closest('.scrub')
 	},
 	onClick() {
 		$input.value?.select()
 	},
 	onDragStart(state, event) {
-		const grabbed = (event.target as Element).classList.contains('scrub')
+		const grabbed = !!(event.target as Element).closest('.scrub')
 		dragStartedFocused = focused.value
 
 		if (barVisible.value && insideRange.value && !grabbed) {
@@ -608,28 +610,33 @@ const barStyle = computed<StyleValue>(() => {
 			<div class="handle scrub" :style="handleStyles" />
 		</template>
 
-		<!-- Grab zones live above the <input> (the back slot is below it) so they
-			can take the pointer while the field is focused for text editing. They're
-			transparent hit areas; the handle in the back slot is the visible mark.
-			In-range: top/bottom strips pinned to the handle, leaving a centre gap so
-			a click there reaches the text caret. Out of range (no handle to grab):
-			full-width strips, still leaving the centre gap. -->
-		<template v-if="barVisible" #front>
-			<template v-if="insideRange">
-				<div
-					v-if="handleAtEdge"
-					class="scrub-zone scrub edge"
-					:style="zoneStyle"
-				/>
+		<!-- Grab affordances live above the <input> (the back slot is below it) so
+			they can take the pointer while the field is focused for text editing.
+			Ranged: transparent grab zones over the handle (top/bottom strips leaving
+			a centre text gap; full-height at min/max; full-width when out of range).
+			Unranged: no bar to grab, so the left-icon area becomes a horizontal
+			scrub grip — falling back to a faint hint icon when there's no leftIcon. -->
+		<template #front>
+			<template v-if="barVisible">
+				<template v-if="insideRange">
+					<div
+						v-if="handleAtEdge"
+						class="scrub-zone scrub edge"
+						:style="zoneStyle"
+					/>
+					<template v-else>
+						<div class="scrub-zone scrub top" :style="zoneStyle" />
+						<div class="scrub-zone scrub bottom" :style="zoneStyle" />
+					</template>
+				</template>
 				<template v-else>
-					<div class="scrub-zone scrub top" :style="zoneStyle" />
-					<div class="scrub-zone scrub bottom" :style="zoneStyle" />
+					<div class="scrub-zone scrub wide top" :class="rangeSide" />
+					<div class="scrub-zone scrub wide bottom" :class="rangeSide" />
 				</template>
 			</template>
-			<template v-else>
-				<div class="scrub-zone scrub wide top" :class="rangeSide" />
-				<div class="scrub-zone scrub wide bottom" :class="rangeSide" />
-			</template>
+			<div v-else class="scrub grip">
+				<Icon v-if="!leftIcon" class="grip-hint" icon="mdi:arrow-left-right" />
+			</div>
 		</template>
 	</InputTextBase>
 </template>
@@ -771,6 +778,33 @@ const barStyle = computed<StyleValue>(() => {
 	.TqInputNumber:focus-within &
 		pointer-events auto
 		cursor ew-resize
+
+// Unranged: a horizontal scrub grip over the left-icon area. Inert until the
+// field is focused (unfocused, the whole field already drags); then it takes the
+// pointer so a focused press here scrubs while the text stays editable.
+.grip
+	position absolute
+	left 0
+	top 0
+	bottom 0
+	width var(--tq-input-height)
+	display flex
+	align-items center
+	justify-content center
+	pointer-events none
+
+	.TqInputNumber:focus-within &
+		pointer-events auto
+		cursor ew-resize
+
+// Faint hint shown only while focused when there's no leftIcon to grab.
+.grip-hint
+	color var(--tq-color-text-mute)
+	transform scale(0.7)
+	opacity 0
+
+	.TqInputNumber:focus-within &
+		opacity .5
 
 .overlay
 	position absolute
