@@ -148,6 +148,13 @@ const maxSpeed = computed(() => {
 	return barVisible.value ? 1 : 1000
 })
 
+// Unranged drag sensitivity, in pixels of movement per `step`. Fixed so the feel
+// is independent of the step's magnitude (otherwise a step of 0.1 scrubs hyper-
+// fine and a step of 100 sluggishly). Smaller than InputDrum's DRAG_STEP_PX (40):
+// a number field is unbounded and traversed in larger sweeps, with the y-axis
+// acceleration and Alt (0.1×) / Shift (snap) modifiers covering big/fine moves.
+const PX_PER_STEP = 20
+
 let deltaAccumulated = 0
 
 let dirAverage: vec2 = vec2.unitX
@@ -215,10 +222,15 @@ const {dragging: tweaking} = useDrag($input, {
 			Math.abs(vec2.dot([1, 0], dirAverage))
 		)
 
-		// Inc/dec value by x-axis
+		// Inc/dec value by x-axis. Ranged: map the bar's full width to [min, max].
+		// Unranged: set sensitivity directly — a fixed PX_PER_STEP pixels per step
+		// when stepped (so it doesn't track the step's magnitude), else continuous
+		// at 1 unit/px.
 		const baseSpeed = barVisible.value
 			? (props.max - props.min) / width.value
-			: 1
+			: props.step
+				? props.step / PX_PER_STEP
+				: 1
 
 		const delta = dx * baseSpeed * speed.value * offsetWeight
 
