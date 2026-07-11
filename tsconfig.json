@@ -25,8 +25,6 @@
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true
 	},
-	// react-port: typecheck covers the ported tree only. The legacy Vue sources
-	// (src/<Name>/*.vue + their index.ts) are reference-only and cannot resolve
-	// under plain tsc (no .vue shims). Phase 2+ should add "src/react" here.
-	"include": ["src/core"]
+	// The legacy Vue sources are reference-only and intentionally excluded.
+	"include": ["src/core", "src/react", "demo"]
 }

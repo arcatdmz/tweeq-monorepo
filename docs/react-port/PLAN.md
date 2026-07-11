@@ -60,7 +60,7 @@ src/
 Filled in after INVENTORY.md lands. States: `[ ]` todo · `[~]` in progress (note owner in STATUS.md) · `[x]` done.
 
 - [x] Phase 1: core extraction (stores, theme, util/types/validator, drag core)
-- [ ] Phase 2: React infra (TweeqProvider shell, useTweeq/initTweeq, hooks: useBndr/useDrag/useCopyPaste/...) + primitives batch: Icon, SvgIcon, ColorIcon, BindIcon, IconIndicator, InputGroup, TweakOverlay, Viewport
+- [x] Phase 2: React infra (TweeqProvider shell, useTweeq/initTweeq, hooks: useBndr/useDrag/useCopyPaste/...) + primitives batch: Icon, SvgIcon, ColorIcon, BindIcon, IconIndicator, InputGroup, TweakOverlay, Viewport
 - [ ] Batch 2: overlay stack — Balloon, Popover, Tooltip, Menu (native Popover API + CSS anchor positioning; see INVENTORY risks)
 - [ ] Batch 3: text & toggles — InputTextBase, InputString, InputButton, InputButtonToggle, InputSwitch, InputCheckbox, InputRadio, InputShuffle
 - [ ] Batch 4: InputNumber (very hard, 918 LOC) + vectors — InputVec, InputSize, InputTranslate, InputPosition
