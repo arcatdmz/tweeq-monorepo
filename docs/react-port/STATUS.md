@@ -91,3 +91,15 @@ date · agent · what was done · deviations from PLAN/CONVENTIONS · exact next
 - Demo/e2e exercises text entry and one controlled interaction for every batch component.
 
 **Next-batch contracts:** InputNumber should build on `InputTextBase` and its `InputTextBaseHandle`, not duplicate text/context-menu behavior. Use event-site local/display updates like InputString to avoid caret flashes. Inputs used inside InputGroup must consume `inlinePosition`/`blockPosition` and emit the corresponding root attributes. Switch controls already participate in multi-select through the shared hook.
+
+## 2026-07-12 · Batch 4 agent (Codex)
+
+**Done: InputNumber + vectors — InputNumber, InputVec, InputSize, InputTranslate, InputPosition.** Core owns tested precision derivation, numeric expression compilation, scrub sensitivity/axis weighting, ratio-preserving size edits, and translate overlay geometry. Gates: TypeScript + ESLint clean, 67 Vitest tests, 5 Playwright tests.
+
+- InputNumber preserves controlled/local/display separation, range/bar/scales, step/snap/clamp validation, prefix/suffix display, reset, arrow keys, `⌘=`/implicit numeric expressions with `{i}`, multi-select speed/capture/update/confirm, absolute ranged drags, relative scrub zones, pointer lock for unbounded values, vertical speed adjustment, Alt/Shift/Q modifiers, and live out-of-range affordances.
+- `useKeys` is now a reusable exported replacement for the needed vueuse key tracking and clears state on window blur.
+- InputVec microtask-coalesces per-axis changes and confirmations so simultaneous multi-select updates cannot overwrite sibling axes. InputSize keeps ratio lock and drops it on disproportionate two-axis edits.
+- InputTranslate keeps pointer-lock 2D dragging, X/Y axis constraints, Alt/Shift speed/grid changes, bounds, animated overlay grid/label, and confirm/focus lifecycle. Its grid easing runs only until it reaches the target instead of a permanent rAF loop. InputPosition composes translate + numeric axes through InputGroup.
+- Demo/e2e covers typed numeric/vector updates, ratio lock, InputPosition, and a real ranged InputNumber drag; InputTranslate receives a render smoke check because Playwright mouse automation stalls after Chromium pointer lock, while its math is unit-tested.
+
+**Next-batch contracts:** temporal controls can reuse InputTextBase's local/display pattern and `compileNumberExpression` as a model for their own context. All drag options in this batch are stable objects with mutable callback refs—preserve that pattern or a React render will recreate an active core drag handler. InputVec is the canonical coalescing wrapper for axis tuples.
