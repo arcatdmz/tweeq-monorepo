@@ -1,0 +1,66 @@
+@import '../../../common.styl'
+
+.tqInputRotary
+	position relative
+	display block
+	width var(--tq-input-height)
+	height var(--tq-input-height)
+	z-index 1
+	use-input-position()
+
+	&:hover, &.tweaking
+		z-index 2
+
+		.rotary
+			transform scale(1.8)
+
+	&:focus, &.subfocus
+		&:before
+			content ''
+			position absolute
+			inset -3px
+			border-radius 50%
+			border 1px solid var(--tq-color-accent-hover)
+
+.rotary
+	width var(--tq-input-height)
+	height var(--tq-input-height)
+	hover-transition(transform)
+
+.circle
+	fill var(--tq-color-accent)
+	stroke none
+
+.absoluteModeArea
+	fill transparent
+	stroke none
+
+.tip
+	stroke var(--tq-color-input)
+	stroke-width 3
+	stroke-linecap round
+
+.overlay
+	input-overlay()
+
+.thin, .bold
+	fill none
+	stroke var(--tq-color-accent)
+
+.thin
+	stroke-width 1
+
+.bold
+	stroke-width 2
+
+.gray
+	stroke var(--tq-color-border)
+
+.snap
+	stroke-width 2
+	stroke var(--tq-color-accent-soft-hover)
+
+.overlayLabel
+	z-index 1001
+	position fixed
+	transform translate(-50%, -50%)

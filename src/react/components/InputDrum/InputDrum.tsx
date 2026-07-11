@@ -1,0 +1,289 @@
+import {
+	type HTMLAttributes,
+	type KeyboardEvent,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+	type WheelEvent,
+} from 'react'
+
+import {
+	type DragState,
+	DRUM_DRAG_STEP_PX,
+	getDrumCellWidth,
+	getLabelizer,
+	type InputBoxProps,
+	type InputEvents,
+	type InputFont,
+	type LabelizerProps,
+} from '../../../core'
+import {classNames} from '../../classNames'
+import {useDrag, useElementBounding, useResizeObserver} from '../../hooks'
+import styles from './InputDrum.module.styl'
+
+export interface InputDrumProps<T>
+	extends LabelizerProps<T>,
+		InputBoxProps,
+		InputEvents,
+		Omit<HTMLAttributes<HTMLDivElement>, 'onBlur' | 'onChange' | 'onFocus'> {
+	value: T
+	onChange?: (value: T) => void
+	font?: InputFont
+	cellWidth?: number
+}
+
+export function InputDrum<T>({
+	value,
+	onChange,
+	options,
+	labels,
+	labelizer,
+	prefix,
+	suffix,
+	font,
+	cellWidth: cellWidthProp,
+	disabled,
+	invalid,
+	inlinePosition,
+	blockPosition,
+	onFocus,
+	onBlur,
+	onConfirm,
+	className,
+	...props
+}: InputDrumProps<T>) {
+	const root = useRef<HTMLDivElement>(null)
+	const measureRoot = useRef<HTMLDivElement>(null)
+	const {width: viewportWidth} = useElementBounding(root)
+	const [measuredWidth, setMeasuredWidth] = useState(0)
+	const [emPx, setEmPx] = useState(16)
+	const [floatIndex, setFloatIndex] = useState(0)
+	const floatIndexRef = useRef(0)
+	const [animating, setAnimating] = useState(false)
+	const animationTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+		undefined
+	)
+	const typeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+	const typeBuffer = useRef('')
+	const wheelAccum = useRef(0)
+	const makeLabel = useMemo(
+		() => getLabelizer({options, labels, labelizer, prefix, suffix}),
+		[labelizer, labels, options, prefix, suffix]
+	)
+	const completeOptions = useMemo(
+		() => options.map(option => ({value: option, label: makeLabel(option)})),
+		[makeLabel, options]
+	)
+	const activeIndex = options.indexOf(value)
+	const cellWidth = getDrumCellWidth({
+		cellWidth: cellWidthProp,
+		measuredLabelWidth: measuredWidth,
+		viewportWidth,
+		emPx,
+	})
+	const stateRef = useRef({
+		value,
+		options,
+		activeIndex,
+		viewportWidth,
+		cellWidth,
+		disabled,
+		onChange,
+		onConfirm,
+	})
+	stateRef.current = {
+		value,
+		options,
+		activeIndex,
+		viewportWidth,
+		cellWidth,
+		disabled,
+		onChange,
+		onConfirm,
+	}
+
+	const measure = () => {
+		const element = measureRoot.current
+		if (!element) return
+		setEmPx(parseFloat(getComputedStyle(element).fontSize) || 16)
+		setMeasuredWidth(
+			Math.max(
+				0,
+				...Array.from(element.children).map(
+					child => (child as HTMLElement).offsetWidth
+				)
+			)
+		)
+	}
+	useResizeObserver(measureRoot, measure)
+	useEffect(measure, [completeOptions])
+	useEffect(
+		() => () => {
+			clearTimeout(animationTimer.current)
+			clearTimeout(typeTimer.current)
+		},
+		[]
+	)
+
+	const triggerAnimation = () => {
+		setAnimating(true)
+		clearTimeout(animationTimer.current)
+		animationTimer.current = setTimeout(() => setAnimating(false), 250)
+	}
+	const setIndex = (index: number) => {
+		const current = stateRef.current
+		const clamped = Math.max(0, Math.min(current.options.length - 1, index))
+		const next = current.options[clamped]
+		if (next !== undefined && !Object.is(next, current.value)) {
+			current.onChange?.(next)
+		}
+	}
+
+	const dragOptions = useMemo(
+		() => ({
+			disabled: () => Boolean(stateRef.current.disabled),
+			lockPointer: true,
+			onDragStart() {
+				const index = Math.max(0, stateRef.current.activeIndex)
+				floatIndexRef.current = index
+				setFloatIndex(index)
+			},
+			onDrag(state: DragState) {
+				const max = stateRef.current.options.length - 1
+				const next = Math.max(
+					0,
+					Math.min(
+						max,
+						floatIndexRef.current - state.delta[0] / DRUM_DRAG_STEP_PX
+					)
+				)
+				floatIndexRef.current = next
+				setFloatIndex(next)
+				setIndex(Math.round(next))
+			},
+			onDragEnd() {
+				triggerAnimation()
+				stateRef.current.onConfirm?.()
+			},
+			onClick(state: DragState) {
+				const element = root.current
+				if (!element) return
+				const x = state.xy[0] - element.getBoundingClientRect().left
+				const offset = Math.round(
+					(x - stateRef.current.viewportWidth / 2) / stateRef.current.cellWidth
+				)
+				if (offset) setIndex(stateRef.current.activeIndex + offset)
+			},
+		}),
+		[]
+	)
+	const drag = useDrag(root, dragOptions)
+
+	useEffect(() => {
+		if (!drag.dragging) triggerAnimation()
+	}, [value])
+
+	const displayIndex = drag.dragging ? floatIndex : Math.max(0, activeIndex)
+	const transform = viewportWidth / 2 - cellWidth * (displayIndex + 0.5)
+
+	const handleWheel = (event: WheelEvent) => {
+		if (disabled) return
+		event.preventDefault()
+		wheelAccum.current += event.deltaX || event.deltaY
+		while (Math.abs(wheelAccum.current) >= 24) {
+			const direction = Math.sign(wheelAccum.current)
+			setIndex(stateRef.current.activeIndex + direction)
+			wheelAccum.current -= direction * 24
+		}
+	}
+	const handleKeyDown = (event: KeyboardEvent) => {
+		if (disabled) return
+		if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+			event.preventDefault()
+			event.stopPropagation()
+			setIndex(activeIndex - 1)
+		} else if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+			event.preventDefault()
+			event.stopPropagation()
+			setIndex(activeIndex + 1)
+		} else if (
+			event.key.length === 1 &&
+			!event.metaKey &&
+			!event.ctrlKey &&
+			!event.altKey
+		) {
+			clearTimeout(typeTimer.current)
+			typeTimer.current = setTimeout(() => (typeBuffer.current = ''), 800)
+			typeBuffer.current += event.key.toLowerCase()
+			const index = completeOptions.findIndex(option =>
+				option.label.toLowerCase().startsWith(typeBuffer.current)
+			)
+			if (index >= 0) {
+				event.stopPropagation()
+				setIndex(index)
+			}
+		}
+	}
+
+	return (
+		<div
+			{...props}
+			ref={root}
+			className={classNames(
+				styles.tqInputDrum,
+				disabled && styles.disabled,
+				className
+			)}
+			style={
+				{
+					'--cell-width': `${cellWidth}px`,
+					'--label-width': `${measuredWidth}px`,
+				} as React.CSSProperties
+			}
+			inline-position={inlinePosition}
+			block-position={blockPosition}
+			aria-invalid={invalid || undefined}
+			tabIndex={disabled ? -1 : 0}
+			onKeyDown={handleKeyDown}
+			onWheel={handleWheel}
+			onFocus={onFocus}
+			onBlur={onBlur}
+		>
+			<span className={styles.centerMark} />
+			<div className={styles.viewport}>
+				<div
+					className={styles.track}
+					style={{
+						transform: `translateX(${transform}px)`,
+						transition: drag.dragging || !animating ? 'none' : undefined,
+					}}
+				>
+					{completeOptions.map((option, index) => (
+						<div
+							key={`${option.label}-${index}`}
+							className={classNames(
+								styles.cell,
+								index === activeIndex && styles.active,
+								font === 'numeric' && styles.numeric
+							)}
+						>
+							{option.label}
+							<span className={styles.tick} />
+						</div>
+					))}
+				</div>
+			</div>
+			<div ref={measureRoot} className={styles.measure} aria-hidden="true">
+				{completeOptions.map((option, index) => (
+					<span
+						key={`${option.label}-${index}`}
+						className={font === 'numeric' ? styles.numeric : undefined}
+					>
+						{option.label}
+					</span>
+				))}
+			</div>
+		</div>
+	)
+}
