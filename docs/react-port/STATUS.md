@@ -79,3 +79,15 @@ date · agent · what was done · deviations from PLAN/CONVENTIONS · exact next
 - Demo/e2e sections cover measured Balloon SVG, controlled anchored Popover, shared structured Tooltip, and a working Menu command.
 
 **Next-batch contracts:** use `Popover` rather than introducing a positioning dependency; pass a real reference element and controlled `open`/`onChangeOpen`. Components that need directive-style help text should call `useTooltip(ref, value)`. TooltipRoot is already provided globally and must not be mounted again by individual controls.
+
+## 2026-07-12 · Batch 3 agent (Codex)
+
+**Done: text & toggles — InputTextBase, InputString, InputButton, InputButtonToggle, InputSwitch, InputCheckbox, InputRadio, InputShuffle.** All are controlled React components with CSS Modules and public prop/handle types. Core gained tested switch decision helpers, string-expression compilation, and the legacy shuffle generators. Gates: TypeScript + ESLint clean, 60 Vitest tests, 4 Playwright tests.
+
+- InputTextBase preserves synchronous typing propagation rules, focus state callbacks, Enter confirmation, imperative select/blur/root/input access, icon/inactive render seams, and coordinate-placed context menus.
+- InputString keeps local/display/controlled separation, synchronous validation at event sites, expression mode (`⌘=` with `{i}`), multi-select capture/update/confirm, reset, and imperative select/blur.
+- InputButton supports truncation-derived tooltip fallback and imperative flash; InputButtonToggle is controlled. Mouse-down focus suppression remains while keyboard focus/activation still works.
+- InputSwitch/InputCheckbox share one hook for click-vs-drag, true/false key families, native input events, confirmation, and multi-select. InputRadio keeps measured row/icon/column modes, sliding indicator, drag-to-select, render-option seam, and per-option tooltips. InputShuffle preserves dice flair and generic generators.
+- Demo/e2e exercises text entry and one controlled interaction for every batch component.
+
+**Next-batch contracts:** InputNumber should build on `InputTextBase` and its `InputTextBaseHandle`, not duplicate text/context-menu behavior. Use event-site local/display updates like InputString to avoid caret flashes. Inputs used inside InputGroup must consume `inlinePosition`/`blockPosition` and emit the corresponding root attributes. Switch controls already participate in multi-select through the shared hook.

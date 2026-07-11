@@ -62,7 +62,7 @@ Filled in after INVENTORY.md lands. States: `[ ]` todo · `[~]` in progress (not
 - [x] Phase 1: core extraction (stores, theme, util/types/validator, drag core)
 - [x] Phase 2: React infra (TweeqProvider shell, useTweeq/initTweeq, hooks: useBndr/useDrag/useCopyPaste/...) + primitives batch: Icon, SvgIcon, ColorIcon, BindIcon, IconIndicator, InputGroup, TweakOverlay, Viewport
 - [x] Batch 2: overlay stack — Balloon, Popover, Tooltip, Menu (native Popover API + CSS anchor positioning; see INVENTORY risks)
-- [ ] Batch 3: text & toggles — InputTextBase, InputString, InputButton, InputButtonToggle, InputSwitch, InputCheckbox, InputRadio, InputShuffle
+- [x] Batch 3: text & toggles — InputTextBase, InputString, InputButton, InputButtonToggle, InputSwitch, InputCheckbox, InputRadio, InputShuffle
 - [ ] Batch 4: InputNumber (very hard, 918 LOC) + vectors — InputVec, InputSize, InputTranslate, InputPosition
 - [ ] Batch 5: temporal/rotary — InputRotary, InputAngle, InputTime, InputDrum, Ruler, Timeline
 - [ ] Batch 6: dropdown/palette/code — InputDropdown, CommandPalette, MultiSelectPopup, MonacoEditor, InputCode, Markdown (before Batch 7: InputColor's channel values need InputDropdown)

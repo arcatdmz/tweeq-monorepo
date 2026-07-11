@@ -1,0 +1,227 @@
+import {
+	type FocusEvent,
+	forwardRef,
+	type HTMLAttributes,
+	type KeyboardEvent,
+	type MouseEvent,
+	type ReactNode,
+	useImperativeHandle,
+	useMemo,
+	useRef,
+	useState,
+} from 'react'
+
+import {
+	type InputAlign,
+	type InputBoxProps,
+	type InputFont,
+	type InputTheme,
+	type MenuItem,
+} from '../../../core'
+import {classNames} from '../../classNames'
+import {Icon} from '../Icon'
+import {Menu} from '../Menu'
+import {Popover} from '../Popover'
+import styles from './InputTextBase.module.styl'
+
+export interface InputTextBaseProps
+	extends InputBoxProps,
+		Omit<HTMLAttributes<HTMLDivElement>, 'default' | 'onChange'> {
+	value: string
+	onChange?: (value: string) => void
+	ignoreInput?: boolean
+	hover?: boolean
+	active?: boolean
+	theme?: InputTheme
+	font?: InputFont
+	align?: InputAlign
+	leftIcon?: string
+	rightIcon?: string
+	default?: unknown
+	menuItems?: MenuItem[]
+	onFocus?: (event: FocusEvent<HTMLInputElement>) => void
+	onBlur?: (event: FocusEvent<HTMLInputElement>) => void
+	onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void
+	onConfirm?: () => void
+	onReset?: () => void
+	onChangeFocused?: (focused: boolean) => void
+	renderBack?: () => ReactNode
+	renderFront?: () => ReactNode
+	renderInactiveContent?: () => ReactNode
+}
+
+export interface InputTextBaseHandle {
+	select(start?: number, end?: number): void
+	blur(): void
+	getRoot(): HTMLDivElement | null
+	getInput(): HTMLInputElement | null
+}
+
+export const InputTextBase = forwardRef<
+	InputTextBaseHandle,
+	InputTextBaseProps
+>(function InputTextBaseComponent(
+	{
+		value,
+		onChange,
+		ignoreInput = false,
+		hover = false,
+		active = false,
+		theme,
+		font,
+		align,
+		leftIcon,
+		rightIcon,
+		default: defaultValue,
+		menuItems,
+		disabled,
+		invalid,
+		inlinePosition,
+		blockPosition,
+		onFocus,
+		onBlur,
+		onKeyDown,
+		onConfirm,
+		onReset,
+		onChangeFocused,
+		renderBack,
+		renderFront,
+		renderInactiveContent,
+		onContextMenu,
+		className,
+		...props
+	},
+	forwardedRef
+) {
+	const root = useRef<HTMLDivElement>(null)
+	const input = useRef<HTMLInputElement>(null)
+	const [menuOpen, setMenuOpen] = useState(false)
+	const [menuPosition, setMenuPosition] = useState<[number, number]>([0, 0])
+	const hasInactiveContent = Boolean(renderInactiveContent)
+	const contextMenuItems = useMemo<MenuItem[]>(() => {
+		const items: MenuItem[] = []
+		if (defaultValue !== undefined) {
+			items.push({
+				label: 'Reset to Default',
+				icon: 'mdi:restore',
+				perform: () => onReset?.(),
+			})
+		}
+		if (menuItems?.length) {
+			if (items.length) items.push({separator: true})
+			items.push(...menuItems)
+		}
+		return items
+	}, [defaultValue, menuItems, onReset])
+
+	useImperativeHandle(
+		forwardedRef,
+		() => ({
+			select(start, end) {
+				if (start === undefined) input.current?.select()
+				else {
+					input.current?.setSelectionRange(start, end ?? start + 1)
+					input.current?.focus()
+				}
+			},
+			blur: () => input.current?.blur(),
+			getRoot: () => root.current,
+			getInput: () => input.current,
+		}),
+		[]
+	)
+
+	const handleContextMenu = (event: MouseEvent<HTMLDivElement>) => {
+		onContextMenu?.(event)
+		if (event.defaultPrevented || contextMenuItems.length === 0) return
+		event.preventDefault()
+		setMenuPosition([event.clientX, event.clientY])
+		setMenuOpen(true)
+	}
+
+	return (
+		<div
+			{...props}
+			{...{
+				theme,
+				font,
+				align,
+				'inline-position': inlinePosition,
+				'block-position': blockPosition,
+			}}
+			ref={root}
+			className={classNames(
+				styles.tqInputTextBase,
+				active && styles.active,
+				invalid && styles.invalid,
+				hover && styles.hover,
+				className
+			)}
+			onContextMenu={handleContextMenu}
+		>
+			{renderBack?.()}
+			<input
+				ref={input}
+				className={classNames(
+					styles.input,
+					ignoreInput && styles.ignore,
+					hasInactiveContent && styles.hasInactiveContent
+				)}
+				type="text"
+				value={value}
+				disabled={disabled || undefined}
+				onFocus={event => {
+					onChangeFocused?.(true)
+					onFocus?.(event)
+				}}
+				onBlur={event => {
+					onChangeFocused?.(false)
+					onBlur?.(event)
+				}}
+				onChange={event => onChange?.(event.currentTarget.value)}
+				onKeyDown={event => {
+					if (
+						!event.metaKey &&
+						!event.ctrlKey &&
+						event.key !== 'Escape' &&
+						event.key !== 'Enter' &&
+						event.key !== 'Tab'
+					) {
+						event.stopPropagation()
+					}
+					onKeyDown?.(event)
+					if (event.key === 'Enter') onConfirm?.()
+				}}
+			/>
+			{hasInactiveContent && (
+				<div className={styles.inactiveContent}>
+					{renderInactiveContent?.()}
+				</div>
+			)}
+			{leftIcon && (
+				<Icon
+					className={classNames(styles.icon, styles.left)}
+					icon={leftIcon}
+				/>
+			)}
+			{rightIcon && (
+				<Icon
+					className={classNames(styles.icon, styles.right)}
+					icon={rightIcon}
+				/>
+			)}
+			{renderFront?.()}
+			{menuOpen && (
+				<Popover
+					reference={root.current}
+					placement={menuPosition}
+					open={menuOpen}
+					teleport=".TqViewport"
+					onChangeOpen={setMenuOpen}
+				>
+					<Menu items={contextMenuItems} onClose={() => setMenuOpen(false)} />
+				</Popover>
+			)}
+		</div>
+	)
+})
