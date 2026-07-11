@@ -1,25 +1,20 @@
 import eslint from '@eslint/js'
-import tsParser from '@typescript-eslint/parser'
-import prettierConfig from '@vue/eslint-config-prettier'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import unusedImports from 'eslint-plugin-unused-imports'
-import pluginVue from 'eslint-plugin-vue'
 import globals from 'globals'
-import eseslint from 'typescript-eslint'
-import vueParser from 'vue-eslint-parser'
+import tseslint from 'typescript-eslint'
 
-export default eseslint.config(
-	eslint.configs.recommended,
-	eseslint.configs.recommended,
-	pluginVue.configs['flat/recommended'],
+export default tseslint.config(
 	{
+		ignores: ['lib/**', 'test-results/**', 'src/**/*.vue'],
+	},
+	eslint.configs.recommended,
+	...tseslint.configs.recommended,
+	{
+		files: ['**/*.{ts,tsx}'],
 		languageOptions: {
-			parser: vueParser,
 			ecmaVersion: 'latest',
 			sourceType: 'module',
-			parserOptions: {
-				parser: tsParser,
-			},
 			globals: globals.browser,
 		},
 		plugins: {
@@ -39,13 +34,6 @@ export default eseslint.config(
 			'@typescript-eslint/explicit-module-boundary-types': 'off',
 			'simple-import-sort/imports': 'error',
 			'unused-imports/no-unused-imports': 'error',
-			'vue/require-default-prop': 'off',
-			'vue/no-multiple-template-root': 'off',
-			'vue/multi-word-component-names': 'off',
-			'vue/no-v-model-argument': 'off',
-			'vue/attribute-hyphenation': 'off',
-			'vue/v-on-event-hyphenation': 'off',
 		},
-	},
-	prettierConfig
+	}
 )

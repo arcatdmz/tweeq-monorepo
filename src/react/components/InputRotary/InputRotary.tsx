@@ -1,4 +1,3 @@
-import {Path, type Rect} from '@baku89/pave'
 import {scalar, vec2} from 'linearly'
 import {range} from 'lodash-es'
 import {
@@ -16,7 +15,12 @@ import {
 	type DragState,
 	type InputBoxProps,
 	type InputEvents,
+	mergeSvgPaths,
+	type Rect,
 	signedAngleBetween,
+	svgArc,
+	svgCircle,
+	svgLine,
 	themeStore,
 	unsignedMod,
 } from '../../../core'
@@ -219,21 +223,17 @@ export function InputRotary({
 	const markerId = useId().replaceAll(':', '')
 	const radialLine = (angle: number, inner: number, outer: number) => {
 		const adjusted = angle + angleOffset
-		return Path.line(
+		return svgLine(
 			vec2.dir(adjusted, inner, center),
 			vec2.dir(adjusted, outer, center)
 		)
 	}
-	const metersPath = Path.toSVGString(
-		Path.merge(
-			range(0, 360, snap).map(angle => radialLine(angle, ...snapRadii))
-		)
+	const metersPath = mergeSvgPaths(
+		range(0, 360, snap).map(angle => radialLine(angle, ...snapRadii))
 	)
 	const overlayPath = (() => {
 		if (mode === 'absolute') {
-			return Path.toSVGString(
-				radialLine(value, inputHeight, vec2.dist(center, drag.xy))
-			)
+			return radialLine(value, inputHeight, vec2.dist(center, drag.xy))
 		}
 		const baseRadius = inputHeight * 4
 		const radiusStep = inputHeight * 0.25
@@ -242,24 +242,21 @@ export function InputRotary({
 		const turns =
 			Math.floor(Math.abs(end - start) / 360) * Math.sign(end - start)
 		const revolutions = range(0, turns).map(index =>
-			Path.circle(center, baseRadius + index * radiusStep)
+			svgCircle(center, baseRadius + index * radiusStep)
 		)
 		let offsetInTurn = unsignedMod(signedAngleBetween(end, start), 360)
 		if (end < start) offsetInTurn -= 360
 		const startInTurn = unsignedMod(start, 360)
-		const arc = Path.arc(
+		const arc = svgArc(
 			center,
 			baseRadius + turns * radiusStep,
 			startInTurn,
 			startInTurn + offsetInTurn
 		)
-		return Path.toSVGString(Path.merge([...revolutions, arc]))
+		return mergeSvgPaths([...revolutions, arc])
 	})()
-	const activeMeterPath = Path.toSVGString(
-		shouldSnap && value % snap === 0
-			? radialLine(value, ...snapRadii)
-			: Path.empty
-	)
+	const activeMeterPath =
+		shouldSnap && value % snap === 0 ? radialLine(value, ...snapRadii) : ''
 
 	return (
 		<>

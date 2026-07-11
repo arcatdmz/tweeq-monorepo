@@ -153,3 +153,16 @@ date · agent · what was done · deviations from PLAN/CONVENTIONS · exact next
 - Demo/e2e exercises tab selection, generated-form updates, persistent expandable content, a real split drag, plain/generated/tabbed modal paths, floating/ZUI panes, and the embedded app shell.
 
 **Phase 4 next:** switch the library build and package exports/peers to React, audit demo coverage against every public component, remove dead Vue/unused dependencies and legacy-only test collection, run the production build plus all gates, and document the final surface.
+
+## 2026-07-12 · Phase 4 agent (Codex)
+
+**Done: React build/demo/cleanup and final port verification.** The package now builds `src/react/index.ts` to ESM + CommonJS with rolled declarations and one exported stylesheet. React/ReactDOM are `>=18` peers, the tracked Yarn lock is current, and the direct Vue/VuePress/Pinia/VueUse/Vue tooling plus the planned unused dependencies are removed.
+
+- Package exports now expose `lib/index.es.js`, `lib/index.cjs`, `lib/index.d.ts`, and `tweeq/style.css`; CSS is marked side-effectful. The production build uses React + GLSL + declaration plugins and includes only `src/core`/`src/react` in its type build.
+- The auto-discovered demo has a section for every component directory except TweeqProvider, which is the demo root itself. Composite sections explicitly exercise Tab, the full ParameterGrid family, InputColor subcontrols, InputCubicBezierPicker, TooltipRoot, CommandPalette, MultiSelectPopup, and both provider modal delegates.
+- Removed direct Vue ecosystem dependencies and old Vue build/lint tooling, plus `@vueuse/gesture`, `monaco-themes`, `fp-ts`, `@material/material-color-utilities`, `monaco-editor-vue3`, and the no-longer-needed Pave/Paper runtime. The legacy Vue source remains reference-only and excluded from React lint/type/build scopes.
+- Replaced Pave Rect/SVG usage with tested core geometry/path helpers, making both package entry formats import-safe when `window` is absent. Monaco is now dynamically loaded only when MonacoEditor mounts, while staying bundled for browser consumers.
+- Migrated the last collected legacy InputTime tests into core and fixed colon timecode replacement to honor the caller's frame rate. README now documents React controlled-input usage and stylesheet/provider setup.
+- Final gates: ESLint clean; TypeScript clean; 83 Vitest tests; 9 Playwright tests; clean production ESM/CJS/CSS/declaration build; rolled `lib/index.d.ts` passes strict standalone checking; both `import('tweeq')` and `require('tweeq')` succeed in Node; package dry-run includes all generated chunks.
+
+**Port status:** Phases 1–4 and every component batch are complete. The only intentionally retained Vue material is the excluded legacy implementation tree and its historical docs/assets, which remain useful as a reference but are not reachable from the React package entry or toolchain.

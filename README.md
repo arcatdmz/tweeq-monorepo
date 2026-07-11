@@ -10,7 +10,7 @@
 > [!NOTE]
 > For a live demo of [the UIST paper](https://dl.acm.org/doi/10.1145/3746059.3747723), see [this page](https://baku89.github.io/tweeq/uist2025.html).
 
-Tweeq is a collection of [Vue.js](https://vuejs.org) components for design tools. The components range from fundamental UIs such as numeric sliders, color pickers, to advanced and niche controls like a cubic-bezier editor. It supports various micro-interactions suitable for creative professionals.
+Tweeq is a collection of [React](https://react.dev) components for design tools. The components range from fundamental UIs such as numeric sliders and color pickers to advanced, niche controls such as a cubic-bezier editor. It supports the precise micro-interactions used by creative professionals.
 
 It has been continuously developed by the visual artist [Baku Hashimoto](https://baku89.com).
 
@@ -20,6 +20,26 @@ It has been continuously developed by the visual artist [Baku Hashimoto](https:/
 yarn
 yarn dev
 yarn build
+```
+
+## React usage
+
+Tweeq requires React 18 or newer. Import the generated stylesheet once and wrap the application in `TweeqProvider`; inputs use controlled `value` / `onChange` props.
+
+```tsx
+import {useState} from 'react'
+import {InputNumber, TweeqProvider} from 'tweeq'
+import 'tweeq/style.css'
+
+export function Example() {
+  const [value, setValue] = useState(24)
+
+  return (
+    <TweeqProvider appId="example">
+      <InputNumber value={value} onChange={setValue} min={0} max={100} />
+    </TweeqProvider>
+  )
+}
 ```
 
 ## Project Background

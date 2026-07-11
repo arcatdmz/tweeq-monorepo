@@ -71,7 +71,7 @@ export function replaceTimecodeWithFrames(
 ): string {
 	expression = expression.replaceAll(
 		/([0-9+\-.]+:)+[0-9+\-.]+/gi,
-		match => parseTimecode(match, 24)?.toString() ?? '0'
+		match => parseTimecode(match, frameRate)?.toString() ?? '0'
 	)
 	for (const [pattern] of [
 		[/[0-9+\-.]+f(rames?)?/gi],

@@ -1,7 +1,7 @@
-import {type Rect} from '@baku89/pave'
 import {checkIntersection} from 'line-intersect'
 import {type vec2} from 'linearly'
 
+import {type Rect} from './geometry'
 import {unsignedMod} from './util'
 
 export function signedAngleBetween(target: number, source: number): number {

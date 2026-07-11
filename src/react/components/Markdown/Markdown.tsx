@@ -2,7 +2,7 @@ import MarkdownIt from 'markdown-it'
 import MarkdownItAnchor from 'markdown-it-anchor'
 import MarkdownItDeflist from 'markdown-it-deflist'
 import MarkdownItFootnote from 'markdown-it-footnote'
-import MarkdownItTOC, {type TocOptions} from 'markdown-it-toc-done-right'
+import MarkdownItTOC from 'markdown-it-toc-done-right'
 import {type HTMLAttributes, useMemo} from 'react'
 
 import {classNames} from '../../classNames'
@@ -15,7 +15,7 @@ export interface MarkdownProps extends HTMLAttributes<HTMLDivElement> {
 	html?: boolean
 	langPrefix?: string
 	linkify?: boolean
-	toc?: Partial<TocOptions>
+	toc?: Record<string, unknown>
 }
 
 export function Markdown({
@@ -35,7 +35,7 @@ export function Markdown({
 				.use(MarkdownItAnchor, anchor)
 				.use(MarkdownItDeflist)
 				.use(MarkdownItFootnote)
-				.use(MarkdownItTOC, toc as TocOptions)
+				.use(MarkdownItTOC, toc)
 				.set({breaks, html, langPrefix, linkify})
 				.render(source),
 		[anchor, breaks, html, langPrefix, linkify, source, toc]

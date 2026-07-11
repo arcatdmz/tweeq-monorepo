@@ -16,9 +16,26 @@ describe('timecode', () => {
 
 	it('replaces time literals in expressions', () => {
 		expect(replaceTimecodeWithFrames('20sec + 3min', 24)).toBe('480 + 4320')
+		expect(replaceTimecodeWithFrames('00:24 + 1:00', 24)).toBe('24 + 24')
+		expect(replaceTimecodeWithFrames('1:00', 30)).toBe('30')
+		expect(replaceTimecodeWithFrames('{10f}', 24)).toBe('{10}')
+		expect(replaceTimecodeWithFrames(' (20SEC) + 3min * 1:00 ', 24)).toBe(
+			' (480) + 4320 * 24 '
+		)
+		expect(replaceTimecodeWithFrames('hr(1.5h)\n10s', 24)).toBe(
+			'hr(129600)\n240'
+		)
 		expect(compileTimeExpression('1s + i', 24)(0, {i: 2, fps: 24})).toEqual({
 			value: 26,
 			log: [],
 		})
+	})
+
+	it('parses frame, second, minute, and hour suffixes', () => {
+		expect(parseTimecode('100Frames', 24)).toBe(100)
+		expect(parseTimecode('5seconds', 30)).toBe(150)
+		expect(parseTimecode('10minutes', 30)).toBe(18_000)
+		expect(parseTimecode('10hours', 30)).toBe(1_080_000)
+		expect(parseTimecode('-100Frames', 24)).toBe(-100)
 	})
 })

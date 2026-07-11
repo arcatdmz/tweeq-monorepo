@@ -1,4 +1,3 @@
-import {Path} from '@baku89/pave'
 import {scalar, vec2} from 'linearly'
 import {range} from 'lodash-es'
 import {
@@ -18,6 +17,8 @@ import {
 	type InputEvents,
 	inputTimeFormatEntry,
 	type MenuItem,
+	mergeSvgPaths,
+	svgLine,
 	type TimeFormat,
 } from '../../../core'
 import {classNames} from '../../classNames'
@@ -190,27 +191,29 @@ export function InputTime({
 	const scale = getScale()
 	const radialLine = (turn: number, inner: number, outer: number) => {
 		const degrees = turn * 360 - 90
-		return Path.line(
+		return svgLine(
 			vec2.dir(degrees, inner, [50, 50]),
 			vec2.dir(degrees, outer, [50, 50])
 		)
 	}
 	const meterAngles =
 		scale === 0 ? range(0, 1, 1 / frameRate) : range(0, 1, 1 / 12)
-	const meters = Path.toD(
-		Path.merge(meterAngles.map(angle => radialLine(angle, 48, 49)))
+	const meters = mergeSvgPaths(
+		meterAngles.map(angle => radialLine(angle, 48, 49))
 	)
-	const frameTick = Path.toD(
-		radialLine((value % frameRate) / frameRate, 48, 48)
+	const frameTick = radialLine((value % frameRate) / frameRate, 48, 48)
+	const secondTick = radialLine(
+		(Math.floor(value / frameRate) % 60) / 60,
+		-15,
+		45
 	)
-	const secondTick = Path.toD(
-		radialLine((Math.floor(value / frameRate) % 60) / 60, -15, 45)
-	)
-	const minuteTick = Path.toD(
-		radialLine((Math.floor(value / (frameRate * 60)) % 60) / 60, 0, 40)
+	const minuteTick = radialLine(
+		(Math.floor(value / (frameRate * 60)) % 60) / 60,
+		0,
+		40
 	)
 	const hours = Math.floor(value / (frameRate * 3600)) % 24
-	const hourTick = Path.toD(hours ? radialLine(hours / 12, 0, 20) : Path.empty)
+	const hourTick = hours ? radialLine(hours / 12, 0, 20) : ''
 	useEffect(() => {
 		if (!focused) setDisplay(printTime(value, format, frameRate))
 	}, [focused, format, frameRate, value])

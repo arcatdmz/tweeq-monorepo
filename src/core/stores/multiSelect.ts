@@ -1,7 +1,13 @@
-import {Rect} from '@baku89/pave'
 import {vec2} from 'linearly'
 import {createStore} from 'zustand/vanilla'
 
+import {
+	type Rect,
+	rectCenter,
+	rectFromDOMRect,
+	rectsIntersect,
+	uniteRects,
+} from '../geometry'
 import type {HSVA} from '../types'
 import {nodeContains} from '../util'
 
@@ -135,11 +141,11 @@ export const multiSelectStore = createStore<MultiSelectState>((set, get) => {
 	}
 
 	function selectInbetween(start: Rect, end: Rect) {
-		const startCenter = Rect.center(start)
-		const endCenter = Rect.center(end)
+		const startCenter = rectCenter(start)
+		const endCenter = rectCenter(end)
 		const direction = vec2.sub(endCenter, startCenter)
 
-		const selectionRect = Rect.unite(start, end)
+		const selectionRect = uniteRects(start, end)
 
 		const inbetweenIds: {id: symbol; order: number}[] = []
 
@@ -147,10 +153,10 @@ export const multiSelectStore = createStore<MultiSelectState>((set, get) => {
 			const el = input.element
 			if (!el) return
 
-			const rect = Rect.fromDOMRect(el.getBoundingClientRect())
+			const rect = rectFromDOMRect(el.getBoundingClientRect())
 
-			if (Rect.intersects(selectionRect, rect)) {
-				const center = Rect.center(rect)
+			if (rectsIntersect(selectionRect, rect)) {
+				const center = rectCenter(rect)
 				const order = vec2.dot(vec2.sub(center, startCenter), direction)
 
 				inbetweenIds.push({id: input.id, order})
@@ -271,10 +277,10 @@ export const multiSelectStore = createStore<MultiSelectState>((set, get) => {
 			const el = input.element
 
 			if (shift && focusedElement && el) {
-				const lastRect = Rect.fromDOMRect(
+				const lastRect = rectFromDOMRect(
 					focusedElement.getBoundingClientRect()
 				)
-				const newRect = Rect.fromDOMRect(el.getBoundingClientRect())
+				const newRect = rectFromDOMRect(el.getBoundingClientRect())
 
 				selectInbetween(lastRect, newRect)
 			}

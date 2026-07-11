@@ -1,14 +1,23 @@
 import Editor, {loader, type OnMount} from '@monaco-editor/react'
 import {type vec2} from 'linearly'
-import * as monaco from 'monaco-editor'
-import {type HTMLAttributes, useEffect, useRef} from 'react'
+import type * as Monaco from 'monaco-editor'
+import {type HTMLAttributes, useEffect, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
 import {themeStore} from '../../../core'
 import {classNames} from '../../classNames'
 import styles from './MonacoEditor.module.styl'
 
-loader.config({monaco})
+type MonacoApi = typeof Monaco
+let monacoPromise: Promise<MonacoApi> | undefined
+
+function loadMonaco(): Promise<MonacoApi> {
+	monacoPromise ??= import('monaco-editor').then(monaco => {
+		loader.config({monaco})
+		return monaco
+	})
+	return monacoPromise
+}
 
 export interface MonacoEditorErrorInfo {
 	message: string
@@ -40,17 +49,28 @@ export function MonacoEditor({
 	className,
 	...props
 }: MonacoEditorProps) {
-	const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
+	const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null)
+	const [monaco, setMonaco] = useState<MonacoApi | null>(null)
 	const monacoTheme = useStore(themeStore, state => state.monacoTheme)
 	const rem = useStore(themeStore, state => state.rem)
 
 	useEffect(() => {
+		let active = true
+		void loadMonaco().then(api => {
+			if (active) setMonaco(api)
+		})
+		return () => {
+			active = false
+		}
+	}, [])
+	useEffect(() => {
+		if (!monaco) return
 		monaco.editor.defineTheme(
 			THEME_NAME,
-			monacoTheme as monaco.editor.IStandaloneThemeData
+			monacoTheme as Monaco.editor.IStandaloneThemeData
 		)
 		monaco.editor.setTheme(THEME_NAME)
-	}, [monacoTheme])
+	}, [monaco, monacoTheme])
 	useEffect(() => {
 		const editor = editorRef.current
 		if (cursorIndex === undefined || !editor) return
@@ -59,11 +79,11 @@ export function MonacoEditor({
 	}, [cursorIndex])
 	useEffect(() => {
 		const model = editorRef.current?.getModel()
-		if (!model || !errors) return
+		if (!model || !monaco) return
 		monaco.editor.setModelMarkers(
 			model,
 			'tweeq',
-			errors.map(error => ({
+			(errors ?? []).map(error => ({
 				message: error.message,
 				severity: monaco.MarkerSeverity.Error,
 				startLineNumber: error.line,
@@ -72,7 +92,7 @@ export function MonacoEditor({
 				endColumn: error.column,
 			}))
 		)
-	}, [errors])
+	}, [errors, monaco])
 
 	const onMount: OnMount = editor => {
 		editorRef.current = editor
@@ -94,7 +114,7 @@ export function MonacoEditor({
 			onKeyDown={event => event.stopPropagation()}
 			onKeyUp={event => event.stopPropagation()}
 		>
-			<Editor
+			{monaco && <Editor
 				value={value}
 				theme={THEME_NAME}
 				language={lang}
@@ -123,7 +143,7 @@ export function MonacoEditor({
 					bracketPairColorization: {enabled: false},
 					guides: {indentation: false},
 				}}
-			/>
+			/>}
 		</div>
 	)
 }
