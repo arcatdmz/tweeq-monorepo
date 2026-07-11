@@ -16,7 +16,7 @@ Tweeq is a Vue 3 GUI toolkit for creative tools (`src/*` = ~50 components, pinia
 src/
   core/           # NO framework imports (no vue, no react). Pure TS + DOM.
     stores/       # vanilla zustand stores: theme, actions, appConfig, modal, multiSelect
-    theme/        # palette generation (material-color-utilities, radix), CSS var emission
+    theme/        # palette generation (radix-colors based), CSS var emission
     drag/         # drag/scrub state machine extracted from use/useDrag.ts (bndr-js based)
     ...           # util.ts, types.ts, validator.ts, color logic, parsing/formatting
   react/          # React 18+ components; thin rendering over core
@@ -60,17 +60,19 @@ src/
 Filled in after INVENTORY.md lands. States: `[ ]` todo · `[~]` in progress (note owner in STATUS.md) · `[x]` done.
 
 - [ ] Phase 1: core extraction (stores, theme, util/types/validator, drag core)
-- [ ] Phase 2: React infra (TweeqProvider, Icon, hooks, useTweeq)
-- [ ] Batch A: primitives — Icon-adjacent + buttons/toggles (SvgIcon, ColorIcon, IconIndicator, BindIcon, InputButton, InputButtonToggle, InputCheckbox, InputSwitch, InputRadio, InputGroup)
-- [ ] Batch B: text/number — InputTextBase, InputString, InputNumber, InputVec, InputSize, InputPosition, InputTranslate, InputSeed(InputShuffle)
-- [ ] Batch C: overlays — Popover, Tooltip, Balloon, Menu, InputDropdown, MultiSelectPopup, TweakOverlay
-- [ ] Batch D: rotary/temporal — InputAngle, InputRotary, InputDrum, InputTime, Ruler, Timeline
-- [ ] Batch E: color & curves — InputColor (+ useInputColor), InputCubicBezier, GlslCanvas
-- [ ] Batch F: code/text-adjacent — MonacoEditor, InputCode, Markdown, InputComplex
-- [ ] Batch G: panes/layout — PaneSplit, PaneExpandable, PaneFloating, PaneModal, PaneModalComplex, PaneModalTabs, PaneZUI, Tabs, TitleBar, ParameterGrid, Viewport, App, CommandPalette, TweeqProvider wiring
-- [ ] Phase 4: build config, demo app, dependency cleanup, final lint/typecheck
+- [ ] Phase 2: React infra (TweeqProvider shell, useTweeq/initTweeq, hooks: useBndr/useDrag/useCopyPaste/...) + primitives batch: Icon, SvgIcon, ColorIcon, BindIcon, IconIndicator, InputGroup, TweakOverlay, Viewport
+- [ ] Batch 2: overlay stack — Balloon, Popover, Tooltip, Menu (native Popover API + CSS anchor positioning; see INVENTORY risks)
+- [ ] Batch 3: text & toggles — InputTextBase, InputString, InputButton, InputButtonToggle, InputSwitch, InputCheckbox, InputRadio, InputShuffle
+- [ ] Batch 4: InputNumber (very hard, 918 LOC) + vectors — InputVec, InputSize, InputTranslate, InputPosition
+- [ ] Batch 5: temporal/rotary — InputRotary, InputAngle, InputTime, InputDrum, Ruler, Timeline
+- [ ] Batch 6: dropdown/palette/code — InputDropdown, CommandPalette, MultiSelectPopup, MonacoEditor, InputCode, Markdown (before Batch 7: InputColor's channel values need InputDropdown)
+- [ ] Batch 7: color/GL/curves — GlslCanvas, InputColor (very hard, 1741 LOC), InputCubicBezier
+- [ ] Batch 8: panes/layout/complex — Tabs, ParameterGrid, InputComplex, PaneModal, PaneModalComplex, PaneModalTabs, PaneSplit, PaneExpandable, PaneFloating, PaneZUI, TitleBar, App, final TweeqProvider wiring
+- [ ] Phase 4: build config (lib entry `src/react/index.ts`), demo covers all components, dependency cleanup (drop vue deps + unused: @vueuse/gesture, monaco-themes, fp-ts, @material/material-color-utilities), final lint/typecheck/e2e
 
-> NOTE: batch composition above is provisional — reconcile with INVENTORY.md's dependency-ordered batches once that file exists, and update this list if the survey suggests a better split.
+## Parallel work rule
+
+When multiple batch agents run concurrently in this worktree: only the orchestrator commits, and concurrent agents must NOT edit shared files (PLAN.md, STATUS.md, package.json, demo/DemoApp.tsx, src/react/index.ts). Instead each agent writes `docs/react-port/status/<batch>.md` + demo sections as `demo/sections/<Name>Section.tsx` (default-export a component; auto-discovered via import.meta.glob, no registration needed) and lists required shared-file edits (e.g. src/react/index.ts exports) in its status note; the orchestrator merges them. Agents running alone may edit shared files and commit directly.
 
 ## Usage-limit protocol
 
