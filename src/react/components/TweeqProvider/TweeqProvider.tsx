@@ -1,8 +1,9 @@
 import '../../../common.styl'
 
-import {type PropsWithChildren, useRef} from 'react'
+import {Fragment, type PropsWithChildren, useRef} from 'react'
 
 import {initTweeq, type TweeqOptions} from '../../initTweeq'
+import {TooltipRoot} from '../Tooltip'
 
 export interface TweeqProviderProps extends PropsWithChildren, TweeqOptions {
 	appId: string
@@ -28,6 +29,11 @@ export function TweeqProvider({
 	}
 
 	// Future batches mount CommandPalette, MultiSelectPopup, PaneModalComplex,
-	// PaneModalTabs, and TooltipRoot beside `children` at this seam.
-	return children
+	// and PaneModalTabs beside `children` at this seam.
+	return (
+		<Fragment>
+			{children}
+			<TooltipRoot />
+		</Fragment>
+	)
 }

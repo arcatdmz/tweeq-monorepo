@@ -24,7 +24,10 @@ export function Viewport({
 	}
 
 	return (
-		<div {...props} className={classNames(styles.tqViewport, className)}>
+		<div
+			{...props}
+			className={classNames('TqViewport', styles.tqViewport, className)}
+		>
 			{children}
 		</div>
 	)

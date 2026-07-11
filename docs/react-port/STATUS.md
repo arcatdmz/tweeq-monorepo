@@ -68,3 +68,14 @@ date · agent · what was done · deviations from PLAN/CONVENTIONS · exact next
 4. Every component used in InputGroup must accept `inlinePosition`/`blockPosition` and translate/forward them to the root DOM attributes (`inline-position`/`block-position`, or equivalent selectors). InputGroup recursively flattens fragments before cloning.
 5. Full-screen tweak UI must use `TweakOverlay`: its manual popover is shown in an effect and supplies the browser top-layer escape pattern (no ReactDOM portal is required).
 6. Per scope, color presets stay deferred to InputColor, and the five provider-mounted overlay/modal roots stay deferred until their component batches / final Batch 8 wiring.
+
+## 2026-07-12 · Batch 2 agent (Codex)
+
+**Done: overlay stack — Balloon, Popover, Tooltip, Menu.** The React public entry exports all four components plus `TooltipRoot`/`useTooltip`; TweeqProvider now mounts the shared tooltip root. Core now owns tested Balloon path generation, Popover CSS-anchor/viewport-shift geometry, Menu's safe-triangle predicate, and the framework-neutral shared tooltip store. Gates: TypeScript + ESLint clean, 56 Vitest tests, 3 Playwright tests.
+
+- Popover keeps native `popover` semantics (`auto` for light dismiss, `manual` otherwise), generated/refcounted anchor names, CSS Anchor Positioning, flip fallbacks, cross-axis viewport shift, arrow geometry after flips, optional top-layer portal target, and allow-discrete exit styling.
+- Tooltip's hook moves the fixed anchor before its 200 ms show delay, handles hover + focus, live-updates content, and cleans shared state/anchors on replacement or unmount. `TooltipRoot` portals into `.TqViewport` when present; Viewport now carries that stable global class in addition to its CSS-Module class.
+- Menu is recursive with an imperative `getRoot()` handle for the safe corridor, theme-derived submenu offset, command/bind/icon rendering, and close propagation.
+- Demo/e2e sections cover measured Balloon SVG, controlled anchored Popover, shared structured Tooltip, and a working Menu command.
+
+**Next-batch contracts:** use `Popover` rather than introducing a positioning dependency; pass a real reference element and controlled `open`/`onChangeOpen`. Components that need directive-style help text should call `useTooltip(ref, value)`. TooltipRoot is already provided globally and must not be mounted again by individual controls.

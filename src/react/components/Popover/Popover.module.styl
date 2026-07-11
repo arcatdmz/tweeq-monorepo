@@ -1,0 +1,30 @@
+.popover
+	position fixed
+	inset auto
+	background transparent
+	overflow visible
+	transition opacity var(--tq-active-transition-duration) ease-out
+
+@starting-style
+	.popover:popover-open
+		opacity 0
+
+.animateExit
+	opacity 0
+	transition opacity var(--tq-active-transition-duration) ease-out, display var(--tq-active-transition-duration) allow-discrete, overlay var(--tq-active-transition-duration) allow-discrete
+
+	[data-tq-balloon]
+		transform scale(0.96)
+
+.animateExit:popover-open
+	opacity 1
+
+	[data-tq-balloon]
+		transform scale(1)
+
+@starting-style
+	.animateExit:popover-open
+		opacity 0
+
+		[data-tq-balloon]
+			transform scale(0.96)
