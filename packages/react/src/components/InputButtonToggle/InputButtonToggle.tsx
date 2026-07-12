@@ -1,9 +1,7 @@
 import type {InputBoxProps} from '@tweeq/core'
 import {type ButtonHTMLAttributes} from 'react'
 
-import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
-import styles from './InputButtonToggle.module.styl'
 
 export interface InputButtonToggleProps
 	extends InputBoxProps,
@@ -31,16 +29,13 @@ export function InputButtonToggle({
 	return (
 		<button
 			{...props}
-			className={classNames(
-				styles.tqInputButtonToggle,
-				value && styles.checked,
-				className
-			)}
+			className={className}
 			inline-position={inlinePosition}
 			block-position={blockPosition}
 			disabled={Boolean(disabled)}
 			aria-invalid={invalid || undefined}
 			aria-pressed={value}
+			data-tq-component="input-button-toggle"
 			data-tq-part="root"
 			onMouseDown={event => {
 				onMouseDown?.(event)
@@ -51,8 +46,8 @@ export function InputButtonToggle({
 				if (!event.defaultPrevented) onChange?.(!value)
 			}}
 		>
-			{icon && <Icon className={styles.icon} icon={icon} data-tq-part="icon" />}
-			{label && <span className={styles.label} data-tq-part="label">{label}</span>}
+			{icon && <Icon icon={icon} data-tq-part="icon" />}
+			{label && <span data-tq-part="label">{label}</span>}
 		</button>
 	)
 }

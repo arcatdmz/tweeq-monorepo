@@ -1,3 +1,5 @@
+import '@tweeq/styles/shared.styl'
+
 // Preserve the renderer's existing convenience exports without a local
 // compatibility barrel; each symbol now resolves from its owning package.
 export * from '@tweeq/core'

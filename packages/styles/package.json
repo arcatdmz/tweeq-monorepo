@@ -6,7 +6,8 @@
 	"type": "module",
 	"exports": {
 		"./style.css": "./dist/style.css",
-		"./common.styl": "./src/common.styl"
+		"./common.styl": "./src/common.styl",
+		"./shared.styl": "./src/shared.styl"
 	},
 	"files": [
 		"dist",

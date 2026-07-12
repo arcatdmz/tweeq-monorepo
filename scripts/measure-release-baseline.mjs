@@ -59,9 +59,9 @@ The renderer totals include Monaco and its language workers. They establish
 the MF-011 starting point; code splitting should be evaluated against these
 numbers rather than inferred from Vite's 500 kB warning alone.
 
-The 0.04 KiB shared-style entry is not a successful size optimization: it is
-the MF-044 placeholder and shows that canonical style ownership is still
-incomplete. Renderer CSS remains separate until that finding is closed.
+The shared-style entry contains only migrated families. Its much smaller size
+than either renderer stylesheet shows that MF-044 canonical style ownership is
+still incomplete; renderer CSS remains separate until that finding is closed.
 
 ## Core transition throughput
 

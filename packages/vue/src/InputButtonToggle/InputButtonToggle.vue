@@ -22,6 +22,7 @@ defineProps<InputButtonToggleProps>()
 		:disabled="!!disabled"
 		:aria-invalid="invalid || undefined"
 		:aria-pressed="model"
+		data-tq-component="input-button-toggle"
 		data-tq-part="root"
 		@mousedown.prevent
 		@click="model = !model"
@@ -30,52 +31,3 @@ defineProps<InputButtonToggleProps>()
 		<span v-if="label" class="label" data-tq-part="label">{{ label }}</span>
 	</button>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqInputButtonToggle
-	border-radius var(--tq-radius-input)
-	background var(--tq-color-input)
-	color var(--tq-color-text)
-	height var(--tq-input-height)
-	min-width var(--tq-input-height)
-	display flex
-	align-items center
-	justify-content center
-	hover-transition(background, color)
-	gap var(--tq-gap-related)
-
-	use-input-position()
-
-	// Unchecked: default accent ring just outside (on the input bg). Checked: an
-	// inner ring in the off-state button color (input) sits on the accent fill,
-	// plus an accent ring just OUTSIDE that reads against it at the edge. See
-	// fill-focus-style().
-	&:focus-visible
-		fill-focus-style()
-
-	&:hover
-		background var(--tq-color-input-hover)
-
-	&.checked
-		background var(--tq-color-accent)
-		color var(--tq-color-on-accent)
-		--focus-ring inset 0 0 0 1px var(--tq-color-input), 0 0 0 1px var(--tq-color-accent)
-
-		&:hover
-			background var(--tq-color-accent-hover)
-
-	&:has(.label)
-		padding 0 .7em
-
-	&:has(.icon):has(.label)
-		padding-left .5em
-
-	.icon
-		display block
-		width calc(var(--tq-input-height) - 4px)
-		height calc(var(--tq-input-height) - 4px)
-
-	.label
-		line-height var(--tq-input-height)
-</style>

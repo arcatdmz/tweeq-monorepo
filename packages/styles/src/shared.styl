@@ -1,5 +1,7 @@
+// Renderer-neutral component rules. Components opt in through stable
+// data-tq-component/data-tq-part attributes; renderer class names are not used.
 
-.tqInputButtonToggle
+[data-tq-component='input-button-toggle']
 	border-radius var(--tq-radius-input)
 	background var(--tq-color-input)
 	color var(--tq-color-text)
@@ -18,7 +20,7 @@
 	&:hover
 		background var(--tq-color-input-hover)
 
-	&.checked
+	&[aria-pressed='true']
 		background var(--tq-color-accent)
 		color var(--tq-color-on-accent)
 		--focus-ring inset 0 0 0 1px var(--tq-color-input), 0 0 0 1px var(--tq-color-accent)
@@ -26,16 +28,16 @@
 		&:hover
 			background var(--tq-color-accent-hover)
 
-	&:has(.label)
+	&:has([data-tq-part='label'])
 		padding 0 .7em
 
-	&:has(.icon):has(.label)
+	&:has([data-tq-part='icon']):has([data-tq-part='label'])
 		padding-left .5em
 
-.icon
-	display block
-	width calc(var(--tq-input-height) - 4px)
-	height calc(var(--tq-input-height) - 4px)
+	[data-tq-part='icon']
+		display block
+		width calc(var(--tq-input-height) - 4px)
+		height calc(var(--tq-input-height) - 4px)
 
-.label
-	line-height var(--tq-input-height)
+	[data-tq-part='label']
+		line-height var(--tq-input-height)

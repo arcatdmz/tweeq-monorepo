@@ -44,6 +44,10 @@ declaration entry. `pnpm docs:check` fails when this file is stale.
 
 - default: `./src/common.styl`
 
+### `@tweeq/styles/shared.styl`
+
+- default: `./src/shared.styl`
+
 ## `@tweeq/react`
 
 ### `@tweeq/react`
