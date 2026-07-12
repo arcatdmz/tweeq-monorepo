@@ -6,14 +6,17 @@ import {
 	type KeyAction,
 	type PointerAction,
 	type RendererHarness,
+	runInputCheckboxContract,
 	runInputSwitchContract,
 } from '@tweeq/test-contracts'
 import {createApp, defineComponent, h, nextTick, reactive, ref} from 'vue'
 
+import {InputCheckbox} from './InputCheckbox'
 import {InputSwitch} from './InputSwitch'
 
-runInputSwitchContract(async (component, initialProps) => {
-	if (component !== 'InputSwitch') throw new Error(`Unsupported: ${component}`)
+const createHarness = async (component: string, initialProps: InputSwitchContractProps) => {
+	const Component = component === 'InputSwitch' ? InputSwitch : component === 'InputCheckbox' ? InputCheckbox : null
+	if (!Component) throw new Error(`Unsupported: ${component}`)
 
 	const container = document.createElement('div')
 	document.body.append(container)
@@ -22,7 +25,7 @@ runInputSwitchContract(async (component, initialProps) => {
 	const captured: HarnessEvent[] = []
 	const app = createApp(
 		defineComponent(() => () =>
-			h(InputSwitch, {
+			h(Component, {
 				...props,
 				modelValue: currentValue.value,
 				'onUpdate:modelValue'(value: boolean) {
@@ -72,4 +75,7 @@ runInputSwitchContract(async (component, initialProps) => {
 	}
 
 	return harness
-})
+}
+
+runInputSwitchContract(createHarness)
+runInputCheckboxContract(createHarness)

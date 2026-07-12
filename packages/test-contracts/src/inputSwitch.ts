@@ -8,11 +8,16 @@ export interface InputSwitchContractProps {
 	label?: string
 }
 
-/** Run the same public InputSwitch behavior contract against one renderer. */
-export function runInputSwitchContract(
-	createHarness: RendererHarnessFactory<InputSwitchContractProps>
+interface BooleanInputContractOptions {
+	component: 'InputSwitch' | 'InputCheckbox'
+	parts: readonly string[]
+}
+
+function runBooleanInputContract(
+	createHarness: RendererHarnessFactory<InputSwitchContractProps>,
+	{component, parts}: BooleanInputContractOptions
 ) {
-	describe('InputSwitch renderer contract', () => {
+	describe(`${component} renderer contract`, () => {
 		let harness: RendererHarness<InputSwitchContractProps> | undefined
 
 		afterEach(() => {
@@ -21,7 +26,7 @@ export function runInputSwitchContract(
 		})
 
 		it('renders and follows controlled value updates', async () => {
-			harness = await createHarness('InputSwitch', {
+			harness = await createHarness(component, {
 				value: false,
 				label: 'Enabled',
 			})
@@ -36,12 +41,12 @@ export function runInputSwitchContract(
 		})
 
 		it('exposes the shared style parts and accessible label', async () => {
-			harness = await createHarness('InputSwitch', {
+			harness = await createHarness(component, {
 				value: false,
 				label: 'Enabled',
 			})
 
-			for (const part of ['root', 'track', 'input', 'handle', 'label']) {
+			for (const part of parts) {
 				expect(harness.part(part), `missing ${part} part`).not.toBeNull()
 			}
 
@@ -52,7 +57,7 @@ export function runInputSwitchContract(
 		})
 
 		it('forwards the disabled state to the native control', async () => {
-			harness = await createHarness('InputSwitch', {
+			harness = await createHarness(component, {
 				value: false,
 				disabled: true,
 			})
@@ -61,7 +66,7 @@ export function runInputSwitchContract(
 		})
 
 		it('toggles from the shared keyboard command and confirms', async () => {
-			harness = await createHarness('InputSwitch', {value: false})
+			harness = await createHarness(component, {value: false})
 
 			await harness.key({type: 'press', key: ' '}, 'input')
 
@@ -71,5 +76,25 @@ export function runInputSwitchContract(
 				'confirm',
 			])
 		})
+	})
+}
+
+/** Run the same public InputSwitch behavior contract against one renderer. */
+export function runInputSwitchContract(
+	createHarness: RendererHarnessFactory<InputSwitchContractProps>
+) {
+	runBooleanInputContract(createHarness, {
+		component: 'InputSwitch',
+		parts: ['root', 'track', 'input', 'handle', 'label'],
+	})
+}
+
+/** Run the shared boolean-input contract against InputCheckbox. */
+export function runInputCheckboxContract(
+	createHarness: RendererHarnessFactory<InputSwitchContractProps>
+) {
+	runBooleanInputContract(createHarness, {
+		component: 'InputCheckbox',
+		parts: ['root', 'track', 'input', 'mark', 'label'],
 	})
 }

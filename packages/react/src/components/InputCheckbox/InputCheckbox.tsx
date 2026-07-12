@@ -54,6 +54,7 @@ export function InputCheckbox({
 				className
 			)}
 			aria-invalid={invalid || undefined}
+			data-tq-part="root"
 		>
 			<div
 				ref={track}
@@ -63,6 +64,7 @@ export function InputCheckbox({
 				)}
 				block-position={blockPosition}
 				inline-position={inlinePosition}
+				data-tq-part="track"
 			>
 				<input
 					id={id}
@@ -70,16 +72,19 @@ export function InputCheckbox({
 					checked={value}
 					disabled={disabled}
 					className={styles.input}
+					data-tq-part="input"
 					type="checkbox"
 					onChange={controls.onChangeInput}
 					onKeyDown={controls.onKeyDown}
 					onFocus={controls.onFocusInput}
 					onBlur={controls.onBlurInput}
 				/>
-				<Icon icon={icon || 'mdi:check-bold'} className={styles.mark} />
+				<span className={styles.mark} data-tq-part="mark">
+					<Icon icon={icon || 'mdi:check-bold'} />
+				</span>
 				<InputSwitchOverlay value={controls.tweakingValue} />
 			</div>
-			{label && <label htmlFor={id}>{label}</label>}
+			{label && <label htmlFor={id} data-tq-part="label">{label}</label>}
 		</div>
 	)
 }

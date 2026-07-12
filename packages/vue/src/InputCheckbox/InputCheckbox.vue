@@ -28,13 +28,19 @@ const {tweakingValue, subfocus} = useInputSwitch({
 </script>
 
 <template>
-	<div class="TqInputCheckbox" :class="{disabled: props.disabled}">
+	<div
+		class="TqInputCheckbox"
+		:class="{disabled: props.disabled}"
+		:aria-invalid="props.invalid || undefined"
+		data-tq-part="root"
+	>
 		<div
 			ref="track"
 			class="checkbox"
 			:class="{subfocus}"
 			:block-position="props.blockPosition"
 			:inline-position="props.inlinePosition"
+			data-tq-part="track"
 		>
 			<input
 				:id="id"
@@ -42,12 +48,15 @@ const {tweakingValue, subfocus} = useInputSwitch({
 				:checked="model"
 				:disabled="props.disabled"
 				class="input"
+				data-tq-part="input"
 				type="checkbox"
 			/>
-			<Icon :icon="props.icon || 'mdi:check-bold'" class="mark" />
+			<span class="mark" data-tq-part="mark">
+				<Icon :icon="props.icon || 'mdi:check-bold'" />
+			</span>
 			<InputSwitchOverlay :modelValue="tweakingValue" />
 		</div>
-		<label v-if="label" :for="id">
+		<label v-if="label" :for="id" data-tq-part="label">
 			{{ label }}
 		</label>
 	</div>

@@ -6,18 +6,21 @@ import {
 	type KeyAction,
 	type PointerAction,
 	type RendererHarness,
+	runInputCheckboxContract,
 	runInputSwitchContract,
 } from '@tweeq/test-contracts'
-import {act, createElement} from 'react'
+import {act, type ComponentType, createElement} from 'react'
 import {createRoot} from 'react-dom/client'
 
+import {InputCheckbox} from './components/InputCheckbox'
 import {InputSwitch} from './components/InputSwitch'
 
 ;(globalThis as typeof globalThis & {IS_REACT_ACT_ENVIRONMENT: boolean})
 	.IS_REACT_ACT_ENVIRONMENT = true
 
-runInputSwitchContract(async (component, initialProps) => {
-	if (component !== 'InputSwitch') throw new Error(`Unsupported: ${component}`)
+const createHarness = async (component: string, initialProps: InputSwitchContractProps) => {
+	const Component = (component === 'InputSwitch' ? InputSwitch : component === 'InputCheckbox' ? InputCheckbox : null) as ComponentType<Record<string, unknown>> | null
+	if (!Component) throw new Error(`Unsupported: ${component}`)
 
 	const container = document.createElement('div')
 	document.body.append(container)
@@ -29,10 +32,10 @@ runInputSwitchContract(async (component, initialProps) => {
 	async function render() {
 		await act(async () => {
 			root.render(
-				createElement(InputSwitch, {
+				createElement(Component!, {
 					...props,
 					value: currentValue,
-					onChange(value) {
+					onChange(value: boolean) {
 						currentValue = value
 						captured.push({name: 'change', payload: [value]})
 					},
@@ -84,4 +87,7 @@ runInputSwitchContract(async (component, initialProps) => {
 	}
 
 	return harness
-})
+}
+
+runInputSwitchContract(createHarness)
+runInputCheckboxContract(createHarness)

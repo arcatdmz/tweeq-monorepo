@@ -58,7 +58,7 @@ and public export is unchanged.
 - `@tweeq/test-contracts` now supplies the parameterized InputSwitch public
   behavior suite. React and Vue each implement the harness and run the same
   controlled-value and keyboard/confirm contract in jsdom.
-- Phase 4 family 1 is in progress: InputSwitch now exposes identical stable
-  `data-tq-part` names in both renderers, and its contract also covers native
-  disabled state and accessible label association.
+- Phase 4 family 1 is in progress: InputSwitch and InputCheckbox expose
+  identical stable `data-tq-part` names in both renderers and run the same
+  controlled-value, keyboard/confirm, disabled, and label contract.
 - Do not publish any package until ADR 0001's ownership question is settled.

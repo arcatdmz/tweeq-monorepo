@@ -7,5 +7,6 @@ export type {
 } from './harness'
 export {
 	type InputSwitchContractProps,
+	runInputCheckboxContract,
 	runInputSwitchContract,
 } from './inputSwitch'
