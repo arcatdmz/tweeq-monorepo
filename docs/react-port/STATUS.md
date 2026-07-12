@@ -50,3 +50,21 @@ date · agent · what was done · deviations from PLAN/CONVENTIONS · exact next
 - `initTweeq(appId, options)` equivalent = `appConfigStore.getState().setAppId(appId)` + `themeStore.getState().setDefault(options)`; the `colorPresets` part lives in Vue-bound `useInputColor` — port alongside InputColor (Batch 6).
 - React adapters: `useStore(themeStore, selector)`, `useDrag` wrapping `createDragHandler` (re-create on element/options change; add live bounds), multiSelect hook wiring `setFocusing` + store subscription, `useConfigRef` over `ConfigEntry.subscribe`.
 - Legacy `getSelectedInputs()[i].speed` is a getter property on `MultiSelectInput` — popup code can keep `input.speed ?? 1`.
+
+## 2026-07-12 · Phase 2 agent (Codex)
+
+**Done: Phase 2 — React infrastructure + primitives.** Added `src/react/` with its public `index.ts`, initialization/store hooks, reusable DOM adapters, CSS-Module components, demo sections, and Playwright coverage. All required gates are green: TypeScript, ESLint, 50 Vitest tests, and 2 Playwright tests.
+
+- Infrastructure: `initTweeq` initializes app config + theme defaults; `TweeqProvider` does so once before rendering children and imports the legacy globals; `useTweeq` subscribes to theme/actions/config/modal through zustand. The provider has an explicit seam for CommandPalette, MultiSelectPopup, PaneModalComplex/Tabs, and TooltipRoot.
+- Hooks: `useDrag` wraps the core handler, publishes React snapshots, rebinds on element/options identity, and keeps bounds live via ResizeObserver + capturing scroll/window resize; `useBndr`, `useCopyPaste`, `useValidator` (render-synchronous last-valid state), `useCursorStyle`, `useElementCenter`, `useFlash`, `useConfigRef`, and `useMultiSelect` are public. Reusable `useElementBounding`, `useResizeObserver`, `useEventListener`, and `useFocus` replace the vueuse APIs needed now; `useKeys`/`useWindowSize` remain demand-driven for later batches.
+- Primitives: Icon (Iconify cache plus `char:`/`fill:`), SvgIcon, ColorIcon, BindIcon, IconIndicator, InputGroup, TweakOverlay, and Viewport. Viewport keeps reset styles in its CSS Module and fixed-name scroll-fade globals in a separate global Stylus file.
+- Demo/e2e: one auto-discovered section per primitive; the demo root is under TweeqProvider. `e2e/primitives.spec.ts` proves body theme variables, local Iconify + fill SVG output, InputGroup positions, top-layer popover state, and IconIndicator interaction.
+- Toolchain: `tsconfig.json` now includes `src/core`, `src/react`, and `demo`; `demo/vite-env.d.ts` supplies Vite glob types.
+
+**Contracts / deviations for later batches:**
+1. Pass a memoized/stable options object to `useDrag`; by design, a changed options identity recreates the core gesture handler. It returns a flat `UseDragResult` snapshot plus `measure()` rather than Vue refs. Bounds remain current outside gestures.
+2. `useMultiSelect(source, focusing?)` subscribes to the whole store. Prefer calling its returned `setFocusing` directly at focus/tweak event sites for sync semantics; the optional boolean is layout-effect synchronization. Missing speeds remain missing so popup consumers keep `input.speed ?? 1`.
+3. `useConfigRef(entry)` returns `[value, setValue]` and subscribes using the Phase 1 `(value, {reload})` signature. `useValidator(value, validator)` validates during render so model/local/display loops do not wait for an effect.
+4. Every component used in InputGroup must accept `inlinePosition`/`blockPosition` and translate/forward them to the root DOM attributes (`inline-position`/`block-position`, or equivalent selectors). InputGroup recursively flattens fragments before cloning.
+5. Full-screen tweak UI must use `TweakOverlay`: its manual popover is shown in an effect and supplies the browser top-layer escape pattern (no ReactDOM portal is required).
+6. Per scope, color presets stay deferred to InputColor, and the five provider-mounted overlay/modal roots stay deferred until their component batches / final Batch 8 wiring.
