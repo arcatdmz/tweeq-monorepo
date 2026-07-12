@@ -66,7 +66,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputString | SFC | ✅ | `stringExpression` | text-toggles | expression compilation/coercion shared by both renderers |
 | InputSwitch | SFC | ✅ | `inputSwitch` | text-toggles | drag-toggle overlay |
 | InputTextBase | SFC | ✅ | — | — | internal base, not public API |
-| InputTime | SFC | ✅ | `inputTime` | temporal | timecode / frame quantization fixtures protected |
+| InputTime | SFC | ✅ | `inputTime` | shared contract + temporal | core-owned expressions and tweak quantization; controlled display, bounds, keyboard increments, disabled/invalid state, and lifecycle aligned in Phase 4 |
 | InputTranslate | SFC | ✅ | `inputTranslate` | shared contract + core geometry + number-vectors | bounded drag lifecycle, disabled/invalid state, overlay geometry, native button semantics, and stable parts aligned in Phase 4 |
 | InputVec | SFC | ✅ | — | number-vectors | batched updates; disabled and invalid propagation aligned in Phase 4 |
 | Markdown | SFC | ✅ | — | dropdown-code | markdown-it pipeline shared |

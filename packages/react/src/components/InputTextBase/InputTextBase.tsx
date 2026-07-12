@@ -171,6 +171,7 @@ export const InputTextBase = forwardRef<
 				type="text"
 				value={value}
 				disabled={disabled || undefined}
+				aria-invalid={invalid || undefined}
 				data-tq-part="input"
 				onFocus={event => {
 					onChangeFocused?.(true)

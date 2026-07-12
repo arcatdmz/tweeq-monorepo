@@ -150,6 +150,7 @@ function onKeydown(e: KeyboardEvent) {
 			:class="{ignore: ignoreInput, 'has-inactive-content': hasInactiveContent}"
 			:value="model"
 			:disabled="disabled || undefined"
+			:aria-invalid="invalid || undefined"
 			data-tq-part="input"
 			@focus="onFocus"
 			@blur="onBlur"

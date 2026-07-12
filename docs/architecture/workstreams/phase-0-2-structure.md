@@ -105,6 +105,16 @@ contain renderer markup only and no copied state transition.
 - InputPosition remains a thin composition of the aligned InputTranslate and
   InputVec adapters and forwards their controlled bounds, state, and lifecycle.
 
+## Phase 4 family 4 (in progress)
+
+- InputTime now uses the core expression compiler and tweak quantizer in both
+  renderers; Vue no longer carries an eval-based parser or copied snap logic.
+- Its shared renderer contract covers controlled frame display, time
+  expressions with bounds, frame-aware keyboard increments, disabled state,
+  invalid expressions, and stable text-input parts.
+- Vue InputTime no longer emits blur while mounting, confirms consistently on
+  real blur, and blocks drag interaction while disabled.
+
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 
 - Core and DOM production ESM now uses explicit `.js` specifiers and is

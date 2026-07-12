@@ -220,16 +220,7 @@ watchSyncEffect(() => {
 	validLocal.value = parseResult.value.value
 
 	if (focused.value) {
-		model.value = validLocal.value
-	}
-})
-
-watchSyncEffect(() => {
-	if (focused.value) {
-		localAtFocus = model.value
-		emit('focus')
-	} else {
-		emit('blur')
+		model.value = scalar.clamp(validLocal.value, props.min, props.max)
 	}
 })
 
@@ -248,6 +239,17 @@ function confirm() {
 	nextTick(() => {
 		display.value = print(model.value, context.format)
 	})
+}
+
+function onFocus() {
+	localAtFocus = model.value
+	multi.capture()
+	emit('focus')
+}
+
+function onBlur() {
+	confirm()
+	emit('blur')
 }
 
 function onReset() {
@@ -367,6 +369,8 @@ const hourTick = computed(() => {
 		:menuItems="formatMenuItems"
 		@confirm="confirm"
 		@reset="onReset"
+		@focus="onFocus"
+		@blur="onBlur"
 		@pointerenter="tweakScaleByHover = 0"
 		@keydown.exact.up.prevent="increment(frameRate)"
 		@keydown.exact.down.prevent="increment(-frameRate)"

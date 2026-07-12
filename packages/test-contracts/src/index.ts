@@ -42,3 +42,4 @@ export {
 	type InputTranslateContractProps,
 	runInputTranslateContract,
 } from './inputTranslate'
+export {type InputTimeContractProps, runInputTimeContract} from './inputTime'
