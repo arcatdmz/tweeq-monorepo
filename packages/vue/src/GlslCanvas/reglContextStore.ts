@@ -1,7 +1,6 @@
 import {whenever} from '@vueuse/core'
 import {uniqueId} from 'lodash-es'
 import PQueue from 'p-queue'
-import {defineStore} from 'pinia'
 import Regl, {type DrawConfig} from 'regl'
 import {type Ref} from 'vue'
 
@@ -10,7 +9,7 @@ type Uniforms = Record<
 	number | number[] | readonly [number, number, number, number]
 >
 
-export const useReglContextStore = defineStore('tweeq.reglContext', () => {
+function createReglContext() {
 	const drawQueue = new PQueue({concurrency: 1})
 
 	const REGL_QUAD_DEFAULT: DrawConfig = {
@@ -94,4 +93,10 @@ export const useReglContextStore = defineStore('tweeq.reglContext', () => {
 	return {
 		createDraw,
 	}
-})
+}
+
+const reglContext = createReglContext()
+
+export function useReglContext() {
+	return reglContext
+}

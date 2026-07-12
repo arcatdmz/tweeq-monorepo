@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {useTemplateRef, watch} from 'vue'
 
-import {useReglContextStore} from './reglContextStore'
+import {useReglContext} from './reglContextStore'
 
 interface Props {
 	fragmentString: string
@@ -21,7 +21,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const $img = useTemplateRef('$img')
 
-const draw = useReglContextStore().createDraw($img)
+const draw = useReglContext().createDraw($img)
 
 watch(
 	() => [props.fragmentString, props.uniforms] as const,

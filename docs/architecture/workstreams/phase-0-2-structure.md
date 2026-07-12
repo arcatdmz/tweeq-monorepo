@@ -52,9 +52,9 @@ and public export is unchanged.
   are compatibility facades over the same `@tweeq/dom` instances React uses;
   their duplicated Pinia state and behavior have been deleted.
 - The Vue `useDrag` composable is now a ref/lifecycle adapter over the shared
-  `@tweeq/dom` drag controller. Component-local Pinia contexts (`InputTime`
-  and regl) are tracked separately for V4 cleanup rather than app-store
-  migration.
+  `@tweeq/dom` drag controller. Stage V4 removed the component-local InputTime
+  and regl Pinia wrappers as well, so the Vue package and its consumers no
+  longer require Pinia.
 - `@tweeq/test-contracts` has the harness interface but no suites yet; the
   first suite should target InputNumber (richest fixtures in core).
 - Do not publish any package until ADR 0001's ownership question is settled.
