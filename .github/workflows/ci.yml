@@ -17,6 +17,8 @@ jobs:
       - name: Check package boundaries
         run: pnpm check:boundaries
       - name: Build workspace packages
-        run: pnpm build:packages
+        run: pnpm build
+      - name: Packed example smoke test
+        run: pnpm test:packed
       - name: Run package tests
-        run: pnpm test:packages
+        run: pnpm test

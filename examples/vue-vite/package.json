@@ -1,0 +1,21 @@
+{
+	"name": "@tweeq/example-vue-vite",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Minimal Vue consumer; used by scripts/test-packed.mjs to smoke-test packed @tweeq tarballs",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build"
+	},
+	"dependencies": {
+		"@tweeq/vue": "workspace:*",
+		"pinia": "^3.0.1",
+		"vue": "catalog:"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:"
+	}
+}

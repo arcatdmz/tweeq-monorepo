@@ -139,6 +139,84 @@ importers:
         specifier: 'catalog:'
         version: 1.6.0(@rollup/pluginutils@5.4.0(rollup@4.62.2))(vite@5.4.21(@types/node@26.1.1)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0))
 
+  apps/playground-vue:
+    dependencies:
+      '@tweeq/vue':
+        specifier: workspace:*
+        version: link:../../packages/vue
+      pinia:
+        specifier: ^3.0.1
+        version: 3.0.4(typescript@5.9.3)(vue@3.5.39(typescript@5.9.3))
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.39(typescript@5.9.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: 'catalog:'
+        version: 5.2.4(vite@5.4.21(@types/node@26.1.1)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0))(vue@3.5.39(typescript@5.9.3))
+      stylus:
+        specifier: 'catalog:'
+        version: 0.63.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vite:
+        specifier: 'catalog:'
+        version: 5.4.21(@types/node@26.1.1)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0)
+      vite-plugin-glsl:
+        specifier: 'catalog:'
+        version: 1.6.0(@rollup/pluginutils@5.4.0(rollup@4.62.2))(vite@5.4.21(@types/node@26.1.1)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0))
+
+  examples/react-vite:
+    dependencies:
+      '@tweeq/react':
+        specifier: workspace:*
+        version: link:../../packages/react
+      react:
+        specifier: 'catalog:'
+        version: 19.2.7
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.2.3(@types/react@19.2.17)
+      '@vitejs/plugin-react':
+        specifier: 'catalog:'
+        version: 4.7.0(vite@5.4.21(@types/node@26.1.1)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0))
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vite:
+        specifier: 'catalog:'
+        version: 5.4.21(@types/node@26.1.1)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0)
+
+  examples/vue-vite:
+    dependencies:
+      '@tweeq/vue':
+        specifier: workspace:*
+        version: link:../../packages/vue
+      pinia:
+        specifier: ^3.0.1
+        version: 3.0.4(typescript@5.9.3)(vue@3.5.39(typescript@5.9.3))
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.39(typescript@5.9.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: 'catalog:'
+        version: 5.2.4(vite@5.4.21(@types/node@26.1.1)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0))(vue@3.5.39(typescript@5.9.3))
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vite:
+        specifier: 'catalog:'
+        version: 5.4.21(@types/node@26.1.1)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0)
+
   packages/core:
     dependencies:
       '@radix-ui/colors':
