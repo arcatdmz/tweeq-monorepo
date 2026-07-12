@@ -9,6 +9,33 @@ export interface TooltipContent {
 	description: string
 }
 
+export type TooltipValue =
+	| string
+	| {
+			content?: string
+			html?: boolean
+			title?: string
+			description?: string
+	  }
+	| undefined
+	| null
+
+export function parseTooltipContent(value: TooltipValue): TooltipContent {
+	if (typeof value === 'string') {
+		return {content: value, html: false, title: '', description: ''}
+	}
+	return {
+		content: value?.content ?? '',
+		html: value?.html ?? false,
+		title: value?.title ?? '',
+		description: value?.description ?? '',
+	}
+}
+
+export function isTooltipContentEmpty(content: TooltipContent): boolean {
+	return !content.content && !content.title && !content.description
+}
+
 export interface TooltipSnapshot extends TooltipContent {
 	reference: HTMLElement | null
 	open: boolean

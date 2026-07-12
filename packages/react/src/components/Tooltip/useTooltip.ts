@@ -2,41 +2,19 @@ import {
 	clearTooltipAnchor,
 	closeTooltip,
 	hideTooltip,
+	isTooltipContentEmpty,
+	parseTooltipContent,
 	setTooltipAnchor,
 	showTooltip,
-	type TooltipContent,
+	type TooltipValue,
 	updateTooltip,
 } from '@tweeq/dom'
 import {type RefObject, useEffect, useMemo, useRef} from 'react'
 
 import {useEventListener} from '../../hooks'
 
-export type TooltipValue =
-	| string
-	| {
-			content?: string
-			html?: boolean
-			title?: string
-			description?: string
-	  }
-	| undefined
-	| null
-
-export function parseTooltipValue(value: TooltipValue): TooltipContent {
-	if (typeof value === 'string') {
-		return {content: value, html: false, title: '', description: ''}
-	}
-	return {
-		content: value?.content ?? '',
-		html: value?.html ?? false,
-		title: value?.title ?? '',
-		description: value?.description ?? '',
-	}
-}
-
-function isEmpty(content: TooltipContent): boolean {
-	return !content.content && !content.title && !content.description
-}
+export type {TooltipValue}
+export const parseTooltipValue = parseTooltipContent
 
 export function useTooltip<T extends HTMLElement>(
 	target: RefObject<T | null>,
@@ -49,7 +27,7 @@ export function useTooltip<T extends HTMLElement>(
 
 	const enter = () => {
 		const element = target.current
-		if (!element || isEmpty(contentRef.current)) return
+		if (!element || isTooltipContentEmpty(contentRef.current)) return
 		setTooltipAnchor(element)
 		showTooltip(element, contentRef.current)
 	}

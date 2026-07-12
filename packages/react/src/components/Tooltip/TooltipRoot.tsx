@@ -31,7 +31,10 @@ export function TooltipRoot() {
 			}}
 		>
 			{tooltip.title || tooltip.description ? (
-				<div className={classNames(styles.content, styles.structured)}>
+				<div
+					className={classNames(styles.content, styles.structured)}
+					data-tq-part="tooltip-content"
+				>
 					{tooltip.title && <div className={styles.title}>{tooltip.title}</div>}
 					{tooltip.description && (
 						<div className={styles.description}>{tooltip.description}</div>
@@ -40,10 +43,14 @@ export function TooltipRoot() {
 			) : tooltip.html ? (
 				<div
 					className={classNames(styles.content, styles.html)}
+					data-tq-part="tooltip-content"
 					dangerouslySetInnerHTML={{__html: tooltip.content}}
 				/>
 			) : (
-				<div className={classNames(styles.content, styles.plain)}>
+				<div
+					className={classNames(styles.content, styles.plain)}
+					data-tq-part="tooltip-content"
+				>
 					{tooltip.content}
 				</div>
 			)}

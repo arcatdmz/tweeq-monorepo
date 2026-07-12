@@ -87,7 +87,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | Tabs | SFC | ✅ | — | layout-modals | |
 | Timeline | SFC | ✅ | `timeline` | shared contract + core controller + temporal | native wheel pan/zoom, imperative range transitions, controlled frame width, scrollbar slot, and stable parts aligned in Phase 4 |
 | TitleBar | SFC | ✅ | — | — | |
-| Tooltip | SFC | ✅ | `tooltip` | — | shared delay/anchor state machine |
+| Tooltip | SFC | ✅ | `tooltip` | DOM controller fixtures + Popover contract + overlay | one shared delay/anchor/snapshot state machine; plain/HTML/structured parsing, hover/focus handoff, native close synchronization, and stable content parts aligned in Phase 4 |
 | TweakOverlay | SFC | ✅ | — | — | |
 | TweeqProvider | SFC | ✅ | — | — | React-only name; Vue equivalent is `initTweeq` plugin |
 | Viewport | SFC | ✅ | — | docs-pages, mobile-docs | style-scoping root (`.TqViewport`) |

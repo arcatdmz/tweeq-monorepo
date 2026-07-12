@@ -2,14 +2,19 @@
 import {computed} from 'vue'
 
 import {Popover} from '../Popover'
-import {TOOLTIP_ANCHOR_NAME, tooltipReference, tooltipState} from './tooltip'
+import {
+	setTooltipOpen,
+	TOOLTIP_ANCHOR_NAME,
+	tooltipReference,
+	tooltipState,
+} from './tooltip'
 
 const reference = computed(() => tooltipReference.value)
 
 // Sync back the native popover's own close (Esc / programmatic), so the shared
 // state never gets stuck open.
 function onUpdateOpen(open: boolean) {
-	if (!open) tooltipState.open = false
+	if (!open) setTooltipOpen(false)
 }
 </script>
 
@@ -28,6 +33,7 @@ function onUpdateOpen(open: boolean) {
 		<div
 			v-if="tooltipState.title || tooltipState.description"
 			class="TqTooltipContent structured"
+			data-tq-part="tooltip-content"
 		>
 			<div v-if="tooltipState.title" class="title">
 				{{ tooltipState.title }}
@@ -40,9 +46,12 @@ function onUpdateOpen(open: boolean) {
 		<div
 			v-else-if="tooltipState.html"
 			class="TqTooltipContent html"
+			data-tq-part="tooltip-content"
 			v-html="tooltipState.content"
 		/>
-		<div v-else class="TqTooltipContent plain">{{ tooltipState.content }}</div>
+		<div v-else class="TqTooltipContent plain" data-tq-part="tooltip-content">
+			{{ tooltipState.content }}
+		</div>
 	</Popover>
 </template>
 

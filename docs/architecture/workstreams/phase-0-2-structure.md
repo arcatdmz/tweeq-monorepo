@@ -150,6 +150,10 @@ contain renderer markup only and no copied state transition.
   same core anchor/shift/arrow geometry in both renderers. Its shared contract
   caught Vue's invalid `"close"` ToggleEvent state and protects controlled
   mounting, coordinate placement, native mode, and close event order.
+- Tooltip parsing, empty-state detection, show/hide timers, anchor ownership,
+  and the global snapshot now live entirely in DOM. Vue is a reactive adapter
+  over that snapshot instead of a second state machine, and native close writes
+  back through the shared controller.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 
