@@ -1,0 +1,311 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`computeTheme > generates a dark theme with a custom accent (snapshot) 1`] = `
+{
+  "activeTransitionDuration": "64ms",
+  "colorAccent": "#46a758",
+  "colorAccentHover": "#73d081",
+  "colorAccentSoft": "#27482b",
+  "colorAccentSoftHover": "#2f5735",
+  "colorAffirmative": "#46a758",
+  "colorBackground": "#111111",
+  "colorBorder": "#d1d9f920",
+  "colorBorderSubtle": "#d6e2f916",
+  "colorError": "#d66f36",
+  "colorErrorSoft": "#2a1e18",
+  "colorInfo": "#2297e1",
+  "colorInfoSoft": "#18232b",
+  "colorInput": "#222325",
+  "colorInputHover": "#292a2e",
+  "colorNeutral": "#303136",
+  "colorNeutralHover": "#393a40",
+  "colorOnAccent": "#fff",
+  "colorOnSelection": "#111111",
+  "colorRec": "#d66f36",
+  "colorSelection": "#73d081",
+  "colorShadow": "#000000aa",
+  "colorSuccess": "#46a758",
+  "colorSuccessSoft": "#1a241b",
+  "colorSurface": "color-mix(in srgb, transparent, #111113 80%)",
+  "colorText": "#eeeef0",
+  "colorTextMute": "#b2b3bd",
+  "colorTextSubtle": "#797b86",
+  "colorWarning": "#a09200",
+  "colorWarningSoft": "#232216",
+  "fontCode": "'Geist Mono', monospace",
+  "fontHeading": "Geist, sans-serif",
+  "fontNumeric": "Geist, system-ui, sans-serif",
+  "fontUi": "system-ui, sans-serif",
+  "gapControl": 9,
+  "gapGroup": 2,
+  "gapRelated": 6,
+  "gapSection": 18,
+  "hoverTransitionDuration": "0.15s",
+  "iconSize": 18,
+  "inputComfortableWidth": 224,
+  "inputHeight": 24,
+  "paneMargin": 48,
+  "panePadding": 12,
+  "popupBlur": 6,
+  "popupPadding": 9,
+  "popupWidth": 240,
+  "radiusInput": 4,
+  "radiusPane": 12,
+  "radiusPopup": 13,
+  "rem": 12,
+  "scrollbarWidth": 6,
+}
+`;
+
+exports[`computeTheme > generates a dark theme with a custom accent (snapshot) 2`] = `
+{
+  "base": "vs-dark",
+  "colors": {
+    "editor.background": "#111111",
+    "editor.foreground": "#eeeef0",
+    "editor.lineHighlightBackground": "#00000000",
+    "editor.selectionBackground": "#27482b",
+    "editorCursor.foreground": "#46a758",
+    "editorLineNumber.foreground": "#797b86",
+  },
+  "inherit": false,
+  "rules": [
+    {
+      "foreground": "eeeef0",
+      "token": "",
+    },
+    {
+      "fontStyle": "italic",
+      "foreground": "797b86",
+      "token": "comment",
+    },
+    {
+      "foreground": "aaacff",
+      "token": "keyword",
+    },
+    {
+      "foreground": "aaacff",
+      "token": "storage",
+    },
+    {
+      "foreground": "73d081",
+      "token": "string",
+    },
+    {
+      "foreground": "4acfd7",
+      "token": "string.escape",
+    },
+    {
+      "foreground": "4acfd7",
+      "token": "regexp",
+    },
+    {
+      "foreground": "f6ab5e",
+      "token": "number",
+    },
+    {
+      "foreground": "f6ab5e",
+      "token": "constant",
+    },
+    {
+      "foreground": "f6ab5e",
+      "token": "constant.language",
+    },
+    {
+      "foreground": "eddf59",
+      "token": "type",
+    },
+    {
+      "foreground": "eddf59",
+      "token": "type.identifier",
+    },
+    {
+      "foreground": "eddf59",
+      "token": "attribute.name",
+    },
+    {
+      "foreground": "63bbff",
+      "token": "function",
+    },
+    {
+      "foreground": "ff9b65",
+      "token": "variable",
+    },
+    {
+      "foreground": "ff9b65",
+      "token": "variable.predefined",
+    },
+    {
+      "foreground": "ff9b65",
+      "token": "tag",
+    },
+    {
+      "foreground": "eeeef0",
+      "token": "delimiter",
+    },
+    {
+      "foreground": "eeeef0",
+      "token": "operator",
+    },
+    {
+      "foreground": "ff9b65",
+      "token": "invalid",
+    },
+  ],
+}
+`;
+
+exports[`computeTheme > generates the default light theme (snapshot) 1`] = `
+{
+  "activeTransitionDuration": "64ms",
+  "colorAccent": "#00f",
+  "colorAccentHover": "#0744ff",
+  "colorAccentSoft": "#c9dfff",
+  "colorAccentSoftHover": "#b5d2ff",
+  "colorAffirmative": "#00694e",
+  "colorBackground": "#ffffff",
+  "colorBorder": "#000b3618",
+  "colorBorderSubtle": "#00104010",
+  "colorError": "#a30053",
+  "colorErrorSoft": "#f6dde3",
+  "colorInfo": "#1900ff",
+  "colorInfoSoft": "#d6e4ff",
+  "colorInput": "#eff0f3",
+  "colorInputHover": "#e7e8ec",
+  "colorNeutral": "#e0e1e6",
+  "colorNeutralHover": "#d8d9e0",
+  "colorOnAccent": "#fff",
+  "colorOnSelection": "#ffffff",
+  "colorRec": "#a30053",
+  "colorSelection": "#0744ff",
+  "colorShadow": "color-mix(in srgb, transparent, #1e1f24 20%)",
+  "colorSuccess": "#00694e",
+  "colorSuccessSoft": "#dce8e2",
+  "colorSurface": "color-mix(in srgb, transparent, #fcfcfd 80%)",
+  "colorText": "#1e1f24",
+  "colorTextMute": "#62636c",
+  "colorTextSubtle": "#80828d",
+  "colorWarning": "#5d5900",
+  "colorWarningSoft": "#e5e5da",
+  "fontCode": "'Geist Mono', monospace",
+  "fontHeading": "Geist, sans-serif",
+  "fontNumeric": "Geist, system-ui, sans-serif",
+  "fontUi": "system-ui, sans-serif",
+  "gapControl": 9,
+  "gapGroup": 2,
+  "gapRelated": 6,
+  "gapSection": 18,
+  "hoverTransitionDuration": "0.15s",
+  "iconSize": 18,
+  "inputComfortableWidth": 224,
+  "inputHeight": 24,
+  "paneMargin": 48,
+  "panePadding": 12,
+  "popupBlur": 6,
+  "popupPadding": 9,
+  "popupWidth": 240,
+  "radiusInput": 4,
+  "radiusPane": 12,
+  "radiusPopup": 13,
+  "rem": 12,
+  "scrollbarWidth": 6,
+}
+`;
+
+exports[`computeTheme > generates the default light theme (snapshot) 2`] = `
+{
+  "base": "vs",
+  "colors": {
+    "editor.background": "#ffffff",
+    "editor.foreground": "#1e1f24",
+    "editor.lineHighlightBackground": "#00000000",
+    "editor.selectionBackground": "#c9dfff",
+    "editorCursor.foreground": "#0000ff",
+    "editorLineNumber.foreground": "#80828d",
+  },
+  "inherit": false,
+  "rules": [
+    {
+      "foreground": "1e1f24",
+      "token": "",
+    },
+    {
+      "fontStyle": "italic",
+      "foreground": "80828d",
+      "token": "comment",
+    },
+    {
+      "foreground": "7238d7",
+      "token": "keyword",
+    },
+    {
+      "foreground": "7238d7",
+      "token": "storage",
+    },
+    {
+      "foreground": "00825e",
+      "token": "string",
+    },
+    {
+      "foreground": "0079bd",
+      "token": "string.escape",
+    },
+    {
+      "foreground": "0079bd",
+      "token": "regexp",
+    },
+    {
+      "foreground": "d31438",
+      "token": "number",
+    },
+    {
+      "foreground": "d31438",
+      "token": "constant",
+    },
+    {
+      "foreground": "d31438",
+      "token": "constant.language",
+    },
+    {
+      "foreground": "7d7900",
+      "token": "type",
+    },
+    {
+      "foreground": "7d7900",
+      "token": "type.identifier",
+    },
+    {
+      "foreground": "7d7900",
+      "token": "attribute.name",
+    },
+    {
+      "foreground": "2951e5",
+      "token": "function",
+    },
+    {
+      "foreground": "d4006f",
+      "token": "variable",
+    },
+    {
+      "foreground": "d4006f",
+      "token": "variable.predefined",
+    },
+    {
+      "foreground": "d4006f",
+      "token": "tag",
+    },
+    {
+      "foreground": "1e1f24",
+      "token": "delimiter",
+    },
+    {
+      "foreground": "1e1f24",
+      "token": "operator",
+    },
+    {
+      "foreground": "d4006f",
+      "token": "invalid",
+    },
+  ],
+}
+`;
