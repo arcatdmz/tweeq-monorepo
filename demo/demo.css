@@ -234,3 +234,93 @@
 	clip: rect(0 0 0 0);
 	white-space: nowrap;
 }
+
+/* ---- responsive docs/demo layout ---- */
+
+/* Code and API tables may be intrinsically wider than the article. Keep that
+   overflow local so a single example cannot widen the entire mobile page. */
+[vp-content] pre,
+[vp-content] table {
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+[vp-content] table {
+	display: block;
+}
+
+[vp-content] pre code {
+	display: block;
+	width: max-content;
+	min-width: 100%;
+	box-sizing: border-box;
+}
+
+@media (max-width: 959px) {
+	/* The options editor needs more room than the normal VuePress content column
+	   has beside its sidebar. Stack it on narrow desktop, tablet, and mobile. */
+	.DemoComponent {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 1.5rem;
+	}
+
+	.DemoComponent .input-wrapper,
+	.DemoComponent .input {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.DemoComponent .options {
+		min-width: 0;
+		margin-left: 0;
+		padding-top: 1.5rem;
+		padding-left: 0;
+		border-top: 1px solid black;
+		border-left: 0;
+	}
+
+	[data-theme='dark'] .DemoComponent .options {
+		border-top-color: white;
+	}
+}
+
+@media (max-width: 719px) {
+	/* VPNavbar normally relies on a VuePress utility class that is not part of
+	   the source-extracted SFC styles. Preserve the color toggle, but move the
+	   full desktop nav into the slide-out sidebar. */
+	.vp-navbar-items-wrapper {
+		right: 1rem;
+		width: auto;
+		padding-left: 0;
+	}
+
+	.vp-hide-mobile {
+		display: none !important;
+	}
+
+	.ExampleContainer .sandbox {
+		width: min(18rem, 100%);
+		min-width: 0;
+	}
+
+	.DemoComponent .TqParameter > :last-child,
+	.ExampleContainer .TqParameter > :last-child {
+		/* InputComplex sets the comfortable desktop width from inside the
+		   component's cascade layer. The demo shell deliberately overrides it. */
+		min-width: 0 !important;
+	}
+
+	.DemoComponent .input-wrapper.fullscreen,
+	.ExampleContainer .sandbox.fullscreen {
+		width: calc(100vw - 2rem);
+		max-width: calc(100vw - 2rem);
+		height: calc(100dvh - 2rem);
+	}
+}
+
+@media (max-width: 419px) {
+	.vp-feature {
+		padding-right: 0;
+		padding-left: 0;
+	}
+}

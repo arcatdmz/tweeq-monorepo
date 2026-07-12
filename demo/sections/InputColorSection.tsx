@@ -8,7 +8,7 @@ export default function InputColorSection() {
 	return (
 		<section data-testid="InputColor">
 			<h2>InputColor</h2>
-			<div style={{width: 360}}>
+			<div style={{width: 'min(360px, 100%)'}}>
 				<InputColor value={value} onChange={setValue} presets={['#00ff88']} />
 			</div>
 			<output data-testid="color-value">{value}</output>

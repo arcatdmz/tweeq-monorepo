@@ -4,7 +4,7 @@ export default function PaneSplitSection() {
 	return (
 		<section data-testid="PaneSplit">
 			<h2>PaneSplit</h2>
-			<div style={{height: 140, width: 360}}>
+			<div style={{height: 140, width: 'min(360px, 100%)'}}>
 				<PaneSplit
 					data-testid="split-control"
 					name="demo-split"
