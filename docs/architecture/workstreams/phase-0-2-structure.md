@@ -110,3 +110,18 @@ contain renderer markup only and no copied state transition.
 - Vue declaration generation excludes renderer contract tests.
 - CI now enforces SSR imports and Chromium parity/visual tests; Changesets
   record the accumulated user-visible Phase 4 behavior changes.
+- The Phase 0/1 retrospective also corrected Vue's CommonJS entry while
+  retaining its browser UMD build, narrowed packed source assets to owned
+  shader files, removed stale renderer dependencies, checks packed artifacts
+  for test leakage, and extended the boundary gate to reject undeclared
+  workspace imports and dependency cycles.
+- GitHub Pages deployment now runs only for a successful CI workflow commit,
+  instead of racing the required gates on the same push.
+- The packed-package audit now rejects leaked tests, exercises each renderer's
+  CommonJS export, and type-checks clean React/Vue consumers before bundling.
+  It no longer rewrites live package manifests while creating artifacts.
+- A generated Vite timestamp config with machine-local absolute paths was
+  removed and is now ignored; the dormant legacy Vue docs alias points at the
+  relocated Vue package instead of the deleted root `src/` entry.
+- Core now compiles without the DOM library; its remaining `DOMRectReadOnly`
+  adapter moved to `@tweeq/dom`, enforcing ADR 0002 at the type-system level.

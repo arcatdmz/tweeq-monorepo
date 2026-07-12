@@ -17,6 +17,8 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			'@tweeq/vue': path.resolve(here, '../../packages/vue/src'),
+			'@tweeq/core': path.resolve(here, '../../packages/core/src'),
+			'@tweeq/dom': path.resolve(here, '../../packages/dom/src'),
 		},
 	},
 })

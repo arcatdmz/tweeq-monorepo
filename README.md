@@ -30,6 +30,9 @@ pnpm dev          # React docs/demo app (apps/docs)
 pnpm --filter @tweeq/playground-vue dev   # Vue playground
 pnpm build        # build every package and app
 pnpm test         # package unit tests
+pnpm lint         # lint packages, docs app, and browser tests
+pnpm check:boundaries # enforce package layers and an acyclic workspace graph
+pnpm test:ssr     # import every JavaScript package entry in plain Node
 pnpm e2e          # Playwright suite against the docs app
 pnpm test:packed  # pack + install + build the example consumers
 ```

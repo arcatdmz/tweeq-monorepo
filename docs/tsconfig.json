@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"baseUrl": "./",
 		"paths": {
-			"tweeq": ["../src/index.ts"]
+			"tweeq": ["../packages/vue/src/index.ts"]
 		}
 	},
 	"include": [".vuepress/**/*"],

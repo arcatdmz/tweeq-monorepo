@@ -1,8 +1,9 @@
 name: Deploy React demo to GitHub Pages
 
 on:
-  workflow_dispatch:
-  push:
+  workflow_run:
+    workflows: ['Unit Test / Linting']
+    types: [completed]
     # The public site tracks the working React renderer while main remains an
     # exact mirror of the upstream Vue repository.
     branches: ['feat/react']
@@ -19,6 +20,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.event.workflow_run.conclusion == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -26,6 +28,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
