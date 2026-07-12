@@ -1,4 +1,4 @@
-import {addAnchorName} from './util'
+import {addAnchorName} from './domUtil'
 
 export const TOOLTIP_ANCHOR_NAME = '--tq-tooltip'
 

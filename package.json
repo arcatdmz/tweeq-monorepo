@@ -14,8 +14,8 @@
 		"build:packages": "pnpm -r --if-present build",
 		"test:packages": "pnpm -r --if-present test",
 		"check:boundaries": "node scripts/check-boundaries.mjs",
-		"lint": "eslint src/core src/react apps/docs e2e",
-		"test": "vitest"
+		"lint": "eslint src/core src/react packages apps/docs e2e",
+		"test": "pnpm -r --if-present test"
 	},
 	"files": [
 		"lib"
@@ -43,6 +43,8 @@
 		"@iconify/react": "^6.0.2",
 		"@monaco-editor/react": "^4.7.0",
 		"@radix-ui/colors": "^3.0.0",
+		"@tweeq/core": "workspace:*",
+		"@tweeq/dom": "workspace:*",
 		"bezier-easing": "^2.1.0",
 		"bndr-js": "^0.18.6",
 		"case": "^1.6.3",

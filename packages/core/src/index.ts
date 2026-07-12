@@ -1,4 +1,26 @@
-// @tweeq/core — pure, framework-neutral domain logic (plan §3.1).
-// Populated in Phase 2 by relocating `src/core`; this placeholder keeps the
-// package buildable so the workspace skeleton (Phase 1) stays green.
-export {}
+// @tweeq/core: pure, framework-neutral domain logic. No vue, no react, and no
+// DOM globals — browser integration lives in @tweeq/dom.
+export * from './balloon'
+export * from './color'
+export * from './cubicBezier'
+export * from './dropdown'
+export * from './geometry'
+export * from './inputDrum'
+export * from './inputNumber'
+export * from './inputRotary'
+export * from './inputShuffle'
+export * from './inputSize'
+export * from './inputSwitch'
+export * from './inputTime'
+export * from './inputTranslate'
+export * from './menu'
+export * from './panes'
+export * from './popover'
+export * from './stringExpression'
+export * from './svgPath'
+export * from './theme'
+export * from './timeline'
+export * from './types'
+export * from './util'
+export * as validator from './validator'
+export type {ValidateResult, Validator} from './validator'

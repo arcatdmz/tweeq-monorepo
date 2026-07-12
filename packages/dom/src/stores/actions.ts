@@ -1,8 +1,7 @@
+import type {MenuCommand, MenuItem} from '@tweeq/core'
 import * as Bndr from 'bndr-js'
 import Case from 'case'
 import {createStore} from 'zustand/vanilla'
-
-import type {MenuCommand, MenuItem} from '../menu'
 
 interface ActionItemBase {
 	id: string

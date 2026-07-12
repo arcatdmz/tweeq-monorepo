@@ -18,7 +18,5 @@ jobs:
         run: pnpm check:boundaries
       - name: Build workspace packages
         run: pnpm build:packages
-      - name: Run unit tests
-        run: pnpm vitest run
       - name: Run package tests
         run: pnpm test:packages

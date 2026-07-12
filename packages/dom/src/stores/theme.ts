@@ -1,13 +1,13 @@
-import {createStore} from 'zustand/vanilla'
-
 import {
-	applyThemeToDOM,
 	type ColorMode,
 	computeTheme,
 	type MonacoThemeData,
 	type Theme,
 	type ThemeSettings,
-} from '../theme'
+} from '@tweeq/core'
+import {createStore} from 'zustand/vanilla'
+
+import {applyThemeToDOM} from '../applyThemeToDOM'
 import {appConfigStore} from './appConfig'
 
 export interface ThemeDefaults {

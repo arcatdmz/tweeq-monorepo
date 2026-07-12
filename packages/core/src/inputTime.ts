@@ -1,14 +1,8 @@
 import {scalar} from 'linearly'
 
-import {appConfigStore} from './stores/appConfig'
 import {type ValidateResult} from './validator'
 
 export type TimeFormat = 'frames' | 'timecode'
-
-export const inputTimeFormatEntry = appConfigStore
-	.getState()
-	.group('inputTime')
-	.ref<TimeFormat>('format', 'frames')
 
 /**
  * Quantize the continuous drag accumulator before exposing it as a frame value.

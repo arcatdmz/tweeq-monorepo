@@ -1,6 +1,5 @@
+import type {ColorMode, Theme} from '@tweeq/core'
 import Case from 'case'
-
-import type {ColorMode, Theme} from './types'
 
 /**
  * Promote every theme token to a `--tq-*` CSS custom property on the given

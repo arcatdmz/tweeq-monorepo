@@ -1,15 +1,15 @@
-import {vec2} from 'linearly'
-import {createStore} from 'zustand/vanilla'
-
+import type {HSVA} from '@tweeq/core'
 import {
 	type Rect,
 	rectCenter,
 	rectFromDOMRect,
 	rectsIntersect,
 	uniteRects,
-} from '../geometry'
-import type {HSVA} from '../types'
-import {nodeContains} from '../util'
+} from '@tweeq/core'
+import {vec2} from 'linearly'
+import {createStore} from 'zustand/vanilla'
+
+import {nodeContains} from '../domUtil'
 
 export type MultiSelectType = 'number' | 'color' | 'string' | 'boolean'
 
