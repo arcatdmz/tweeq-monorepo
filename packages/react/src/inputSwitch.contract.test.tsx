@@ -53,9 +53,7 @@ runInputSwitchContract(async (component, initialProps) => {
 			await render()
 		},
 		part(name) {
-			if (name === 'input') return container.querySelector('input')
-			if (name === 'track') return container.querySelector('input')?.parentElement ?? null
-			return container.firstElementChild
+			return container.querySelector(`[data-tq-part="${name}"]`)
 		},
 		async pointer(action: PointerAction, part) {
 			const target = harness.part(part ?? 'root')

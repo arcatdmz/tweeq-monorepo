@@ -47,6 +47,7 @@ export function InputSwitch({
 			{...props}
 			className={classNames(styles.tqInputSwitch, className)}
 			aria-invalid={invalid || undefined}
+			data-tq-part="root"
 		>
 			<div
 				ref={track}
@@ -56,6 +57,7 @@ export function InputSwitch({
 				)}
 				inline-position={inlinePosition}
 				block-position={blockPosition}
+				data-tq-part="track"
 			>
 				<input
 					id={id}
@@ -63,6 +65,7 @@ export function InputSwitch({
 					checked={value}
 					disabled={disabled}
 					className={styles.input}
+					data-tq-part="input"
 					type="checkbox"
 					onChange={controls.onChangeInput}
 					onKeyDown={controls.onKeyDown}
@@ -74,9 +77,10 @@ export function InputSwitch({
 						styles.handle,
 						controls.tweakingValue !== null && styles.tweaking
 					)}
+					data-tq-part="handle"
 				/>
 			</div>
-			{label && <label htmlFor={id}>{label}</label>}
+			{label && <label htmlFor={id} data-tq-part="label">{label}</label>}
 		</div>
 	)
 }

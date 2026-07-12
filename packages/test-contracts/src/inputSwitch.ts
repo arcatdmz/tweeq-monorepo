@@ -35,6 +35,31 @@ export function runInputSwitchContract(
 			expect((harness.part('input') as HTMLInputElement).checked).toBe(true)
 		})
 
+		it('exposes the shared style parts and accessible label', async () => {
+			harness = await createHarness('InputSwitch', {
+				value: false,
+				label: 'Enabled',
+			})
+
+			for (const part of ['root', 'track', 'input', 'handle', 'label']) {
+				expect(harness.part(part), `missing ${part} part`).not.toBeNull()
+			}
+
+			const input = harness.part('input') as HTMLInputElement
+			const label = harness.part('label') as HTMLLabelElement
+			expect(label.textContent).toBe('Enabled')
+			expect(label.htmlFor).toBe(input.id)
+		})
+
+		it('forwards the disabled state to the native control', async () => {
+			harness = await createHarness('InputSwitch', {
+				value: false,
+				disabled: true,
+			})
+
+			expect((harness.part('input') as HTMLInputElement).disabled).toBe(true)
+		})
+
 		it('toggles from the shared keyboard command and confirms', async () => {
 			harness = await createHarness('InputSwitch', {value: false})
 
