@@ -90,7 +90,7 @@ contain renderer markup only and no copied state transition.
   confirmation, and Escape rollback; it also caught and fixed React InputString
   swallowing consumer `onKeyDown` handlers.
 
-## Phase 4 family 3 (in progress)
+## Phase 4 family 3 (done 2026-07-13)
 
 - InputNumber expression mode now uses the shared core compiler in both
   renderers; the Vue-local `eval` implementation was removed.
@@ -99,6 +99,11 @@ contain renderer markup only and no copied state transition.
 - InputSize now uses the core aspect-ratio controller in both renderers, and its
   ratio toggle is a native button with matching disabled and pressed semantics.
 - Vue InputVec now propagates disabled and invalid state to each numeric input.
+- InputTranslate now uses core-owned bounds decomposition and overlay geometry
+  in both renderers. Its shared contract covers bounded drag updates, lifecycle
+  event order, native disabled/invalid semantics, and stable overlay parts.
+- InputPosition remains a thin composition of the aligned InputTranslate and
+  InputVec adapters and forwards their controlled bounds, state, and lifecycle.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

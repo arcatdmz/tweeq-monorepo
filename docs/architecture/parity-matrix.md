@@ -58,7 +58,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputDrum | SFC | ✅ | `inputDrum` | temporal | |
 | InputGroup | SFC | ✅ | — | shared contract + primitives | fragment/whitespace flattening and horizontal/vertical child positions aligned in Phase 4 |
 | InputNumber | SFC | ✅ | `inputNumber` | shared contract + docs-pages, number-vectors | controlled edits, expressions, configured steps, disabled state, stable parts, decimal precision, and drag-scale protected |
-| InputPosition | SFC | ✅ | (`inputTranslate`) | number-vectors | |
+| InputPosition | SFC | ✅ | `inputTranslate` | shared child contracts + number-vectors | forwards controlled bounds, disabled/invalid state, and lifecycle events to aligned InputTranslate/InputVec adapters |
 | InputRadio | SFC | ✅ | — | text-toggles | |
 | InputRotary | SFC | ✅ | `inputRotary` | temporal | |
 | InputShuffle | SFC | ✅ | `inputShuffle` | text-toggles | |
@@ -67,7 +67,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputSwitch | SFC | ✅ | `inputSwitch` | text-toggles | drag-toggle overlay |
 | InputTextBase | SFC | ✅ | — | — | internal base, not public API |
 | InputTime | SFC | ✅ | `inputTime` | temporal | timecode / frame quantization fixtures protected |
-| InputTranslate | SFC | ✅ | (`inputTranslate`) | number-vectors | Vue still duplicates overlay geometry and input-state propagation; convergence remains in family 3 |
+| InputTranslate | SFC | ✅ | `inputTranslate` | shared contract + core geometry + number-vectors | bounded drag lifecycle, disabled/invalid state, overlay geometry, native button semantics, and stable parts aligned in Phase 4 |
 | InputVec | SFC | ✅ | — | number-vectors | batched updates; disabled and invalid propagation aligned in Phase 4 |
 | Markdown | SFC | ✅ | — | dropdown-code | markdown-it pipeline shared |
 | Menu | SFC | ✅ | `menu` | overlay | |
@@ -166,7 +166,7 @@ introduced-in, removal criteria, status.
 | --- | --- | --- |
 | 1. primitives, icons, groups, buttons, switches | **done 2026-07-13** | shared contracts run against both renderers for InputButton, InputButtonToggle, InputSwitch, InputCheckbox, InputGroup, and IconIndicator; Icon source parsing has core fixtures; BindIcon/SvgIcon remain renderer-only markup; packed examples and relevant Playwright specs pass |
 | 2. text and dropdown controls | **done 2026-07-13** | InputString and InputDropdown shared contracts run against both renderers; expression compilation, label generation, placement, and wrap/empty navigation are core-owned; packed examples and text/dropdown Playwright specs pass |
-| 3. number and vector controls | **in progress** | InputNumber uses the core expression compiler and its shared contract runs against both renderers; InputVec, InputPosition, and InputSize convergence remains underway |
+| 3. number and vector controls | **done 2026-07-13** | InputNumber and InputTranslate shared contracts run against both renderers; expression evaluation, translate geometry, and size ratio behavior are core-owned; InputVec and InputPosition propagate controlled bounds and input state consistently; number/vector Playwright coverage protects the composed controls |
 
 ## Retrospective gate repair (2026-07-13)
 

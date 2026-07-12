@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import {
+	decomposeVec2,
+	getTranslateOverlayGeometry,
+	precisionOf,
+} from '@tweeq/core'
 import {useMagicKeys, useRafFn} from '@vueuse/core'
 import {scalar, vec2} from 'linearly'
 import {computed, ref, useTemplateRef} from 'vue'
@@ -8,7 +13,6 @@ import {InputPositionProps} from '../InputPosition'
 import {Tooltip} from '../Tooltip'
 import {InputEmits} from '../types'
 import {useDrag} from '../use/useDrag'
-import {precisionOf} from '@tweeq/core'
 
 const model = defineModel<vec2>({required: true})
 
@@ -24,8 +28,8 @@ const $button = useTemplateRef('$button')
 
 const {shift, alt, x, y} = useMagicKeys()
 
-const min = computed(() => decompose(props.min))
-const max = computed(() => decompose(props.max))
+const min = computed(() => decomposeVec2(props.min))
+const max = computed(() => decomposeVec2(props.max))
 
 const speed = computed(() => {
 	if (shift.value) return 5
@@ -60,6 +64,7 @@ const overlayLabelValues = computed(() => {
 })
 
 const {dragging: tweaking} = useDrag($button, {
+	disabled: computed(() => props.disabled),
 	lockPointer: true,
 	dragDelaySeconds: 0,
 	onDragStart() {
@@ -88,62 +93,44 @@ const {dragging: tweaking} = useDrag($button, {
 	},
 })
 
-const overlayStyles = computed(() => {
-	const center: vec2 = [150, 150]
-	const scale = gridScaleAnimated.value
-
-	const size = 10 * scale
-	const offset = vec2.add(center, vec2.scale(model.value, -scale))
-
-	return {
-		backgroundSize: `${size}px ${size}px`,
-		backgroundPosition: `${offset[0] - 1}px ${offset[1] - 1}px`,
-	}
-})
-
-const zeroStyle = computed(() => {
-	const center: vec2 = [150, 150]
-	const scale = gridScaleAnimated.value
-
-	const start = vec2.add(
-		center,
-		vec2.scale(vec2.sub(model.value, min.value ?? [-9999, -9999]), -scale)
-	)
-	const end = vec2.add(
-		center,
-		vec2.scale(vec2.sub(model.value, max.value ?? [9999, 9999]), -scale)
-	)
-
-	const size = vec2.sub(end, start)
-
-	return {
-		left: `${start[0]}px`,
-		top: `${start[1]}px`,
-		width: `${size[0]}px`,
-		height: `${size[1]}px`,
-	}
-})
-
-function decompose(value?: number | vec2): vec2 | undefined {
-	if (value === undefined) return undefined
-
-	if (typeof value === 'number') {
-		return [value, value]
-	}
-
-	return value
-}
+const geometry = computed(() =>
+	getTranslateOverlayGeometry({
+		value: model.value,
+		min: min.value,
+		max: max.value,
+		scale: gridScaleAnimated.value,
+	})
+)
 </script>
 
 <template>
-	<button ref="$button" class="TqInputTranslate">
-		<Icon class="grid-icon" icon="mingcute:dot-grid-fill" />
+	<button
+		ref="$button"
+		class="TqInputTranslate"
+		type="button"
+		:disabled="props.disabled"
+		:aria-invalid="props.invalid || undefined"
+		data-tq-part="root"
+	>
+		<Icon
+			class="grid-icon"
+			icon="mingcute:dot-grid-fill"
+			data-tq-part="icon"
+		/>
 		<Transition>
-			<div v-if="tweaking" class="overlay">
-				<div class="overlay-grid" :style="overlayStyles">
+			<div v-if="tweaking" class="overlay" data-tq-part="overlay">
+				<div
+					class="overlay-grid"
+					:style="geometry.grid"
+					data-tq-part="overlay-grid"
+				>
 					<div v-if="x" class="axis x" />
 					<div v-if="y" class="axis y" />
-					<div class="zero" :style="zeroStyle" />
+					<div
+						class="zero"
+						:style="geometry.zero"
+						data-tq-part="zero"
+					/>
 				</div>
 				<Tooltip v-if="showOverlayLabel" class="overlay-label">
 					<label>X</label>

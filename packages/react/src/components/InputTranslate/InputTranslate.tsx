@@ -141,14 +141,27 @@ export function InputTranslate({
 			aria-invalid={invalid || undefined}
 			inline-position={inlinePosition}
 			block-position={blockPosition}
+			data-tq-part="root"
 		>
-			<Icon className={styles.gridIcon} icon="mingcute:dot-grid-fill" />
+			<Icon
+				className={styles.gridIcon}
+				icon="mingcute:dot-grid-fill"
+				data-tq-part="icon"
+			/>
 			{drag.dragging && (
-				<div className={styles.overlay}>
-					<div className={styles.overlayGrid} style={geometry.grid}>
+				<div className={styles.overlay} data-tq-part="overlay">
+					<div
+						className={styles.overlayGrid}
+						style={geometry.grid}
+						data-tq-part="overlay-grid"
+					>
 						{keys.x && <div className={`${styles.axis} ${styles.x}`} />}
 						{keys.y && <div className={`${styles.axis} ${styles.y}`} />}
-						<div className={styles.zero} style={geometry.zero} />
+						<div
+							className={styles.zero}
+							style={geometry.zero}
+							data-tq-part="zero"
+						/>
 					</div>
 					{showOverlayLabel && (
 						<Tooltip className={styles.overlayLabel}>

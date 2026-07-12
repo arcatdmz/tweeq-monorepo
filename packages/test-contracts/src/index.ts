@@ -38,3 +38,7 @@ export {
 	type InputGroupContractProps,
 	runInputGroupContract,
 } from './inputGroup'
+export {
+	type InputTranslateContractProps,
+	runInputTranslateContract,
+} from './inputTranslate'
