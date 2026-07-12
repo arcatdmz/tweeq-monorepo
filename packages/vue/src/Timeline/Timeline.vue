@@ -1,12 +1,22 @@
 <script setup lang="ts">
+import {
+	centerTimelineFrame,
+	getTimelineScrollBounds,
+	panTimelineRange,
+	showTimelineRange,
+	toPercent,
+	zoomTimelineRange,
+} from '@tweeq/core'
 import {useElementBounding} from '@vueuse/core'
-import * as Bndr from 'bndr-js'
-import {scalar, vec2} from 'linearly'
-import {clamp, debounce} from 'lodash-es'
-import {computed, shallowRef, useTemplateRef, watch} from 'vue'
+import {scalar, type vec2} from 'linearly'
+import {
+	computed,
+	onBeforeUnmount,
+	shallowRef,
+	useTemplateRef,
+	watch,
+} from 'vue'
 
-import {useBndr} from '../use/useBndr'
-import {toPercent} from '@tweeq/core'
 import type {TimelineProps} from './types'
 
 const props = withDefaults(defineProps<TimelineProps>(), {
@@ -14,27 +24,6 @@ const props = withDefaults(defineProps<TimelineProps>(), {
 	frameWidthRange: () => [10, 100],
 	overscroll: 0.5,
 })
-
-// The travel limits of the window's `start` for a given visible `duration`: you
-// may scroll until the content edge sits `overscroll` of the viewport in from
-// the screen edge (so at most that fraction of the view is empty on each side).
-function scrollBounds(duration: number): vec2 {
-	const margin = props.overscroll * duration
-	const [contentStart, contentEnd] = props.frameRange
-	return [contentStart - margin, contentEnd - duration + margin]
-}
-
-// Clamp a candidate [start, end] window to those limits. Keeps the visible
-// duration (zoom) intact; only the position is constrained.
-function clampRange([start, end]: vec2): vec2 {
-	const duration = end - start
-	const [minStart, maxStart] = scrollBounds(duration)
-
-	const clampedStart =
-		minStart <= maxStart ? clamp(start, minStart, maxStart) : start
-
-	return [clampedStart, clampedStart + duration]
-}
 
 defineSlots<{
 	default(props: {
@@ -68,55 +57,53 @@ const emit = defineEmits<{
 	confirm: []
 }>()
 
-const emitConfirmDebounced = debounce(() => emit('confirm'), 300)
+let confirmTimer: ReturnType<typeof setTimeout> | undefined
+function scheduleConfirm() {
+	clearTimeout(confirmTimer)
+	confirmTimer = setTimeout(() => emit('confirm'), 300)
+}
+onBeforeUnmount(() => clearTimeout(confirmTimer))
 
 const $root = useTemplateRef('$root')
 const {width: containerWidth} = useElementBounding($root)
 
-useBndr($root, $root => {
-	const pointer = Bndr.pointer($root)
-	const pointerScroll = pointer.scroll()
+function onWheel(event: WheelEvent) {
+	if (event.altKey) {
+		const zoom = 1.003 ** event.deltaY
+		const newFrameWidth = scalar.clamp(
+			props.frameWidth * zoom,
+			...props.frameWidthRange
+		)
+		const appliedZoom = newFrameWidth / props.frameWidth
+		const rect = $root.value?.getBoundingClientRect()
+		const x = rect ? event.clientX - rect.left : 0
+		const origin = scalar.fit(
+			x,
+			0,
+			containerWidth.value,
+			range.value[0],
+			range.value[1]
+		)
 
-	const center = pointer.position({coordinate: 'offset'}).map(([x]) => x)
-
-	const altPressed = Bndr.keyboard().pressed('option')
-
-	pointerScroll.on(([x, y]) => {
-		if (altPressed.value) {
-			// Zoom in/out
-			let zoomDelta = 1.003 ** y
-
-			const newFrameWidth = clamp(
-				props.frameWidth * zoomDelta,
-				...props.frameWidthRange
-			)
-
-			zoomDelta = newFrameWidth / props.frameWidth
-
-			const [start, end] = range.value
-
-			const origin = scalar.fit(
-				center.value ?? 0,
-				0,
-				containerWidth.value,
-				start,
-				end
-			)
-
-			emit('update:frameWidth', newFrameWidth)
-			emitConfirmDebounced()
-
-			// Scales the range around the center point
-			range.value = clampRange([
-				origin - (origin - start) / zoomDelta,
-				origin + (end - origin) / zoomDelta,
-			])
-		} else {
-			const delta = x / props.frameWidth
-			range.value = clampRange(vec2.add(range.value, [delta, delta]))
-		}
-	})
-})
+		emit('update:frameWidth', newFrameWidth)
+		scheduleConfirm()
+		range.value = zoomTimelineRange(
+			range.value,
+			origin,
+			appliedZoom,
+			props.frameRange,
+			props.overscroll
+		)
+	} else {
+		range.value = panTimelineRange(
+			range.value,
+			event.deltaX || event.deltaY,
+			props.frameWidth,
+			props.frameRange,
+			props.overscroll
+		)
+	}
+}
 
 const barStyles = computed(() => {
 	const [start, end] = range.value
@@ -130,7 +117,11 @@ const barStyles = computed(() => {
 	// travel: it sits at the track's left edge at the leftmost scroll and the
 	// right edge at the rightmost, so the knob never runs off the track (only
 	// its overhanging half is clipped at the extremes).
-	const [minStart, maxStart] = scrollBounds(duration)
+	const [minStart, maxStart] = getTimelineScrollBounds(
+		props.frameRange,
+		duration,
+		props.overscroll
+	)
 	const center =
 		minStart < maxStart ? scalar.invlerp(minStart, maxStart, start) : 0.5
 
@@ -150,24 +141,7 @@ watch(
 )
 
 function showRange(showRange: vec2 | number) {
-	const [min, max] =
-		typeof showRange === 'number' ? [showRange, showRange + 1] : showRange
-
-	const duration = range.value[1] - range.value[0]
-
-	if (min < range.value[0] && range.value[1] < max) {
-		// 両方はみ出している場合、そのまま設定
-
-		range.value = [min, max]
-	} else if (min < range.value[0]) {
-		// 左がはみ出している場合、左を基準にする
-
-		range.value = [min, min + duration]
-	} else if (range.value[1] < max) {
-		// 右がはみ出している場合、右を基準にする
-
-		range.value = [max - duration, max]
-	}
+	range.value = showTimelineRange(range.value, showRange)
 }
 
 /**
@@ -175,8 +149,7 @@ function showRange(showRange: vec2 | number) {
  * keeping the current zoom (visible duration).
  */
 function centerFrame(frame: number) {
-	const duration = range.value[1] - range.value[0]
-	range.value = [frame - duration / 2, frame + duration / 2]
+	range.value = centerTimelineFrame(range.value, frame)
 }
 
 defineExpose({
@@ -210,9 +183,14 @@ function offsetStyle(offset: number) {
 </script>
 
 <template>
-	<div class="TqTimeline">
+	<div class="TqTimeline" data-tq-part="root">
 		<div class="container">
-			<div ref="$root" class="fixed">
+			<div
+				ref="$root"
+				class="fixed"
+				data-tq-part="fixed"
+				@wheel.prevent="onWheel"
+			>
 				<slot
 					:range="range"
 					:visibleFrameRange="visibleFrameRange"
@@ -221,8 +199,9 @@ function offsetStyle(offset: number) {
 				/>
 			</div>
 		</div>
-		<div ref="$scrollbar" class="scrollbar">
-			<div ref="$knob" class="knob" :style="barStyles" />
+		<div ref="$scrollbar" class="scrollbar" data-tq-part="scrollbar">
+			<div ref="$knob" class="knob" :style="barStyles" data-tq-part="knob" />
+			<slot name="scrollbarRight" />
 		</div>
 	</div>
 </template>

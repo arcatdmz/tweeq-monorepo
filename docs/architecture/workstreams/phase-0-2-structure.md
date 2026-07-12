@@ -4,6 +4,10 @@ Status: **Phases 0–2 complete; Phase 3 foundations and Stage V4 compatibility 
 Owner: integration worker  
 Plan: [../monorepo-migration.md](../monorepo-migration.md)
 
+Concrete defects discovered during this and later workstreams are retained in
+the [migration findings log](../migration-findings.md), including fixed items
+and deliberately deferred follow-ups.
+
 ## Delivered
 
 - **Phase 0**: [parity matrix](../parity-matrix.md) generated from current
@@ -105,7 +109,7 @@ contain renderer markup only and no copied state transition.
 - InputPosition remains a thin composition of the aligned InputTranslate and
   InputVec adapters and forwards their controlled bounds, state, and lifecycle.
 
-## Phase 4 family 4 (in progress)
+## Phase 4 family 4 (done 2026-07-13)
 
 - InputTime now uses the core expression compiler and tweak quantizer in both
   renderers; Vue no longer carries an eval-based parser or copied snap logic.
@@ -127,6 +131,12 @@ contain renderer markup only and no copied state transition.
 - The rotary shared contract covers controlled angle/offset rendering, native
   disabled and invalid semantics, and stable visual parts. InputAngle remains a
   responsive composition of the contracted InputRotary and InputNumber.
+- Timeline now uses native wheel events in both adapters and core-owned
+  pan/zoom/show/center transitions. Vue gained the documented scrollbar-right
+  slot and now handles vertical pan consistently with React.
+- Ruler scale generation, pixel geometry, and pointer-value mapping are
+  core-owned, including finite behavior for zero-sized ranges and viewports.
+  Shared Ruler and Timeline contracts protect their slots and stable parts.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

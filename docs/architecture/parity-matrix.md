@@ -82,10 +82,10 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | PaneZUI | SFC | ✅ | — | layout-modals | zoomable UI |
 | ParameterGrid | SFC | ✅ | — | — | grid layout + ParameterHeading |
 | Popover | SFC | ✅ | `popover` | — | CSS anchor + native popover |
-| Ruler | SFC | ✅ | — | mobile-docs | |
+| Ruler | SFC | ✅ | — | shared contract + core geometry + mobile-docs | default/custom scales, finite zero-size geometry, pointer mapping, and stable parts aligned in Phase 4 |
 | SvgIcon | SFC | ✅ | `svgPath` | — | |
 | Tabs | SFC | ✅ | — | layout-modals | |
-| Timeline | SFC | ✅ | `timeline` | temporal | |
+| Timeline | SFC | ✅ | `timeline` | shared contract + core controller + temporal | native wheel pan/zoom, imperative range transitions, controlled frame width, scrollbar slot, and stable parts aligned in Phase 4 |
 | TitleBar | SFC | ✅ | — | — | |
 | Tooltip | SFC | ✅ | `tooltip` | — | shared delay/anchor state machine |
 | TweakOverlay | SFC | ✅ | — | — | |
@@ -167,6 +167,7 @@ introduced-in, removal criteria, status.
 | 1. primitives, icons, groups, buttons, switches | **done 2026-07-13** | shared contracts run against both renderers for InputButton, InputButtonToggle, InputSwitch, InputCheckbox, InputGroup, and IconIndicator; Icon source parsing has core fixtures; BindIcon/SvgIcon remain renderer-only markup; packed examples and relevant Playwright specs pass |
 | 2. text and dropdown controls | **done 2026-07-13** | InputString and InputDropdown shared contracts run against both renderers; expression compilation, label generation, placement, and wrap/empty navigation are core-owned; packed examples and text/dropdown Playwright specs pass |
 | 3. number and vector controls | **done 2026-07-13** | InputNumber and InputTranslate shared contracts run against both renderers; expression evaluation, translate geometry, and size ratio behavior are core-owned; InputVec and InputPosition propagate controlled bounds and input state consistently; number/vector Playwright coverage protects the composed controls |
+| 4. rotary, angle, drum, ruler, time, timeline | **done 2026-07-13** | shared contracts run against both renderers for InputTime, InputDrum, InputRotary, Ruler, and Timeline; InputAngle composes contracted controls; expression, snap/drag, selection, scale, and range transitions are core-owned; temporal and rotary Playwright coverage passes |
 
 ## Retrospective gate repair (2026-07-13)
 

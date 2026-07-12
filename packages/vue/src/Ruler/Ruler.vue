@@ -1,17 +1,21 @@
 <script setup lang="ts">
+import {
+	getRulerDefaultScales,
+	getRulerPixelsPerUnit,
+	getRulerScaleOffset,
+	getRulerValueAtPixel,
+	type RulerScale,
+} from '@tweeq/core'
 import {type MaybeElementRef, useElementBounding} from '@vueuse/core'
 import * as Bndr from 'bndr-js'
-import {scalar, vec2} from 'linearly'
-import {range as _range} from 'lodash-es'
+import {type vec2} from 'linearly'
 import {computed, ref} from 'vue'
 
 import {useBndr} from '../use/useBndr'
 
-type Scale = {value: number; label?: string; opacity?: number}
-
 const props = defineProps<{
 	range: vec2
-	scales?: Scale[]
+	scales?: RulerScale[]
 }>()
 
 const emit = defineEmits<{
@@ -22,14 +26,8 @@ const $root: MaybeElementRef = ref(null)
 
 const {width: rootWidth} = useElementBounding($root)
 
-function defaultScaleComputed() {
-	const start = Math.ceil(props.range[0])
-	const end = Math.floor(props.range[1])
-	return _range(start, end + 1).map(value => ({value}))
-}
-
 const pixelsPerUnit = computed(
-	() => rootWidth.value / (props.range[1] - props.range[0])
+	() => getRulerPixelsPerUnit(rootWidth.value, props.range)
 )
 
 const rootStyle = computed(() => ({
@@ -37,11 +35,11 @@ const rootStyle = computed(() => ({
 	'background-position': `${-props.range[0] * pixelsPerUnit.value}px 0`,
 }))
 
-const _scales = computed<Scale[]>(() => {
-	return props.scales ?? defaultScaleComputed()
+const _scales = computed<RulerScale[]>(() => {
+	return props.scales ?? getRulerDefaultScales(props.range)
 })
 
-function scaleToStyle(scale: Scale) {
+function scaleToStyle(scale: RulerScale) {
 	return {
 		transform: `translateX(${toPixels(scale.value)}px)`,
 		opacity: scale.opacity ?? 1,
@@ -49,7 +47,7 @@ function scaleToStyle(scale: Scale) {
 }
 
 function toPixels(value: number) {
-	return (value - props.range[0]) * pixelsPerUnit.value
+	return getRulerScaleOffset(value, props.range, pixelsPerUnit.value)
 }
 
 useBndr($root, el => {
@@ -57,14 +55,14 @@ useBndr($root, el => {
 		.drag({pointerCapture: true, coordinate: 'offset'})
 		.on(d => {
 			const x = d.current[0]
-			const value = scalar.fit(x, 0, rootWidth.value, ...props.range)
+			const value = getRulerValueAtPixel(x, rootWidth.value, props.range)
 			emit('drag', value)
 		})
 })
 </script>
 <template>
-	<div ref="$root" class="TqRuler" :style="rootStyle">
-		<div class="content">
+	<div ref="$root" class="TqRuler" :style="rootStyle" data-tq-part="root">
+		<div class="content" data-tq-part="content">
 			<slot />
 		</div>
 		<div
@@ -72,6 +70,7 @@ useBndr($root, el => {
 			:key="scale.value"
 			class="scale"
 			:style="scaleToStyle(scale)"
+			data-tq-part="scale"
 		>
 			{{ scale.label ?? scale.value }}
 		</div>

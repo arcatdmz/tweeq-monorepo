@@ -427,6 +427,9 @@ Copy this checklist into the worker's issue/PR and fill every item.
 - [ ] Read both current implementations and the original Vue history.
 - [ ] Add/update the parity matrix before changing behavior.
 - [ ] Capture edge cases as renderer-neutral fixtures.
+- [ ] Record any discovered defect and its disposition in
+      [`migration-findings.md`](./migration-findings.md), even when fixed in the
+      same change.
 - [ ] Identify pure logic, DOM logic, renderer logic, and shared styles.
 - [ ] Move pure logic to core; move browser lifecycle to dom.
 - [ ] Implement or reuse a controller only if stateful behavior needs one.

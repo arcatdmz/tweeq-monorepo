@@ -35,3 +35,40 @@ export function showTimelineRange(current: vec2, shown: vec2 | number): vec2 {
 	if (current[1] < max) return [max - duration, max]
 	return current
 }
+
+export function panTimelineRange(
+	range: vec2,
+	deltaPixels: number,
+	frameWidth: number,
+	frameRange: vec2,
+	overscroll: number
+): vec2 {
+	const delta = deltaPixels / frameWidth
+	return clampTimelineRange(
+		[range[0] + delta, range[1] + delta],
+		frameRange,
+		overscroll
+	)
+}
+
+export function zoomTimelineRange(
+	range: vec2,
+	origin: number,
+	appliedZoom: number,
+	frameRange: vec2,
+	overscroll: number
+): vec2 {
+	return clampTimelineRange(
+		[
+			origin - (origin - range[0]) / appliedZoom,
+			origin + (range[1] - origin) / appliedZoom,
+		],
+		frameRange,
+		overscroll
+	)
+}
+
+export function centerTimelineFrame(range: vec2, frame: number): vec2 {
+	const duration = range[1] - range[0]
+	return [frame - duration / 2, frame + duration / 2]
+}

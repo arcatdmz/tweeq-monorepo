@@ -1,16 +1,17 @@
+import {
+	getRulerDefaultScales,
+	getRulerPixelsPerUnit,
+	getRulerScaleOffset,
+	getRulerValueAtPixel,
+	type RulerScale,
+} from '@tweeq/core'
 import * as Bndr from 'bndr-js'
-import {scalar, type vec2} from 'linearly'
+import {type vec2} from 'linearly'
 import {type HTMLAttributes, type ReactNode, useRef} from 'react'
 
 import {classNames} from '../../classNames'
 import {useBndr, useElementBounding} from '../../hooks'
 import styles from './Ruler.module.styl'
-
-export interface RulerScale {
-	value: number
-	label?: string
-	opacity?: number
-}
 
 export interface RulerProps
 	extends Omit<HTMLAttributes<HTMLDivElement>, 'onDrag'> {
@@ -30,13 +31,8 @@ export function Ruler({
 }: RulerProps) {
 	const root = useRef<HTMLDivElement>(null)
 	const {width} = useElementBounding(root)
-	const pixelsPerUnit = width / (range[1] - range[0])
-	const renderedScales: RulerScale[] =
-		scales ??
-		Array.from(
-			{length: Math.max(0, Math.floor(range[1]) - Math.ceil(range[0]) + 1)},
-			(_, index) => ({value: Math.ceil(range[0]) + index})
-		)
+	const pixelsPerUnit = getRulerPixelsPerUnit(width, range)
+	const renderedScales = scales ?? getRulerDefaultScales(range)
 
 	useBndr(
 		root,
@@ -44,7 +40,7 @@ export function Ruler({
 			Bndr.pointer(element)
 				.drag({pointerCapture: true, coordinate: 'offset'})
 				.on(drag => {
-					onDrag?.(scalar.fit(drag.current[0], 0, width, ...range))
+					onDrag?.(getRulerValueAtPixel(drag.current[0], width, range))
 				})
 		},
 		[onDrag, range[0], range[1], width]
@@ -59,16 +55,18 @@ export function Ruler({
 				backgroundSize: `${pixelsPerUnit}px 100%`,
 				backgroundPosition: `${-range[0] * pixelsPerUnit}px 0`,
 			}}
+			data-tq-part="root"
 		>
-			<div className={styles.content}>{children}</div>
+			<div className={styles.content} data-tq-part="content">{children}</div>
 			{renderedScales.map(scale => (
 				<div
 					key={scale.value}
 					className={styles.scale}
 					style={{
-						transform: `translateX(${(scale.value - range[0]) * pixelsPerUnit}px)`,
+						transform: `translateX(${getRulerScaleOffset(scale.value, range, pixelsPerUnit)}px)`,
 						opacity: scale.opacity ?? 1,
 					}}
+					data-tq-part="scale"
 				>
 					{scale.label ?? scale.value}
 				</div>

@@ -1,8 +1,10 @@
 import {
-	clampTimelineRange,
+	centerTimelineFrame,
 	getTimelineScrollBounds,
+	panTimelineRange,
 	showTimelineRange,
 	toPercent,
+	zoomTimelineRange,
 } from '@tweeq/core'
 import {scalar, type vec2} from 'linearly'
 import {
@@ -98,10 +100,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(
 					setRange(current => showTimelineRange(current, shown))
 				},
 				centerFrame(frame) {
-					setRange(current => {
-						const duration = current[1] - current[0]
-						return [frame - duration / 2, frame + duration / 2]
-					})
+					setRange(current => centerTimelineFrame(current, frame))
 				},
 			}),
 			[]
@@ -161,20 +160,20 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(
 				clearTimeout(confirmTimer.current)
 				confirmTimer.current = setTimeout(() => onConfirm?.(), 300)
 				setRange(
-					clampTimelineRange(
-						[
-							origin - (origin - current.range[0]) / appliedZoom,
-							origin + (current.range[1] - origin) / appliedZoom,
-						],
+					zoomTimelineRange(
+						current.range,
+						origin,
+						appliedZoom,
 						current.frameRange,
 						current.overscroll
 					)
 				)
 			} else {
-				const delta = (event.deltaX || event.deltaY) / current.frameWidth
 				setRange(
-					clampTimelineRange(
-						[current.range[0] + delta, current.range[1] + delta],
+					panTimelineRange(
+						current.range,
+						event.deltaX || event.deltaY,
+						current.frameWidth,
 						current.frameRange,
 						current.overscroll
 					)
@@ -183,14 +182,23 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(
 		}
 
 		return (
-			<div {...props} className={classNames(styles.tqTimeline, className)}>
+			<div
+				{...props}
+				className={classNames(styles.tqTimeline, className)}
+				data-tq-part="root"
+			>
 				<div className={styles.container}>
-					<div ref={fixed} className={styles.fixed} onWheel={onWheel}>
+					<div
+						ref={fixed}
+						className={styles.fixed}
+						onWheel={onWheel}
+						data-tq-part="fixed"
+					>
 						{children?.({range, visibleFrameRange, rangeStyle, offsetStyle})}
 					</div>
 				</div>
-				<div className={styles.scrollbar}>
-					<div className={styles.knob} style={barStyle} />
+				<div className={styles.scrollbar} data-tq-part="scrollbar">
+					<div className={styles.knob} style={barStyle} data-tq-part="knob" />
 					{renderScrollbarRight?.()}
 				</div>
 			</div>
