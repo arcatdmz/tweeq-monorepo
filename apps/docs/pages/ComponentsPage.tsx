@@ -11,10 +11,6 @@ import {Heading} from './docs'
  * Port of docs/components.md. Each entry mirrors the markdown source: an h3
  * anchor, a <DemoComponent> with the SAME name/initialValue/options/scheme
  * as the original, and the interaction notes below it.
- *
- * TODO(codex): complete the remaining entries 1:1 from docs/components.md,
- * following the InputAngle/InputButton exemplars below (including the
- * definition-list interaction notes rendered as the markdown would be).
  */
 
 export function ComponentsPage() {
