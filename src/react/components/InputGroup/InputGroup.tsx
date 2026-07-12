@@ -52,7 +52,7 @@ export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
 		const positionProp =
 			direction === 'vertical' ? 'blockPosition' : 'inlinePosition'
 
-		const positioned = flattened.map(child => {
+		const positioned = flattened.map((child, i) => {
 			if (!isValidElement(child) || elementCount <= 1) return child
 
 			const position: InputPosition =
@@ -63,7 +63,10 @@ export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
 						: 'middle'
 			elementIndex += 1
 
+			// Flattening turns static JSX children into an array, so React
+			// requires keys; fall back to the array index for keyless children.
 			return cloneElement(child as ReactElement<InputBoxProps>, {
+				key: child.key ?? i,
 				[positionProp]: position,
 			})
 		})

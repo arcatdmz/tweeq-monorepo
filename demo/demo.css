@@ -1,0 +1,33 @@
+/* Demo-page chrome. Unlayered on purpose: tweeq's reset lives in @layer
+   tweeq, so these rules win inside the Viewport without extra specificity. */
+
+body {
+	margin: 0;
+	background: var(--tq-color-background, #fff);
+}
+
+main {
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 24px 16px 120px;
+}
+
+main h1 {
+	font-family: var(--tq-font-heading, sans-serif);
+	font-size: 28px;
+	font-weight: 700;
+	line-height: 1.2;
+	margin: 0 0 24px;
+}
+
+main h2 {
+	font-family: var(--tq-font-heading, sans-serif);
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 1.2;
+	margin: 32px 0 12px;
+}
+
+main section {
+	margin-bottom: 16px;
+}

@@ -12,6 +12,12 @@ test('GLSL, color, and cubic bezier controls work', async ({page}) => {
 	await page.getByRole('button', {name: 'Use #00ff88'}).click()
 	await expect(page.getByTestId('color-value')).toHaveText('#00ff88')
 
+	// The preset swatch lives inside the picker popover, so the picker stays
+	// open (native auto-popover behavior) and can overlap the sections below.
+	// Close it before interacting with them.
+	await page.keyboard.press('Escape')
+	await expect(page.locator('[popover]:popover-open svg')).toHaveCount(0)
+
 	await page.getByTestId('InputCubicBezier').getByRole('button').click()
 	const handle = page.locator('[popover]:popover-open circle').first()
 	await expect(handle).toBeVisible()

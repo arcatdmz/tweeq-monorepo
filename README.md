@@ -26,9 +26,11 @@ yarn build
 
 Tweeq requires React 18 or newer. Import the generated stylesheet once and wrap the application in `TweeqProvider`; inputs use controlled `value` / `onChange` props.
 
+**All base styles (font, CSS reset, selection/scrollbar chrome) are scoped to `<Viewport>`'s subtree** — same as the Vue version, where they were tied to `.TqViewport`. `TweeqProvider` alone only provides stores and overlay roots; components rendered outside a `<Viewport>` (or `<App>`, which includes one) will look unstyled.
+
 ```tsx
 import {useState} from 'react'
-import {InputNumber, TweeqProvider} from 'tweeq'
+import {InputNumber, TweeqProvider, Viewport} from 'tweeq'
 import 'tweeq/style.css'
 
 export function Example() {
@@ -36,7 +38,9 @@ export function Example() {
 
   return (
     <TweeqProvider appId="example">
-      <InputNumber value={value} onChange={setValue} min={0} max={100} />
+      <Viewport appId="example">
+        <InputNumber value={value} onChange={setValue} min={0} max={100} />
+      </Viewport>
     </TweeqProvider>
   )
 }

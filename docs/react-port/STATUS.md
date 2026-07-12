@@ -166,3 +166,15 @@ date · agent · what was done · deviations from PLAN/CONVENTIONS · exact next
 - Final gates: ESLint clean; TypeScript clean; 83 Vitest tests; 9 Playwright tests; clean production ESM/CJS/CSS/declaration build; rolled `lib/index.d.ts` passes strict standalone checking; both `import('tweeq')` and `require('tweeq')` succeed in Node; package dry-run includes all generated chunks.
 
 **Port status:** Phases 1–4 and every component batch are complete. The only intentionally retained Vue material is the excluded legacy implementation tree and its historical docs/assets, which remain useful as a reference but are not reachable from the React package entry or toolchain.
+
+## 2026-07-12 · orchestrator (Claude) — post-port fix: "essential CSS not applied"
+
+**Root cause:** not a port bug — an embedding bug. In tweeq (Vue and React alike), ALL base styles (`reset-viewport()` in common.styl: Geist import, @layer tweeq reset, `--tq-font-ui`/`--tq-rem` typography, ::selection, scrollbars) are scoped to the Viewport component's subtree (`.TqViewport`). The demo mounted `TweeqProvider → DemoApp` with no `Viewport`, so everything outside the one embedded App section rendered with UA defaults (Times New Roman, unpainted background) even though theme CSS vars *were* on `<body>` and all 170 CSS-module sheets were injected.
+
+**Fixes:**
+- demo/main.tsx now wraps DemoApp in `<Viewport appId="react-demo">`; new demo/demo.css provides unlayered demo chrome (body bg via `--tq-color-background`, readable h1/h2, section spacing) that wins over the @layer tweeq reset by design.
+- README React quick-start now mounts `<Viewport>` and documents that TweeqProvider alone carries no base styles (this is the trap the report hit).
+- e2e/color-curves.spec.ts: the "Use #00ff88" preset swatch lives INSIDE the picker popover, so the picker stays open (native auto-popover behavior) and, in the new centered layout, overlapped the InputCubicBezier button and swallowed its click. The spec now presses Escape to close the picker first. All 9 e2e pass.
+- InputGroup: added fallback keys in the cloneElement pass (flattening children into an array made React warn on every group).
+
+**Known parity notes (not regressions):** Monaco logs `MonacoEnvironment.getWorkerUrl` errors in the dev demo and degrades to worker-less mode — the legacy Vue demo never configured workers either. A vite `?worker` MonacoEnvironment setup (demo-only) would silence it if desired.
