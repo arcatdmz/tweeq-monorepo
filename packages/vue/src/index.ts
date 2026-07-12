@@ -1,4 +1,14 @@
-// @tweeq/vue — the Vue 3 renderer (plan §3.1).
-// Populated in Phase 2 (Stage V1) by relocating the legacy upstream Vue
-// implementation without behavior changes.
-export {}
+export * from './components'
+export type {
+	Action,
+	ActionGroup,
+	ActionGroupOptions,
+	ActionItem,
+	ActionItemOptions,
+	ActionOptions,
+} from './stores/actions'
+export * from './use/useBndr'
+export * from './use/useFlash'
+export {type InputEmits} from './types'
+export {initTweeq, useTweeq} from './useTweeq'
+export * from './util'

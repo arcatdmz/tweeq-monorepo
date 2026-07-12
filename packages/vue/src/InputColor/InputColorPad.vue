@@ -21,8 +21,8 @@ import {InputEmits} from '../types'
 import {useCopyPaste} from '../use/useCopyPaste'
 import {useDrag} from '../use/useDrag'
 import InputColorPicker from './InputColorPicker.vue'
-import PadFragmentString from './pad.frag'
-import SliderFragmentString from './slider.frag'
+import PadFragmentString from '@tweeq/dom/shaders/pad.frag'
+import SliderFragmentString from '@tweeq/dom/shaders/slider.frag'
 import {
 	type ColorChannel,
 	colorChannelToIndex,
@@ -37,7 +37,7 @@ import {
 	setHSVAChannel,
 	tweakHSVAChannel,
 } from './utils'
-import WheelFragmentString from './wheel.frag'
+import WheelFragmentString from '@tweeq/dom/shaders/wheel.frag'
 
 const model = defineModel<string>({required: true})
 const props = withDefaults(defineProps<InputColorProps>(), {

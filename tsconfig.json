@@ -25,6 +25,7 @@
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true
 	},
-	// The legacy Vue sources are reference-only and intentionally excluded.
+	// Root config covers the docs app, e2e specs, and repo scripts; packages
+	// carry their own tsconfigs.
 	"include": ["apps/docs", "e2e", "scripts"]
 }

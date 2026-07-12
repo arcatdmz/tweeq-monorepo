@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import {Rect} from '@baku89/pave'
-import {scalar} from 'linearly'
+import {vec2} from 'linearly'
 import {computed, useTemplateRef} from 'vue'
 
 import {GlslCanvas} from '../GlslCanvas'
 import {useDrag} from '../use/useDrag'
 import {toPercent} from '../util'
-import SliderFragmentString from './slider.frag'
-import {type ColorChannel, colorChannelToIndex, type HSVA} from './types'
+import FragmentString from '@tweeq/dom/shaders/pad.frag'
+import {type ColorChannel, colorChannelToIndex, HSVA} from './types'
 import {
 	getHSVAChannel,
 	hsva2hex,
@@ -16,8 +15,8 @@ import {
 } from './utils'
 
 interface Props {
+	axes: [ColorChannel, ColorChannel]
 	modelValue: HSVA
-	axis: ColorChannel
 }
 
 const props = defineProps<Props>()
@@ -29,62 +28,68 @@ const emit = defineEmits<{
 const $root = useTemplateRef('$root')
 
 let local: HSVA
+// let isRelative = false
 
 const {
 	dragging: sliderTweaking,
 	left,
-	right,
 	top,
+	right,
 	bottom,
 	xy,
 } = useDrag($root, {
 	dragDelaySeconds: 0,
-	onDragStart({xy: [x], left, right}, event) {
+	onDragStart({left, right, top, bottom, xy}, event) {
 		local = props.modelValue
 
 		const isAbsolute = event.target === $root.value
 
 		if (isAbsolute) {
-			const value = scalar.invlerp(left, right, x)
+			const values = vec2.invlerp([left, bottom], [right, top], xy)
 
-			local = setHSVAChannel(local, props.axis, value)
+			local = setHSVAChannel(local, props.axes[0], values[0])
+			local = setHSVAChannel(local, props.axes[1], values[1])
+
 			emit('update:modelValue', local)
 		}
 	},
-	onDrag({xy: [x], initial: [ix], width}) {
+	onDrag({xy, initial, width, height}) {
 		let newLocal = {...local}
 
-		const delta = (x - ix) / width
+		const delta = vec2.div(vec2.sub(xy, initial), [width, -height])
 
-		newLocal = tweakHSVAChannel(newLocal, props.axis, delta)
+		newLocal = tweakHSVAChannel(newLocal, props.axes[0], delta[0])
+		newLocal = tweakHSVAChannel(newLocal, props.axes[1], delta[1])
 
 		emit('update:modelValue', newLocal)
 	},
 })
 
 const tweakingInside = computed(() => {
-	const bound: Rect = [
-		[left.value, top.value],
-		[right.value, bottom.value],
-	]
-
-	return sliderTweaking.value && Rect.containsPoint(bound, xy.value)
+	return (
+		sliderTweaking.value &&
+		left.value <= xy.value[0] &&
+		right.value >= xy.value[0] &&
+		top.value <= xy.value[1] &&
+		bottom.value >= xy.value[1]
+	)
 })
 
 const uniforms = computed(() => {
-	const {a, h, s, v} = props.modelValue
+	const {h, s, v, a} = props.modelValue
 	return {
 		hsva: [h, s, v, a],
-		axis: colorChannelToIndex(props.axis),
-		offset: 0,
+		axes: props.axes.map(colorChannelToIndex),
 	}
 })
 
 const circleStyle = computed(() => {
-	const t = getHSVAChannel(props.modelValue, props.axis)
+	const x = getHSVAChannel(props.modelValue, props.axes[0])
+	const y = getHSVAChannel(props.modelValue, props.axes[1])
 
 	return {
-		left: toPercent(t),
+		left: toPercent(x),
+		bottom: toPercent(y),
 		background: hsva2hex({...props.modelValue, a: 1}),
 	}
 })
@@ -93,15 +98,15 @@ const circleStyle = computed(() => {
 <template>
 	<div
 		ref="$root"
-		class="TqInputColorChannelSlider"
+		class="TqInputColorChannelPad"
 		:style="{cursor: tweakingInside ? 'none' : undefined}"
 	>
 		<GlslCanvas
 			class="canvas"
-			:fragmentString="SliderFragmentString"
+			:fragmentString="FragmentString"
 			:uniforms="uniforms"
 		/>
-		<button
+		<div
 			class="circle"
 			:class="{tweaking: sliderTweaking}"
 			:style="circleStyle"
@@ -112,17 +117,17 @@ const circleStyle = computed(() => {
 <style lang="stylus" scoped>
 @import './common.styl'
 
-.TqInputColorChannelSlider
+.TqInputColorChannelPad
 	position relative
 	width 100%
-	height calc(0.7 * var(--tq-input-height))
+	aspect-ratio 1
 
 .canvas
 	position absolute
 	width 100%
 	height 100%
 	border-radius var(--tq-radius-input)
-	background-checkerboard(transparent)
+	background-checkerboard()
 
 .circle
 	circle()
