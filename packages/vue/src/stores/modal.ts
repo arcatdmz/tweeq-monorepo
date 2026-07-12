@@ -1,12 +1,11 @@
-import {defineStore} from 'pinia'
-import {ref} from 'vue'
+import {modalStore} from '@tweeq/dom'
 
-import {type Scheme} from '../InputComplex'
-import {type ShowOptions} from '../PaneModalComplex/types'
-import {
-	type ModalTab,
-	type PromptTabsFn,
-	type TabsShowOptions,
+import type {Scheme} from '../InputComplex'
+import type {ShowOptions} from '../PaneModalComplex/types'
+import type {
+	ModalTab,
+	PromptTabsFn,
+	TabsShowOptions,
 } from '../PaneModalTabs/types'
 
 export type PromptFn = <T extends Record<string, unknown>>(
@@ -15,40 +14,24 @@ export type PromptFn = <T extends Record<string, unknown>>(
 	options?: ShowOptions
 ) => Promise<T | null>
 
-const NO_UI =
-	'No modal UI. Wrap your app with TweeqProvider once, or use the App / Viewport layout which includes it.'
+const state = modalStore.getState()
+const facade = {
+	prompt: state.prompt as PromptFn,
+	promptTabs: state.promptTabs as (
+		tabs: ModalTab[],
+		options?: TabsShowOptions
+	) => Promise<void>,
+	registerPrompt(fn: PromptFn | null) {
+		state.registerPrompt(fn as Parameters<typeof state.registerPrompt>[0])
+	},
+	registerPromptTabs(fn: PromptTabsFn | null) {
+		state.registerPromptTabs(
+			fn as Parameters<typeof state.registerPromptTabs>[0]
+		)
+	},
+}
 
-export const useModalStore = defineStore('modal', () => {
-	const delegate = ref<PromptFn | null>(null)
-	const tabsDelegate = ref<PromptTabsFn | null>(null)
-
-	function registerPrompt(fn: PromptFn | null) {
-		delegate.value = fn
-	}
-
-	function registerPromptTabs(fn: PromptTabsFn | null) {
-		tabsDelegate.value = fn
-	}
-
-	const prompt: PromptFn = async (defaultValue, scheme, options) => {
-		if (typeof window === 'undefined') {
-			throw new Error('modal.prompt is only available in the browser')
-		}
-		const fn = delegate.value
-		if (!fn) throw new Error(NO_UI)
-		return fn(defaultValue, scheme, options)
-	}
-
-	// A tabbed modal: each tab is either an InputComplex scheme (applied live) or
-	// an arbitrary component. Resolves when the modal is closed.
-	async function promptTabs(tabs: ModalTab[], options?: TabsShowOptions) {
-		if (typeof window === 'undefined') {
-			throw new Error('modal.promptTabs is only available in the browser')
-		}
-		const fn = tabsDelegate.value
-		if (!fn) throw new Error(NO_UI)
-		return fn(tabs, options)
-	}
-
-	return {prompt, promptTabs, registerPrompt, registerPromptTabs}
-})
+/** Vue compatibility facade over the shared modal store. */
+export function useModalStore() {
+	return facade
+}

@@ -1,264 +1,117 @@
 import {
+	createDragHandler,
+	type DragHandler,
+	type DragHandlerOptions,
+	type DragState,
+	type PointerType,
+} from '@tweeq/dom'
+import {
 	type MaybeRef,
 	unrefElement,
-	useElementBounding,
 	useEventListener,
-	usePointerLock,
+	useResizeObserver,
 } from '@vueuse/core'
-import {vec2} from 'linearly'
-import {
-	Component,
-	computed,
-	reactive,
-	type Ref,
-	toRefs,
-	unref,
-	watchEffect,
-} from 'vue'
-
-interface DragState {
-	xy: vec2
-	previous: vec2
-	initial: vec2
-	delta: vec2
-	origin: vec2
-	top: number
-	right: number
-	bottom: number
-	left: number
-	width: number
-	height: number
-	dragging: boolean
-	pointerLocked: boolean
-}
-
-type PointerType = 'mouse' | 'pen' | 'touch'
+import {type Component, computed, reactive, type Ref, toRefs, unref, watch} from 'vue'
 
 interface UseDragOptions {
-	/**
-	 * Whether dragging is disabled
-	 * @default false
-	 */
 	disabled?: MaybeRef<boolean>
-
-	/**
-	 * Whether to lock the pointer when dragging
-	 * @default false
-	 */
 	lockPointer?: MaybeRef<boolean>
-
-	/**
-	 * Which pointer types can start dragging
-	 * @default ['mouse', 'pen', 'touch']
-	 */
 	pointerType?: PointerType[]
-
-	/**
-	 * The continuous press time until it is regarded as dragging
-	 * Set to 0 to start dragging immediately
-	 * @default 0.5
-	 */
 	dragDelaySeconds?: number
-
-	/**
-	 * Per-pointerdown gate. When it returns false the press is ignored entirely
-	 * (no capture, no click, no drag), so the event falls through to whatever is
-	 * underneath — e.g. a focused <input> placing its text caret. Use it to make
-	 * only certain regions of the target draggable.
-	 * @default () => true
-	 */
 	shouldDrag?: (event: PointerEvent) => boolean
-
 	onClick?: (state: DragState, event: PointerEvent) => void
 	onDrag?: (state: DragState, event: PointerEvent) => void
 	onDragStart?: (state: DragState, event: PointerEvent) => void
 	onDragEnd?: (state: DragState, event: PointerEvent) => void
 }
 
+const EMPTY_STATE: DragState = {
+	xy: [0, 0],
+	previous: [0, 0],
+	initial: [0, 0],
+	delta: [0, 0],
+	origin: [0, 0],
+	top: 0,
+	right: 0,
+	bottom: 0,
+	left: 0,
+	width: 0,
+	height: 0,
+	dragging: false,
+	pointerLocked: false,
+}
+
+/** Vue ref adapter over the shared framework-neutral drag state machine. */
 export function useDrag(
 	target: Ref<HTMLElement | SVGElement | Component | null>,
-	{
-		disabled,
-		lockPointer = false,
-		pointerType = ['mouse', 'pen', 'touch'],
-		dragDelaySeconds = 0.5,
-		shouldDrag,
-		onClick,
-		onDrag,
-		onDragStart,
-		onDragEnd,
-	}: UseDragOptions = {}
+	options: UseDragOptions = {}
 ) {
-	const state = reactive<DragState>({
-		// All coordinates are relative to the viewport
-		xy: vec2.zero,
-		previous: vec2.zero,
-		initial: vec2.zero,
-		delta: vec2.zero,
-		origin: vec2.zero,
-		top: 0,
-		right: 0,
-		bottom: 0,
-		left: 0,
-		width: 0,
-		height: 0,
-		dragging: false,
-		pointerLocked: false,
-	})
-
-	let dragDelayTimer: ReturnType<typeof setTimeout> | undefined
-	let pointerdown = false
-
+	const state = reactive<DragState>({...EMPTY_STATE})
 	const targetEl = computed<HTMLElement | SVGElement | null>(
-		() => unrefElement(target.value) ?? null
+		() =>
+			(unrefElement(target.value as any) as HTMLElement | SVGElement | null) ??
+			null
 	)
 
-	const bound = useElementBounding(targetEl)
+	let handler: DragHandler | undefined
 
-	const {lock, unlock} = usePointerLock(targetEl as any)
+	function publish(next = handler?.state) {
+		if (next) Object.assign(state, next)
+	}
 
-	watchEffect(
-		() => {
-			state.top = unref(bound.top)
-			state.left = unref(bound.left)
-			state.bottom = unref(bound.bottom)
-			state.right = unref(bound.right)
-			state.width = unref(bound.width)
-			state.height = unref(bound.height)
-			state.width = unref(bound.width)
-			state.height = unref(bound.height)
+	function publishAfterEvent() {
+		queueMicrotask(() => publish())
+	}
+
+	function createOptions(): DragHandlerOptions {
+		return {
+			disabled: () => unref(options.disabled) ?? false,
+			lockPointer: () => unref(options.lockPointer) ?? false,
+			pointerType: options.pointerType,
+			dragDelaySeconds: options.dragDelaySeconds,
+			shouldDrag: options.shouldDrag,
+			onClick(dragState, event) {
+				options.onClick?.(dragState, event)
+				publishAfterEvent()
+			},
+			onDrag(dragState, event) {
+				publish(dragState)
+				options.onDrag?.(dragState, event)
+			},
+			onDragStart(dragState, event) {
+				publish(dragState)
+				options.onDragStart?.(dragState, event)
+			},
+			onDragEnd(dragState, event) {
+				publish(dragState)
+				options.onDragEnd?.(dragState, event)
+				publishAfterEvent()
+			},
+		}
+	}
+
+	watch(
+		targetEl,
+		(el, _previous, onCleanup) => {
+			handler?.dispose()
+			handler = el ? createDragHandler(el, createOptions()) : undefined
+			if (handler) {
+				const current = handler
+				publish(current.state)
+				onCleanup(() => current.dispose())
+			}
 		},
-		{flush: 'sync'}
+		{immediate: true, flush: 'sync'}
 	)
 
-	watchEffect(() => {
-		state.origin = vec2.lerp(
-			[state.left, state.top],
-			[state.right, state.bottom],
-			0.5
-		)
-	})
-
-	useEventListener(targetEl, 'pointerdown', onPointerDown)
-	useEventListener(targetEl, 'pointermove', onPointerMove)
-	useEventListener(targetEl, 'pointerup', onPointerUp)
-	useEventListener(targetEl, 'pointercancel', onPointerUp)
-	useEventListener(targetEl, 'pointerleave', onPointerUp)
-
-	function fireDragStart(event: PointerEvent) {
-		if (
-			unref(lockPointer) &&
-			target.value &&
-			targetEl.value &&
-			'requestPointerLock' in targetEl.value
-		) {
-			lock(event)
-			state.pointerLocked = true
-		}
-
-		state.dragging = true
-		state.initial = state.previous
-		onDragStart?.(state, event)
+	function measure() {
+		handler?.measure()
+		publish()
 	}
 
-	function onPointerDown(event: PointerEvent) {
-		// Ignore when disabled
-		if (unref(disabled)) return
-		// Ignore non-left click
-		if (event.button !== 0 || !event.isPrimary) return
-		// Ignore non-pointer type
-		if (!pointerType.includes(event.pointerType as PointerType)) return
-		// Let the press fall through when the region opts out (e.g. a focused
-		// input's text area, so the click lands a caret instead of dragging)
-		if (shouldDrag && !shouldDrag(event)) return
-
-		pointerdown = true
-
-		// Initialize pointer position
-		state.xy = state.previous = state.initial = [event.clientX, event.clientY]
-		bound.update()
-
-		if (dragDelaySeconds === 0) {
-			// Start drag immediately
-			fireDragStart(event)
-		} else {
-			dragDelayTimer = setTimeout(
-				() => fireDragStart(event),
-				dragDelaySeconds * 1000
-			)
-		}
-
-		// Capture on the (stable) target element, not event.target: a pressed child
-		// can re-render or unmount mid-drag (e.g. a grab zone that only exists while
-		// the value is at an edge), which would implicitly release capture and let
-		// the drag break the moment the pointer leaves the element's box.
-		targetEl.value?.setPointerCapture(event.pointerId)
-	}
-
-	function onPointerMove(event: PointerEvent) {
-		if (!pointerdown) return
-
-		if (event.movementX !== undefined && event.movementY !== undefined) {
-			// movement properties ignores the zoom level of browser,
-			// so we need to scale it by the zoom
-			const zoomLevel = window.outerWidth / window.innerWidth
-			const movement = vec2.scale(
-				[event.movementX, event.movementY],
-				1 / zoomLevel
-			)
-
-			state.xy = vec2.add(state.xy, movement)
-		} else {
-			state.xy = [event.clientX, event.clientY]
-		}
-
-		state.delta = vec2.sub(state.xy, state.previous)
-		bound.update()
-
-		if (vec2.squaredLength(state.delta) === 0) return
-
-		if (!state.dragging) {
-			// Determine whether dragging has started. The mouse threshold is a few
-			// px, not 1: a 1px threshold reads the incidental jitter of an ordinary
-			// click as a drag, which both nudges the value and (for lockPointer
-			// inputs like InputColor) flashes pointer lock. tweak and pointer lock
-			// both begin here, at this one threshold.
-			const d = vec2.dist(state.initial, state.xy)
-			const minDragDistance = event.pointerType === 'mouse' ? 3 : 5
-			if (d >= minDragDistance) {
-				clearTimeout(dragDelayTimer)
-				fireDragStart(event)
-			}
-		}
-
-		if (state.dragging) {
-			onDrag?.(state, event)
-		}
-
-		state.previous = state.xy
-	}
-
-	function onPointerUp(event: PointerEvent) {
-		if (state.pointerLocked) {
-			unlock()
-		}
-		state.pointerLocked = false
-
-		if (pointerdown) {
-			if (state.dragging) {
-				onDragEnd?.(state, event)
-			} else {
-				onClick?.(state, event)
-			}
-		}
-
-		// Reset
-		clearTimeout(dragDelayTimer)
-		pointerdown = false
-		state.dragging = false
-		state.xy = state.initial = state.delta = vec2.zero
-		targetEl.value?.releasePointerCapture(event.pointerId)
-	}
+	useResizeObserver(targetEl, measure)
+	useEventListener('resize', measure)
+	useEventListener('scroll', measure, true)
 
 	return toRefs(state)
 }

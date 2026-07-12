@@ -1,63 +1,61 @@
-import {extendRef} from '@vueuse/core'
-import {defineStore} from 'pinia'
-import {type MaybeRef, ref, unref, watch} from 'vue'
+import {
+	appConfigStore,
+	type ConfigEntry,
+	type ConfigGroup,
+} from '@tweeq/dom'
+import {customRef, type Ref} from 'vue'
 
-function createGroup(path: MaybeRef<string>) {
-	function _ref<T>(name: string, defaultValue: T) {
-		const key = `${unref(path)}.${name}`
+export type ConfigRef<T> = Ref<T> & {default: T}
 
-		const config = extendRef(ref(defaultValue), {
-			default: ref(defaultValue),
-		})
+function toVueRef<T>(entry: ConfigEntry<T>): ConfigRef<T> {
+	const value = customRef<T>((track, trigger) => {
+		entry.subscribe(trigger)
 
-		const stored = localStorage.getItem(key)
-		if (stored !== null) {
-			config.value = JSON.parse(stored)
+		return {
+			get() {
+				track()
+				return entry.value
+			},
+			set(value) {
+				entry.value = value
+			},
 		}
+	}) as ConfigRef<T>
 
-		watch(
-			() => config.value,
-			value => {
-				if (value === config.default) {
-					localStorage.removeItem(key)
-				} else {
-					localStorage.setItem(key, JSON.stringify(value))
-				}
-			}
-		)
+	Object.defineProperty(value, 'default', {
+		get: () => entry.default,
+		set: defaultValue => {
+			entry.default = defaultValue
+		},
+	})
 
-		watch(
-			() => config.default,
-			defaultValue => {
-				const stored = JSON.parse(localStorage.getItem(key) ?? 'null')
-				if (stored === null) {
-					config.value = defaultValue
-				} else if (stored === defaultValue) {
-					localStorage.removeItem(key)
-				}
-			}
-		)
-
-		return config
-	}
-
-	function reset() {
-		for (const key in localStorage) {
-			if (key.startsWith(unref(path))) {
-				localStorage.removeItem(key)
-			}
-		}
-	}
-
-	function group(name: string) {
-		return createGroup(`${unref(path)}.${name}`)
-	}
-
-	return {ref: _ref, reset, group}
+	return value
 }
 
-export const useAppConfigStore = defineStore('appConfig', () => {
-	const appId = ref('tweeq')
+function toVueGroup(group: ConfigGroup) {
+	return {
+		ref<T>(name: string, defaultValue: T) {
+			return toVueRef(group.ref(name, defaultValue))
+		},
+		reset: group.reset,
+		group(name: string) {
+			return toVueGroup(group.group(name))
+		},
+	}
+}
 
-	return {appId, ...createGroup(appId)}
-})
+const root = appConfigStore.getState()
+const facade = {
+	get appId() {
+		return appConfigStore.getState().appId
+	},
+	set appId(appId: string) {
+		appConfigStore.getState().setAppId(appId)
+	},
+	...toVueGroup(root),
+}
+
+/** Vue compatibility facade over the shared app-config store. */
+export function useAppConfigStore() {
+	return facade
+}

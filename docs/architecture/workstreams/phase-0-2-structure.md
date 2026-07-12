@@ -47,14 +47,14 @@ and public export is unchanged.
 
 - Temporary compatibility items are tracked in the parity matrix's deletion
   checklist — extend it, don't add TODO comments.
-- Remaining Stage V2/V3 seams: `InputSwitch/utils.ts` (`useInputSwitch`
-  composable ↔ core `getSwitchTweakValue`), `InputRotary/utils.ts`
-  (`clampPosWithinRect` signature variant ↔ core `inputRotary`), the
-  gesture layer (`use/useDrag.ts` ↔ `@tweeq/dom` drag), and the four
-  remaining Pinia stores.
-- `@tweeq/vue` still bootstraps through Pinia (`useAppConfigStore` & co).
-  Stage V3 replaces each store with the shared `@tweeq/dom` factory behind a
-  compatibility `useTweeq()`; do it one store at a time with contract tests.
+- Stage V3 now shares the InputSwitch transitions and InputRotary clamp logic.
+  The five app-level Vue stores (actions, appConfig, modal, multiSelect, theme)
+  are compatibility facades over the same `@tweeq/dom` instances React uses;
+  their duplicated Pinia state and behavior have been deleted.
+- The Vue `useDrag` composable is now a ref/lifecycle adapter over the shared
+  `@tweeq/dom` drag controller. Component-local Pinia contexts (`InputTime`
+  and regl) are tracked separately for V4 cleanup rather than app-store
+  migration.
 - `@tweeq/test-contracts` has the harness interface but no suites yet; the
   first suite should target InputNumber (richest fixtures in core).
 - Do not publish any package until ADR 0001's ownership question is settled.
