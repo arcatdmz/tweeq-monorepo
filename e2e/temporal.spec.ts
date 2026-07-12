@@ -1,7 +1,7 @@
 import {expect, test} from '@playwright/test'
 
 test('temporal and rotary controls render and update', async ({page}) => {
-	await page.goto('/')
+	await page.goto('/#/all-components')
 
 	const angleInput = page.getByTestId('InputAngle').locator('input')
 	await angleInput.fill('90')

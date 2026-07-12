@@ -2,22 +2,25 @@
 
 ## Ported pages
 
-- **Intro** (`#/intro`): landing copy, core feature summary, and React-oriented usage sample from `docs/index.md`.
-- **Components** (`#/components`, the default): the existing auto-discovered `demo/sections/*Section.tsx` gallery. The glob and filename-sorted discovery remain unchanged, so concurrently added sections appear automatically.
-- **Examples** (`#/examples`): all five scheme-driven forms from `docs/example.md` — Many Sliders, Color Palettes, Three Angle Inputs, Bunch of Switches, and List of File Names.
+- **Home** (empty hash or `#/home`): landing copy, core feature summary, and a React-first usage sample with the legacy Vue sample available from a framework switcher.
+- **Components** (`#/components`): the prose component reference; the auto-discovered gallery remains available at `#/all-components`.
+- **Examples** (`#/example`): all five scheme-driven forms from `docs/example.md` — Many Sliders, Color Palettes, Three Angle Inputs, Bunch of Switches, and List of File Names.
 - **Colors** (`#/colors`): editable appearance/accent/gray/background controls, two 12-step scales, semantic colors, and the seven-hue palette from `ColorPaletteDemo.vue`.
 - **Features** (`#/features`): the four legacy feature sections with their interaction key guidance.
 
 ## Mapping decisions
 
 - `demo/pages/ExampleContainer.tsx` owns controlled value state, renders `InputComplex` (which itself uses `ParameterGrid`), and exposes the current value as formatted live JSON in a second `ParameterGrid`.
-- VuePress navigation became a dependency-free hash router. Unknown/empty hashes intentionally resolve to Components.
+- VuePress navigation became a dependency-free hash router. Unknown/empty hashes resolve to Home.
 - Legacy Material Design Icon names in dash form (`mdi-palette`, `mdi-equalizer`, `mdi-toggle-switch`) were normalized to Iconify form (`mdi:palette`, etc.). The forms render these through the React `Icon` path.
 - The color demo calls the same pure core theme functions as the application and keeps preview state local, matching the legacy helper without reskinning the global demo.
 
-## Intentionally skipped
+## Research routes
 
-Research/publication content (`user-study*.md`, `presentation.md`, and `uist2025.md`) was intentionally not ported as requested. VuePress-only fullscreen/client wrappers were omitted; their demo content and live-state behavior were retained.
+Research/publication content is available at `#/uist2025`, `#/user-study`,
+`#/user-study-components`, and `#/presentation`. The routes preserve the
+interactive parameter examples using the React controls and fullscreen demo
+containers.
 
 ## Verification
 

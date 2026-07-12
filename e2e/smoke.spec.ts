@@ -1,8 +1,8 @@
 import {expect, test} from '@playwright/test'
 
 test('demo app boots', async ({page}) => {
-	await page.goto('/')
-	// Default route is the All Components gallery under the docs-site chrome.
+	await page.goto('/#/all-components')
+	// The component gallery remains available explicitly under the docs chrome.
 	await expect(
 		page.getByRole('banner').getByRole('link', {name: 'Tweeq'})
 	).toBeVisible()

@@ -3,7 +3,7 @@ import {expect, test} from '@playwright/test'
 test('tabs, generated forms, panes, and modal delegates work', async ({
 	page,
 }) => {
-	await page.goto('/')
+	await page.goto('/#/all-components')
 
 	const tabs = page.getByTestId('Tabs')
 	await tabs.getByRole('tab', {name: 'Second'}).click()

@@ -14,6 +14,10 @@ import {ComponentsPage} from './pages/ComponentsPage'
 import {ExamplesPage} from './pages/ExamplesPage'
 import {FeaturesPage} from './pages/FeaturesPage'
 import {HomePage} from './pages/HomePage'
+import {PresentationPage} from './pages/PresentationPage'
+import {UIST2025Page} from './pages/UIST2025Page'
+import {UserStudyComponentsPage} from './pages/UserStudyComponentsPage'
+import {UserStudyPage} from './pages/UserStudyPage'
 
 const sectionModules = import.meta.glob<{default: ComponentType}>(
 	'./sections/*Section.tsx',
@@ -35,6 +39,10 @@ type Page =
 	| 'colors'
 	| 'example'
 	| 'all-components'
+	| 'uist2025'
+	| 'user-study'
+	| 'user-study-components'
+	| 'presentation'
 
 // Original VuePress navbar order (config.ts) + our extra All Components tab.
 const pages: {page: Page; label: string}[] = [
@@ -46,11 +54,19 @@ const pages: {page: Page; label: string}[] = [
 	{page: 'all-components', label: 'All Components'},
 ]
 
+const routePages: Page[] = [
+	...pages.map(({page}) => page),
+	'uist2025',
+	'user-study',
+	'user-study-components',
+	'presentation',
+]
+
 function pageFromHash(): Page {
 	const value = window.location.hash.replace(/^#\/?/, '').split('#')[0]
-	return pages.some(({page}) => page === value)
+	return routePages.includes(value as Page)
 		? (value as Page)
-		: 'all-components'
+		: 'home'
 }
 
 function AllComponentsPage() {
@@ -275,6 +291,10 @@ const pageTitles: Record<Page, string> = {
 	colors: 'Colors',
 	example: 'Examples',
 	'all-components': 'All Components',
+	uist2025: 'UIST 2025',
+	'user-study': 'User Study',
+	'user-study-components': 'User Study Components',
+	presentation: 'UIST 2025 Presentation',
 }
 
 export function DemoApp(): ReactNode {
@@ -291,12 +311,13 @@ export function DemoApp(): ReactNode {
 	}, [])
 
 	const isHome = page === 'home'
+	const hasSidebar = !['home', 'uist2025', 'user-study', 'user-study-components', 'presentation'].includes(page)
 
 	return (
 		<div
 			className={
 				'vp-theme-container external-link-icon' +
-				(isHome ? ' no-sidebar' : '') +
+				(!hasSidebar ? ' no-sidebar' : '') +
 				(sidebarOpen ? ' sidebar-open' : '')
 			}
 		>
@@ -364,6 +385,10 @@ export function DemoApp(): ReactNode {
 						{page === 'colors' && <ColorsPage />}
 						{page === 'example' && <ExamplesPage />}
 						{page === 'all-components' && <AllComponentsPage />}
+						{page === 'uist2025' && <UIST2025Page />}
+						{page === 'user-study' && <UserStudyPage />}
+						{page === 'user-study-components' && <UserStudyComponentsPage />}
+						{page === 'presentation' && <PresentationPage />}
 					</Fragment>
 				</main>
 			)}

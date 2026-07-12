@@ -1,7 +1,7 @@
 import {expect, test} from '@playwright/test'
 
 test('overlay stack renders and performs commands', async ({page}) => {
-	await page.goto('/')
+	await page.goto('/#/all-components')
 
 	const balloonPath = page.getByTestId('balloon-root').locator('svg path')
 	await expect(balloonPath).not.toHaveAttribute('d', '')

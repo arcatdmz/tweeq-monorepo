@@ -152,24 +152,71 @@
 
 /* ---- Colors page demo widgets (React port of ColorPaletteDemo.vue) ---- */
 
+.framework-switcher {
+	display: inline-flex;
+	margin: 0.5rem 0 1rem;
+	padding: 2px;
+	border: 1px solid var(--c-border);
+	border-radius: 8px;
+	background: var(--c-bg-light);
+}
+
+.framework-switcher button {
+	min-width: 5rem;
+	padding: 0.4rem 0.8rem;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--c-text);
+	cursor: pointer;
+}
+
+.framework-switcher button[aria-pressed='true'] {
+	background: var(--c-brand);
+	color: #fff;
+}
+
+.ColorPaletteDemo {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 1.5rem;
+	border-radius: var(--tq-radius-pane);
+}
+
 .color-controls {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-	gap: 16px;
-	margin: 24px 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	margin-bottom: 1rem;
 }
 
 .color-controls label {
-	display: grid;
-	gap: 6px;
-	font-size: 13px;
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+	font-size: 0.8rem;
+}
+
+.color-controls [class*='TqInputColor'] {
+	width: 9rem;
+}
+
+.color-controls label:first-child ul {
+	width: 9rem;
 }
 
 .color-preview {
-	display: grid;
-	gap: 8px;
-	padding: 20px;
-	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 1.25rem 0;
+	border-radius: var(--tq-radius-input);
+}
+
+.color-preview h3 {
+	margin: 0.75rem 0 0.25rem;
+	font-size: 0.95rem;
 }
 
 .color-scale {
@@ -183,7 +230,7 @@
 	align-items: end;
 	justify-content: center;
 	min-width: 0;
-	aspect-ratio: 1 / 1.3;
+	aspect-ratio: 1 / 1.4;
 	border-radius: 3px;
 }
 

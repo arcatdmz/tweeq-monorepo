@@ -1,7 +1,7 @@
 import {expect, test} from '@playwright/test'
 
 test('GLSL, color, and cubic bezier controls work', async ({page}) => {
-	await page.goto('/')
+	await page.goto('/#/all-components')
 
 	await expect(page.getByTestId('GlslCanvas').locator('img')).toHaveAttribute(
 		'src',

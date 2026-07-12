@@ -2,8 +2,9 @@ import {expect, test} from '@playwright/test'
 
 test('documentation navigation switches React pages', async ({page}) => {
 	await page.goto('/')
-	await expect(page.getByTestId('components-page')).toBeVisible()
-	await page.getByRole('link', {name: 'Example', exact: true}).click()
+	await expect(page.getByTestId('home-page')).toBeVisible()
+	await expect(page.getByRole('button', {name: 'React'})).toHaveAttribute('aria-pressed', 'true')
+	await page.getByRole('main').getByRole('link', {name: 'Example', exact: true}).click()
 	await expect(page).toHaveURL(/#\/example$/)
 	await expect(page.getByTestId('examples-page')).toBeVisible()
 	await page.getByRole('link', {name: 'Features'}).click()
@@ -29,7 +30,7 @@ test('Many Sliders edits update the live JSON value', async ({page}) => {
 
 test('default route, clickable nav, theme toggle, and sidebar behave like docs chrome', async ({page}) => {
 	await page.goto('/')
-	await expect(page.getByTestId('components-page')).toBeVisible()
+	await expect(page.getByTestId('home-page')).toBeVisible()
 	await expect(page.getByRole('link', {name: 'Home', exact: true})).toHaveCSS('cursor', 'pointer')
 	// VuePress-style toggle: accessible name from title, drives html[data-theme]
 	const before = await page.locator('html').getAttribute('data-theme')
@@ -43,6 +44,18 @@ test('default route, clickable nav, theme toggle, and sidebar behave like docs c
 	await sidebarLink.click()
 	await expect(page).toHaveURL(/#\/features#expression-support$/)
 	await expect(page.locator('#expression-support')).toBeInViewport()
+})
+
+test('UIST 2025 and legacy research routes render React demos', async ({page}) => {
+	await page.goto('/#/uist2025')
+	await expect(page.getByTestId('uist2025-page')).toBeVisible()
+	await expect(page.getByRole('heading', {name: /Parameter-Tuning GUI Widgets/})).toBeVisible()
+	await page.goto('/#/presentation')
+	await expect(page.getByTestId('presentation-page')).toBeVisible()
+	await page.goto('/#/user-study')
+	await expect(page.getByTestId('user-study-page')).toBeVisible()
+	await page.goto('/#/user-study-components')
+	await expect(page.getByTestId('user-study-components-page')).toBeVisible()
 })
 
 test('Colors page renders the generated swatches', async ({page}) => {

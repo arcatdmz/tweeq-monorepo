@@ -1,7 +1,7 @@
 import {expect, test} from '@playwright/test'
 
 test('dropdown, command palette, code, and markdown work', async ({page}) => {
-	await page.goto('/')
+	await page.goto('/#/all-components')
 
 	const dropdown = page.getByTestId('InputDropdown').locator('input')
 	await dropdown.click()
