@@ -81,6 +81,7 @@ export function MultiSelectPad({type, update, icon}: MultiSelectPadProps) {
 				type === 'slider' && styles.slider,
 				type === 'pad' && styles.pad2d
 			)}
+			data-tq-part="pad"
 		>
 			<IconIndicator icon={icon} active={drag.dragging} />
 		</div>

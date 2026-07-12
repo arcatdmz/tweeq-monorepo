@@ -42,7 +42,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | Balloon | SFC | ✅ | `balloon` | — | |
 | BindIcon | SFC | ✅ | — | — | |
 | ColorIcon | SFC | ✅ | — | — | |
-| CommandPalette | SFC | ✅ | — | dropdown-code | fuzzy search via `fast-fuzzy` in both |
+| CommandPalette | SFC | ✅ | — | core history/navigation + dropdown-code | fuzzy search via `fast-fuzzy`; shared action lifecycle hooks, recent-history updates, wrap navigation, Ctrl/Cmd+P, and arrow behavior aligned in Phase 4 |
 | GlslCanvas | SFC | ✅ | `glsl` | color-curves | regl-based; WebGL feature detection |
 | Icon | SFC | ✅ | — | core fixtures | shared source parsing; framework-specific Iconify adapters/cache |
 | IconIndicator | SFC | ✅ | — | shared contract | controlled active state, pointer/keyboard activation, `aria-pressed`, and stable parts aligned in Phase 4 |
@@ -72,7 +72,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | Markdown | SFC | ✅ | — | dropdown-code | markdown-it pipeline shared |
 | Menu | SFC | ✅ | `menu` | shared contract + core safe-corridor geometry + overlay | command/short-label/separator rendering, close lifecycle, submenu corridor, shared public item types, and stable parts aligned in Phase 4 |
 | MonacoEditor | SFC | ✅ | — | dropdown-code | `monaco-editor-vue3` vs `@monaco-editor/react` |
-| MultiSelectPopup | SFC | ✅ | — | — | multi-select store |
+| MultiSelectPopup | SFC | ✅ | — | DOM controller fixtures + overlay | one shared selection/action controller; capture/update/confirm/dispose, popup cleanup, compatible action availability, and stable action parts aligned in Phase 4 |
 | PaneExpandable | SFC | ✅ | `panes` | layout-modals | |
 | PaneFloating | SFC | ✅ | `panes` | layout-modals | position persistence |
 | PaneModal | SFC | ✅ | — | layout-modals | native popover/top-layer |
@@ -168,6 +168,7 @@ introduced-in, removal criteria, status.
 | 2. text and dropdown controls | **done 2026-07-13** | InputString and InputDropdown shared contracts run against both renderers; expression compilation, label generation, placement, and wrap/empty navigation are core-owned; packed examples and text/dropdown Playwright specs pass |
 | 3. number and vector controls | **done 2026-07-13** | InputNumber and InputTranslate shared contracts run against both renderers; expression evaluation, translate geometry, and size ratio behavior are core-owned; InputVec and InputPosition propagate controlled bounds and input state consistently; number/vector Playwright coverage protects the composed controls |
 | 4. rotary, angle, drum, ruler, time, timeline | **done 2026-07-13** | shared contracts run against both renderers for InputTime, InputDrum, InputRotary, Ruler, and Timeline; InputAngle composes contracted controls; expression, snap/drag, selection, scale, and range transitions are core-owned; temporal and rotary Playwright coverage passes |
+| 5. popover, tooltip, menus, command palette, multi-select | **done 2026-07-13** | Menu and Popover shared contracts run against both renderers; Tooltip and MultiSelect state machines are DOM-owned with controller fixtures; CommandPalette history/navigation is core-owned and actions preserve shared lifecycle hooks; overlay/dropdown Playwright coverage passes |
 
 ## Retrospective gate repair (2026-07-13)
 

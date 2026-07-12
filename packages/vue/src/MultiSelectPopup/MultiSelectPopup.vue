@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import {vec2} from 'linearly'
-import {computed, onMounted, useTemplateRef, watchEffect} from 'vue'
+import {addAnchorName, getMultiSelectActions} from '@tweeq/dom'
+import {
+	computed,
+	onBeforeUnmount,
+	onMounted,
+	useTemplateRef,
+	watchEffect,
+} from 'vue'
 
 import {Icon} from '../Icon'
-import {MultiSelectType, useMultiSelectStore} from '../stores/multiSelect'
-import {addAnchorName} from '@tweeq/dom'
+import {useMultiSelectStore} from '../stores/multiSelect'
 import MultiSelectButton from './MultiSelectButton.vue'
 import MultiSelectPad from './MultiSelectPad.vue'
 
 const multiSelect = useMultiSelectStore()
-
-const selectedTypes = computed(() =>
-	multiSelect.selectedInputs.map(i => i.type)
-)
 
 const $root = useTemplateRef('$root')
 
@@ -20,6 +21,7 @@ onMounted(() => {
 	if (!$root.value) return
 	multiSelect.setPopupEl($root.value)
 })
+onBeforeUnmount(() => multiSelect.setPopupEl(null))
 
 // Anchor the popup under the focused input via CSS Anchor Positioning (no
 // floating-ui). The browser keeps it positioned on scroll/resize. anchor() is
@@ -39,63 +41,8 @@ watchEffect(onCleanup => {
 	onCleanup(addAnchorName(el, ANCHOR_NAME))
 })
 
-type MultiSelectAction = {
-	enabled: (types: MultiSelectType[]) => boolean
-	icon: string
-} & (
-	| {
-			type: 'slider'
-			updator: (px: number) => (values: any[]) => any[]
-	  }
-	| {
-			type: 'pad'
-			updator: (delta: vec2) => (values: any[]) => any[]
-	  }
-	| {
-			type: 'button'
-			updator: (values: any[]) => any[]
-	  }
-)
-
-const actions: MultiSelectAction[] = [
-	{
-		type: 'slider',
-		enabled: types => types.every(t => t === 'number'),
-		updator: (px: number) => (values: number[]) =>
-			values.map((v, i) => v + px * (multiSelect.selectedInputs[i].speed ?? 1)),
-		icon: 'material-symbols:add',
-	},
-	{
-		type: 'slider',
-		enabled: types => types.every(t => t === 'number'),
-		updator: (px: number) => (values: number[]) =>
-			values.map(v => v * (px / 100 + 1)),
-		icon: 'mdi:multiply',
-	},
-	{
-		type: 'pad',
-		enabled: types => types.length === 2 && types.every(t => t === 'number'),
-		updator: (delta: vec2) => (values: number[]) =>
-			vec2.add(
-				values as unknown as vec2,
-				vec2.mul(delta, [
-					multiSelect.selectedInputs[0].speed ?? 1,
-					-(multiSelect.selectedInputs[1].speed ?? 1),
-				])
-			) as unknown as number[],
-		icon: 'mdi:dots-grid',
-	},
-	{
-		type: 'button',
-		enabled: types =>
-			types.length === 2 && types[0] !== 'boolean' && types[0] === types[1],
-		updator: values => values.reverse(),
-		icon: 'material-symbols:swap-vert',
-	},
-]
-
 const enabledActions = computed(() =>
-	actions.filter(a => a.enabled(selectedTypes.value))
+	getMultiSelectActions(multiSelect.selectedInputs)
 )
 
 const visible = computed(() => {
@@ -117,19 +64,20 @@ watchEffect(() => {
 		class="TqMultiSelectPopup"
 		:style="anchorStyle"
 		popover="manual"
+		data-tq-part="root"
 	>
 		<Icon class="tune-icon" icon="lsicon:control-filled" />
-		<div class="actions">
+		<div class="actions" data-tq-part="actions">
 			<template v-for="action in enabledActions" :key="action.icon">
 				<MultiSelectPad
 					v-if="action.type === 'slider' || action.type === 'pad'"
 					:type="action.type"
-					:updator="action.updator"
+					:updator="action.update"
 					:icon="action.icon"
 				/>
 				<MultiSelectButton
 					v-else-if="action.type === 'button'"
-					:updator="action.updator"
+					:updator="action.update"
 					:icon="action.icon"
 				/>
 			</template>

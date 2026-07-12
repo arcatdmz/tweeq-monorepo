@@ -2,8 +2,8 @@ import './MultiSelectPopup.global.styl'
 
 import {
 	addAnchorName,
+	getMultiSelectActions,
 	multiSelectStore,
-	type MultiSelectType,
 } from '@tweeq/dom'
 import {type CSSProperties, useEffect, useMemo, useRef} from 'react'
 import {useStore} from 'zustand'
@@ -21,52 +21,9 @@ export function MultiSelectPopup() {
 	useStore(multiSelectStore)
 	const state = multiSelectStore.getState()
 	const selected = state.getSelectedInputs()
-	const types = selected.map(input => input.type)
 	const focusedElement = state.getFocusedElement()
 
-	const actions = useMemo(
-		() => [
-			{
-				type: 'slider' as const,
-				enabled: (current: MultiSelectType[]) =>
-					current.every(type => type === 'number'),
-				update: (pixels: number) => (values: number[]) =>
-					values.map(
-						(value, index) => value + pixels * (selected[index]?.speed ?? 1)
-					),
-				icon: 'material-symbols:add',
-			},
-			{
-				type: 'slider' as const,
-				enabled: (current: MultiSelectType[]) =>
-					current.every(type => type === 'number'),
-				update: (pixels: number) => (values: number[]) =>
-					values.map(value => value * (pixels / 100 + 1)),
-				icon: 'mdi:multiply',
-			},
-			{
-				type: 'pad' as const,
-				enabled: (current: MultiSelectType[]) =>
-					current.length === 2 && current.every(type => type === 'number'),
-				update: (delta: readonly [number, number]) => (values: number[]) => [
-					values[0] + delta[0] * (selected[0]?.speed ?? 1),
-					values[1] - delta[1] * (selected[1]?.speed ?? 1),
-				],
-				icon: 'mdi:dots-grid',
-			},
-			{
-				type: 'button' as const,
-				enabled: (current: MultiSelectType[]) =>
-					current.length === 2 &&
-					current[0] !== 'boolean' &&
-					current[0] === current[1],
-				update: (values: number[]) => [...values].reverse(),
-				icon: 'material-symbols:swap-vert',
-			},
-		],
-		[selected]
-	)
-	const enabled = actions.filter(action => action.enabled(types))
+	const enabled = useMemo(() => getMultiSelectActions(selected), [selected])
 	const visible = selected.length > 1 && enabled.length > 0
 
 	useEffect(() => {
@@ -103,9 +60,10 @@ export function MultiSelectPopup() {
 				} as CSSProperties
 			}
 			popover="manual"
+			data-tq-part="root"
 		>
 			<Icon className={styles.tuneIcon} icon="lsicon:control-filled" />
-			<div className={styles.actions}>
+			<div className={styles.actions} data-tq-part="actions">
 				{enabled.map(action =>
 					action.type === 'button' ? (
 						<MultiSelectButton

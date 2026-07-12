@@ -13,6 +13,7 @@ export function MultiSelectButton({
 	return (
 		<IconIndicator
 			className={styles.button}
+			data-tq-part="button"
 			icon={icon}
 			onClick={() => {
 				multiSelectStore.getState().updateValues(update)

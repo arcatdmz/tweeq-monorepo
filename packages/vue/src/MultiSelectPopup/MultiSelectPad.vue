@@ -72,6 +72,7 @@ const {xy, dragging} = useDrag($root, {
 		:class="{[type]: true}"
 		:icon="icon"
 		:active="dragging"
+		data-tq-part="pad"
 	/>
 </template>
 

@@ -138,7 +138,7 @@ contain renderer markup only and no copied state transition.
   core-owned, including finite behavior for zero-sized ranges and viewports.
   Shared Ruler and Timeline contracts protect their slots and stable parts.
 
-## Phase 4 family 5 (in progress)
+## Phase 4 family 5 (done 2026-07-13)
 
 - CommandPalette history and selection transitions are core-owned. Commands
   now run through the shared actions store so lifecycle hooks are preserved,
@@ -154,6 +154,10 @@ contain renderer markup only and no copied state transition.
   and the global snapshot now live entirely in DOM. Vue is a reactive adapter
   over that snapshot instead of a second state machine, and native close writes
   back through the shared controller.
+- MultiSelect action availability and value transforms now live in DOM beside
+  the existing selection store. DOM fixtures cover multi-selection, capture,
+  speed-aware updates, confirm, and disposal; Vue also clears its popup element
+  registration during unmount.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

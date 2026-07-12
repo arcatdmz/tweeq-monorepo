@@ -16,7 +16,12 @@ function edit() {
 </script>
 
 <template>
-	<IconIndicator class="TqMultiSelectButton" :icon="icon" @click="edit" />
+	<IconIndicator
+		class="TqMultiSelectButton"
+		:icon="icon"
+		data-tq-part="button"
+		@click="edit"
+	/>
 </template>
 
 <style lang="stylus" scoped>

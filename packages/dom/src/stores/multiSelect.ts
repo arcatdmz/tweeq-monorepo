@@ -43,6 +43,69 @@ export interface MultiSelectInput {
 	confirm(): void
 }
 
+export type MultiSelectAction =
+	| {
+			type: 'slider'
+			icon: string
+			update: (pixels: number) => (values: number[]) => number[]
+	  }
+	| {
+			type: 'pad'
+			icon: string
+			update: (
+				delta: readonly [number, number]
+			) => (values: number[]) => number[]
+	  }
+	| {
+			type: 'button'
+			icon: string
+			update: (values: any[]) => any[]
+	  }
+
+/** Build the actions valid for the current heterogeneous selection. */
+export function getMultiSelectActions(
+	selected: readonly MultiSelectInput[]
+): MultiSelectAction[] {
+	const types = selected.map(input => input.type)
+	const actions: Array<MultiSelectAction & {enabled: boolean}> = [
+		{
+			type: 'slider',
+			enabled: types.every(type => type === 'number'),
+			update: pixels => values =>
+				values.map(
+					(value, index) => value + pixels * (selected[index]?.speed ?? 1)
+				),
+			icon: 'material-symbols:add',
+		},
+		{
+			type: 'slider',
+			enabled: types.every(type => type === 'number'),
+			update: pixels => values =>
+				values.map(value => value * (pixels / 100 + 1)),
+			icon: 'mdi:multiply',
+		},
+		{
+			type: 'pad',
+			enabled: types.length === 2 && types.every(type => type === 'number'),
+			update: delta => values => [
+				values[0] + delta[0] * (selected[0]?.speed ?? 1),
+				values[1] - delta[1] * (selected[1]?.speed ?? 1),
+			],
+			icon: 'mdi:dots-grid',
+		},
+		{
+			type: 'button',
+			enabled:
+				types.length === 2 &&
+				types[0] !== 'boolean' &&
+				types[0] === types[1],
+			update: values => [...values].reverse(),
+			icon: 'material-symbols:swap-vert',
+		},
+	]
+	return actions.flatMap(({enabled, ...action}) => (enabled ? [action] : []))
+}
+
 /**
  * Returned by `register`. The reactive fields of the legacy version
  * (`subfocus`, `index`, `readyToBeSelected`, `multiSelected`) are getters
