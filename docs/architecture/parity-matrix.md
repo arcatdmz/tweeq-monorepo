@@ -73,15 +73,15 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | Menu | SFC | ✅ | `menu` | shared contract + core safe-corridor geometry + overlay | command/short-label/separator rendering, close lifecycle, submenu corridor, shared public item types, and stable parts aligned in Phase 4 |
 | MonacoEditor | SFC | ✅ | — | dropdown-code | `monaco-editor-vue3` vs `@monaco-editor/react` |
 | MultiSelectPopup | SFC | ✅ | — | DOM controller fixtures + overlay | one shared selection/action controller; capture/update/confirm/dispose, popup cleanup, compatible action availability, and stable action parts aligned in Phase 4 |
-| PaneExpandable | SFC | ✅ | `panes` | layout-modals | |
+| PaneExpandable | SFC | ✅ | `panes` | shared controlled-state contract + layout-modals | controlled rejection, uncontrolled toggle, expand/collapse lifecycle, native expanded state, and stable trigger parts aligned in Phase 4 |
 | PaneFloating | SFC | ✅ | `panes` | shared contract + core anchor controller + layout-modals | position persistence, edge/minimize transitions, titlebar-aware viewport clamp, composed dimension correction, shared pointer lifecycle, and stable parts aligned in Phase 4 |
-| PaneModal | SFC | ✅ | — | layout-modals | native popover/top-layer |
-| PaneModalComplex | SFC | ✅ | — | — | |
-| PaneModalTabs | SFC | ✅ | — | — | |
+| PaneModal | SFC | ✅ | — | layout-modals | feature-safe native manual popover/top-layer with in-DOM fallback and outside-click emphasis |
+| PaneModalComplex | SFC | ✅ | DOM modal delegate | layout-modals | prompt replacement/unmount settlement, cancel/save, nested-popover and multiline keyboard ownership aligned in Phase 4 |
+| PaneModalTabs | SFC | ✅ | DOM modal delegate | layout-modals | stable API tab ids, live form values, cancel rollback, replacement/unmount settlement, and keyboard ownership aligned in Phase 4 |
 | PaneSplit | SFC | ✅ | `panes` | shared contract + core resize controller + layout-modals | proportional/fixed first/fixed second movement, public minimum clamp, persistence, shared pointer lifecycle, and stable parts aligned in Phase 4 |
 | PaneZUI | SFC | ✅ | — | layout-modals | zoomable UI |
 | ParameterGrid | SFC | ✅ | — | — | grid layout + ParameterHeading |
-| Popover | SFC | ✅ | `popover` | shared contract + core geometry + overlay | CSS anchor/native lifecycle, controlled open state, coordinate placement, manual/auto mode, shift/arrow geometry, and stable parts aligned in Phase 4 |
+| Popover | SFC | ✅ | `popover` | shared contract + core geometry + overlay | feature-safe CSS anchor/native lifecycle, controlled open state, coordinate placement, manual/auto mode, shift/arrow geometry, and stable parts aligned in Phase 4 |
 | Ruler | SFC | ✅ | — | shared contract + core geometry + mobile-docs | default/custom scales, finite zero-size geometry, pointer mapping, and stable parts aligned in Phase 4 |
 | SvgIcon | SFC | ✅ | `svgPath` | — | |
 | Tabs | SFC | ✅ | `tabs` | shared contract + core selection + layout-modals | enabled persisted/default/fallback selection, custom storage keys, native disabled buttons, active/click lifecycle, id re-registration, ARIA, and stable parts aligned in Phase 4 |

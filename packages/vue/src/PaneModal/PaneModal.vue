@@ -18,7 +18,15 @@ const props = withDefaults(
 const $root = useTemplateRef('$root')
 
 watchEffect(() => {
-	$root.value?.togglePopover(props.open)
+	const root = $root.value
+	if (!root) return
+	try {
+		if (typeof root.togglePopover === 'function') root.togglePopover(props.open)
+		else if (props.open && typeof root.showPopover === 'function') root.showPopover()
+		else if (!props.open && typeof root.hidePopover === 'function') root.hidePopover()
+	} catch {
+		// Unsupported native popover renders in place.
+	}
 })
 
 // The modal is `popover="manual"`, so it never light-dismisses: closing is up to
@@ -43,6 +51,7 @@ useEventListener('pointerdown', e => {
 		class="TqPaneModal"
 		:class="{emphasize}"
 		popover="manual"
+		data-tq-part="root"
 		@animationend="emphasize = false"
 	>
 		<slot />

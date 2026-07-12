@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ref, useTemplateRef, watch} from 'vue'
+import {computed, getCurrentInstance, ref, useTemplateRef} from 'vue'
 
 import {Icon} from '../Icon'
 import {Popover} from '../Popover'
@@ -22,19 +22,15 @@ defineSlots<{default: () => any}>()
 
 const $button = useTemplateRef<HTMLElement>('$button')
 
-// Internal flag is the single source of truth. We can't detect "controlled" by
-// `props.open === undefined`: a Boolean prop that's absent is cast to `false` by
-// Vue, not left undefined. Instead we always keep the flag and mirror a bound
-// `open` prop into it — uncontrolled users simply never change the prop, so the
-// watch fires once (false) and the button drives the flag from there.
 const internalOpen = ref(false)
-watch(() => props.open, value => (internalOpen.value = value), {immediate: true})
+const vnodeProps = getCurrentInstance()?.vnode.props
+const controlled = Boolean(vnodeProps && 'open' in vnodeProps)
 
 const open = computed<boolean>({
-	get: () => internalOpen.value,
+	get: () => (controlled ? Boolean(props.open) : internalOpen.value),
 	set(value) {
-		if (internalOpen.value === value) return
-		internalOpen.value = value
+		if (open.value === value) return
+		if (!controlled) internalOpen.value = value
 		emit('update:open', value)
 		if (value) emit('expand')
 		else emit('collapse')
@@ -83,12 +79,14 @@ function onPopoverUpdateOpen(value: boolean) {
 </script>
 
 <template>
-	<div class="TqPaneExpandable">
+	<div class="TqPaneExpandable" data-tq-part="root">
 		<button
 			ref="$button"
 			class="button"
 			:class="{open}"
 			type="button"
+			:aria-expanded="open"
+			data-tq-part="trigger"
 			@pointerenter="onPointerEnter"
 			@pointerleave="onPointerLeave"
 			@click="onClick"

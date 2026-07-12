@@ -18,6 +18,7 @@ const desc = ref<{tabs: ModalTab[]; options?: TabsShowOptions} | null>(null)
 const values = ref<Record<string, Record<string, unknown>>>({})
 
 let endEdit: () => void = () => {}
+let pending = false
 
 function promptTabsImpl(
 	tabs: ModalTab[],
@@ -32,10 +33,12 @@ function promptTabsImpl(
 			.map(t => [t.id, {...t.value}])
 	)
 	open.value = true
+	pending = true
 
 	return new Promise<void>(resolve => {
 		endEdit = () => {
 			open.value = false
+			pending = false
 			endEdit = () => {}
 			resolve()
 		}
@@ -43,7 +46,10 @@ function promptTabsImpl(
 }
 
 modal.registerPromptTabs(promptTabsImpl)
-onBeforeUnmount(() => modal.registerPromptTabs(null))
+onBeforeUnmount(() => {
+	modal.registerPromptTabs(null)
+	if (pending) endEdit()
+})
 
 function onFormInput(tab: ModalTab, value: Record<string, unknown>) {
 	if (!('scheme' in tab)) return
@@ -100,7 +106,12 @@ useEventListener('keydown', (e: KeyboardEvent) => {
 				vertical
 				class="body"
 			>
-				<Tab v-for="tab in desc.tabs" :key="tab.id" :name="tab.title">
+				<Tab
+					v-for="tab in desc.tabs"
+					:key="tab.id"
+					:id="tab.id"
+					:name="tab.title"
+				>
 					<InputComplex
 						v-if="'scheme' in tab"
 						:scheme="tab.scheme"

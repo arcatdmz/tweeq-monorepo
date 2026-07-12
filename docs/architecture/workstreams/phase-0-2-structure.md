@@ -198,6 +198,11 @@ contain renderer markup only and no copied state transition.
 - PaneFloating uses the core anchor/minimize transition and shared pointer
   lifecycle. The contract covers edge minimization; Vue now composes window
   clamps and excludes the titlebar from available height like React.
+- PaneExpandable has a shared controlled/uncontrolled contract with native
+  expanded state. Vue no longer mutates rejected controlled updates.
+- Modal adapters settle replaced/unmounted prompt sessions, preserve declared
+  tab ids, and use feature-safe native popover calls. The general Vue Popover
+  received the same partial/no-API fallback after the pane contract exposed it.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

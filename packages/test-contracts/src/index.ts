@@ -66,3 +66,7 @@ export {
 	type PaneFloatingContractProps,
 	runPaneFloatingContract,
 } from './paneFloating'
+export {
+	type PaneExpandableContractProps,
+	runPaneExpandableContract,
+} from './paneExpandable'

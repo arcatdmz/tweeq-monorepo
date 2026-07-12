@@ -53,7 +53,23 @@ watch(
 	() => [props.open, $popover.value] as const,
 	([open, $popover]) => {
 		if (!$popover) return
-		$popover.togglePopover(open)
+		try {
+			if (
+				open &&
+				typeof $popover.showPopover === 'function' &&
+				!$popover.matches(':popover-open')
+			) {
+				$popover.showPopover()
+			} else if (
+				!open &&
+				typeof $popover.hidePopover === 'function' &&
+				$popover.matches(':popover-open')
+			) {
+				$popover.hidePopover()
+			}
+		} catch {
+			// Unsupported or already transitioned; content remains in DOM.
+		}
 		if (open) {
 			// Reset the shift so update() re-derives it from the natural position
 			// for the new opening (the anchor/reference may have moved).

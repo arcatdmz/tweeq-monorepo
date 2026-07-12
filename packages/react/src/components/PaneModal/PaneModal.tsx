@@ -45,6 +45,7 @@ export function PaneModal({open, className, ...props}: PaneModalProps) {
 				className
 			)}
 			popover="manual"
+			data-tq-part="root"
 			onAnimationEnd={() => setEmphasize(false)}
 		/>
 	)

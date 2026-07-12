@@ -25,24 +25,27 @@ function onUpdate(value: any) {
 }
 
 let onInput: ((value: any) => void) | undefined = undefined
-let endEdit: (value: any) => void
+let endEdit: (value: any) => void = () => {}
+let pending = false
 
 function promptImpl<T extends Record<string, unknown>>(
 	value: T,
 	scheme: Scheme<T>,
 	options?: ShowOptions<T>
-): Promise<T> {
-	if (desc.value) {
+): Promise<T | null> {
+	if (pending && desc.value) {
 		endEdit(desc.value.initialValue)
 	}
 
 	desc.value = {scheme, value, initialValue: value, options}
 	onInput = options?.onInput
 	open.value = true
+	pending = true
 
-	return new Promise(resolve => {
+	return new Promise<T | null>(resolve => {
 		endEdit = (value: any) => {
 			open.value = false
+			pending = false
 			endEdit = () => {}
 			resolve(value)
 		}
@@ -50,7 +53,10 @@ function promptImpl<T extends Record<string, unknown>>(
 }
 
 modal.registerPrompt(promptImpl)
-onBeforeUnmount(() => modal.registerPrompt(null))
+onBeforeUnmount(() => {
+	modal.registerPrompt(null)
+	if (pending) endEdit(null)
+})
 
 // Cancel restores the value the modal opened with; Save keeps the edits. The
 // modal can't be light-dismissed, so these buttons are the only way out.

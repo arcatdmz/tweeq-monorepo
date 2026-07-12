@@ -48,12 +48,17 @@ export function PaneExpandable({
 	}
 
 	return (
-		<div {...props} className={classNames(styles.expandable, className)}>
+		<div
+			{...props}
+			className={classNames(styles.expandable, className)}
+			data-tq-part="root"
+		>
 			<button
 				ref={button}
 				type="button"
 				aria-expanded={internalOpen}
 				className={classNames(styles.button, internalOpen && styles.open)}
+				data-tq-part="trigger"
 				onPointerEnter={() => {
 					if (!persistent || internalOpen) setHovering(true)
 					if (!persistent) setOpen(true)
