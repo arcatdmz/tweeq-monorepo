@@ -91,3 +91,27 @@ date · agent · what was done · deviations from PLAN/CONVENTIONS · exact next
 - Demo/e2e exercises text entry and one controlled interaction for every batch component.
 
 **Next-batch contracts:** InputNumber should build on `InputTextBase` and its `InputTextBaseHandle`, not duplicate text/context-menu behavior. Use event-site local/display updates like InputString to avoid caret flashes. Inputs used inside InputGroup must consume `inlinePosition`/`blockPosition` and emit the corresponding root attributes. Switch controls already participate in multi-select through the shared hook.
+
+## 2026-07-12 · Batch 4 agent (Codex)
+
+**Done: InputNumber + vectors — InputNumber, InputVec, InputSize, InputTranslate, InputPosition.** Core owns tested precision derivation, numeric expression compilation, scrub sensitivity/axis weighting, ratio-preserving size edits, and translate overlay geometry. Gates: TypeScript + ESLint clean, 67 Vitest tests, 5 Playwright tests.
+
+- InputNumber preserves controlled/local/display separation, range/bar/scales, step/snap/clamp validation, prefix/suffix display, reset, arrow keys, `⌘=`/implicit numeric expressions with `{i}`, multi-select speed/capture/update/confirm, absolute ranged drags, relative scrub zones, pointer lock for unbounded values, vertical speed adjustment, Alt/Shift/Q modifiers, and live out-of-range affordances.
+- `useKeys` is now a reusable exported replacement for the needed vueuse key tracking and clears state on window blur.
+- InputVec microtask-coalesces per-axis changes and confirmations so simultaneous multi-select updates cannot overwrite sibling axes. InputSize keeps ratio lock and drops it on disproportionate two-axis edits.
+- InputTranslate keeps pointer-lock 2D dragging, X/Y axis constraints, Alt/Shift speed/grid changes, bounds, animated overlay grid/label, and confirm/focus lifecycle. Its grid easing runs only until it reaches the target instead of a permanent rAF loop. InputPosition composes translate + numeric axes through InputGroup.
+- Demo/e2e covers typed numeric/vector updates, ratio lock, InputPosition, and a real ranged InputNumber drag; InputTranslate receives a render smoke check because Playwright mouse automation stalls after Chromium pointer lock, while its math is unit-tested.
+
+**Next-batch contracts:** temporal controls can reuse InputTextBase's local/display pattern and `compileNumberExpression` as a model for their own context. All drag options in this batch are stable objects with mutable callback refs—preserve that pattern or a React render will recreate an active core drag handler. InputVec is the canonical coalescing wrapper for axis tuples.
+
+## 2026-07-12 · Batch 5 agent (Codex)
+
+**Done: temporal/rotary — InputRotary, InputAngle, InputTime, InputDrum, Ruler, Timeline.** Core now owns tested timecode parsing/formatting/expression compilation, persisted time format entry, rotary angle/viewport geometry, drum cell sizing, and timeline clamping/reveal math. Gates: TypeScript + ESLint clean, 74 Vitest tests, 6 Playwright tests.
+
+- InputRotary keeps absolute/relative modes (pointer + A/R), shortest-angle and multi-revolution arcs, radial snap meter, Shift/Q/radius snapping, multi-select relative/absolute updates, copy/paste, hidden cursor, constrained top-layer label, and confirmation. InputAngle responsively composes Rotary + Number using the live theme input height.
+- InputTime keeps frames/timecode display formats persisted through appConfig, unit/timecode expressions with `{i,fps}`, digit hover scales, H/M/S/T and Alt/Shift/Q modifiers, pointer-lock tweak, multi-select, format context menu, reset/hotkeys, and the top-layer radial meter/hands.
+- InputDrum preserves measured uniform cells, gap cap, pointer-lock fractional scrubbing, click/wheel/arrow/type-ahead selection, external-value animation, and InputGroup positions. Ruler retains bndr offset dragging.
+- Timeline exposes `showRange`/`centerFrame`, render-prop range helpers, visible range, overscroll clamp, pan, Alt-wheel zoom-about-cursor, debounced confirm, and scrollbar position. React's wheel event supplies the same coordinate/modifier data directly; no new gesture dependency was introduced.
+- Demo/e2e verifies InputAngle, time expressions, drum keys, rotary rendering, and Timeline zoom. Pointer-lock paths share the already unit-tested drag core.
+
+**Next-batch contracts:** `inputTimeFormatEntry` is the sole persisted display-format source; future modal/menus should use `useConfigRef` rather than create another context. Timeline consumers receive all Vue scoped-slot fields through the `children` render prop. Rotary/Time overlays must remain inside TweakOverlay to escape containing blocks.

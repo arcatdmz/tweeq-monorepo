@@ -1,0 +1,96 @@
+@import '../../../common.styl'
+
+.tqInputDrum
+	position relative
+	flex-grow 1
+	min-width calc(var(--label-width) * 2)
+	height var(--tq-input-height)
+	border-radius var(--tq-radius-input)
+	background var(--tq-color-input)
+	overflow hidden
+	cursor ew-resize
+	user-select none
+	touch-action none
+	hover-transition(background, box-shadow)
+	use-input-position()
+
+	&:hover
+		background var(--tq-color-input-hover)
+
+	&:focus-visible
+		box-shadow 0 0 0 1px var(--tq-color-accent)
+
+	&.disabled
+		opacity .5
+		pointer-events none
+
+.viewport
+	position absolute
+	inset 0
+	overflow hidden
+	--fade calc(var(--cell-width) * .6)
+	mask-image linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent)
+
+.track
+	position absolute
+	top 0
+	left 0
+	height 100%
+	display flex
+	align-items center
+	will-change transform
+	transition transform .2s cubic-bezier(.22, 1, .36, 1)
+
+.cell
+	position relative
+	flex 0 0 auto
+	width var(--cell-width)
+	height 100%
+	display flex
+	align-items center
+	justify-content center
+	white-space nowrap
+	border-radius var(--tq-radius-input)
+	color var(--tq-color-text-subtle)
+	hover-transition(color, background)
+
+	&.numeric
+		font-numeric()
+
+	&.active
+		color var(--tq-color-text)
+
+	&:not(.active):hover
+		color var(--tq-color-text)
+		background var(--tq-color-input-hover)
+
+.tick
+	position absolute
+	bottom 2px
+	left 50%
+	width 1px
+	height 3px
+	background var(--tq-color-text-subtle)
+	opacity .5
+
+.centerMark
+	position absolute
+	top 0
+	bottom 0
+	left 50%
+	width 1px
+	background var(--tq-color-accent)
+
+.measure
+	position absolute
+	visibility hidden
+	pointer-events none
+	display flex
+	white-space nowrap
+
+	span
+		flex 0 0 auto
+		padding 0 .6em
+
+		&.numeric
+			font-numeric()

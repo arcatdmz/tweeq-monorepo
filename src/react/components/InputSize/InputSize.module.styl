@@ -1,0 +1,21 @@
+.tqInputSize
+	position relative
+
+.chain
+	position absolute
+	top 0
+	left 50%
+	transform translateX(-50%) scale(.8)
+	width var(--tq-input-height)
+	height var(--tq-input-height)
+	color var(--tq-color-text-subtle)
+	z-index 1
+
+	&:hover
+		color 'color-mix(in srgb, var(--tq-color-text-mute), transparent 50%)' % ''
+
+	&.active
+		color var(--tq-color-accent)
+
+		&:hover
+			color var(--tq-color-accent-hover)

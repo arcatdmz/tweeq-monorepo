@@ -63,8 +63,8 @@ Filled in after INVENTORY.md lands. States: `[ ]` todo · `[~]` in progress (not
 - [x] Phase 2: React infra (TweeqProvider shell, useTweeq/initTweeq, hooks: useBndr/useDrag/useCopyPaste/...) + primitives batch: Icon, SvgIcon, ColorIcon, BindIcon, IconIndicator, InputGroup, TweakOverlay, Viewport
 - [x] Batch 2: overlay stack — Balloon, Popover, Tooltip, Menu (native Popover API + CSS anchor positioning; see INVENTORY risks)
 - [x] Batch 3: text & toggles — InputTextBase, InputString, InputButton, InputButtonToggle, InputSwitch, InputCheckbox, InputRadio, InputShuffle
-- [ ] Batch 4: InputNumber (very hard, 918 LOC) + vectors — InputVec, InputSize, InputTranslate, InputPosition
-- [ ] Batch 5: temporal/rotary — InputRotary, InputAngle, InputTime, InputDrum, Ruler, Timeline
+- [x] Batch 4: InputNumber (very hard, 918 LOC) + vectors — InputVec, InputSize, InputTranslate, InputPosition
+- [x] Batch 5: temporal/rotary — InputRotary, InputAngle, InputTime, InputDrum, Ruler, Timeline
 - [ ] Batch 6: dropdown/palette/code — InputDropdown, CommandPalette, MultiSelectPopup, MonacoEditor, InputCode, Markdown (before Batch 7: InputColor's channel values need InputDropdown)
 - [ ] Batch 7: color/GL/curves — GlslCanvas, InputColor (very hard, 1741 LOC), InputCubicBezier
 - [ ] Batch 8: panes/layout/complex — Tabs, ParameterGrid, InputComplex, PaneModal, PaneModalComplex, PaneModalTabs, PaneSplit, PaneExpandable, PaneFloating, PaneZUI, TitleBar, App, final TweeqProvider wiring
