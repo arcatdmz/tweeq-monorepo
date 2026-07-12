@@ -11,6 +11,10 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
+		},
+		"./validator": {
+			"types": "./dist/validator.d.ts",
+			"import": "./dist/validator.js"
 		}
 	},
 	"files": [

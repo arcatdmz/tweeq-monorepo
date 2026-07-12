@@ -10,7 +10,7 @@ import {
 	generateThemeColorsRadix,
 	type MonacoThemeData,
 	type Theme,
-} from '../theme'
+} from '@tweeq/core'
 import {useAppConfigStore} from './appConfig'
 
 export const useThemeStore = defineStore('theme', () => {

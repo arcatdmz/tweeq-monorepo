@@ -47,6 +47,7 @@
 		"@baku89/pave": "^0.6.2",
 		"@iconify/vue": "^4.1.2",
 		"@radix-ui/colors": "^3.0.0",
+		"@tweeq/core": "workspace:^",
 		"@tweeq/dom": "workspace:^",
 		"@tweeq/styles": "workspace:^",
 		"@vueuse/core": "^11.0.3",
