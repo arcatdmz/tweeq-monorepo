@@ -74,7 +74,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | MonacoEditor | SFC | ✅ | — | dropdown-code | `monaco-editor-vue3` vs `@monaco-editor/react` |
 | MultiSelectPopup | SFC | ✅ | — | DOM controller fixtures + overlay | one shared selection/action controller; capture/update/confirm/dispose, popup cleanup, compatible action availability, and stable action parts aligned in Phase 4 |
 | PaneExpandable | SFC | ✅ | `panes` | layout-modals | |
-| PaneFloating | SFC | ✅ | `panes` | layout-modals | position persistence |
+| PaneFloating | SFC | ✅ | `panes` | shared contract + core anchor controller + layout-modals | position persistence, edge/minimize transitions, titlebar-aware viewport clamp, composed dimension correction, shared pointer lifecycle, and stable parts aligned in Phase 4 |
 | PaneModal | SFC | ✅ | — | layout-modals | native popover/top-layer |
 | PaneModalComplex | SFC | ✅ | — | — | |
 | PaneModalTabs | SFC | ✅ | — | — | |

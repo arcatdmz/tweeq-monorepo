@@ -62,3 +62,7 @@ export {
 	type PaneSplitContractProps,
 	runPaneSplitContract,
 } from './paneSplit'
+export {
+	type PaneFloatingContractProps,
+	runPaneFloatingContract,
+} from './paneFloating'

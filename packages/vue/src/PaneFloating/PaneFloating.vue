@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import {useCssVar, useElementBounding, useWindowSize} from '@vueuse/core'
-import * as Bndr from 'bndr-js'
-import {computed, onMounted, useTemplateRef, watch} from 'vue'
+import {resizeFloatingPane} from '@tweeq/core'
+import {useCssVar, useWindowSize} from '@vueuse/core'
+import {computed, type Ref, useTemplateRef, watch} from 'vue'
 
 import {Icon} from '../Icon'
 import {useAppConfigStore} from '../stores/appConfig'
+import {useDrag} from '../use/useDrag'
 import type {PaneFloatingProps, Position} from './types'
 
 const props = withDefaults(defineProps<PaneFloatingProps>(), {
@@ -20,9 +21,6 @@ const props = withDefaults(defineProps<PaneFloatingProps>(), {
 const emit = defineEmits<{
 	'update:position': [Position]
 }>()
-
-const minimizeThreshold = 90
-const resizeWidth = 12
 
 const appConfig = useAppConfigStore()
 
@@ -58,146 +56,75 @@ const $right = useTemplateRef('$right')
 const $left = useTemplateRef('$left')
 const $bottom = useTemplateRef('$bottom')
 
-const bound = useElementBounding($root)
+const titlebarHeight = useCssVar('--titlebar-area-height')
+const maxHeight = computed(
+	() =>
+		windowSize.height.value - Number.parseFloat(titlebarHeight.value || '0')
+)
 
-watch([windowSize.width, windowSize.height], ([ww, wh]) => {
-	const p = position.value
-
-	if ('width' in p && typeof p.width === 'number' && p.width > ww) {
-		position.value = {...p, width: ww}
+watch([windowSize.width, maxHeight], ([width, height]) => {
+	let next = position.value
+	if ('width' in next && typeof next.width === 'number' && next.width > width) {
+		next = {...next, width}
 	}
-
-	if ('height' in p && typeof p.height === 'number' && p.height > wh) {
-		position.value = {...p, height: wh}
+	if (
+		'height' in next &&
+		typeof next.height === 'number' &&
+		next.height > height
+	) {
+		next = {...next, height}
 	}
+	if (next !== position.value) position.value = next
 })
 
-onMounted(() => {
-	if (!$top.value || !$right.value || !$left.value || !$bottom.value) return
-
-	Bndr.pointer($left.value)
-		.drag({pointerCapture: true, preventDefault: true})
-		.on(e => onDragHoriz(e, true))
-
-	Bndr.pointer($right.value)
-		.drag({pointerCapture: true, preventDefault: true})
-		.on(e => onDragHoriz(e, false))
-
-	let widthAtDragStart = 0
-
-	function onDragHoriz(e: Bndr.DragData, isLeft: boolean) {
-		const p = position.value
-
-		if (e.type === 'down') {
-			widthAtDragStart = bound.width.value
-		}
-
-		const dir = isLeft ? -1 : 1
-		const current = Math.round(
-			widthAtDragStart + (e.current[0] - e.start[0]) * dir
-		)
-
-		if (current <= minimizeThreshold) {
-			if ('width' in p) {
-				position.value = {...p, width: 'minimized'}
-			}
-		} else if (current >= window.innerWidth - resizeWidth) {
-			if (p.anchor === 'right' || p.anchor === 'left') {
-				position.value = {anchor: 'maximized'}
-			} else if (p.anchor === 'right-top' || p.anchor === 'left-top') {
-				position.value = {anchor: 'top', height: p.height}
-			} else if (p.anchor === 'right-bottom' || p.anchor === 'left-bottom') {
-				position.value = {anchor: 'bottom', height: p.height}
-			}
-		} else if ('width' in p) {
-			position.value = {...p, width: current}
-		} else {
-			const opposite = isLeft ? 'right' : 'left'
-			if (p.anchor === 'maximized') {
-				position.value = {
-					anchor: opposite,
-					width: current,
-				}
-			} else if (p.anchor === 'top' || p.anchor === 'bottom') {
-				position.value = {
-					anchor: `${opposite}-${p.anchor}` as any,
-					width: current,
-					height: p.height,
-				}
-			}
-		}
-	}
-
-	let heightAtDragStart = 0
-
-	const maxHeight = computed(() => {
-		return (
-			windowSize.height.value -
-			parseFloat(useCssVar('--titlebar-area-height').value ?? '0')
-		)
+function installResize(
+	target: Ref<HTMLElement | null>,
+	axis: 'width' | 'height',
+	edge: 'near' | 'far'
+) {
+	let sizeAtDragStart = 0
+	useDrag(target, {
+		dragDelaySeconds: 0,
+		onDragStart() {
+			const bounds = $root.value?.getBoundingClientRect()
+			sizeAtDragStart = axis === 'width' ? bounds?.width ?? 0 : bounds?.height ?? 0
+		},
+		onDrag({xy, initial}) {
+			const movement = axis === 'width' ? xy[0] - initial[0] : xy[1] - initial[1]
+			const current = Math.round(
+				sizeAtDragStart + movement * (edge === 'near' ? -1 : 1)
+			)
+			position.value = resizeFloatingPane({
+				position: position.value,
+				axis,
+				edge,
+				current,
+				viewport: axis === 'width' ? windowSize.width.value : maxHeight.value,
+			})
+		},
 	})
+}
 
-	Bndr.pointer($top.value)
-		.drag({pointerCapture: true, preventDefault: true})
-		.on(e => onDragVert(e, true))
-
-	Bndr.pointer($bottom.value)
-		.drag({pointerCapture: true, preventDefault: true})
-		.on(e => onDragVert(e, false))
-
-	function onDragVert(e: Bndr.DragData, isTop: boolean) {
-		const p = position.value
-
-		if (e.type === 'down') {
-			heightAtDragStart = bound.height.value
-		}
-
-		const dir = isTop ? -1 : 1
-		const current = Math.round(
-			heightAtDragStart + (e.current[1] - e.start[1]) * dir
-		)
-
-		if (current <= minimizeThreshold) {
-			if ('height' in p) {
-				position.value = {...p, height: 'minimized'}
-			}
-		} else if (current >= maxHeight.value - resizeWidth) {
-			if (p.anchor === 'top' || p.anchor === 'bottom') {
-				position.value = {anchor: 'maximized'}
-			} else if (p.anchor === 'right-top' || p.anchor === 'right-bottom') {
-				position.value = {anchor: 'right', width: p.width}
-			} else if (p.anchor === 'left-top' || p.anchor === 'left-bottom') {
-				position.value = {anchor: 'left', width: p.width}
-			}
-		} else if ('height' in p) {
-			position.value = {...p, height: current}
-		} else {
-			const opposite = isTop ? 'bottom' : 'top'
-			if (p.anchor === 'maximized') {
-				position.value = {
-					anchor: opposite,
-					height: current,
-				}
-			} else if (p.anchor === 'right' || p.anchor === 'left') {
-				position.value = {
-					anchor: `${p.anchor}-${opposite}` as any,
-					width: p.width,
-					height: current,
-				}
-			}
-		}
-	}
-})
+installResize($left, 'width', 'near')
+installResize($right, 'width', 'far')
+installResize($top, 'height', 'near')
+installResize($bottom, 'height', 'far')
 
 watch(position, position => emit('update:position', position))
 </script>
 
 <template>
-	<div ref="$root" class="TqPaneFloating" :class="classes" :style="style">
-		<div ref="$top" class="resize top" />
-		<div ref="$right" class="resize right" />
-		<div ref="$left" class="resize left" />
-		<div ref="$bottom" class="resize bottom" />
+	<div
+		ref="$root"
+		class="TqPaneFloating"
+		:class="classes"
+		:style="style"
+		data-tq-part="root"
+	>
+		<div ref="$top" class="resize top" data-tq-part="top" />
+		<div ref="$right" class="resize right" data-tq-part="right" />
+		<div ref="$left" class="resize left" data-tq-part="left" />
+		<div ref="$bottom" class="resize bottom" data-tq-part="bottom" />
 		<Icon v-if="icon" class="minimized-title" :icon="icon" />
 		<div class="wrapper">
 			<div class="content">

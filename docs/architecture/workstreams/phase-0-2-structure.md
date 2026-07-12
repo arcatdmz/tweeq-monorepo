@@ -195,6 +195,9 @@ contain renderer markup only and no copied state transition.
 - PaneSplit uses one core resize controller and the shared pointer lifecycle.
   Its renderer contract covers proportional and fixed-second movement, public
   minimum clamping, persistence-facing styles, and stable pane/divider parts.
+- PaneFloating uses the core anchor/minimize transition and shared pointer
+  lifecycle. The contract covers edge minimization; Vue now composes window
+  clamps and excludes the titlebar from available height like React.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

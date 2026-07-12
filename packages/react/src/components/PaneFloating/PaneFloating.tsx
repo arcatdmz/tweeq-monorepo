@@ -157,11 +157,12 @@ export function PaneFloating({
 				className
 			)}
 			style={rootStyle}
+			data-tq-part="root"
 		>
-			<div ref={top} className={classNames(styles.resize, styles.top)} />
-			<div ref={right} className={classNames(styles.resize, styles.right)} />
-			<div ref={bottom} className={classNames(styles.resize, styles.bottom)} />
-			<div ref={left} className={classNames(styles.resize, styles.left)} />
+			<div ref={top} className={classNames(styles.resize, styles.top)} data-tq-part="top" />
+			<div ref={right} className={classNames(styles.resize, styles.right)} data-tq-part="right" />
+			<div ref={bottom} className={classNames(styles.resize, styles.bottom)} data-tq-part="bottom" />
+			<div ref={left} className={classNames(styles.resize, styles.left)} data-tq-part="left" />
 			{icon && <Icon className={styles.minimizedTitle} icon={icon} />}
 			<div className={styles.wrapper}>
 				<div className={styles.content}>{children}</div>
