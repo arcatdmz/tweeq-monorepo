@@ -138,6 +138,15 @@ contain renderer markup only and no copied state transition.
   core-owned, including finite behavior for zero-sized ranges and viewports.
   Shared Ruler and Timeline contracts protect their slots and stable parts.
 
+## Phase 4 family 5 (in progress)
+
+- CommandPalette history and selection transitions are core-owned. Commands
+  now run through the shared actions store so lifecycle hooks are preserved,
+  and Vue matches the cross-platform Ctrl/Cmd+P and arrow-key behavior.
+- Menu now consumes the shared item model and safe-submenu-corridor geometry in
+  both renderers. Its shared contract covers commands, short labels,
+  separators, close propagation, controlled updates, and stable parts.
+
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 
 - Core and DOM production ESM now uses explicit `.js` specifiers and is

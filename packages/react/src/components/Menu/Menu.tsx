@@ -95,6 +95,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 				className={styles.tqMenu}
 				onPointerMove={onPointerMove}
 				onPointerLeave={() => setCandidateIndex(-1)}
+				data-tq-part="root"
 			>
 				{items.map((item, index) =>
 					'separator' in item ? (
@@ -104,6 +105,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 								itemElements.current[index] = element
 							}}
 							className={styles.separator}
+							data-tq-part="separator"
 						/>
 					) : (
 						<li
@@ -128,6 +130,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 								}
 							}}
 							onPointerEnter={event => onItemEnter(index, event)}
+							data-tq-part="item"
 						>
 							{item.icon ? (
 								<Icon className={styles.icon} icon={item.icon} />
@@ -135,7 +138,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 								<span />
 							)}
 							<div className={styles.labelContainer}>
-								<span className={styles.label}>
+								<span className={styles.label} data-tq-part="label">
 									{item.shortLabel ?? item.label}
 								</span>
 								{'bindIcon' in item && item.bindIcon && (

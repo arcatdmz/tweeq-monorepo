@@ -70,7 +70,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputTranslate | SFC | ✅ | `inputTranslate` | shared contract + core geometry + number-vectors | bounded drag lifecycle, disabled/invalid state, overlay geometry, native button semantics, and stable parts aligned in Phase 4 |
 | InputVec | SFC | ✅ | — | number-vectors | batched updates; disabled and invalid propagation aligned in Phase 4 |
 | Markdown | SFC | ✅ | — | dropdown-code | markdown-it pipeline shared |
-| Menu | SFC | ✅ | `menu` | overlay | |
+| Menu | SFC | ✅ | `menu` | shared contract + core safe-corridor geometry + overlay | command/short-label/separator rendering, close lifecycle, submenu corridor, shared public item types, and stable parts aligned in Phase 4 |
 | MonacoEditor | SFC | ✅ | — | dropdown-code | `monaco-editor-vue3` vs `@monaco-editor/react` |
 | MultiSelectPopup | SFC | ✅ | — | — | multi-select store |
 | PaneExpandable | SFC | ✅ | `panes` | layout-modals | |

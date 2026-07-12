@@ -63,7 +63,8 @@ watch(filteredActions, () => {
 	}
 })
 
-useEventListener(typeof window === 'undefined' ? null : window, 'keydown', e => {
+useEventListener(typeof window === 'undefined' ? null : window, 'keydown', event => {
+	const e = event as KeyboardEvent
 	if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== 'p') return
 	e.preventDefault()
 	$popover.value?.togglePopover()

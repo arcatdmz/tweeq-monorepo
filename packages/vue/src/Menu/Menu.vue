@@ -1,35 +1,15 @@
 <script setup lang="ts">
-import type {IconSequence} from 'bndr-js'
+import {
+	isPointInTriangle,
+	type MenuItem,
+	type Point,
+} from '@tweeq/core'
 import {computed, ref, useTemplateRef} from 'vue'
 
 import {BindIcon} from '../BindIcon'
 import {Icon} from '../Icon'
 import Popover from '../Popover/Popover.vue'
 import {useThemeStore} from '../stores/theme'
-
-interface BaseMenu {
-	icon?: string
-	label: string
-	shortLabel?: string
-	perform?: () => void
-	children?: MenuItem[]
-}
-
-export interface MenuCommand extends BaseMenu {
-	perform: () => void
-	bindIcon?: IconSequence
-}
-
-export interface MenuGroup extends BaseMenu {
-	children: MenuItem[]
-}
-
-// A non-interactive divider between groups of items.
-export interface MenuSeparator {
-	separator: true
-}
-
-export type MenuItem = MenuCommand | MenuGroup | MenuSeparator
 
 export interface Props {
 	items: MenuItem[]
@@ -79,9 +59,8 @@ const childItems = computed(() => {
 // travelling *into* the submenu: it's inside the triangle (beam) fanned from the
 // previous cursor position to the submenu's near edge. While so, sibling hovers
 // are ignored; the moment the cursor leaves that beam, the hovered sibling wins.
-type Pt = {x: number; y: number}
-let pointer: Pt = {x: 0, y: 0}
-let prevPointer: Pt = {x: 0, y: 0}
+let pointer: Point = {x: 0, y: 0}
+let prevPointer: Point = {x: 0, y: 0}
 // Item currently under the cursor (may differ from hoverIndex while in the beam).
 const candidateIndex = ref(-1)
 
@@ -91,7 +70,7 @@ function submenuIsOpen() {
 }
 
 // The submenu's vertical edge facing the cursor (handles a left-flipped submenu).
-function submenuEdge(): {c1: Pt; c2: Pt} | null {
+function submenuEdge(): {c1: Point; c2: Point} | null {
 	const el = $childMenu.value?.getRoot()
 	if (!el) return null
 	const r = el.getBoundingClientRect()
@@ -101,9 +80,9 @@ function submenuEdge(): {c1: Pt; c2: Pt} | null {
 
 // Is the cursor travelling toward the submenu — i.e. inside the beam fanned from
 // the previous cursor position to the submenu's near edge?
-function headingToSubmenu(at: Pt): boolean {
+function headingToSubmenu(at: Point): boolean {
 	const e = submenuEdge()
-	return !!e && inTriangle(at, prevPointer, e.c1, e.c2)
+	return !!e && isPointInTriangle(at, prevPointer, e.c1, e.c2)
 }
 
 function commitHover(index: number) {
@@ -137,16 +116,6 @@ function onPointerLeave() {
 	candidateIndex.value = -1
 }
 
-function inTriangle(p: Pt, a: Pt, b: Pt, c: Pt): boolean {
-	const cross = (p1: Pt, p2: Pt, p3: Pt) =>
-		(p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y)
-	const d1 = cross(p, a, b)
-	const d2 = cross(p, b, c)
-	const d3 = cross(p, c, a)
-	const neg = d1 < 0 || d2 < 0 || d3 < 0
-	const pos = d1 > 0 || d2 > 0 || d3 > 0
-	return !(neg && pos)
-}
 </script>
 
 <template>
@@ -155,9 +124,15 @@ function inTriangle(p: Pt, a: Pt, b: Pt, c: Pt): boolean {
 		class="TqMenu"
 		@pointermove="onPointerMove"
 		@pointerleave="onPointerLeave"
+		data-tq-part="root"
 	>
 		<template v-for="(menu, index) in items" :key="index + '_item'">
-			<li v-if="'separator' in menu" ref="$lists" class="separator" />
+			<li
+				v-if="'separator' in menu"
+				ref="$lists"
+				class="separator"
+				data-tq-part="separator"
+			/>
 			<li
 				v-else
 				ref="$lists"
@@ -171,11 +146,14 @@ function inTriangle(p: Pt, a: Pt, b: Pt, c: Pt): boolean {
 				}"
 				@click="onClick(menu)"
 				@pointerenter="onItemEnter(index, $event)"
+				data-tq-part="item"
 			>
 				<Icon v-if="menu.icon" class="icon" :icon="menu.icon" />
 				<span v-else />
 				<div class="label-container">
-					<span class="label">{{ menu.shortLabel ?? menu.label }}</span>
+					<span class="label" data-tq-part="label">
+						{{ menu.shortLabel ?? menu.label }}
+					</span>
 					<BindIcon
 						v-if="'bindIcon' in menu && menu.bindIcon"
 						class="bind-icon"

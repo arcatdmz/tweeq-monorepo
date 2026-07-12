@@ -50,3 +50,4 @@ export {
 } from './inputRotary'
 export {type TimelineContractProps, runTimelineContract} from './timeline'
 export {type RulerContractProps, runRulerContract} from './ruler'
+export {type MenuContractProps, runMenuContract} from './menu'
