@@ -48,6 +48,7 @@ export function TitleBar({
 				className
 			)}
 			onFocus={() => setFocusWithin(true)}
+			data-tq-part="root"
 			onBlur={event => {
 				if (!event.currentTarget.contains(event.relatedTarget))
 					setFocusWithin(false)
@@ -61,6 +62,7 @@ export function TitleBar({
 					role="button"
 					tabIndex={0}
 					aria-label={`${name} menu`}
+					data-tq-part="menu-trigger"
 					onClick={() => setMenuShown(current => !current)}
 					onKeyDown={event => {
 						if (event.key === 'Enter' || event.key === ' ')

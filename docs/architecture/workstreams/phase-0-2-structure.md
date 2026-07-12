@@ -203,6 +203,13 @@ contain renderer markup only and no copied state transition.
 - Modal adapters settle replaced/unmounted prompt sessions, preserve declared
   tab ids, and use feature-safe native popover calls. The general Vue Popover
   received the same partial/no-API fallback after the pane contract exposed it.
+- TitleBar menu triggers now share keyboard/accessibility and descendant
+  focus/OS drag-region behavior.
+- Vue App mirrors the React appId/theme/provider/embedded surface and prevents
+  Viewport from overwriting provider initialization. PaneZUI consumes one DOM
+  gesture graph and core visible-rect/dot geometry, including initial transform.
+- ParameterGroup has a shared persistent expand/collapse contract; Vue now
+  renders its public icon and uses a native button with expanded state.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

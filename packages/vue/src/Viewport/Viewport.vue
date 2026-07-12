@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import {initTweeq} from '../useTweeq'
 
-initTweeq('viewport')
+const props = withDefaults(
+	defineProps<{appId?: string; initialize?: boolean}>(),
+	{appId: 'viewport', initialize: true}
+)
+if (props.initialize) initTweeq(props.appId)
 </script>
 
 <template>
-	<div class="TqViewport">
+	<div class="TqViewport" data-tq-part="viewport">
 		<slot />
 	</div>
 </template>

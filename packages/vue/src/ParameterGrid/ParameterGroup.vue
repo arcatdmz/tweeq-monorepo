@@ -38,13 +38,21 @@ function onTransitionEnd(e: TransitionEvent) {
 	<div
 		class="ParameterGroup"
 		:class="{collapsed: !expanded}"
+		data-tq-part="root"
 		@transitionend="onTransitionEnd">
 		<ParameterHeading>
 			<template #default>
-				<div class="heading" @click="expanded = !expanded">
+				<button
+					type="button"
+					class="heading"
+					:aria-expanded="expanded"
+					data-tq-part="trigger"
+					@click="expanded = !expanded"
+				>
 					<Icon class="chevron" icon="mdi:chevron-down" />
+					<Icon v-if="icon" class="group-icon" :icon="icon" />
 					<span>{{ label }}</span>
-				</div>
+				</button>
 			</template>
 			<template #right>
 				<slot v-if="expanded" name="headingRight" />
@@ -103,6 +111,11 @@ function onTransitionEnd(e: TransitionEvent) {
 		transform rotate(-90deg)
 
 .heading
+	appearance none
+	border 0
+	background none
+	padding 0
+	font inherit
 	display flex
 	align-items center
 	gap 0.25em
@@ -112,4 +125,8 @@ function onTransitionEnd(e: TransitionEvent) {
 
 	&:hover
 		color var(--tq-color-text)
+
+.group-icon
+	width var(--tq-icon-size)
+	height var(--tq-icon-size)
 </style>

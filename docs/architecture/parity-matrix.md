@@ -38,7 +38,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 
 | Family | Vue | React | Core | E2E specs | Notes |
 | --- | --- | --- | --- | --- | --- |
-| App | SFC | ✅ | — | layout-modals | App shell; depends on stores, TitleBar, CommandPalette |
+| App | SFC | ✅ | DOM store initialization | layout-modals | appId/theme options, provider ownership, embedded layout, viewport initialization, and stable root aligned in Phase 4 |
 | Balloon | SFC | ✅ | `balloon` | — | |
 | BindIcon | SFC | ✅ | — | — | |
 | ColorIcon | SFC | ✅ | — | — | |
@@ -79,14 +79,14 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | PaneModalComplex | SFC | ✅ | DOM modal delegate | layout-modals | prompt replacement/unmount settlement, cancel/save, nested-popover and multiline keyboard ownership aligned in Phase 4 |
 | PaneModalTabs | SFC | ✅ | DOM modal delegate | layout-modals | stable API tab ids, live form values, cancel rollback, replacement/unmount settlement, and keyboard ownership aligned in Phase 4 |
 | PaneSplit | SFC | ✅ | `panes` | shared contract + core resize controller + layout-modals | proportional/fixed first/fixed second movement, public minimum clamp, persistence, shared pointer lifecycle, and stable parts aligned in Phase 4 |
-| PaneZUI | SFC | ✅ | — | layout-modals | zoomable UI |
-| ParameterGrid | SFC | ✅ | — | — | grid layout + ParameterHeading |
+| PaneZUI | SFC | ✅ | `zui` + DOM gesture binding | core geometry + layout-modals | initial/controlled transform, pan/scroll/pinch graph, visible rect, size, dot state, and stable root aligned in Phase 4 |
+| ParameterGrid | SFC | ✅ | app config persistence | shared ParameterGroup contract + layout-modals | grid/heading/slot layout plus native persistent group expand/collapse, group icons, expanded state, and stable parts aligned in Phase 4 |
 | Popover | SFC | ✅ | `popover` | shared contract + core geometry + overlay | feature-safe CSS anchor/native lifecycle, controlled open state, coordinate placement, manual/auto mode, shift/arrow geometry, and stable parts aligned in Phase 4 |
 | Ruler | SFC | ✅ | — | shared contract + core geometry + mobile-docs | default/custom scales, finite zero-size geometry, pointer mapping, and stable parts aligned in Phase 4 |
 | SvgIcon | SFC | ✅ | `svgPath` | — | |
 | Tabs | SFC | ✅ | `tabs` | shared contract + core selection + layout-modals | enabled persisted/default/fallback selection, custom storage keys, native disabled buttons, active/click lifecycle, id re-registration, ARIA, and stable parts aligned in Phase 4 |
 | Timeline | SFC | ✅ | `timeline` | shared contract + core controller + temporal | native wheel pan/zoom, imperative range transitions, controlled frame width, scrollbar slot, and stable parts aligned in Phase 4 |
-| TitleBar | SFC | ✅ | — | — | |
+| TitleBar | SFC | ✅ | shared actions/menu stores | layout-modals | mouse/keyboard menu trigger, accessible button semantics, descendant focus/OS drag-region lifecycle, bind icons, and stable parts aligned in Phase 4 |
 | Tooltip | SFC | ✅ | `tooltip` | DOM controller fixtures + Popover contract + overlay | one shared delay/anchor/snapshot state machine; plain/HTML/structured parsing, hover/focus handoff, native close synchronization, and stable content parts aligned in Phase 4 |
 | TweakOverlay | SFC | ✅ | — | — | |
 | TweeqProvider | SFC | ✅ | — | — | React-only name; Vue equivalent is `initTweeq` plugin |

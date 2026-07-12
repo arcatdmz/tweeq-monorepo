@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import type {Rect} from '@tweeq/core'
+import {
+	getZuiDotState,
+	getZuiVisibleRect,
+	type Rect,
+} from '@tweeq/core'
 import {useElementBounding} from '@vueuse/core'
-import {mat2d, scalar, vec2} from 'linearly'
+import {mat2d, type vec2} from 'linearly'
 import {computed, shallowRef, useTemplateRef, watch, watchEffect} from 'vue'
 
 import {useZUI} from '../use/useZUI'
@@ -21,7 +25,7 @@ const $root = useTemplateRef('$root')
 
 const {width: rootWidth, height: rootHeight} = useElementBounding($root)
 
-const transformLocal = shallowRef(mat2d.I)
+const transformLocal = shallowRef(props.transform ?? mat2d.I)
 
 const size = computed<vec2>(() => {
 	return [rootWidth.value, rootHeight.value]
@@ -35,7 +39,8 @@ watch(
 	() => props.transform,
 	transform => {
 		transformLocal.value = transform ?? mat2d.I
-	}
+	},
+	{immediate: true}
 )
 
 watch(transformLocal, local => {
@@ -44,37 +49,20 @@ watch(transformLocal, local => {
 })
 
 watchEffect(() => {
-	const invTransform = mat2d.inv(transformLocal.value) ?? mat2d.I
-
-	const topLeft = vec2.transformMat2d([0, 0], invTransform)
-	const bottomRight = vec2.transformMat2d(
-		[rootWidth.value, rootHeight.value],
-		invTransform
-	)
-
-	emit('update:visibleRect', [topLeft, bottomRight])
+	emit('update:visibleRect', getZuiVisibleRect(transformLocal.value, size.value))
 })
 
 useZUI($root, delta => {
 	transformLocal.value = mat2d.mul(delta, transformLocal.value)
 })
 
-const averageZoom = computed(() => {
-	const [a, , , d] = transformLocal.value
-	return (a + d) / 2
-})
-
 const dotStyles = computed(() => {
-	const [a, , , d, tx, ty] = transformLocal.value
-
-	const size = 20
-
-	const opacity = scalar.smoothstep(0.1, 0.4, averageZoom.value)
+	const dots = getZuiDotState(transformLocal.value)
 
 	return {
-		opacity: `${opacity * 100}%`,
-		backgroundPosition: `${tx}px ${ty}px`,
-		backgroundSize: `${size * a}px ${size * d}px`,
+		opacity: `${dots.opacity * 100}%`,
+		backgroundPosition: `${dots.position[0]}px ${dots.position[1]}px`,
+		backgroundSize: `${dots.size[0]}px ${dots.size[1]}px`,
 	}
 })
 
@@ -86,9 +74,14 @@ const transformStyles = computed(() => {
 </script>
 
 <template>
-	<div ref="$root" class="TqPaneZUI" :class="{dots: background === 'dots'}">
+	<div
+		ref="$root"
+		class="TqPaneZUI"
+		:class="{dots: background === 'dots'}"
+		data-tq-part="root"
+	>
 		<div v-if="background === 'dots'" class="dots" :style="dotStyles" />
-		<div class="transform" :style="transformStyles">
+		<div class="transform" :style="transformStyles" data-tq-part="transform">
 			<slot />
 		</div>
 	</div>

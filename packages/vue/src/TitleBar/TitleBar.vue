@@ -42,14 +42,32 @@ function convertToMenuItem(item: MenuItem): MenuItem {
 }
 
 const menus = computed(() => actions.menu.map(convertToMenuItem))
+
+function onFocusOut(event: FocusEvent) {
+	const root = event.currentTarget as HTMLElement
+	if (!root.contains(event.relatedTarget as Node | null)) {
+		hasFocusWithin.value = false
+	}
+}
+
+function toggleMenu() {
+	isMenuShown.value = !isMenuShown.value
+}
+
+function onIconKeydown(event: KeyboardEvent) {
+	if (event.key !== 'Enter' && event.key !== ' ') return
+	event.preventDefault()
+	toggleMenu()
+}
 </script>
 
 <template>
 	<div
 		class="TqTitleBar"
 		:class="{noDrag}"
+		data-tq-part="root"
 		@focusin="hasFocusWithin = true"
-		@focusout="hasFocusWithin = false"
+		@focusout="onFocusOut"
 	>
 		<div class="left">
 			<ColorIcon
@@ -57,7 +75,12 @@ const menus = computed(() => actions.menu.map(convertToMenuItem))
 				class="app-icon"
 				:src="icon"
 				:class="{shown: isMenuShown}"
-				@click="isMenuShown = !isMenuShown"
+				role="button"
+				tabindex="0"
+				:aria-label="`${name} menu`"
+				data-tq-part="menu-trigger"
+				@click="toggleMenu"
+				@keydown="onIconKeydown"
 			/>
 			<Popover
 				:reference="appIcon"

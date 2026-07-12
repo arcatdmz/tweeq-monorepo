@@ -34,6 +34,7 @@ export function App({
 			{...props}
 			className={classNames(styles.app, embedded && styles.embedded, className)}
 			appId={appId}
+			data-tq-part="root"
 		>
 			{title}
 			<main className={styles.main}>{children}</main>

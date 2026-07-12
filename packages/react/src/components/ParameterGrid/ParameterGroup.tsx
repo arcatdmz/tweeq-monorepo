@@ -35,6 +35,7 @@ export function ParameterGroup({
 				!expanded && styles.collapsed,
 				className
 			)}
+			data-tq-part="root"
 			onTransitionEnd={event => {
 				if (event.propertyName === 'grid-template-rows') setClipped(!expanded)
 			}}
@@ -43,6 +44,8 @@ export function ParameterGroup({
 				<button
 					type="button"
 					className={styles.heading}
+					aria-expanded={expanded}
+					data-tq-part="trigger"
 					onClick={() => {
 						if (expanded) setClipped(true)
 						setExpanded(!expanded)

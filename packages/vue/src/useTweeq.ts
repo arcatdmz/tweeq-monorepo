@@ -7,7 +7,7 @@ import {useAppConfigStore} from './stores/appConfig'
 import {useModalStore} from './stores/modal'
 import {useThemeStore} from './stores/theme'
 
-interface TweeqOptions {
+export interface TweeqOptions {
 	colorMode?: ColorMode
 	accentColor?: string
 	backgroundColor?: string
