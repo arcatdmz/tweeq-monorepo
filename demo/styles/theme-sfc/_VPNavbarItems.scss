@@ -1,0 +1,57 @@
+
+@use '../../../node_modules/@vuepress/theme-default/lib/client/styles/variables' as *;
+
+.vp-navbar-items {
+  display: inline-block;
+
+  @media print {
+    display: none;
+  }
+
+  .auto-link {
+    color: inherit;
+    line-height: 1.4rem;
+
+    &:hover,
+    &.auto-link-active {
+      color: var(--vp-c-text);
+    }
+  }
+}
+
+.vp-navbar-item {
+  position: relative;
+  display: inline-block;
+  margin-left: 1.5rem;
+  line-height: var(--navbar-line-height);
+
+  @media (max-width: $MQMobile) {
+    margin-left: 0;
+  }
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  .auto-link {
+    &:hover,
+    &.auto-link-active {
+      color: var(--vp-c-accent);
+    }
+  }
+
+  > .auto-link {
+    display: inline-block;
+
+    &:hover,
+    &.auto-link-active {
+      margin-bottom: -2px;
+      border-bottom: 2px solid var(--vp-c-accent);
+
+      @media (max-width: $MQMobile) {
+        margin-bottom: 0;
+        border-bottom: none;
+      }
+    }
+  }
+}

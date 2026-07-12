@@ -1,0 +1,11 @@
+
+.vp-footer {
+  padding: 2.5rem;
+  border-top: 1px solid var(--vp-c-border);
+
+  color: var(--vp-c-text-mute);
+
+  text-align: center;
+
+  transition: border-color var(--vp-t-color);
+}

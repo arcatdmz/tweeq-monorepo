@@ -1,153 +1,107 @@
-/* Demo-page chrome. Unlayered on purpose: tweeq's reset lives in @layer
-   tweeq, so these rules win inside the Viewport without extra specificity. */
+/* Demo-specific styles. Page chrome/typography comes from
+   vendor/vuepress-style.css (the published site's compiled stylesheet);
+   this file only ports the docs' Vue-scoped styles (DemoContainer.vue,
+   DemoComponent.vue, ExampleContainer.vue) and styles our extra
+   All Components gallery page. */
 
-body {
-	margin: 0;
-	background: var(--tq-color-background, #fff);
-}
+/* ---- docs/.vuepress/DemoContainer.vue (scoped) ---- */
 
-a, button, [role='button'], .demo-header nav a { cursor: pointer; }
-a { color: var(--tq-color-accent, #3e63dd); text-underline-offset: 3px; }
-.docs-page a:hover { text-decoration-thickness: 2px; }
-
-.demo-header {
-	position: sticky;
-	top: 0;
-	z-index: 20;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 20px;
-	padding: 10px max(16px, calc((100vw - 960px) / 2));
-	border-bottom: 1px solid var(--tq-color-border, #ddd);
-	background: color-mix(in srgb, var(--tq-color-background, #fff) 92%, transparent);
-	backdrop-filter: blur(12px);
-}
-
-.demo-brand {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	margin: 0;
-	font-size: 16px;
-	color: var(--tq-color-text, #111);
-	font-weight: 700;
-	text-decoration: none;
-	white-space: nowrap;
-}
-.demo-brand img { width: 28px; height: 28px; }
-
-.demo-header nav {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
-}
-
-.demo-header nav a {
-	padding: 6px 9px;
-	border-radius: var(--tq-radius-input, 4px);
-	color: var(--tq-color-text-mute, #555);
-	text-decoration: none;
-}
-
-.demo-header nav a[aria-current='page'] {
-	background: var(--tq-color-accent-soft, #eee);
-	color: var(--tq-color-accent, #5422cc);
-}
-.demo-header nav a:hover, .github-link:hover { color: var(--tq-color-accent, #5422cc); background: var(--tq-color-accent-soft, #eee); }
-.header-actions { display: flex; align-items: center; gap: 5px; }
-.github-link { padding: 6px 8px; border-radius: 4px; color: var(--tq-color-text-mute, #555); text-decoration: none; }
-.color-mode-toggle { width: 32px; height: 32px; border: 0; border-radius: 50%; background: transparent; color: var(--tq-color-text, #111); font-size: 19px; }
-.color-mode-toggle:hover { background: var(--tq-color-accent-soft, #eee); }
-
-.docs-layout { max-width: 1200px; margin: 0 auto; }
-.docs-sidebar { position: fixed; top: 74px; width: 190px; max-height: calc(100vh - 90px); overflow: auto; padding: 16px; }
-.docs-sidebar ul { margin: 0; padding: 0; list-style: none; }
-.docs-sidebar a { display: block; padding: 5px 8px; border-left: 2px solid transparent; color: var(--tq-color-text-mute, #555); text-decoration: none; font-size: 13px; }
-.docs-sidebar a:hover, .docs-sidebar a[aria-current='location'] { border-color: var(--tq-color-accent, #5422cc); color: var(--tq-color-accent, #5422cc); }
-
-main {
-	max-width: 960px;
-	margin: 0 auto;
-	padding: 24px 16px 120px;
-}
-.docs-layout main { max-width: 900px; }
-
-main h1 {
-	font-family: var(--tq-font-heading, sans-serif);
-	font-size: 28px;
-	font-weight: 700;
-	line-height: 1.2;
-	margin: 0 0 24px;
-}
-
-main h2 {
-	font-family: var(--tq-font-heading, sans-serif);
-	font-size: 18px;
-	font-weight: 600;
-	line-height: 1.2;
-	margin: 32px 0 12px;
-}
-
-main section {
-	margin-bottom: 16px;
-}
-
-.docs-page > p {
-	max-width: 72ch;
-	line-height: 1.6;
-}
-.docs-page { line-height: 1.65; }
-.docs-page h3 { margin-top: 24px; }
-.docs-page pre { overflow: auto; padding: 14px; border-radius: 6px; background: var(--tq-color-background-soft, #f5f5f5); }
-.docs-wide-image { display: block; max-width: 100%; margin: 20px auto; }
-.hero { display: grid; justify-items: center; margin: 20px 0 42px; text-align: center; }
-.hero img { width: 160px; height: 160px; }
-.hero h1 { margin: 12px 0 20px; font-size: 42px; }
-.hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-.hero-actions a { padding: 9px 15px; border: 1px solid var(--tq-color-border, #ddd); border-radius: 6px; text-decoration: none; font-weight: 600; }
-.hero-actions a:first-child { border-color: var(--tq-color-accent, #5422cc); background: var(--tq-color-accent, #5422cc); color: white; }
-.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
-.feature-grid section { padding: 16px; border-top: 1px solid var(--tq-color-border, #ddd); }
-.feature-grid h2 { margin-top: 0; border: 0; font-size: 17px; }
-.component-entry { margin: 25px 0 44px; }
-.component-demo { padding: 8px 18px; border: 1px solid var(--tq-color-border, #ddd); border-radius: 7px; }
-.component-demo > section { margin: 0; }
-.component-docs table { width: 100%; border-collapse: collapse; }
-.component-docs th, .component-docs td { padding: 8px 10px; border: 1px solid var(--tq-color-border, #ddd); text-align: left; }
-
-/* Legacy docs demo chrome (docs/.vuepress/DemoContainer.vue +
-   ExampleContainer.vue): chrome-less, narrow centered sandbox, subtle
-   Full Screen toggle pinned to the top-right. */
-.example-demo {
+.DemoContainer {
 	--demo-margin: 1rem;
 	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
 	padding: calc(var(--demo-margin) * 2 + var(--tq-input-height, 24px)) 0 2rem;
 }
 
-.example-demo.fullscreen {
+.DemoContainer.fullscreen {
 	position: fixed;
-	inset: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 	z-index: 1000;
-	background: var(--tq-color-background, #fff);
+	inset: 0;
+	background-color: var(--tq-color-background);
 }
 
-/* !important like the legacy DemoContainer: the InputButton module's own
-   position: relative loads later and would win the specificity tie. */
-.example-fullscreen-button {
+/* !important like the original: InputButton's own position wins the tie. */
+.DemoContainer .full-screen-button {
 	position: absolute !important;
 	top: var(--demo-margin);
 	right: 0;
 }
 
-.example-demo.fullscreen .example-fullscreen-button {
-	right: var(--demo-margin);
+/* ---- docs/.vuepress/DemoComponent.vue (scoped) ---- */
+
+.DemoComponent {
+	display: grid;
+	grid-template-columns: min-content 1fr;
 }
 
-.example-sandbox {
+.DemoComponent .input-wrapper {
+	width: 15rem;
+}
+
+.DemoComponent .input-wrapper.fullscreen {
+	position: relative;
+	width: 640px;
+	height: 480px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	outline: 1px solid var(--tq-color-border);
+}
+
+.DemoComponent .input {
+	min-width: 15em;
+}
+
+.DemoComponent .pressed-keys {
+	position: absolute;
+	bottom: 2em;
+	display: flex;
+	box-sizing: border-box;
+	gap: 0.5em;
+	font-family: var(--tq-font-code);
+}
+
+.DemoComponent .pressed-keys div {
+	height: 36px;
+	font-size: 24px;
+	background-color: var(--tq-color-text-subtle);
+	color: var(--tq-color-background);
+	border-radius: var(--tq-radius-popup);
+	padding: 0 0.4em 3px;
+	display: flex;
+	align-items: center;
+}
+
+.DemoComponent .pressed-keys div span,
+.DemoComponent .pressed-keys div svg {
+	display: block;
+	vertical-align: middle;
+	margin-top: 3px;
+}
+
+.DemoComponent .options {
+	border-left: 1px solid black;
+	margin-left: 2rem;
+	padding-left: 2rem;
+}
+
+[data-theme='dark'] .DemoComponent .options {
+	border-left-color: white;
+}
+
+/* ---- docs/.vuepress/ExampleContainer.vue (scoped) ---- */
+
+.ExampleContainer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.ExampleContainer .sandbox {
 	display: flex;
 	gap: 2rem;
 	align-items: start;
@@ -155,38 +109,48 @@ main section {
 	max-width: 18rem;
 }
 
-.example-demo.fullscreen .example-sandbox {
+.ExampleContainer .sandbox.fullscreen {
 	width: 640px;
 	max-width: 640px;
 	height: 480px;
 	align-items: center;
 }
 
-.example-sandbox > :first-child {
+.ExampleContainer .sandbox > :first-child {
 	flex-grow: 1;
 }
 
-.sr-only {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-	clip: rect(0 0 0 0);
-	white-space: nowrap;
+/* ---- our extra All Components gallery page (inside a Viewport) ---- */
+
+.all-components {
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 24px 16px 120px;
 }
 
-/* VuePress-default-theme-style underlined section headings. */
-.docs-page h2 {
+.all-components h1 {
+	font-family: var(--tq-font-heading, sans-serif);
+	font-size: 28px;
+	font-weight: 700;
+	line-height: 1.2;
+	margin: 0 0 24px;
+}
+
+.all-components h2 {
+	font-family: var(--tq-font-heading, sans-serif);
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 1.2;
+	margin: 32px 0 12px;
 	padding-bottom: 8px;
 	border-bottom: 1px solid var(--tq-color-border, #ddd);
 }
 
-.intro-page pre {
-	margin: 8px 0 0;
-	white-space: pre-wrap;
-	font-family: var(--tq-font-code, monospace);
-	font-size: 12px;
+.all-components section {
+	margin-bottom: 16px;
 }
+
+/* ---- Colors page demo widgets (React port of ColorPaletteDemo.vue) ---- */
 
 .color-controls {
 	display: grid;
@@ -205,7 +169,7 @@ main section {
 	display: grid;
 	gap: 8px;
 	padding: 20px;
-	border-radius: var(--tq-radius-pane, 8px);
+	border-radius: 8px;
 }
 
 .color-scale {
@@ -243,7 +207,7 @@ main section {
 	gap: 8px;
 	padding: 7px 11px;
 	border: 2px solid;
-	border-radius: var(--tq-radius-input, 4px);
+	border-radius: 4px;
 }
 
 .palette-chip {
@@ -257,15 +221,16 @@ main section {
 	display: block;
 	width: 40px;
 	height: 40px;
-	border-radius: var(--tq-radius-input, 4px);
+	border-radius: 4px;
 }
 
-.lede { font-size: 18px; }
+/* ---- misc ---- */
 
-@media (max-width: 640px) {
-	.demo-header { align-items: flex-start; flex-direction: column; }
-	.docs-sidebar { display: none; }
-	.header-actions { position: absolute; top: 8px; right: 12px; }
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
 }
-
-@media (min-width: 1050px) { .docs-layout main { margin-left: 230px; } }

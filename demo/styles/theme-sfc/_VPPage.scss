@@ -1,0 +1,34 @@
+
+@use '../../../node_modules/@vuepress/theme-default/lib/client/styles/mixins';
+@use '../../../node_modules/@vuepress/theme-default/lib/client/styles/variables' as *;
+
+.vp-page {
+  display: block;
+
+  // leave space for navbar
+  padding-top: var(--navbar-height);
+  padding-bottom: 2rem;
+
+  // leave space for sidebar
+  padding-left: var(--sidebar-width);
+
+  // narrow desktop / iPad
+  @media (max-width: $MQNarrow) {
+    // leave space for sidebar
+    padding-left: var(--sidebar-width-mobile);
+  }
+
+  // wide mobile
+  @media (max-width: $MQMobile) {
+    // sidebar is collapsed
+    padding-left: 0;
+  }
+
+  [vp-content] {
+    @include mixins.content-wrapper;
+
+    & {
+      padding-top: 0;
+    }
+  }
+}

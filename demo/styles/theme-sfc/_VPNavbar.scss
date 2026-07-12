@@ -1,0 +1,46 @@
+
+@use '../../../node_modules/@vuepress/theme-default/lib/client/styles/variables' as *;
+
+.vp-navbar {
+  --navbar-line-height: calc(
+    var(--navbar-height) - 2 * var(--navbar-padding-v)
+  );
+
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 20;
+
+  box-sizing: border-box;
+  height: var(--navbar-height);
+  padding: var(--navbar-padding-v) var(--navbar-padding-h);
+  border-bottom: 1px solid var(--vp-c-border);
+
+  background-color: var(--vp-navbar-c-bg);
+
+  line-height: var(--navbar-line-height);
+
+  transition:
+    background-color var(--vp-t-color),
+    border-color var(--vp-t-color);
+
+  @media screen and (max-width: $MQMobile) {
+    padding-left: 4rem;
+  }
+}
+
+.vp-navbar-items-wrapper {
+  position: absolute;
+  top: var(--navbar-padding-v);
+  right: var(--navbar-padding-h);
+
+  display: flex;
+
+  box-sizing: border-box;
+  height: var(--navbar-line-height);
+  padding-left: var(--navbar-padding-h);
+
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
