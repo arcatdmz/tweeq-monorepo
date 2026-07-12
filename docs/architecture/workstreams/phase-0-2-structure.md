@@ -215,6 +215,20 @@ contain renderer markup only and no copied state transition.
 - Family gate: all workspace tests/builds, lint, boundaries, SSR/CJS imports
   and renders, packed React/Vue consumers, and all 21 Playwright tests pass.
 
+## Phase 5 documentation and compatibility (in progress)
+
+- The documentation home switcher now presents current, renderer-specific
+  `@tweeq/react` and `@tweeq/vue` installation and component APIs; it no longer
+  directs Vue users through the removed Pinia/upstream-package setup.
+- Separate migration guides cover existing upstream Vue consumers and the
+  pre-monorepo React fork.
+- Vue's legacy `useTweeq().Component` facade now warns once and has an explicit
+  `@tweeq/vue` 2.0.0 removal version. New Vue examples use named imports.
+- `docs/api-exports.md` is generated from package export maps and built
+  declaration entries. CI rebuilds packages and rejects a stale API inventory.
+- Remaining Phase 5 work: executable snippet/link validation and selectable
+  React/Vue research demos where both renderer APIs can express the example.
+
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 
 - Core and DOM production ESM now uses explicit `.js` specifiers and is

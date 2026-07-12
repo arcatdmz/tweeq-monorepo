@@ -3,8 +3,8 @@ import {useState} from 'react'
 import {assetPath} from '../assetPath'
 import {Heading} from './docs'
 
-const reactInstall = 'yarn add github:arcatdmz/tweeq react react-dom'
-const vueInstall = 'yarn add baku89/tweeq pinia'
+const reactInstall = 'pnpm add @tweeq/react react react-dom'
+const vueInstall = 'pnpm add @tweeq/vue vue'
 
 export function HomePage() {
 	const [framework, setFramework] = useState<'react' | 'vue'>('react')
@@ -31,8 +31,8 @@ export function HomePage() {
 		].map(([title, details]) => <div className="vp-feature" key={title}><h2>{title}</h2><p>{details}</p></div>)}</div>
 		<div {...{'vp-content': ''}} data-testid="home-page">
 			<div className="badges"><p><a href="http://spdx.org/licenses/MIT"><img src="https://img.shields.io/npm/l/tweeq.svg?style=flat-square" alt="npm license" /></a></p></div>
-			<p>This repository is a <a href="https://react.dev">React</a> fork of <a href="https://github.com/baku89/tweeq">baku89/tweeq</a>, the original Vue version created by visual artist <a href="https://baku89.com">Baku Hashimoto</a>.</p>
-			<p>Tweeq provides components for creative professionals, ranging from numeric sliders and color pickers to advanced controls like a cubic-bezier editor, with micro-interactions designed for professional use. The React example is shown by default; switch to Vue below to view the original API.</p>
+			<p>This repository maintains <a href="https://react.dev">React</a> and <a href="https://vuejs.org">Vue 3</a> renderers over the shared behavior of <a href="https://github.com/baku89/tweeq">baku89/tweeq</a>, created by visual artist <a href="https://baku89.com">Baku Hashimoto</a>.</p>
+			<p>Tweeq provides components for creative professionals, ranging from numeric sliders and color pickers to advanced controls like a cubic-bezier editor, with micro-interactions designed for professional use. Choose a renderer below; each example uses that renderer's public API.</p>
 			<Heading level={2} id="how-to-use">How to Use</Heading>
 			<div className="framework-switcher" role="group" aria-label="Framework example">
 				<button type="button" aria-pressed={react} onClick={() => setFramework('react')}>React</button>
@@ -43,8 +43,8 @@ export function HomePage() {
 			{react ? <>
 				<Heading level={3} id="main-tsx">main.tsx</Heading>
 				<div className="language-ts"><pre><code>{`import {createRoot} from 'react-dom/client'
-import {TweeqProvider} from 'tweeq'
-import 'tweeq/style.css'
+import {TweeqProvider} from '@tweeq/react'
+import '@tweeq/react/style.css'
 
 createRoot(document.getElementById('root')!).render(
   <TweeqProvider
@@ -57,7 +57,7 @@ createRoot(document.getElementById('root')!).render(
 )`}</code></pre></div>
 				<Heading level={3} id="app-tsx">App.tsx</Heading>
 				<div className="language-ts"><pre><code>{`import {useState} from 'react'
-import {App, InputNumber, Parameter, ParameterGrid, TitleBar} from 'tweeq'
+import {App, InputNumber, Parameter, ParameterGrid, TitleBar} from '@tweeq/react'
 
 export function MyApp() {
   const [opacity, setOpacity] = useState(1)
@@ -73,30 +73,32 @@ export function MyApp() {
   </App>
 }`}</code></pre></div>
 			</> : <>
-				<Heading level={3} id="index-ts">index.ts</Heading><div className="language-ts"><pre><code>{`import {createPinia} from 'pinia'
-import {initTweeq} from 'baku89/tweeq'
+				<Heading level={3} id="main-ts">main.ts</Heading><div className="language-ts"><pre><code>{`import {createApp} from 'vue'
+import {initTweeq} from '@tweeq/vue'
+import '@tweeq/vue/style.css'
+import Root from './App.vue'
 
-app.use(createPinia())
+const app = createApp(Root)
 initTweeq('com.yourid.yourapp', {
   colorMode: 'dark',
   accentColor: '#ff0000',
-})`}</code></pre></div>
+})
+app.mount('#app')`}</code></pre></div>
 				<Heading level={3} id="app-vue">App.vue</Heading><div className="language-html"><pre><code>{`<script setup lang="ts">
 import {ref} from 'vue'
-import {useTweeq} from 'baku89/tweeq'
-const Tq = useTweeq()
+import {App, InputNumber, Parameter, ParameterGrid, TitleBar} from '@tweeq/vue'
 const opacity = ref(1)
 </script>
 
 <template>
-  <Tq.App>
-    <template #title><Tq.TitleBar name="My App" icon="favicon.svg" /></template>
-    <Tq.ParameterGrid>
-      <Tq.Parameter label="Opacity">
-        <Tq.InputNumber v-model="opacity" :min="0" :max="1" />
-      </Tq.Parameter>
-    </Tq.ParameterGrid>
-  </Tq.App>
+  <App>
+    <template #title><TitleBar name="My App" icon="favicon.svg" /></template>
+    <ParameterGrid>
+      <Parameter label="Opacity">
+        <InputNumber v-model="opacity" :min="0" :max="1" />
+      </Parameter>
+    </ParameterGrid>
+  </App>
 </template>`}</code></pre></div>
 			</>}
 		</div>

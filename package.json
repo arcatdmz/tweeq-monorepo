@@ -13,6 +13,8 @@
 		"lint": "eslint packages apps/docs e2e",
 		"test": "pnpm -r --if-present test",
 		"test:ssr": "node scripts/test-ssr-imports.mjs",
+		"docs:generate": "node scripts/generate-api-reference.mjs",
+		"docs:check": "node scripts/generate-api-reference.mjs --check",
 		"check:boundaries": "node scripts/check-boundaries.mjs",
 		"test:packed": "node scripts/test-packed.mjs"
 	},

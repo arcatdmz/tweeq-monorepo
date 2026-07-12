@@ -9,3 +9,13 @@
 
 The completed one-off React port handoff documents were removed after the port
 landed. Git history retains them if historical details are needed.
+
+Renderer migration guides:
+
+- [`migration/vue.md`](migration/vue.md) for existing upstream Vue users;
+- [`migration/react.md`](migration/react.md) for users of the pre-monorepo
+  React fork.
+
+[`api-exports.md`](api-exports.md) is generated from the built public package
+entries. Refresh it with `pnpm docs:generate`; CI validates it after building
+the workspace.

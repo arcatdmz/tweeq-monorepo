@@ -16,6 +16,8 @@ export interface TweeqOptions {
 	colorPresets?: string[]
 }
 
+let didWarnAboutComponentFacade = false
+
 export function initTweeq(appId: string, options: TweeqOptions = {}) {
 	const appConfig = useAppConfigStore()
 	appConfig.appId = appId
@@ -27,6 +29,13 @@ export function initTweeq(appId: string, options: TweeqOptions = {}) {
 }
 
 export function useTweeq() {
+	if (!didWarnAboutComponentFacade && typeof console !== 'undefined') {
+		didWarnAboutComponentFacade = true
+		// eslint-disable-next-line no-console -- this is the compatibility contract
+		console.warn(
+			'[Tweeq] Accessing components through useTweeq() is deprecated and will be removed in @tweeq/vue 2.0.0. Import components directly from @tweeq/vue instead.',
+		)
+	}
 	const theme = useThemeStore()
 	const actions = useActionsStore()
 	const config = useAppConfigStore()
