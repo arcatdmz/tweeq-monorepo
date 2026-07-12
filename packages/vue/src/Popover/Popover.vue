@@ -3,7 +3,7 @@ import {unrefElement, useEventListener, useResizeObserver} from '@vueuse/core'
 import {computed, ref, useTemplateRef, watch, watchEffect} from 'vue'
 
 import {Balloon} from '../Balloon'
-import {addAnchorName} from '../util'
+import {addAnchorName} from '@tweeq/dom'
 import type {PopoverProps} from './types'
 
 type ArrowSide = 'top' | 'bottom' | 'left' | 'right'

@@ -8,7 +8,7 @@ import {InputNumber} from '../InputNumber'
 import {InputString} from '../InputString'
 import {useThemeStore} from '../stores/theme'
 import {InputEmits} from '../types'
-import * as V from '../validator'
+import * as V from '@tweeq/core/validator'
 import InputColorPad from './InputColorPad.vue'
 import type {InputColorProps} from './types'
 

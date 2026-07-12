@@ -1,3 +1,4 @@
+import type {Validator} from '@tweeq/core/validator'
 import {
 	computed,
 	MaybeRef,
@@ -7,8 +8,6 @@ import {
 	unref,
 	watchSyncEffect,
 } from 'vue'
-
-import {Validator} from '../validator'
 
 export function useValidator<T>(
 	local: Readonly<Ref<T>>,

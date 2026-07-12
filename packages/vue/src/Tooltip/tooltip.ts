@@ -1,6 +1,5 @@
+import {addAnchorName} from '@tweeq/dom'
 import {reactive, shallowRef} from 'vue'
-
-import {addAnchorName} from '../util'
 
 // Shared state for the single, app-wide tooltip. The vTooltip directive feeds it
 // and TooltipRoot renders from it (one popover reused across every tooltip).

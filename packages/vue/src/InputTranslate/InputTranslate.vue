@@ -8,7 +8,7 @@ import {InputPositionProps} from '../InputPosition'
 import {Tooltip} from '../Tooltip'
 import {InputEmits} from '../types'
 import {useDrag} from '../use/useDrag'
-import {precisionOf} from '../util'
+import {precisionOf} from '@tweeq/core'
 
 const model = defineModel<vec2>({required: true})
 

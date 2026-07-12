@@ -4,7 +4,7 @@ import {computed, useTemplateRef} from 'vue'
 
 import {GlslCanvas} from '../GlslCanvas'
 import {useDrag} from '../use/useDrag'
-import {toPercent} from '../util'
+import {toPercent} from '@tweeq/core'
 import FragmentString from '@tweeq/dom/shaders/pad.frag'
 import {type ColorChannel, colorChannelToIndex, HSVA} from './types'
 import {

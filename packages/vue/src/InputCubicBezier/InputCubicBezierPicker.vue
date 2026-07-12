@@ -5,7 +5,7 @@ import {computed, ref, useTemplateRef} from 'vue'
 
 import {useDrag} from '../use/useDrag'
 import type {InputCubicBezierProps} from './types'
-import {type CubicBezierValue} from './util'
+import type {CubicBezierValue} from '@tweeq/core'
 
 const props = defineProps<InputCubicBezierProps>()
 

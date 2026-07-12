@@ -5,7 +5,7 @@ import {InputTextBase} from '../InputTextBase'
 import {useMultiSelectStore} from '../stores/multiSelect'
 import {InputEmits} from '../types'
 import {useValidator} from '../use/useValidator'
-import * as V from '../validator'
+import * as V from '@tweeq/core/validator'
 import {type InputStringProps} from './types'
 
 const model = defineModel<string>({required: true})

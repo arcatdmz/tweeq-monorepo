@@ -24,8 +24,13 @@ import {useMultiSelectStore} from '../stores/multiSelect'
 import {InputEmits} from '../types'
 import {useDrag} from '../use/useDrag'
 import {useValidator} from '../use/useValidator'
-import {getNumberPresition, precisionOf, toFixed, toPercent} from '../util'
-import * as V from '../validator'
+import {
+	getNumberPresition,
+	precisionOf,
+	toFixed,
+	toPercent,
+} from '@tweeq/core'
+import * as V from '@tweeq/core/validator'
 import InputNumberScales from './InputNumberScales.vue'
 import {type InputNumberProps} from './types'
 

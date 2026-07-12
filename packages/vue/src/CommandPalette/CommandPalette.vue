@@ -9,7 +9,7 @@ import {Icon} from '../Icon'
 import {type ActionItemOptions, useActionsStore} from '../stores/actions'
 import {useAppConfigStore} from '../stores/appConfig'
 import {useBndr} from '../use/useBndr'
-import {unsignedMod} from '../util'
+import {unsignedMod} from '@tweeq/core'
 
 const actions = useActionsStore()
 

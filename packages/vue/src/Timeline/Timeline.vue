@@ -6,7 +6,7 @@ import {clamp, debounce} from 'lodash-es'
 import {computed, shallowRef, useTemplateRef, watch} from 'vue'
 
 import {useBndr} from '../use/useBndr'
-import {toPercent} from '../util'
+import {toPercent} from '@tweeq/core'
 import type {TimelineProps} from './types'
 
 const props = withDefaults(defineProps<TimelineProps>(), {

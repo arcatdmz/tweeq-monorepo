@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {Path} from '@baku89/pave'
+import {formatTimecode, replaceTimecodeWithFrames} from '@tweeq/core'
+import type {ValidateResult} from '@tweeq/core/validator'
 import {useElementBounding, useMagicKeys} from '@vueuse/core'
 import {scalar, vec2} from 'linearly'
 import {range} from 'lodash-es'
@@ -19,13 +21,8 @@ import {Tooltip} from '../Tooltip'
 import {TweakOverlay} from '../TweakOverlay'
 import {InputEmits} from '../types'
 import {useDrag} from '../use/useDrag'
-import {ValidateResult} from '../validator'
 import {InputTimeProps, TimeFormat} from './types'
-import {
-	formatTimecode,
-	replaceTimecodeWithFrames,
-	useInputTimeContext,
-} from './utils'
+import {useInputTimeContext} from './context'
 
 const model = defineModel<number>({required: true})
 

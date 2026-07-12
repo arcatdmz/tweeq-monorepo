@@ -4,7 +4,7 @@ import {computed, ref, useTemplateRef} from 'vue'
 import {Popover} from '../Popover'
 import InputCubicBezierPicker from './InputCubicBezierPicker.vue'
 import type {InputCubicBezierProps} from './types'
-import type {CubicBezierValue} from './util'
+import type {CubicBezierValue} from '@tweeq/core'
 
 const props = defineProps<InputCubicBezierProps>()
 

@@ -11,4 +11,11 @@ export * from './use/useBndr'
 export * from './use/useFlash'
 export {type InputEmits} from './types'
 export {initTweeq, useTweeq} from './useTweeq'
-export * from './util'
+export {
+	getNumberPresition,
+	precisionOf,
+	toFixed,
+	toPercent,
+	unsignedMod,
+} from '@tweeq/core'
+export {addAnchorName, isDecendantElementOf, nodeContains} from '@tweeq/dom'

@@ -17,7 +17,7 @@ import {InputString} from '../InputString'
 import {Popover} from '../Popover'
 import {useThemeStore} from '../stores/theme'
 import {type InputEmits, useLabelizer} from '../types'
-import {unsignedMod} from '../util'
+import {unsignedMod} from '@tweeq/core'
 import type {InputDropdownProps} from './types'
 
 const model = defineModel<T>({required: true})

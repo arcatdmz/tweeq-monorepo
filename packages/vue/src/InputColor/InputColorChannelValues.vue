@@ -5,7 +5,7 @@ import {InputDropdown} from '../InputDropdown'
 import {InputGroup} from '../InputGroup'
 import {InputNumber} from '../InputNumber'
 import {InputString} from '../InputString'
-import * as V from '../validator'
+import * as V from '@tweeq/core/validator'
 import {type ColorChannel, type ColorSpace, HSVA} from './types'
 import {hsv2rgb, setHSVAChannel} from './utils'
 

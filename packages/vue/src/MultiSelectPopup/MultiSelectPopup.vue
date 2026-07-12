@@ -4,7 +4,7 @@ import {computed, onMounted, useTemplateRef, watchEffect} from 'vue'
 
 import {Icon} from '../Icon'
 import {MultiSelectType, useMultiSelectStore} from '../stores/multiSelect'
-import {addAnchorName} from '../util'
+import {addAnchorName} from '@tweeq/dom'
 import MultiSelectButton from './MultiSelectButton.vue'
 import MultiSelectPad from './MultiSelectPad.vue'
 
