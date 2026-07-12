@@ -83,3 +83,8 @@ contain renderer markup only and no copied state transition.
 
 - InputString expression mode now uses the same core compiler in both renderers;
   the Vue-local `eval` implementation was removed.
+- InputDropdown label generation and wrap/empty keyboard navigation now use
+  core implementations; both renderers emit aligned listbox/option ARIA parts.
+  Its shared contract covers controlled labels, wrapping, empty options, option
+  confirmation, and Escape rollback; it also caught and fixed React InputString
+  swallowing consumer `onKeyDown` handlers.

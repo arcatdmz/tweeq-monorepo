@@ -54,7 +54,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputColor | SFC | ✅ | `color` | color-curves | popover + channel sliders/pad |
 | InputComplex | SFC | ✅ | — | layout-modals | |
 | InputCubicBezier | SFC | ✅ | `cubicBezier` | color-curves | |
-| InputDropdown | SFC | ✅ | `dropdown` | components-parity, dropdown-code | |
+| InputDropdown | SFC | ✅ | `dropdown` | shared contract + components-parity, dropdown-code | shared empty/wrap navigation; click confirm, Escape rollback, and listbox ARIA aligned in Phase 4 |
 | InputDrum | SFC | ✅ | `inputDrum` | temporal | |
 | InputGroup | SFC | ✅ | — | shared contract + primitives | fragment/whitespace flattening and horizontal/vertical child positions aligned in Phase 4 |
 | InputNumber | SFC | ✅ | `inputNumber` | docs-pages, number-vectors | decimal precision + drag-scale fixtures protected |

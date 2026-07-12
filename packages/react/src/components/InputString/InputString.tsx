@@ -58,6 +58,7 @@ export const InputString = forwardRef<InputStringHandle, InputStringProps>(
 			onFocus,
 			onBlur,
 			onConfirm,
+			onKeyDown,
 			...props
 		},
 		forwardedRef
@@ -180,6 +181,8 @@ export const InputString = forwardRef<InputStringHandle, InputStringProps>(
 					}
 				}}
 				onKeyDown={event => {
+					onKeyDown?.(event)
+					if (event.defaultPrevented) return
 					if (event.metaKey && event.key === '=') {
 						event.preventDefault()
 						setExpressionEnabled(true)

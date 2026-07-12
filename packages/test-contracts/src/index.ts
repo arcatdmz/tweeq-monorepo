@@ -27,6 +27,10 @@ export {
 	runInputButtonToggleContract,
 } from './inputButtonToggle'
 export {
+	type InputDropdownContractProps,
+	runInputDropdownContract,
+} from './inputDropdown'
+export {
 	type InputGroupContractProps,
 	runInputGroupContract,
 } from './inputGroup'

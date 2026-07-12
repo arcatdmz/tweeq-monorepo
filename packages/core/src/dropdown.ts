@@ -27,3 +27,15 @@ export function getDropdownTop({
 		Math.min(Math.max(viewportMargin, maxTop), idealTop)
 	)
 }
+
+/** Select the adjacent filtered option with wrapping, or nothing if empty. */
+export function getDropdownNextOption<T>(
+	options: readonly T[],
+	current: T,
+	direction: number
+): T | undefined {
+	if (options.length === 0) return undefined
+	const index = options.indexOf(current)
+	const next = ((index + direction) % options.length + options.length) % options.length
+	return options[next]
+}

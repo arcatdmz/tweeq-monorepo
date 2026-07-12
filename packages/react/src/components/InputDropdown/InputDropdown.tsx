@@ -1,4 +1,5 @@
 import {
+	getDropdownNextOption,
 	getDropdownTop,
 	getLabelizer,
 	type InputAlign,
@@ -7,7 +8,6 @@ import {
 	type InputFont,
 	type InputTheme,
 	type LabelizerProps,
-	unsignedMod,
 } from '@tweeq/core'
 import {themeStore} from '@tweeq/dom'
 import {search} from 'fast-fuzzy'
@@ -193,9 +193,8 @@ export function InputDropdown<T>({
 		autoScrollFrame.current = undefined
 	}
 	const move = (direction: number) => {
-		if (!filtered.length) return
-		const index = filtered.indexOf(value)
-		const next = filtered[unsignedMod(index + direction, filtered.length)]
+		const next = getDropdownNextOption(filtered, value, direction)
+		if (next === undefined) return
 		onChange?.(next)
 		requestAnimationFrame(() =>
 			select.current
@@ -223,6 +222,7 @@ export function InputDropdown<T>({
 			)}
 			{...{align}}
 			aria-disabled={disabled || undefined}
+			data-tq-part="root"
 		>
 			<InputString
 				ref={input}
@@ -299,6 +299,7 @@ export function InputDropdown<T>({
 						ref={select}
 						className={styles.select}
 						role="listbox"
+						data-tq-part="listbox"
 						style={{maxHeight}}
 						{...{font, align}}
 						onScroll={updateArrows}
@@ -315,6 +316,7 @@ export function InputDropdown<T>({
 								)}
 								data-active={Object.is(item, value) || undefined}
 								data-current={Object.is(item, valueAtStart) || undefined}
+								data-tq-part={`option-${index}`}
 								onPointerEnter={() => onChange?.(item)}
 								onClick={() => {
 									onChange?.(item)

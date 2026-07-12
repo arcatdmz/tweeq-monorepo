@@ -1,6 +1,7 @@
 <script lang="ts" setup generic="T">
 import {useElementBounding, useWindowSize, whenever} from '@vueuse/core'
 import {search} from 'fast-fuzzy'
+import {getDropdownNextOption, getLabelizer} from '@tweeq/core'
 import {scalar, type vec2} from 'linearly'
 import {
 	computed,
@@ -16,8 +17,7 @@ import {Icon} from '../Icon'
 import {InputString} from '../InputString'
 import {Popover} from '../Popover'
 import {useThemeStore} from '../stores/theme'
-import {type InputEmits, useLabelizer} from '../types'
-import {unsignedMod} from '@tweeq/core'
+import {type InputEmits} from '../types'
 import type {InputDropdownProps} from './types'
 
 const model = defineModel<T>({required: true})
@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<InputDropdownProps<T>>(), {
 	align: 'center',
 })
 
-const labelizer = useLabelizer(props)
+const labelizer = computed(() => getLabelizer(props))
 
 const emit = defineEmits<InputEmits>()
 
@@ -156,7 +156,7 @@ const selectMaxHeight = computed(() => {
 })
 
 watch(filteredOptions, filteredOptions => {
-	if (!filteredOptions.includes(model.value)) {
+	if (filteredOptions.length > 0 && !filteredOptions.includes(model.value)) {
 		model.value = filteredOptions[0]
 	}
 	if (!open.value) return
@@ -308,6 +308,13 @@ function onSelect(option: T) {
 	model.value = option
 }
 
+function onClickOption(option: T) {
+	model.value = option
+	open.value = false
+	window.removeEventListener('pointerup', onPointerupWhileOpen)
+	emit('confirm')
+}
+
 function onPointerupWhileOpen() {
 	const elapsedFromOpen = new Date().getTime() - (timeAtOpen ?? 0)
 
@@ -322,10 +329,12 @@ function onPointerupWhileOpen() {
 }
 
 function onPressArrow(isUp: boolean) {
-	const length = filteredOptions.value.length
-	const index = filteredOptions.value.indexOf(model.value)
-	const newIndex = unsignedMod(index + (isUp ? -1 : 1), length)
-	const option = filteredOptions.value[newIndex]
+	const option = getDropdownNextOption(
+		filteredOptions.value,
+		model.value,
+		isUp ? -1 : 1
+	)
+	if (option === undefined) return
 	model.value = option
 	nextTick(scrollActiveIntoView)
 }
@@ -383,6 +392,12 @@ function onPopoverUpdateOpen(_open: boolean) {
 	}
 }
 
+function onEscape() {
+	open.value = false
+	window.removeEventListener('pointerup', onPointerupWhileOpen)
+	model.value = valueAtStart.value
+}
+
 onBeforeUnmount(() => {
 	window.removeEventListener('pointerup', onPointerupWhileOpen)
 	stopAutoScroll()
@@ -396,7 +411,8 @@ onBeforeUnmount(() => {
 		:class="{open}"
 		v-bind="$attrs"
 		:align="align"
-		:disabled="disabled"
+		:aria-disabled="disabled || undefined"
+		data-tq-part="root"
 	>
 		<InputString
 			ref="$input"
@@ -417,6 +433,7 @@ onBeforeUnmount(() => {
 			@keydown.enter.prevent="onEnter"
 			@keydown.up.prevent="onPressArrow(true)"
 			@keydown.down.prevent="onPressArrow(false)"
+			@keydown.esc="onEscape"
 		/>
 		<!-- Resting overlay: the selected option's icon beside its label, centred
 			like the options list. Hidden while typing to filter; pointer-events none
@@ -448,17 +465,23 @@ onBeforeUnmount(() => {
 					:style="{maxHeight: selectMaxHeight + 'px'}"
 					:font="font"
 					:align="align"
+					role="listbox"
+					data-tq-part="listbox"
 					@scroll="updateScrollArrows"
 				>
 					<li
 						v-for="(item, index) in filteredOptions"
 						:key="index"
 						class="option"
+						role="option"
+						:aria-selected="Object.is(item, modelValue)"
+						:data-tq-part="`option-${index}`"
 						:class="{
 							active: item === modelValue,
 							current: item === valueAtStart,
 						}"
 						@pointerenter="onSelect(item)"
+						@click="onClickOption(item)"
 					>
 						<slot name="option" :item="item">
 							<Icon
