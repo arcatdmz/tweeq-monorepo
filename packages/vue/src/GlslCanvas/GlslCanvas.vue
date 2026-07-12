@@ -1,14 +1,11 @@
 <script lang="ts" setup>
-import {useTemplateRef, watch} from 'vue'
-
-import {useReglContext} from './reglContextStore'
+import {drawGlslToImage, type GlslUniforms} from '@tweeq/dom'
+import {useResizeObserver} from '@vueuse/core'
+import {onUnmounted, useTemplateRef, watch} from 'vue'
 
 interface Props {
 	fragmentString: string
-	uniforms: Record<
-		string,
-		number | number[] | readonly [number, number, number, number]
-	>
+	uniforms: GlslUniforms
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -21,19 +18,29 @@ const props = withDefaults(defineProps<Props>(), {
 
 const $img = useTemplateRef('$img')
 
-const draw = useReglContext().createDraw($img)
+let cancelDraw: (() => void) | undefined
+function draw() {
+	cancelDraw?.()
+	if ($img.value) {
+		cancelDraw = drawGlslToImage(
+			$img.value,
+			props.fragmentString,
+			props.uniforms
+		)
+	}
+}
 
 watch(
 	() => [props.fragmentString, props.uniforms] as const,
-	([frag, uniforms]) => {
-		draw(frag, uniforms)
-	},
+	draw,
 	{immediate: true, flush: 'post'}
 )
+useResizeObserver($img, draw)
+onUnmounted(() => cancelDraw?.())
 </script>
 
 <template>
-	<img ref="$img" class="GlslCanvas" />
+	<img ref="$img" class="GlslCanvas" alt="" data-tq-part="image" />
 </template>
 
 <style lang="stylus" scoped>

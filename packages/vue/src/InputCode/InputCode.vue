@@ -15,6 +15,7 @@ defineEmits<{
 			class="monaco-editor"
 			:modelValue="modelValue"
 			:lang="lang"
+			:errors="errors"
 			@update:modelValue="$emit('update:modelValue', $event)"
 		/>
 	</div>

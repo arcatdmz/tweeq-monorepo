@@ -170,6 +170,13 @@ contain renderer markup only and no copied state transition.
   EyeDropper changes now synchronize HSVA and confirm in both renderers;
   EyeDropper detection is SSR-safe and disabled state reaches picker channels,
   direct actions, and the outer text/number controls.
+- GlslCanvas now has one DOM-owned regl queue/context in both renderers. Vue's
+  duplicate context store was removed and its adapter redraws on resize and
+  invalidates stale/unmounted image work.
+- MonacoEditor shares diagnostic transforms and exposes equivalent controlled
+  cursor, cursor-event, marker, theme, and key-isolation behavior. Vue's
+  formerly commented implementation is restored through the wrapper mount
+  hook, InputCode forwards errors, and async load completion is unmount-safe.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

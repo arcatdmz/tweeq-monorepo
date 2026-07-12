@@ -43,14 +43,14 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | BindIcon | SFC | ✅ | — | — | |
 | ColorIcon | SFC | ✅ | — | — | |
 | CommandPalette | SFC | ✅ | — | core history/navigation + dropdown-code | fuzzy search via `fast-fuzzy`; shared action lifecycle hooks, recent-history updates, wrap navigation, Ctrl/Cmd+P, and arrow behavior aligned in Phase 4 |
-| GlslCanvas | SFC | ✅ | `glsl` | color-curves | regl-based; WebGL feature detection |
+| GlslCanvas | SFC | ✅ | `glsl` | shared DOM renderer + color-curves | one regl queue/context, resize redraw, stale-work invalidation, and unmount disposal aligned in Phase 4 |
 | Icon | SFC | ✅ | — | core fixtures | shared source parsing; framework-specific Iconify adapters/cache |
 | IconIndicator | SFC | ✅ | — | shared contract | controlled active state, pointer/keyboard activation, `aria-pressed`, and stable parts aligned in Phase 4 |
 | InputAngle | SFC | ✅ | `inputRotary` | shared child contracts + rotary-snap + temporal | thin responsive composition of aligned InputRotary/InputNumber adapters |
 | InputButton | SFC | ✅ | — | shared contract + text-toggles | action, native disabled state, invalid state, and stable content parts aligned in Phase 4 |
 | InputButtonToggle | SFC | ✅ | — | shared contract | controlled activation, native disabled state, `aria-pressed`, and stable parts aligned in Phase 4 |
 | InputCheckbox | SFC | ✅ | — | components-parity, text-toggles | |
-| InputCode | SFC | ✅ | — | dropdown-code | Monaco integration differs by wrapper lib |
+| InputCode | SFC | ✅ | `codeEditor` | core diagnostic transform + dropdown-code | wrapper libraries differ; controlled value/cursor, cursor events, diagnostics, theme updates, key isolation, and async unmount guard aligned in Phase 4 |
 | InputColor | SFC | ✅ | `color` | shared contract + core picker controller + color-curves | controlled color synchronization, preset/EyeDropper confirm, SSR-safe capability detection, and disabled channel/control propagation aligned in Phase 4 |
 | InputComplex | SFC | ✅ | — | layout-modals | |
 | InputCubicBezier | SFC | ✅ | `cubicBezier` | shared contract + core geometry + color-curves | controlled path, touch/pen/mouse handle drag, clamped point updates, disabled/invalid state, confirm lifecycle, and stable picker parts aligned in Phase 4 |

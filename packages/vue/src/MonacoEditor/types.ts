@@ -1,8 +1,6 @@
-export interface MonacoEditorErrorInfo {
-	message: string
-	line: number
-	column: number
-}
+import type {CodeEditorErrorInfo} from '@tweeq/core'
+
+export type MonacoEditorErrorInfo = CodeEditorErrorInfo
 
 export interface MonacoEditorProps {
 	modelValue: string

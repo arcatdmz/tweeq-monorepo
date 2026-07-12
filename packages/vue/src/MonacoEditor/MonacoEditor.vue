@@ -1,29 +1,30 @@
 <script setup lang="ts">
-import {vec2} from 'linearly'
-import type {editor} from 'monaco-editor'
+import {createCodeEditorMarkers} from '@tweeq/core'
+import type {editor, IDisposable} from 'monaco-editor'
 import {
+	computed,
 	markRaw,
-	nextTick,
+	onBeforeUnmount,
 	onMounted,
 	shallowRef,
-	useTemplateRef,
+	watch,
 	watchEffect,
 } from 'vue'
 
 import type {MonacoEditorProps} from './types'
 import {useThemeStore} from '../stores/theme'
 
-withDefaults(defineProps<MonacoEditorProps>(), {})
+const props = defineProps<MonacoEditorProps>()
 
-defineEmits<{
+const emit = defineEmits<{
 	'update:modelValue': [value: string]
 	'update:cursorIndex': [value: number]
-	'update:cursorPosition': [value: vec2]
+	'update:cursorPosition': [value: readonly [number, number]]
 }>()
 
 const theme = useThemeStore()
 
-const editorOptions: editor.IStandaloneEditorConstructionOptions = {
+const editorOptions = computed<editor.IStandaloneEditorConstructionOptions>(() => ({
 	minimap: {enabled: false},
 	fontLigatures: true,
 	fontFamily: 'Geist Mono',
@@ -42,140 +43,88 @@ const editorOptions: editor.IStandaloneEditorConstructionOptions = {
 		verticalScrollbarSize: 2,
 	},
 	tabSize: 2,
-	// @ts-ignore
-	'bracketPairColorization.enabled': false,
-	renderIndentGuides: false,
-}
+	bracketPairColorization: {enabled: false},
+	guides: {indentation: false},
+}))
 
 // Register (and keep in sync) the palette-derived editor theme. defineTheme is
 // global and safe to call before the editor mounts; setTheme re-applies it when
 // the palette/appearance changes.
 const THEME_NAME = 'tweeq'
 const codeEditor = shallowRef()
-const editorApi = shallowRef<typeof editor>()
+const monacoApi = shallowRef<typeof import('monaco-editor')>()
+const editorInstance = shallowRef<editor.IStandaloneCodeEditor>()
+const editorDisposables: IDisposable[] = []
+let active = true
 
 watchEffect(() => {
-	if (!editorApi.value) return
-	editorApi.value.defineTheme(
+	if (!monacoApi.value) return
+	monacoApi.value.editor.defineTheme(
 		THEME_NAME,
 		theme.monacoTheme as editor.IStandaloneThemeData
 	)
-	editorApi.value.setTheme(THEME_NAME)
+	monacoApi.value.editor.setTheme(THEME_NAME)
 })
-
-const $editor = useTemplateRef<{$el: HTMLElement}>('$editor')
 
 onMounted(async () => {
 	const [wrapper, monaco] = await Promise.all([
 		import('monaco-editor-vue3'),
 		import('monaco-editor'),
 	])
+	if (!active) return
 	codeEditor.value = markRaw(wrapper.CodeEditor)
-	editorApi.value = monaco.editor
-	await nextTick()
-	if (!$editor.value) return
-
-	const el = $editor.value.$el as HTMLElement
-
-	el.addEventListener('keydown', (event: KeyboardEvent) => {
-		event.stopPropagation()
-	})
-	el.addEventListener('keyup', (event: KeyboardEvent) => {
-		event.stopPropagation()
-	})
+	monacoApi.value = monaco
 })
 
-// 	// fetch the theme file and apply to the editor
-// 	monaco.editor.defineTheme('light', Tomorrow as any)
-// 	monaco.editor.defineTheme('dark', TomorrowNight as any)
+function onEditorDidMount(instance: editor.IStandaloneCodeEditor) {
+	editorInstance.value = instance
+	editorDisposables.push(
+		instance.onKeyDown(event => event.browserEvent.stopPropagation()),
+		instance.onKeyUp(event => event.browserEvent.stopPropagation()),
+		instance.onDidChangeCursorPosition(() => {
+			const position = instance.getPosition()
+			if (!position) return
+			emit(
+				'update:cursorIndex',
+				instance.getModel()?.getOffsetAt(position) ?? 0
+			)
+			const visible = instance.getScrolledVisiblePosition(position)
+			if (visible) {
+				emit('update:cursorPosition', [
+					visible.left,
+					visible.top + visible.height,
+				])
+			}
+		})
+	)
+}
 
-// 	const theme = useThemeStore()
+watch(
+	[() => props.cursorIndex, editorInstance],
+	([cursorIndex, instance]) => {
+		if (cursorIndex === undefined || !instance) return
+		const position = instance.getModel()?.getPositionAt(cursorIndex)
+		if (position) instance.setPosition(position)
+	},
+	{immediate: true}
+)
 
-// 	watchEffect(() => {
-// 		monaco.editor.setTheme(theme.colorMode)
-// 	})
+watchEffect(() => {
+	const instance = editorInstance.value
+	const api = monacoApi.value
+	const model = instance?.getModel()
+	if (!api || !model) return
+	api.editor.setModelMarkers(
+		model,
+		'tweeq',
+		createCodeEditorMarkers(props.errors, api.MarkerSeverity.Error)
+	)
+})
 
-// 	// resize editor to match its parent element size
-// 	useResizeObserver($root.value.parentElement, entries => {
-// 		const {
-// 			contentRect: {width, height},
-// 		} = entries[0]
-
-// 		editor.layout({width, height})
-// 	})
-
-// 	// allow ES5 JavaScript linting
-// 	const options =
-// 		monaco.languages.typescript.javascriptDefaults.getCompilerOptions()
-// 	options.noLib = true
-// 	options.target = monaco.languages.typescript.ScriptTarget.ES5
-// 	options.lib = ['es6']
-
-// 	// run the code on change
-// 	editor.getModel()?.onDidChangeContent(() => {
-// 		const value = editor.getValue()
-// 		if (value === props.modelValue) return
-// 		emit('update:modelValue', editor.getValue())
-// 	})
-
-// 	editor.onDidChangeCursorPosition(() => {
-// 		const position = editor.getPosition()
-
-// 		if (!position) return
-
-// 		// Convert monaco editor's position to character-based index
-// 		const index = editor.getModel()?.getOffsetAt(position) ?? 0
-// 		emit('update:cursorIndex', index)
-
-// 		// Convert monaco editor's position to pixel-based position
-// 		const cursorInfo = editor.getScrolledVisiblePosition(position)
-// 		if (cursorInfo) {
-// 			const {top, left, height} = cursorInfo
-// 			emit('update:cursorPosition', [left, top + height])
-// 		}
-// 	})
-
-// 	watch(
-// 		() => props.cursorIndex,
-// 		cursorIndex => {
-// 			if (cursorIndex === undefined) return
-
-// 			const prevPosition = editor.getPosition()
-// 			const position = editor.getModel()?.getPositionAt(cursorIndex)
-// 			if (!prevPosition || !position || position.equals(prevPosition)) {
-// 				return
-// 			}
-
-// 			editor.setPosition(position)
-// 		},
-// 		{immediate: true}
-// 	)
-
-// 	watch(
-// 		() => props.errors,
-// 		errors => {
-// 			if (!errors) return
-
-// 			const model = editor.getModel()
-// 			if (!model) return
-
-// 			// Add error decorations to monaco editor
-// 			monaco.editor.setModelMarkers(
-// 				model,
-// 				'my-source',
-// 				errors.map(error => ({
-// 					message: error.message,
-// 					severity: monaco.MarkerSeverity.Error,
-// 					startLineNumber: error.line,
-// 					endLineNumber: error.line,
-// 					startColumn: error.column,
-// 					endColumn: error.column,
-// 				}))
-// 			)
-// 		},
-// 		{immediate: true}
-// 	)
-// })
+onBeforeUnmount(() => {
+	active = false
+	for (const disposable of editorDisposables) disposable.dispose()
+})
 </script>
 
 <template>
@@ -189,6 +138,7 @@ onMounted(async () => {
 		:language="lang"
 		:options="editorOptions"
 		@update:value="$emit('update:modelValue', $event)"
+		@editorDidMount="onEditorDidMount"
 		height="100%"
 	/>
 </template>

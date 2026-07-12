@@ -1,4 +1,5 @@
 import Editor, {loader, type OnMount} from '@monaco-editor/react'
+import {type CodeEditorErrorInfo, createCodeEditorMarkers} from '@tweeq/core'
 import {themeStore} from '@tweeq/dom'
 import {type vec2} from 'linearly'
 import type * as Monaco from 'monaco-editor'
@@ -19,11 +20,7 @@ function loadMonaco(): Promise<MonacoApi> {
 	return monacoPromise
 }
 
-export interface MonacoEditorErrorInfo {
-	message: string
-	line: number
-	column: number
-}
+export type MonacoEditorErrorInfo = CodeEditorErrorInfo
 
 export interface MonacoEditorProps
 	extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
@@ -83,14 +80,7 @@ export function MonacoEditor({
 		monaco.editor.setModelMarkers(
 			model,
 			'tweeq',
-			(errors ?? []).map(error => ({
-				message: error.message,
-				severity: monaco.MarkerSeverity.Error,
-				startLineNumber: error.line,
-				endLineNumber: error.line,
-				startColumn: error.column,
-				endColumn: error.column,
-			}))
+			createCodeEditorMarkers(errors, monaco.MarkerSeverity.Error)
 		)
 	}, [errors, monaco])
 

@@ -2,6 +2,7 @@
 // DOM globals — browser integration lives in @tweeq/dom.
 export * from './balloon.js'
 export * from './color.js'
+export * from './codeEditor.js'
 export * from './commandPalette.js'
 export * from './cubicBezier.js'
 export * from './dropdown.js'
