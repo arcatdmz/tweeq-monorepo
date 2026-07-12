@@ -44,26 +44,25 @@ export function ExamplesPage() {
 	return (
 		<article className="docs-page" data-testid="examples-page">
 			<h1>Examples</h1>
-			<p>Scheme-driven forms generated from a value and its parameter descriptions.</p>
-			<h2>Many Sliders</h2>
+			<h2 id="many-sliders">Many Sliders</h2>
 			<ExampleContainer
 				testId="many-sliders"
 				initialValue={{number1: 10, number2: 20, number3: 30, number4: 40, number5: 50}}
 				scheme={sliderScheme}
 			/>
-			<h2>Color Palettes</h2>
+			<h2 id="color-palettes">Color Palettes</h2>
 			<ExampleContainer
 				initialValue={{color1: '#000000', color2: '#FBF4EF', color3: '#E8EAEB', color4: '#AAABAE', color5: '#975E64'}}
 				scheme={colorScheme}
 			/>
-			<h2>Three Angle Inputs</h2>
+			<h2 id="three-angle-inputs">Three Angle Inputs</h2>
 			<ExampleContainer initialValue={{low: 0, mid: 0, high: 0}} scheme={angleScheme} />
-			<h2>Bunch of Switches</h2>
+			<h2 id="bunch-of-switches">Bunch of Switches</h2>
 			<ExampleContainer
 				initialValue={Object.fromEntries(Array.from({length: 10}, (_, index) => [`switch_${index + 1}`, index % 2 === 0])) as Switches}
 				scheme={switchScheme}
 			/>
-			<h2>List of File Names</h2>
+			<h2 id="list-of-file-names">List of File Names</h2>
 			<ExampleContainer
 				initialValue={{file_1: 'icon42.svg', file_2: 'logo17.svg', file_3: 'graphic3.svg', file_4: 'illustration89.svg', file_5: 'diagram25.svg', file_6: 'chart64.svg', file_7: 'banner31.svg', file_8: 'avatar12.svg', file_9: 'background76.svg', file_10: 'pattern58.svg'} as Files}
 				scheme={fileScheme}

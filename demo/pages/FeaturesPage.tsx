@@ -1,13 +1,6 @@
-export function FeaturesPage() {
-	return <article className="docs-page" data-testid="features-page">
-		<h1>Features</h1>
-		<h2>Specialized Inputs for Creative Software</h2>
-		<p>Tweeq provides precise controls for creative applications, from color and number inputs to rotary knobs, two-dimensional offsets, and timecode.</p>
-		<h2>“Drag-to-tweak” Interaction</h2>
-		<p>Drag pads and handles to adjust values. Shift increases adjustment scale, Alt enables finer adjustment, Q snaps values, and A/R select absolute or relative behavior where supported.</p>
-		<h2>Simultaneous Editing</h2>
-		<p>Hold Shift or the platform Meta key to select multiple compatible parameters and edit them together, much like spreadsheet cells.</p>
-		<h2>Expression Support</h2>
-		<p>Numeric inputs accept JavaScript expressions. Expressions can refer to <code>x</code>, the current value, and <code>i</code>, the zero-based parameter index.</p>
-	</article>
-}
+export function FeaturesPage() { return <article className="docs-page" data-testid="features-page">
+	<h1>Features</h1><h2 id="specialized-inputs">Specialized Inputs for Creative Software</h2><img className="docs-wide-image" src="/assets/components_list.webp" alt="Tweeq component collection" /><p>Tweeq offers a suite of specialized input components tailored for professional creative applications. Beyond standard color pickers and numeric sliders, it includes rotary knobs, two-dimensional offset controls, and even timecode-specific interfaces. These components are designed to meet the nuanced needs of graphic design, digital audio workstations (DAWs), and video editing tools, providing precise and efficient parameter manipulation.</p>
+	<h2 id="drag-to-tweak">“Drag-to-tweak” Interaction</h2><p>Several input components within Tweeq support the “drag-to-tweak” interaction paradigm, allowing users to adjust values by dragging over pads, handles, and similar elements.</p><p>During a drag operation, you can modify the parameter being adjusted, change the adjustment scale, or constrain the adjustment to a specific axis by pressing designated keys.</p><p>While specific key functions may vary across components, the general semantics are as follows:</p><ul><li><code>Shift</code>: Increases the adjustment scale, enabling quicker value changes.</li><li><code>Alt</code> (<code>Option</code> on Mac): Decreases the adjustment scale, allowing for finer, more precise adjustments.</li><li><code>Q</code>: Activates value snapping, aligning adjustments to predefined increments for consistency.</li><li><code>A</code> / <code>R</code>: Activates absolute/relative mode.</li></ul><p>Consistently, dragging to the right or upward increases parameter values. However, for parameters with geometric counterparts in the viewport, such as position or rotation, the drag direction aligns with the corresponding geometric interpretation.</p>
+	<h2 id="simultaneous-editing">Simultaneous Editing</h2><p>Many components in Tweeq support simultaneous selection and editing, akin to the behavior of spreadsheet cells. By holding down the <code>Shift</code> or Meta key (<code>Ctrl</code> on Windows, <code>Command</code> on Mac), users can select multiple components and adjust them concurrently, streamlining workflows that require coordinated parameter changes across multiple elements.</p>
+	<h2 id="expression-support">Expression Support</h2><p>Tweeq supports dynamic parameter control through JavaScript expressions. Users can input any valid JavaScript expression to define parameter values.</p><p>Expressions can reference several predefined variables:</p><ul><li><code>x</code>: Current value of the parameter</li><li><code>i</code>: Zero-based index of the current parameter.</li></ul>
+</article> }

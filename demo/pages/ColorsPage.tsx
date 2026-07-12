@@ -21,7 +21,9 @@ export function ColorsPage() {
 	return (
 		<article className="docs-page" data-testid="colors-page">
 			<h1>Colors</h1>
-			<p>Pick an accent, gray, background, and appearance; the complete palette is derived from them.</p>
+			<p>Tweeq's colors are easy to customize: pick an <strong>accent</strong>, <strong>gray</strong>, <strong>background</strong>, and <strong>light/dark</strong>, and the whole UI re-themes to match.</p>
+			<p>Beyond the main accent, there's a small <strong>color palette</strong> of distinct hues, and the <strong>semantic colors</strong> (<code>error</code>/<code>alert</code>/<code>rec</code>, <code>warning</code>, <code>success</code>, <code>info</code>) are drawn from it — each leaning toward the accent so everything feels of a piece, while a danger red still reads as red.</p>
+			<p>Tweak the inputs below to see it all update live.</p>
 			<div className="color-controls">
 				<label><span>Appearance</span><InputRadio<ColorMode> value={appearance} options={['light', 'dark']} icons={['mdi:white-balance-sunny', 'mdi:weather-night']} onChange={value => { setAppearance(value); setBackground(value === 'light' ? '#ffffff' : '#111111') }} /></label>
 				<label><span>Accent</span><InputColor value={accent} onChange={setAccent} /></label>

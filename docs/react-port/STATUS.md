@@ -195,3 +195,14 @@ Gates: tsc clean · eslint clean · 84 vitest · **13/13 Playwright** e2e pass.
 ## 2026-07-12 · orchestrator (Claude) — Examples page visual parity
 
 Compared against the published legacy docs (https://baku89.github.io/tweeq/example.html) via screenshots. The ported Examples page had diverged: bordered two-column cards with a visible JSON readout and a purple accent. Reworked to mirror the legacy ExampleContainer + DemoContainer pair (docs/.vuepress/*.vue): 18rem centered chrome-less sandbox, subtle Full Screen toggle top-right (position absolute needs !important vs the InputButton module, same as legacy), fullscreen = fixed 640×480 overlay, VuePress-style underlined h2. JSON readout is now sr-only (kept as the e2e hook). Demo no longer overrides accentColor — tweeq's default blue matches the published site. Gates: tsc/eslint clean, 84 vitest, 13/13 e2e.
+
+## 2026-07-12 · orchestrator (Claude) + 2 Codex agents — docs-site parity & five component fixes
+
+Details in `status/docs-site.md` and `status/bugfix-round2.md`.
+
+- **Docs site reproduced** in the demo: Home/Features/Components/Colors/Example tabs port the VuePress pages' text and demos; the auto-discovered gallery moved to an "All Components" tab ('/' still defaults there for e2e stability). VuePress-style chrome: logo navbar, GitHub link, working light/dark toggle (theme store), per-page sidebar of h2 anchors with scroll tracking, pointer cursors on all clickables (Viewport reset sets cursor:inherit — demo.css overrides).
+- **Component fixes** (Codex): InputDropdown fade geometry (list margins collapsed through .selectWrapper → flow-root), InputDrum center dead zone (masked viewport was a hit-test surface → pointer-events none), InputSize chain-button native metrics reset, InputTime frame wheel (overflow:visible lost a CSS-module load-order tie vs InputTextBase → made authoritative), PaneModalComplex scrollport clipped the last 1px border.
+- **Orchestrator fixes on top**: Sidebar heading collection was memoized on the never-changing <main> ref → stale/absent after navigation; now an effect keyed on page. Drum e2e clicked coordinates spanning multiple cells and targeted hidden measurement spans; time e2e measured boundingBox off-screen. Removed dangling IntroPage.tsx.
+- Verified visually: home hero, dropdown fades correct at both edges, drum click/drag, time wheel overlay during scrub.
+
+Gates: tsc clean · eslint clean · 84 vitest · **14/14 Playwright** e2e.
