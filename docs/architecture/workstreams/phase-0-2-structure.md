@@ -177,6 +177,9 @@ contain renderer markup only and no copied state transition.
   cursor, cursor-event, marker, theme, and key-isolation behavior. Vue's
   formerly commented implementation is restored through the wrapper mount
   hook, InputCode forwards errors, and async load completion is unmount-safe.
+- Markdown now renders through one core-owned MarkdownIt plugin pipeline. Vue
+  renders synchronously for SSR with a standard div root; its duplicated setup
+  and abandoned commented Monaco highlighter were removed.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

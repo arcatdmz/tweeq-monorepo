@@ -69,7 +69,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputTime | SFC | ✅ | `inputTime` | shared contract + temporal | core-owned expressions and tweak quantization; controlled display, bounds, keyboard increments, disabled/invalid state, and lifecycle aligned in Phase 4 |
 | InputTranslate | SFC | ✅ | `inputTranslate` | shared contract + core geometry + number-vectors | bounded drag lifecycle, disabled/invalid state, overlay geometry, native button semantics, and stable parts aligned in Phase 4 |
 | InputVec | SFC | ✅ | — | number-vectors | batched updates; disabled and invalid propagation aligned in Phase 4 |
-| Markdown | SFC | ✅ | — | dropdown-code | markdown-it pipeline shared |
+| Markdown | SFC | ✅ | `markdown` | core pipeline + dropdown-code | synchronous SSR/client output, standard div root, options, anchors, definition lists, footnotes, and TOC shared in Phase 4 |
 | Menu | SFC | ✅ | `menu` | shared contract + core safe-corridor geometry + overlay | command/short-label/separator rendering, close lifecycle, submenu corridor, shared public item types, and stable parts aligned in Phase 4 |
 | MonacoEditor | SFC | ✅ | — | dropdown-code | `monaco-editor-vue3` vs `@monaco-editor/react` |
 | MultiSelectPopup | SFC | ✅ | — | DOM controller fixtures + overlay | one shared selection/action controller; capture/update/confirm/dispose, popup cleanup, compatible action availability, and stable action parts aligned in Phase 4 |

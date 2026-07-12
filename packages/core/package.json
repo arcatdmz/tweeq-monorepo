@@ -27,6 +27,7 @@
 	"devDependencies": {
 		"@types/chroma-js": "^2.4.3",
 		"@types/lodash-es": "catalog:",
+		"@types/markdown-it": "^14.1.2",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
@@ -40,6 +41,11 @@
 		"line-intersect": "^3.0.0",
 		"linearly": "catalog:",
 		"lodash-es": "catalog:",
+		"markdown-it": "^14.0.0",
+		"markdown-it-anchor": "^9.0.1",
+		"markdown-it-deflist": "^3.0.0",
+		"markdown-it-footnote": "^4.0.0",
+		"markdown-it-toc-done-right": "^4.2.0",
 		"validate-color": "^2.2.4"
 	}
 }

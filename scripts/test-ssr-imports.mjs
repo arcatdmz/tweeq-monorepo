@@ -34,6 +34,13 @@ renderReactToString(
 	createElement(react.InputColorPicker, {value: '#336699', pickers: []})
 )
 console.log('SSR render OK: React InputColorPicker')
+const reactMarkdown = renderReactToString(
+	createElement(react.Markdown, {source: '# Server title'})
+)
+if (!reactMarkdown.includes('id="server-title"')) {
+	throw new Error('React Markdown omitted synchronous SSR content')
+}
+console.log('SSR render OK: React Markdown')
 
 const vue = imported.get('@tweeq/vue')
 await renderVueToString(
@@ -43,6 +50,15 @@ await renderVueToString(
 	})
 )
 console.log('SSR render OK: Vue InputColorPicker')
+const vueMarkdown = await renderVueToString(
+	createSSRApp({
+		render: () => h(vue.Markdown, {source: '# Server title'}),
+	})
+)
+if (!vueMarkdown.includes('id="server-title"') || vueMarkdown.includes('<entry')) {
+	throw new Error('Vue Markdown emitted invalid or empty SSR content')
+}
+console.log('SSR render OK: Vue Markdown')
 
 const require = createRequire(import.meta.url)
 for (const [name, entry] of [

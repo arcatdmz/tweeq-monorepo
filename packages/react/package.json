@@ -35,7 +35,6 @@
 		"@tweeq/styles": "workspace:^",
 		"@types/chroma-js": "^2.4.3",
 		"@types/lodash-es": "catalog:",
-		"@types/markdown-it": "^14.1.2",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
 		"@vitejs/plugin-react": "catalog:",
@@ -61,11 +60,6 @@
 		"fast-fuzzy": "^1.12.0",
 		"linearly": "catalog:",
 		"lodash-es": "catalog:",
-		"markdown-it": "^14.0.0",
-		"markdown-it-anchor": "^9.0.1",
-		"markdown-it-deflist": "^3.0.0",
-		"markdown-it-footnote": "^4.0.0",
-		"markdown-it-toc-done-right": "^4.2.0",
 		"monaco-editor": "^0.54.0",
 		"zustand": "^5.0.14"
 	}

@@ -1,8 +1,7 @@
-import MarkdownIt from 'markdown-it'
-import MarkdownItAnchor from 'markdown-it-anchor'
-import MarkdownItDeflist from 'markdown-it-deflist'
-import MarkdownItFootnote from 'markdown-it-footnote'
-import MarkdownItTOC from 'markdown-it-toc-done-right'
+import {
+	type MarkdownRenderOptions,
+	renderMarkdown,
+} from '@tweeq/core'
 import {type HTMLAttributes, useMemo} from 'react'
 
 import {classNames} from '../../classNames'
@@ -10,12 +9,12 @@ import styles from './Markdown.module.styl'
 
 export interface MarkdownProps extends HTMLAttributes<HTMLDivElement> {
 	source?: string
-	anchor?: MarkdownItAnchor.AnchorOptions
-	breaks?: boolean
-	html?: boolean
-	langPrefix?: string
-	linkify?: boolean
-	toc?: Record<string, unknown>
+	anchor?: MarkdownRenderOptions['anchor']
+	breaks?: MarkdownRenderOptions['breaks']
+	html?: MarkdownRenderOptions['html']
+	langPrefix?: MarkdownRenderOptions['langPrefix']
+	linkify?: MarkdownRenderOptions['linkify']
+	toc?: MarkdownRenderOptions['toc']
 }
 
 export function Markdown({
@@ -31,13 +30,7 @@ export function Markdown({
 }: MarkdownProps) {
 	const rendered = useMemo(
 		() =>
-			new MarkdownIt()
-				.use(MarkdownItAnchor, anchor)
-				.use(MarkdownItDeflist)
-				.use(MarkdownItFootnote)
-				.use(MarkdownItTOC, toc)
-				.set({breaks, html, langPrefix, linkify})
-				.render(source),
+			renderMarkdown(source, {anchor, breaks, html, langPrefix, linkify, toc}),
 		[anchor, breaks, html, langPrefix, linkify, source, toc]
 	)
 
@@ -45,6 +38,7 @@ export function Markdown({
 		<div
 			{...props}
 			className={classNames(styles.markdown, className)}
+			data-tq-part="root"
 			dangerouslySetInnerHTML={{__html: rendered}}
 		/>
 	)
