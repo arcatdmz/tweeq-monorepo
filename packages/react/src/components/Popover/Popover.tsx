@@ -142,16 +142,6 @@ export function Popover({
 		if (!isOpen) onClose?.()
 		onChangeOpen?.(isOpen)
 	})
-	useEventListener<KeyboardEvent>(
-		typeof window === 'undefined' ? null : window,
-		'keydown',
-		event => {
-			if (event.key === 'Escape' && open && lightDismiss) {
-				onClose?.()
-				onChangeOpen?.(false)
-			}
-		}
-	)
 	useEventListener(
 		typeof document === 'undefined' ? null : document,
 		'scroll',
@@ -190,6 +180,7 @@ export function Popover({
 			)}
 			popover={lightDismiss ? 'auto' : 'manual'}
 			style={mergedStyle}
+			data-tq-part="root"
 		>
 			{arrow ? (
 				<Balloon

@@ -146,6 +146,10 @@ contain renderer markup only and no copied state transition.
 - Menu now consumes the shared item model and safe-submenu-corridor geometry in
   both renderers. Its shared contract covers commands, short labels,
   separators, close propagation, controlled updates, and stable parts.
+- Popover now has one native toggle lifecycle for light-dismiss and uses the
+  same core anchor/shift/arrow geometry in both renderers. Its shared contract
+  caught Vue's invalid `"close"` ToggleEvent state and protects controlled
+  mounting, coordinate placement, native mode, and close event order.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

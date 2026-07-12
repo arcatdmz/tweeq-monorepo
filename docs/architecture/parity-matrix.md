@@ -81,7 +81,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | PaneSplit | SFC | ✅ | `panes` | — | |
 | PaneZUI | SFC | ✅ | — | layout-modals | zoomable UI |
 | ParameterGrid | SFC | ✅ | — | — | grid layout + ParameterHeading |
-| Popover | SFC | ✅ | `popover` | — | CSS anchor + native popover |
+| Popover | SFC | ✅ | `popover` | shared contract + core geometry + overlay | CSS anchor/native lifecycle, controlled open state, coordinate placement, manual/auto mode, shift/arrow geometry, and stable parts aligned in Phase 4 |
 | Ruler | SFC | ✅ | — | shared contract + core geometry + mobile-docs | default/custom scales, finite zero-size geometry, pointer mapping, and stable parts aligned in Phase 4 |
 | SvgIcon | SFC | ✅ | `svgPath` | — | |
 | Tabs | SFC | ✅ | — | layout-modals | |
