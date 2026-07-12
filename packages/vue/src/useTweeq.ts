@@ -1,10 +1,11 @@
+import type {ColorMode} from '@tweeq/core'
+
 import * as components from './components'
 import {useInputColor} from './InputColor/useInputColor'
 import {useActionsStore} from './stores/actions'
 import {useAppConfigStore} from './stores/appConfig'
 import {useModalStore} from './stores/modal'
 import {useThemeStore} from './stores/theme'
-import type {ColorMode} from '@tweeq/core'
 
 interface TweeqOptions {
 	colorMode?: ColorMode

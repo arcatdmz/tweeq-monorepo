@@ -1,6 +1,6 @@
+import {PALETTE} from '@tweeq/core'
 import {type InjectionKey, provide, type Ref, ref} from 'vue'
 
-import {PALETTE} from '@tweeq/core'
 import {type ColorSpace} from './types'
 
 export const InputColorPresetsKey: InjectionKey<string[]> = Symbol(

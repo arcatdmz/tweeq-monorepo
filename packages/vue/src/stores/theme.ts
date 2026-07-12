@@ -1,8 +1,3 @@
-import {toReactive} from '@vueuse/core'
-import Case from 'case'
-import {defineStore} from 'pinia'
-import {computed, toRefs, watch} from 'vue'
-
 import {
 	buildMonacoTheme,
 	buildSemanticColors,
@@ -11,6 +6,11 @@ import {
 	type MonacoThemeData,
 	type Theme,
 } from '@tweeq/core'
+import {toReactive} from '@vueuse/core'
+import Case from 'case'
+import {defineStore} from 'pinia'
+import {computed, toRefs, watch} from 'vue'
+
 import {useAppConfigStore} from './appConfig'
 
 export const useThemeStore = defineStore('theme', () => {
