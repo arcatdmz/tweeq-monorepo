@@ -63,7 +63,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputRotary | SFC | ✅ | `inputRotary` | temporal | |
 | InputShuffle | SFC | ✅ | `inputShuffle` | text-toggles | |
 | InputSize | SFC | ✅ | `inputSize` | components-parity, number-vectors | aspect-lock semantics |
-| InputString | SFC | ✅ | — | text-toggles | |
+| InputString | SFC | ✅ | `stringExpression` | text-toggles | expression compilation/coercion shared by both renderers |
 | InputSwitch | SFC | ✅ | `inputSwitch` | text-toggles | drag-toggle overlay |
 | InputTextBase | SFC | ✅ | — | — | internal base, not public API |
 | InputTime | SFC | ✅ | `inputTime` | temporal | timecode / frame quantization fixtures protected |

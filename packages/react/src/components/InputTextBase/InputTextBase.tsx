@@ -158,6 +158,7 @@ export const InputTextBase = forwardRef<
 				className
 			)}
 			onContextMenu={handleContextMenu}
+			data-tq-part="root"
 		>
 			{renderBack?.()}
 			<input
@@ -170,6 +171,7 @@ export const InputTextBase = forwardRef<
 				type="text"
 				value={value}
 				disabled={disabled || undefined}
+				data-tq-part="input"
 				onFocus={event => {
 					onChangeFocused?.(true)
 					onFocus?.(event)

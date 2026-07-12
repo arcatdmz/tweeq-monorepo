@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {computed, nextTick, ref, useTemplateRef, watch} from 'vue'
+import {compileStringExpression} from '@tweeq/core'
 
 import {InputTextBase} from '../InputTextBase'
 import {useMultiSelectStore} from '../stores/multiSelect'
@@ -89,21 +90,11 @@ function onInput(e: Event) {
 
 	if (expressionEnabled.value) {
 		try {
-			const fn = eval(`(x, {i}) => {
-				const result = (${newValue});
-				if (typeof result === 'string') {
-					return result
-				} else if (typeof result === 'number') {
-					return result.toString()
-				}
-				throw new Error('Value is not a string or number')
-			}`)
+			const fn = compileStringExpression(newValue)
 			local.value = fn(localAtFocus, {i: multi.index})
 			expressionError.value = undefined
 			multi.update(fn)
 		} catch (e) {
-			// eslint-disable-next-line no-console
-			console.error('[InputString] Error evaluating expression', e)
 			expressionError.value = (e as Error).message
 			multi.update(x => x)
 		}

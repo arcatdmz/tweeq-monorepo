@@ -78,3 +78,8 @@ contain renderer markup only and no copied state transition.
   Icon source parsing is shared core logic, while IconIndicator now has aligned
   pressed semantics, pointer/keyboard activation, and stable parts.
 - Do not publish any package until ADR 0001's ownership question is settled.
+
+## Phase 4 family 2 (in progress)
+
+- InputString expression mode now uses the same core compiler in both renderers;
+  the Vue-local `eval` implementation was removed.

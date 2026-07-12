@@ -46,6 +46,8 @@ export interface RendererHarness<Props = Record<string, unknown>> {
 	key(action: KeyAction, part?: string): Promise<void>
 	/** Invoke the element's native activation behavior (normally `click()`). */
 	activate(part?: string): Promise<void>
+	/** Replace text and dispatch the renderer's native input event. */
+	text?(value: string, part?: string): Promise<void>
 	/** The component's current public value, as reported to the consumer. */
 	value(): unknown
 	/** Events captured since mount, in emission order. */

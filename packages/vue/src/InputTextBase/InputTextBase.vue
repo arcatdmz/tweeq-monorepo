@@ -140,6 +140,7 @@ function onKeydown(e: KeyboardEvent) {
 		:inline-position="inlinePosition"
 		:block-position="blockPosition"
 		@contextmenu="onContextMenu"
+		data-tq-part="root"
 	>
 		<slot name="back" />
 		<input
@@ -149,6 +150,7 @@ function onKeydown(e: KeyboardEvent) {
 			:class="{ignore: ignoreInput, 'has-inactive-content': hasInactiveContent}"
 			:value="model"
 			:disabled="disabled || undefined"
+			data-tq-part="input"
 			@focus="onFocus"
 			@blur="onBlur"
 			@input="onInput"
