@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev": "vite serve demo --port 5174",
 		"dev:demo": "vite serve demo --port 5174",
+		"build:demo": "vite build demo",
 		"e2e": "LD_LIBRARY_PATH=$HOME/.cache/ms-playwright/local-libs playwright test",
 		"build:vite": "vite build",
 		"build": "rm -rf lib && npm run build:vite",
