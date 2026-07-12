@@ -67,7 +67,7 @@ Filled in after INVENTORY.md lands. States: `[ ]` todo · `[~]` in progress (not
 - [x] Batch 5: temporal/rotary — InputRotary, InputAngle, InputTime, InputDrum, Ruler, Timeline
 - [x] Batch 6: dropdown/palette/code — InputDropdown, CommandPalette, MultiSelectPopup, MonacoEditor, InputCode, Markdown (before Batch 7: InputColor's channel values need InputDropdown)
 - [x] Batch 7: color/GL/curves — GlslCanvas, InputColor (very hard, 1741 LOC), InputCubicBezier
-- [ ] Batch 8: panes/layout/complex — Tabs, ParameterGrid, InputComplex, PaneModal, PaneModalComplex, PaneModalTabs, PaneSplit, PaneExpandable, PaneFloating, PaneZUI, TitleBar, App, final TweeqProvider wiring
+- [x] Batch 8: panes/layout/complex — Tabs, ParameterGrid, InputComplex, PaneModal, PaneModalComplex, PaneModalTabs, PaneSplit, PaneExpandable, PaneFloating, PaneZUI, TitleBar, App, final TweeqProvider wiring
 - [ ] Phase 4: build config (lib entry `src/react/index.ts`), demo covers all components, dependency cleanup (drop vue deps + unused: @vueuse/gesture, monaco-themes, fp-ts, @material/material-color-utilities), final lint/typecheck/e2e
 
 ## Parallel work rule

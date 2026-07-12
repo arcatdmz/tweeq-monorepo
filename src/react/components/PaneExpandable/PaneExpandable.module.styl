@@ -1,0 +1,27 @@
+@import '../../../common.styl'
+
+.expandable
+	display inline-flex
+
+.button
+	display grid
+	place-items center
+	width 2rem
+	height 2rem
+	border-radius 9999px
+	background var(--tq-color-surface)
+	backdrop-filter blur(var(--tq-popup-blur))
+	border 1px solid var(--tq-color-border)
+	color var(--tq-color-text-mute)
+	cursor pointer
+	hover-transition(color, background, border-color)
+
+	&:hover, &.open
+		color var(--tq-color-text)
+
+.icon
+	width var(--tq-icon-size)
+	height var(--tq-icon-size)
+
+.content :global(.TqParameterGrid)
+	grid-template-columns max-content minmax(var(--tq-input-comfortable-width), 1fr)

@@ -6,6 +6,8 @@ import {initTweeq, type TweeqOptions} from '../../initTweeq'
 import {CommandPalette} from '../CommandPalette'
 import {InputColorProvider} from '../InputColor/InputColorContext'
 import {MultiSelectPopup} from '../MultiSelectPopup'
+import {PaneModalComplex} from '../PaneModalComplex'
+import {PaneModalTabs} from '../PaneModalTabs'
 import {TooltipRoot} from '../Tooltip'
 
 export interface TweeqProviderProps extends PropsWithChildren, TweeqOptions {
@@ -33,13 +35,14 @@ export function TweeqProvider({
 		initialized.current = true
 	}
 
-	// Future batches mount PaneModalComplex and PaneModalTabs beside `children`.
 	return (
 		<InputColorProvider presets={colorPresets}>
 			<Fragment>
 				{children}
 				<CommandPalette />
 				<MultiSelectPopup />
+				<PaneModalComplex />
+				<PaneModalTabs />
 				<TooltipRoot />
 			</Fragment>
 		</InputColorProvider>

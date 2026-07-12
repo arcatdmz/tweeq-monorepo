@@ -1,0 +1,46 @@
+.titleBar
+	--titlebar-area-height env(titlebar-area-height, 38px)
+	position fixed
+	display grid
+	grid-template-columns 1fr min-content 1fr
+	left env(titlebar-area-x, 0)
+	top env(titlebar-area-y, 0)
+	width env(titlebar-area-width, 100%)
+	height var(--titlebar-area-height)
+	z-index 100
+	user-select none
+	background linear-gradient(to bottom, var(--tq-color-background), transparent)
+	backdrop-filter blur(2px)
+	gap var(--tq-gap-control)
+	padding calc((var(--titlebar-area-height) - var(--tq-input-height)) / 2) 9px
+	-webkit-app-region drag
+
+.noDrag
+	-webkit-app-region no-drag
+
+.left, .center, .right
+	display flex
+	align-items center
+	gap var(--tq-gap-control)
+
+	> *
+		flex-grow 0
+		-webkit-app-region no-drag
+
+.right
+	justify-content flex-end
+
+.appIcon
+	height var(--tq-input-height)
+	width var(--tq-input-height)
+	cursor pointer
+
+.shown
+	color var(--tq-color-accent)
+
+.appName
+	font-family var(--tq-font-heading)
+	font-weight 500
+	font-size calc(var(--titlebar-area-height) * .4)
+	margin-right .2em
+	line-height var(--tq-input-height)

@@ -140,3 +140,16 @@ date · agent · what was done · deviations from PLAN/CONVENTIONS · exact next
 - Demo/e2e validates actual WebGL PNG output, a controlled preset update, top-layer picker layout, and a real cubic-bezier handle drag.
 
 **Next-batch contracts:** layout and modal components should continue using Popover's shared top-layer geometry rather than custom viewport math. InputComplex can dispatch color fields directly to InputColor and bezier fields to InputCubicBezier. Preserve TweeqProvider's InputColorProvider wrapper when adding the modal roots.
+
+## 2026-07-12 · Batch 8 agent (Codex)
+
+**Done: panes/layout/complex — Tabs/Tab, the ParameterGrid family, InputComplex, PaneModal, PaneModalComplex, PaneModalTabs, PaneSplit, PaneExpandable, PaneFloating, PaneZUI, TitleBar, App, and final provider roots.** Core gained tested split clamping and floating-pane anchor migration. Gates: TypeScript + ESLint clean, 84 Vitest tests, 9 Playwright tests.
+
+- Tabs uses a React registration context with persisted/default/first-tab reconciliation, disabled tabs, repeat-click/change callbacks, horizontal/vertical layouts, and laid-out-but-hidden panels so editor-sized content does not jump between tabs.
+- ParameterGrid, Parameter, ParameterHeading, and persisted/collapsible ParameterGroup retain subgrid alignment, hints, heading affordances, and transition-time clipping. InputComplex dispatches every supported scalar/vector UI, microtask-coalesces sibling changes, and coalesces confirmations.
+- PaneModal keeps a manual top-layer modal, viewport reset, constrained scrolling, backdrop transition, and outside-click emphasis. TweeqProvider now mounts PaneModalComplex and PaneModalTabs exactly once; both register the core promise delegates, own Esc/Enter policy, protect nested popovers/multiline editors, and preserve save/cancel/live-revert semantics.
+- PaneSplit persists separate pixel/percentage sizes and supports fixed/flexible panes. PaneFloating persists anchor/dimensions, four-edge resizing, minimizing/maximizing, anchor migration, and viewport clamps. PaneExpandable supports controlled or internal state, hover/click/persistent modes, collapse icon behavior, and light-dismiss guarding.
+- PaneZUI ports bndr pan/Alt-wheel/pinch zoom, controlled transform notifications, visible-world rect/size outputs, and transformed dot grids. TitleBar consumes the live action menu and handles OS drag-region suspension. App composes Viewport/TweeqProvider and also supports an embedded demo mode.
+- Demo/e2e exercises tab selection, generated-form updates, persistent expandable content, a real split drag, plain/generated/tabbed modal paths, floating/ZUI panes, and the embedded app shell.
+
+**Phase 4 next:** switch the library build and package exports/peers to React, audit demo coverage against every public component, remove dead Vue/unused dependencies and legacy-only test collection, run the production build plus all gates, and document the final surface.
