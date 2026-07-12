@@ -12,7 +12,12 @@ const here = new URL('.', import.meta.url).pathname
 // Playwright e2e boots this via the root `pnpm e2e`.
 export default defineConfig({
 	plugins: [glsl(), react()],
-	css: {preprocessorOptions: {styl: tweeqStylusOptions}},
+	css: {
+		preprocessorOptions: {
+			scss: {api: 'modern-compiler'},
+			styl: tweeqStylusOptions,
+		},
+	},
 	resolve: {
 		alias: {
 			// Compile the workspace packages from source so the playground gets

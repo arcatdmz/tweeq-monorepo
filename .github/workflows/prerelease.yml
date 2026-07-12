@@ -1,0 +1,53 @@
+name: Publish next prerelease
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type publish-next after npm ownership is approved
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish-next:
+    if: inputs.confirmation == 'publish-next'
+    runs-on: ubuntu-latest
+    environment: npm-prerelease
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify approved package names and prerelease versions
+        env:
+          NPM_SCOPE_APPROVED: ${{ secrets.NPM_SCOPE_APPROVED }}
+        run: pnpm check:release -- --release
+
+      - name: Run reproducibility gates
+        run: pnpm lint && pnpm check:boundaries && pnpm build && pnpm docs:check && pnpm test:ssr && pnpm test && pnpm test:packed
+
+      - name: Publish provenance-enabled next artifacts
+        run: pnpm -r --filter @tweeq/core --filter @tweeq/dom --filter @tweeq/styles --filter @tweeq/react --filter @tweeq/vue publish --tag next --provenance --access restricted --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Read published version
+        id: version
+        shell: bash
+        run: echo "version=$(node -p \"require('./packages/react/package.json').version\")" >> "$GITHUB_OUTPUT"
+
+      - name: Test registry-installed downstream applications
+        env:
+          TWEEQ_PRERELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: node scripts/test-prerelease.mjs

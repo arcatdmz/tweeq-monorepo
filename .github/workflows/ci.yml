@@ -16,6 +16,8 @@ jobs:
         run: pnpm lint
       - name: Check package boundaries
         run: pnpm check:boundaries
+      - name: Enforce pre-ownership publish guard
+        run: pnpm check:release
       - name: Build workspace packages
         run: pnpm build
       - name: Validate generated API reference

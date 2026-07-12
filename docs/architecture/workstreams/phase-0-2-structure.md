@@ -239,6 +239,23 @@ contain renderer markup only and no copied state transition.
   checking, Vue renderer tests, workspace lint, API/link validation, packed
   consumers, and all 21 Playwright tests pass.
 
+## Phase 6 prerelease and cleanup (in progress)
+
+- A generated release baseline records emitted raw/gzip artifact sizes, core
+  transition throughput, renderer contract counts, browser coverage, and the
+  packed downstream-consumer evidence.
+- Docs now use Sass's modern compiler API; the legacy API warning is closed.
+- CI enforces that all public packages remain private before npm ownership is
+  approved. The manual `npm-prerelease` environment additionally requires an
+  explicit confirmation, approved-scope secret, non-private next/rc versions,
+  restricted npm publish configuration, all reproducibility gates, provenance,
+  and registry-installed React/Vue downstream builds.
+- No local publish command is part of the workflow; publication is GitHub
+  Actions-only, as required by repository policy.
+- The baseline exposed MF-044: the canonical `@tweeq/styles/style.css` remains
+  a placeholder while renderer CSS is still generated separately. Phase 6
+  cannot pass its cleanup gate until shared style-part ownership is completed.
+
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 
 - Core and DOM production ESM now uses explicit `.js` specifiers and is

@@ -36,3 +36,21 @@ currently `"private": true` and unpublished) is under this fork's control.
 - Examples and docs may use `@tweeq/*` imports immediately; they are honest
   because the examples install packed tarballs from the workspace.
 - A `"publishConfig"`/CI guard, not human memory, enforces the no-publish rule.
+
+## Phase 6 implementation status
+
+The pre-ownership CI guard is active. A manual GitHub Actions prerelease
+workflow is present but deliberately cannot publish the current `private`,
+`0.0.0` packages. Unlocking it requires all of the following in one reviewed
+release change:
+
+1. confirmed ownership of the selected npm scope;
+2. removal of `private` from only the five public packages;
+3. restricted npm registry `publishConfig` on those packages;
+4. a Changesets-generated `next` or `rc` version; and
+5. an `NPM_SCOPE_APPROVED` secret in the protected `npm-prerelease` GitHub
+   environment.
+
+Publishing locally remains prohibited. The workflow publishes with npm
+provenance and then tests clean React and Vue applications installed from the
+registry at the exact prerelease version.

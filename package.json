@@ -16,6 +16,8 @@
 		"test:ssr": "node scripts/test-ssr-imports.mjs",
 		"docs:generate": "node scripts/generate-api-reference.mjs",
 		"docs:check": "node scripts/generate-api-reference.mjs --check && node scripts/check-doc-links.mjs",
+		"baseline:record": "node scripts/measure-release-baseline.mjs",
+		"check:release": "node scripts/check-release-policy.mjs",
 		"check:boundaries": "node scripts/check-boundaries.mjs",
 		"test:packed": "node scripts/test-packed.mjs"
 	},
