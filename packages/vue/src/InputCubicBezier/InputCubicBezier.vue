@@ -1,16 +1,17 @@
 <script lang="ts" setup>
+import {getCubicBezierPath, type CubicBezierValue} from '@tweeq/core'
 import {computed, ref, useTemplateRef} from 'vue'
 
 import {Popover} from '../Popover'
+import type {InputEmits} from '../types'
 import InputCubicBezierPicker from './InputCubicBezierPicker.vue'
 import type {InputCubicBezierProps} from './types'
-import type {CubicBezierValue} from '@tweeq/core'
 
 const props = defineProps<InputCubicBezierProps>()
 
-const emit = defineEmits<{
-	'update:modelValue': [CubicBezierValue]
-}>()
+const emit = defineEmits<
+	InputEmits & {'update:modelValue': [CubicBezierValue]}
+>()
 
 defineOptions({
 	inheritAttrs: false,
@@ -19,10 +20,7 @@ defineOptions({
 const $button = useTemplateRef('$button')
 const open = ref(false)
 
-const easingPath = computed(() => {
-	const [x1, y1, x2, y2] = props.modelValue
-	return `M 0,0 C ${x1},${y1} ${x2},${y2} 1,1`
-})
+const easingPath = computed(() => getCubicBezierPath(props.modelValue))
 </script>
 
 <template>
@@ -31,17 +29,27 @@ const easingPath = computed(() => {
 		class="TqInputCubicBezier"
 		:class="{open}"
 		v-bind="$attrs"
+		type="button"
+		:disabled="props.disabled"
+		:aria-invalid="props.invalid || undefined"
+		:inline-position="props.inlinePosition"
+		:block-position="props.blockPosition"
+		data-tq-part="root"
 		@click="open = true"
+		@focus="emit('focus')"
+		@blur="emit('blur')"
 	>
-		<svg class="icon" viewBox="0 0 1 1">
-			<path :d="easingPath" />
+		<svg class="icon" viewBox="0 0 1 1" data-tq-part="icon">
+			<path :d="easingPath" data-tq-part="path" />
 		</svg>
 	</button>
 	<Popover v-model:open="open" :reference="$button">
 		<div class="floating">
 			<InputCubicBezierPicker
 				:modelValue="modelValue"
+				:disabled="props.disabled"
 				@update:modelValue="emit('update:modelValue', $event)"
+				@confirm="emit('confirm')"
 			/>
 		</div>
 	</Popover>

@@ -159,6 +159,14 @@ contain renderer markup only and no copied state transition.
   speed-aware updates, confirm, and disposal; Vue also clears its popup element
   registration during unmount.
 
+## Phase 4 family 6 (in progress)
+
+- InputCubicBezier uses core path/point helpers in both renderers. Its shared
+  contract covers controlled paths, native disabled/invalid state, touch
+  pointer drag, clamped updates, confirm lifecycle, and stable picker parts.
+- Vue's mouse-only handle selection and missing confirm propagation were fixed;
+  picker drag is now gated while disabled in both adapters.
+
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 
 - Core and DOM production ESM now uses explicit `.js` specifiers and is

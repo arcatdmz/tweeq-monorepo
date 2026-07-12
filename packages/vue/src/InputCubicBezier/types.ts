@@ -1,5 +1,7 @@
 import type {CubicBezierValue} from '@tweeq/core'
 
-export interface InputCubicBezierProps {
+import type {InputBoxProps} from '../types'
+
+export interface InputCubicBezierProps extends InputBoxProps {
 	modelValue: CubicBezierValue
 }

@@ -14,12 +14,14 @@ export interface InputCubicBezierPickerProps
 	value: CubicBezierValue
 	onChange?: (value: CubicBezierValue) => void
 	onConfirm?: () => void
+	disabled?: boolean
 }
 
 export function InputCubicBezierPicker({
 	value,
 	onChange,
 	onConfirm,
+	disabled,
 	className,
 	...props
 }: InputCubicBezierPickerProps) {
@@ -29,6 +31,7 @@ export function InputCubicBezierPicker({
 	callbacks.current = {value, onChange, onConfirm}
 	const dragOptions = useMemo(
 		() => ({
+			disabled: () => Boolean(disabled),
 			dragDelaySeconds: 0,
 			onDrag: ({
 				xy,
@@ -56,14 +59,23 @@ export function InputCubicBezierPicker({
 				callbacks.current.onConfirm?.()
 			},
 		}),
-		[]
+		[disabled]
 	)
 	useDrag(editor, dragOptions)
 	const [x1, y1, x2, y2] = value
 
 	return (
-		<div {...props} className={classNames(styles.picker, className)}>
-			<svg ref={editor} viewBox="0 0 1 1" className={styles.pad}>
+		<div
+			{...props}
+			className={classNames(styles.picker, className)}
+			data-tq-part="picker"
+		>
+			<svg
+				ref={editor}
+				viewBox="0 0 1 1"
+				className={styles.pad}
+				data-tq-part="pad"
+			>
 				<g>
 					<line x1={0} y1={0} x2={x1} y2={y1} />
 					<line x1={1} y1={1} x2={x2} y2={y2} />
@@ -73,12 +85,14 @@ export function InputCubicBezierPicker({
 						cy={y1}
 						r=".035"
 						onPointerDown={() => (draggingPoint.current = 0)}
+						data-tq-part="handle-0"
 					/>
 					<circle
 						cx={x2}
 						cy={y2}
 						r=".035"
 						onPointerDown={() => (draggingPoint.current = 1)}
+						data-tq-part="handle-1"
 					/>
 				</g>
 			</svg>

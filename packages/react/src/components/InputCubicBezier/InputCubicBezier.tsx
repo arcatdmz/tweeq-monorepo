@@ -26,6 +26,8 @@ export function InputCubicBezier({
 	value,
 	onChange,
 	onConfirm,
+	disabled,
+	invalid,
 	inlinePosition,
 	blockPosition,
 	className,
@@ -40,6 +42,8 @@ export function InputCubicBezier({
 				{...props}
 				ref={setButton}
 				type={props.type ?? 'button'}
+				disabled={disabled}
+				aria-invalid={invalid || undefined}
 				className={classNames(
 					styles.inputCubicBezier,
 					open && styles.open,
@@ -47,10 +51,16 @@ export function InputCubicBezier({
 				)}
 				data-inline-position={inlinePosition}
 				data-block-position={blockPosition}
+				data-tq-part="root"
 				onClick={() => setOpen(true)}
 			>
-				<svg className={styles.icon} viewBox="0 0 1 1" aria-hidden="true">
-					<path d={getCubicBezierPath(value)} />
+				<svg
+					className={styles.icon}
+					viewBox="0 0 1 1"
+					aria-hidden="true"
+					data-tq-part="icon"
+				>
+					<path d={getCubicBezierPath(value)} data-tq-part="path" />
 				</svg>
 			</button>
 			<Popover open={open} reference={button} onChangeOpen={setOpen}>
@@ -59,6 +69,7 @@ export function InputCubicBezier({
 						value={value}
 						onChange={onChange}
 						onConfirm={onConfirm}
+						disabled={disabled}
 					/>
 				</div>
 			</Popover>

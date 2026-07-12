@@ -53,7 +53,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputCode | SFC | ✅ | — | dropdown-code | Monaco integration differs by wrapper lib |
 | InputColor | SFC | ✅ | `color` | color-curves | popover + channel sliders/pad |
 | InputComplex | SFC | ✅ | — | layout-modals | |
-| InputCubicBezier | SFC | ✅ | `cubicBezier` | color-curves | |
+| InputCubicBezier | SFC | ✅ | `cubicBezier` | shared contract + core geometry + color-curves | controlled path, touch/pen/mouse handle drag, clamped point updates, disabled/invalid state, confirm lifecycle, and stable picker parts aligned in Phase 4 |
 | InputDropdown | SFC | ✅ | `dropdown` | shared contract + components-parity, dropdown-code | shared empty/wrap navigation; click confirm, Escape rollback, and listbox ARIA aligned in Phase 4 |
 | InputDrum | SFC | ✅ | `inputDrum` | shared contract + core controller + temporal | controlled selection, keyboard/type-ahead, multi-step wheel input, disabled/invalid state, layout, drag math, and stable parts aligned in Phase 4 |
 | InputGroup | SFC | ✅ | — | shared contract + primitives | fragment/whitespace flattening and horizontal/vertical child positions aligned in Phase 4 |

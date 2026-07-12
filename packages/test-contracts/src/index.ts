@@ -52,3 +52,7 @@ export {type TimelineContractProps, runTimelineContract} from './timeline'
 export {type RulerContractProps, runRulerContract} from './ruler'
 export {type MenuContractProps, runMenuContract} from './menu'
 export {type PopoverContractProps, runPopoverContract} from './popover'
+export {
+	type InputCubicBezierContractProps,
+	runInputCubicBezierContract,
+} from './inputCubicBezier'
