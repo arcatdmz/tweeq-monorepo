@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import {
+	clampPosWithinRect,
+	getRotaryDragValue,
 	mergeSvgPaths,
 	type Rect,
+	signedAngleBetween,
 	svgArc,
 	svgCircle,
 	svgLine,
@@ -10,7 +13,7 @@ import {
 import {useFocus, useMagicKeys, useWindowSize} from '@vueuse/core'
 import {scalar, vec2} from 'linearly'
 import {range} from 'lodash-es'
-import {computed, ref, useTemplateRef, watch} from 'vue'
+import {computed, ref, useId, useTemplateRef, watch} from 'vue'
 
 import {useMultiSelectStore} from '../stores/multiSelect'
 import {useThemeStore} from '../stores/theme'
@@ -23,9 +26,7 @@ import {useCopyPaste} from '../use/useCopyPaste'
 import {useCursorStyle} from '../use/useCursorStyle'
 import {useDrag} from '../use/useDrag'
 import {useElementCenter} from '../use/useElementCenter'
-import * as V from '@tweeq/core/validator'
 import type {InputRotaryProps} from './types'
-import {clampPosWithinRect} from './utils'
 
 const props = withDefaults(defineProps<InputRotaryProps>(), {
 	snap: 45,
@@ -38,11 +39,6 @@ const model = defineModel<number>({required: true})
 
 const emit = defineEmits<InputEmits>()
 
-function signedAngleBetween(target: number, source: number) {
-	const ret = target - source
-	return unsignedMod(ret + 180, 360) - 180
-}
-
 const display = computed(() => {
 	const revs = Math.trunc(model.value / 360)
 	const rot = model.value - revs * 360
@@ -51,6 +47,8 @@ const display = computed(() => {
 })
 
 const initialValueOnTweak = ref(model.value)
+// Continuously accumulated pre-quantization value.
+const local = ref(model.value)
 
 const snapMeterRadii: vec2 = [theme.inputHeight * 4, 160]
 
@@ -63,6 +61,7 @@ const {
 	origin,
 	xy,
 } = useDrag($root, {
+	disabled: computed(() => props.disabled),
 	dragDelaySeconds: 0,
 	onDragStart({xy}) {
 		initialValueOnTweak.value = local.value = model.value
@@ -82,7 +81,24 @@ const {
 		const pp = vec2.sub(previous, center.value)
 
 		const delta = vec2.angle(pp, p)
-		local.value += delta
+		const next = getRotaryDragValue(
+			local.value,
+			delta,
+			props.snap,
+			doSnap.value
+		)
+		local.value = next.local
+		model.value = next.output
+
+		if (tweakMode.value === 'absolute') {
+			multi.update(() => next.output)
+		} else {
+			const relativeDelta = next.output - initialValueOnTweak.value
+			multi.update(x => {
+				const value = x + relativeDelta
+				return doSnap.value ? scalar.quantize(value, props.snap) : value
+			})
+		}
 	},
 	onDragEnd() {
 		emit('confirm')
@@ -112,43 +128,10 @@ const tweakMode = computed(
 	() => tweakModeByKey.value ?? tweakModeByPointer.value
 )
 
-// Local value before snap
-const local = ref(model.value)
-
-const validate = computed<V.Validator<number>>(() => {
-	return doSnap.value ? V.quantize(props.snap) : V.identity
-})
-
-const validateResult = computed(() => validate.value(local.value))
-
 watch(
-	() =>
-		[
-			validateResult.value,
-			tweaking.value,
-			tweakMode.value,
-			doSnap.value,
-			props.snap,
-		] as const,
-	([result]) => {
-		if (result.value === undefined) return
-
-		if (tweaking.value) {
-			model.value = result.value
-		}
-
-		if (tweaking.value) {
-			if (tweakMode.value === 'absolute') {
-				multi.update(() => result.value)
-			} else {
-				const delta = result.value - initialValueOnTweak.value
-
-				multi.update(x => {
-					const newX = x + delta
-					return doSnap.value ? scalar.quantize(newX, props.snap) : newX
-				})
-			}
-		}
+	() => model.value,
+	value => {
+		if (!tweaking.value) local.value = value
 	},
 	{flush: 'sync'}
 )
@@ -263,9 +246,7 @@ const multi = useMultiSelectStore().register({
 	getValue: () => local.value,
 	setValue(value) {
 		local.value = value
-		if (validateResult.value.value) {
-			model.value = validateResult.value.value
-		}
+		model.value = value
 	},
 	confirm() {
 		emit('confirm')
@@ -294,6 +275,8 @@ useCopyPaste({
 		multi.confirm()
 	},
 })
+
+const markerId = `tq-rotary-${useId().replaceAll(':', '')}`
 </script>
 
 <template>
@@ -302,14 +285,21 @@ useCopyPaste({
 		class="TqInputRotary"
 		:class="{tweaking, subfocus: multi.subfocus}"
 		:tweak-mode="tweakMode"
+		type="button"
+		:disabled="props.disabled"
+		:aria-invalid="props.invalid || undefined"
+		:inline-position="props.inlinePosition"
+		:block-position="props.blockPosition"
+		data-tq-part="root"
 		@focus="emit('focus')"
 		@blur="emit('blur')"
 	>
-		<SvgIcon mode="block" class="rotary">
+		<SvgIcon mode="block" class="rotary" data-tq-part="rotary">
 			<circle class="circle" cx="16" cy="16" r="16" />
 			<g
 				transform-origin="16 16"
 				:style="rotaryStyles"
+				data-tq-part="indicator"
 				@pointerenter="tweakModeByPointer = 'absolute'"
 				@pointerleave="!tweaking && (tweakModeByPointer = 'relative')"
 			>
@@ -327,7 +317,7 @@ useCopyPaste({
 			<svg>
 				<defs>
 					<marker
-						id="arrow"
+						:id="markerId"
 						markerWidth="6"
 						markerHeight="6"
 						refX="3"
@@ -342,7 +332,7 @@ useCopyPaste({
 				<path
 					class="bold"
 					:d="overlayPath"
-					:marker-end="tweakMode === 'relative' ? 'url(#arrow)' : ''"
+					:marker-end="tweakMode === 'relative' ? `url(#${markerId})` : ''"
 				/>
 				<path class="bold" :d="activeMeterPath" />
 			</svg>

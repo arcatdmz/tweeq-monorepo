@@ -46,7 +46,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | GlslCanvas | SFC | ✅ | `glsl` | color-curves | regl-based; WebGL feature detection |
 | Icon | SFC | ✅ | — | core fixtures | shared source parsing; framework-specific Iconify adapters/cache |
 | IconIndicator | SFC | ✅ | — | shared contract | controlled active state, pointer/keyboard activation, `aria-pressed`, and stable parts aligned in Phase 4 |
-| InputAngle | SFC | ✅ | (`inputRotary`) | rotary-snap, temporal | wraps rotary semantics |
+| InputAngle | SFC | ✅ | `inputRotary` | shared child contracts + rotary-snap + temporal | thin responsive composition of aligned InputRotary/InputNumber adapters |
 | InputButton | SFC | ✅ | — | shared contract + text-toggles | action, native disabled state, invalid state, and stable content parts aligned in Phase 4 |
 | InputButtonToggle | SFC | ✅ | — | shared contract | controlled activation, native disabled state, `aria-pressed`, and stable parts aligned in Phase 4 |
 | InputCheckbox | SFC | ✅ | — | components-parity, text-toggles | |
@@ -60,7 +60,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputNumber | SFC | ✅ | `inputNumber` | shared contract + docs-pages, number-vectors | controlled edits, expressions, configured steps, disabled state, stable parts, decimal precision, and drag-scale protected |
 | InputPosition | SFC | ✅ | `inputTranslate` | shared child contracts + number-vectors | forwards controlled bounds, disabled/invalid state, and lifecycle events to aligned InputTranslate/InputVec adapters |
 | InputRadio | SFC | ✅ | — | text-toggles | |
-| InputRotary | SFC | ✅ | `inputRotary` | temporal | |
+| InputRotary | SFC | ✅ | `inputRotary` | shared contract + core controller + rotary-snap + temporal | continuous snap transition, shortest-angle and overlay geometry, native disabled/invalid state, controlled indicator, and stable parts aligned in Phase 4 |
 | InputShuffle | SFC | ✅ | `inputShuffle` | text-toggles | |
 | InputSize | SFC | ✅ | `inputSize` | components-parity, number-vectors | shared aspect-lock controller; native disabled ratio button and `aria-pressed` aligned in Phase 4 |
 | InputString | SFC | ✅ | `stringExpression` | text-toggles | expression compilation/coercion shared by both renderers |

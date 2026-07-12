@@ -44,3 +44,7 @@ export {
 } from './inputTranslate'
 export {type InputTimeContractProps, runInputTimeContract} from './inputTime'
 export {type InputDrumContractProps, runInputDrumContract} from './inputDrum'
+export {
+	type InputRotaryContractProps,
+	runInputRotaryContract,
+} from './inputRotary'

@@ -121,6 +121,12 @@ contain renderer markup only and no copied state transition.
 - Wheel events spanning multiple thresholds now advance every requested step;
   the prior adapters repeatedly selected only the first step before a
   controlled parent could re-render.
+- InputRotary now uses the core continuous drag/snap transition and geometry in
+  both renderers. Vue's remaining local shim and copied validator transition
+  were deleted, and external model values now resynchronize its local state.
+- The rotary shared contract covers controlled angle/offset rendering, native
+  disabled and invalid semantics, and stable visual parts. InputAngle remains a
+  responsive composition of the contracted InputRotary and InputNumber.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

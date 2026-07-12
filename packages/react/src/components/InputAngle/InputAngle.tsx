@@ -33,7 +33,7 @@ export function InputAngle(props: InputAngleProps) {
 	}
 
 	return (
-		<div ref={root} className={styles.tqInputAngle}>
+		<div ref={root} className={styles.tqInputAngle} data-tq-part="angle-root">
 			<InputRotary
 				{...shared}
 				snap={props.snap}

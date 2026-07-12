@@ -283,6 +283,7 @@ export function InputRotary({
 				inline-position={inlinePosition}
 				block-position={blockPosition}
 				{...{'tweak-mode': mode}}
+				data-tq-part="root"
 				onFocus={() => {
 					multi.setFocusing(true)
 					onFocus?.()
@@ -292,13 +293,18 @@ export function InputRotary({
 					onBlur?.()
 				}}
 			>
-				<SvgIcon mode="block" className={styles.rotary}>
+				<SvgIcon
+					mode="block"
+					className={styles.rotary}
+					data-tq-part="rotary"
+				>
 					<circle className={styles.circle} cx="16" cy="16" r="16" />
 					<g
 						style={{
 							transformOrigin: '16px 16px',
 							transform: `rotate(${value + angleOffset}deg)`,
 						}}
+						data-tq-part="indicator"
 						onPointerEnter={() => setPointerMode('absolute')}
 						onPointerLeave={() => !drag.dragging && setPointerMode('relative')}
 					>
