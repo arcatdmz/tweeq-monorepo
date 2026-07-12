@@ -1,4 +1,5 @@
 import {
+	isMultilineEditorTarget,
 	type ModalComponentTab as CoreComponentTab,
 	type ModalFormTab as CoreFormTab,
 	modalStore,
@@ -34,16 +35,6 @@ export interface PaneModalComponentTab
 
 export type PaneModalTab = PaneModalFormTab | PaneModalComponentTab
 export type {TabsShowOptions}
-
-function isMultilineTarget(target: EventTarget | null) {
-	const element = target as HTMLElement | null
-	return Boolean(
-		element &&
-			(element.tagName === 'TEXTAREA' ||
-				element.isContentEditable ||
-				element.closest?.('.monaco-editor'))
-	)
-}
 
 export function PaneModalTabs() {
 	const [description, setDescription] = useState<{
@@ -110,7 +101,7 @@ export function PaneModalTabs() {
 			} else if (
 				event.key === 'Enter' &&
 				!event.isComposing &&
-				!isMultilineTarget(event.target)
+				!isMultilineEditorTarget(event.target)
 			) {
 				event.preventDefault()
 				finish()

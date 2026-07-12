@@ -1,5 +1,4 @@
-import type {MenuItem} from '@tweeq/core'
-import {type ActionItem, actionsStore} from '@tweeq/dom'
+import {actionsStore, decorateActionMenuItems} from '@tweeq/dom'
 import {type HTMLAttributes, type ReactNode, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
@@ -15,14 +14,6 @@ export interface TitleBarProps extends HTMLAttributes<HTMLDivElement> {
 	left?: ReactNode
 	center?: ReactNode
 	right?: ReactNode
-}
-
-function toMenuItem(item: MenuItem): MenuItem {
-	if ('separator' in item) return item
-	if ('perform' in item) {
-		return {...item, bindIcon: (item as ActionItem).bind?.icon}
-	}
-	return {...item, children: item.children.map(toMenuItem)}
 }
 
 export function TitleBar({
@@ -76,7 +67,7 @@ export function TitleBar({
 					onChangeOpen={setMenuShown}
 				>
 					<Menu
-						items={menu.map(toMenuItem)}
+						items={decorateActionMenuItems(menu)}
 						onClose={() => setMenuShown(false)}
 					/>
 				</Popover>

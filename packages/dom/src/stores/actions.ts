@@ -24,6 +24,16 @@ export interface ActionItem extends ActionItemBase {
 
 export type Action = ActionItem | ActionGroup
 
+export function decorateActionMenuItems(items: readonly MenuItem[]): MenuItem[] {
+	return items.map(item => {
+		if ('separator' in item) return item
+		if ('perform' in item) {
+			return {...item, bindIcon: (item as ActionItem).bind?.icon}
+		}
+		return {...item, children: decorateActionMenuItems(item.children)}
+	})
+}
+
 export interface ActionGroup {
 	icon?: string
 	id: string

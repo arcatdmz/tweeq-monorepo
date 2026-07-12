@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {isMultilineEditorTarget} from '@tweeq/dom'
 import {useEventListener} from '@vueuse/core'
 import {onBeforeUnmount, ref} from 'vue'
 
@@ -70,16 +71,6 @@ function onConfirm() {
 
 // Keyboard: Esc cancels (restoring the opening value), Enter saves. The modal is
 // a manual popover, so neither is handled by the platform — we wire them here.
-function isMultilineTarget(target: EventTarget | null) {
-	const el = target as HTMLElement | null
-	return (
-		!!el &&
-		(el.tagName === 'TEXTAREA' ||
-			el.isContentEditable ||
-			!!el.closest?.('.monaco-editor'))
-	)
-}
-
 useEventListener('keydown', (e: KeyboardEvent) => {
 	if (!open.value) return
 
@@ -94,7 +85,7 @@ useEventListener('keydown', (e: KeyboardEvent) => {
 	} else if (e.key === 'Enter') {
 		// Leave Enter to the field when it means a newline (textarea / code editor)
 		// or while an IME composition is in flight.
-		if (e.isComposing || isMultilineTarget(e.target)) return
+		if (e.isComposing || isMultilineEditorTarget(e.target)) return
 		e.preventDefault()
 		onConfirm()
 	}

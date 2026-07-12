@@ -1,4 +1,5 @@
 import {
+	isMultilineEditorTarget,
 	type ModalScheme,
 	modalStore,
 	type PromptFn,
@@ -22,16 +23,6 @@ interface Description {
 interface Session {
 	initialValue: Record<string, unknown>
 	resolve(value: any): void
-}
-
-function isMultilineTarget(target: EventTarget | null) {
-	const element = target as HTMLElement | null
-	return Boolean(
-		element &&
-			(element.tagName === 'TEXTAREA' ||
-				element.isContentEditable ||
-				element.closest?.('.monaco-editor'))
-	)
 }
 
 export function PaneModalComplex() {
@@ -91,7 +82,7 @@ export function PaneModalComplex() {
 			} else if (
 				event.key === 'Enter' &&
 				!event.isComposing &&
-				!isMultilineTarget(event.target)
+				!isMultilineEditorTarget(event.target)
 			) {
 				event.preventDefault()
 				finish(current.value)

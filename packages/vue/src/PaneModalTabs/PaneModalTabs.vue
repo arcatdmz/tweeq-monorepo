@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {isMultilineEditorTarget} from '@tweeq/dom'
 import {useEventListener} from '@vueuse/core'
 import {onBeforeUnmount, ref} from 'vue'
 
@@ -67,16 +68,6 @@ function onCancel() {
 	endEdit()
 }
 
-function isMultilineTarget(target: EventTarget | null) {
-	const el = target as HTMLElement | null
-	return (
-		!!el &&
-		(el.tagName === 'TEXTAREA' ||
-			el.isContentEditable ||
-			!!el.closest?.('.monaco-editor'))
-	)
-}
-
 // The modal is a manual popover, so the platform handles neither key: wire Esc to
 // cancel and Enter to finish here. A nested popover (a dropdown/menu open over the
 // modal) owns them first — the modal is one `:popover-open`, so >1 means nested.
@@ -88,7 +79,7 @@ useEventListener('keydown', (e: KeyboardEvent) => {
 		e.preventDefault()
 		onCancel()
 	} else if (e.key === 'Enter') {
-		if (e.isComposing || isMultilineTarget(e.target)) return
+		if (e.isComposing || isMultilineEditorTarget(e.target)) return
 		e.preventDefault()
 		endEdit()
 	}

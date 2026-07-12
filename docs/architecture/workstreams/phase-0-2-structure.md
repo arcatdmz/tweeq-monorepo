@@ -187,7 +187,7 @@ contain renderer markup only and no copied state transition.
   SSR/CJS rendering/imports, packed React/Vue consumers, and all 21 Playwright
   tests pass.
 
-## Phase 4 family 7 (in progress)
+## Phase 4 family 7 (complete)
 
 - Tabs uses core enabled-tab resolution and a shared renderer contract. Custom
   persistence keys, native disabled buttons, initial/change/re-click events,
@@ -210,6 +210,10 @@ contain renderer markup only and no copied state transition.
   gesture graph and core visible-rect/dot geometry, including initial transform.
 - ParameterGroup has a shared persistent expand/collapse contract; Vue now
   renders its public icon and uses a native button with expanded state.
+- TitleBar action-menu decoration and modal multiline keyboard ownership are
+  DOM-owned helpers rather than copied renderer transitions.
+- Family gate: all workspace tests/builds, lint, boundaries, SSR/CJS imports
+  and renders, packed React/Vue consumers, and all 21 Playwright tests pass.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 
