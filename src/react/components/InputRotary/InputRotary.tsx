@@ -223,6 +223,8 @@ export function InputRotary({
 		[windowSize.width - 40, windowSize.height - 40],
 	]
 	const labelPosition = clampPosWithinRect(drag.initial, drag.xy, bounds)
+	const overlayArrowRotation =
+		vec2.angle(vec2.sub(drag.xy, drag.origin)) + 90
 	const display = `${Math.trunc(value / 360) ? `${Math.trunc(value / 360)}x ` : ''}${(
 		value -
 		Math.trunc(value / 360) * 360
@@ -348,6 +350,10 @@ export function InputRotary({
 							style={{left: labelPosition[0], top: labelPosition[1]}}
 						>
 							{display}
+							<span
+								className={styles.arrows}
+								style={{transform: `rotate(${overlayArrowRotation}deg)`}}
+							/>
 						</Tooltip>
 					</div>
 				</TweakOverlay>

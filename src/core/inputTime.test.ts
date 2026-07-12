@@ -4,6 +4,7 @@ import {
 	compileTimeExpression,
 	formatTimecode,
 	parseTimecode,
+	quantizeTimeTweakValue,
 	replaceTimecodeWithFrames,
 } from './inputTime'
 
@@ -37,5 +38,20 @@ describe('timecode', () => {
 		expect(parseTimecode('10minutes', 30)).toBe(18_000)
 		expect(parseTimecode('10hours', 30)).toBe(1_080_000)
 		expect(parseTimecode('-100Frames', 24)).toBe(-100)
+	})
+})
+
+describe('time tweaking', () => {
+	it('always exposes whole frames from the continuous drag accumulator', () => {
+		expect(quantizeTimeTweakValue(24.25, 24, 0, false, 24)).toBe(24)
+		expect(quantizeTimeTweakValue(24.75, 24, 3, false, 24)).toBe(25)
+	})
+
+	it('snaps to the active time unit while preserving its starting offset', () => {
+		// Starting at frame 25 means second snapping stays on 1, 25, 49, ...
+		expect(quantizeTimeTweakValue(26, 24, 1, true, 25)).toBe(25)
+		expect(quantizeTimeTweakValue(38, 24, 1, true, 25)).toBe(49)
+		expect(quantizeTimeTweakValue(700, 24, 2, true, 25)).toBe(25)
+		expect(quantizeTimeTweakValue(800, 24, 2, true, 25)).toBe(1465)
 	})
 })

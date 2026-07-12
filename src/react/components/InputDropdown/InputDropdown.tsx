@@ -117,10 +117,15 @@ export function InputDropdown<T>({
 	const updateArrows = () => {
 		const element = select.current
 		if (!element) return
+		// A border-box max-height makes clientHeight two pixels smaller than
+		// scrollHeight even when every option fits. Treat that border-only delta as
+		// non-overflow so a short list never gets a bogus fade/scroll helper.
+		const overflow = element.scrollHeight - element.clientHeight > 2.5
 		setScrollState({
-			up: element.scrollTop > 0.5,
+			up: overflow && element.scrollTop > 0.5,
 			down:
-				element.scrollTop + element.clientHeight < element.scrollHeight - 0.5,
+				overflow &&
+				element.scrollTop + element.clientHeight < element.scrollHeight - 2.5,
 		})
 	}
 
@@ -203,7 +208,7 @@ export function InputDropdown<T>({
 		? [bounds.left - 2, bounds.bottom]
 		: [bounds.left - 2, dropdownTop]
 	const maxHeight = Math.min(
-		listHeight || Infinity,
+		listHeight ? listHeight + 2 : Infinity,
 		windowSize.height - (edited ? bounds.bottom : dropdownTop) - 6
 	)
 

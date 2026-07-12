@@ -20,7 +20,7 @@ export function InputCheckbox({
 	value,
 	onChange,
 	label,
-	icon = 'mdi:check-bold',
+	icon,
 	disabled,
 	invalid,
 	inlinePosition,
@@ -76,7 +76,7 @@ export function InputCheckbox({
 					onFocus={controls.onFocusInput}
 					onBlur={controls.onBlurInput}
 				/>
-				<Icon icon={icon} className={styles.mark} />
+				<Icon icon={icon || 'mdi:check-bold'} className={styles.mark} />
 				<InputSwitchOverlay value={controls.tweakingValue} />
 			</div>
 			{label && <label htmlFor={id}>{label}</label>}

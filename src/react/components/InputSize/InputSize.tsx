@@ -55,9 +55,12 @@ export function InputSize({
 			<button
 				className={classNames(styles.chain, keepRatio && styles.active)}
 				type="button"
+				disabled={disabled}
+				aria-pressed={keepRatio}
 				onClick={() => setKeepRatio(current => !current)}
 			>
 				<Icon
+					className={styles.chainIcon}
 					icon={keepRatio ? 'radix-icons:link-1' : 'radix-icons:link-none-1'}
 				/>
 			</button>

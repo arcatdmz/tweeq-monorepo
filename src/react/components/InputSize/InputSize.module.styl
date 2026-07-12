@@ -1,11 +1,16 @@
 .tqInputSize
 	position relative
 
+	// Keep the second field's axis icon clear of the centered ratio control,
+	// matching the legacy component's deep InputNumber adjustment.
+	& > div > :not(:first-child) svg
+		left calc(var(--tq-input-height) * .3)
+
 .chain
 	position absolute
 	top 0
 	left 50%
-	transform translateX(-50%) scale(.8)
+	transform translateX(-50%)
 	width var(--tq-input-height)
 	height var(--tq-input-height)
 	color var(--tq-color-text-subtle)
@@ -15,6 +20,10 @@
 	background transparent
 	box-sizing border-box
 
+	&:disabled
+		pointer-events none
+		color var(--tq-color-text-mute)
+
 	&:hover
 		color 'color-mix(in srgb, var(--tq-color-text-mute), transparent 50%)' % ''
 
@@ -23,3 +32,8 @@
 
 		&:hover
 			color var(--tq-color-accent-hover)
+
+.chainIcon
+	width 100%
+	height 100%
+	transform scale(.8)

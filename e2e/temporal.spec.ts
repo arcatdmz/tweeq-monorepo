@@ -64,7 +64,13 @@ test('temporal and rotary controls render and update', async ({page}) => {
 	)
 	await page.mouse.down()
 	await page.mouse.move(timeBox.x + timeBox.width / 2 + 12, timeBox.y + 10)
-	await expect(page.locator('[class*="overlaySvg"]')).toBeVisible()
+	const timeOverlay = page.locator('[class*="overlaySvg"]')
+	await expect(timeOverlay).toBeVisible()
+	await expect(timeOverlay).toHaveCSS('width', '360px')
+	await expect(timeOverlay).toHaveCSS('height', '360px')
+	await expect(page.getByTestId('time-value')).not.toHaveText('48')
+	const draggedTime = Number(await page.getByTestId('time-value').textContent())
+	expect(Number.isInteger(draggedTime)).toBe(true)
 	await page.mouse.up()
 
 	await expect(
