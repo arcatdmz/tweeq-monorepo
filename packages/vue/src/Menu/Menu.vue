@@ -31,7 +31,7 @@ export interface MenuSeparator {
 
 export type MenuItem = MenuCommand | MenuGroup | MenuSeparator
 
-interface Props {
+export interface Props {
 	items: MenuItem[]
 }
 
@@ -53,7 +53,7 @@ const theme = useThemeStore()
 const hoverIndex = ref(-1)
 
 const $menuRoot = useTemplateRef<HTMLElement>('$menuRoot')
-const $lists = useTemplateRef('$lists')
+const $lists = useTemplateRef<HTMLElement[]>('$lists')
 const $childMenu = useTemplateRef<{getRoot: () => HTMLElement | null}>(
 	'$childMenu'
 )
@@ -62,7 +62,7 @@ const $childMenu = useTemplateRef<{getRoot: () => HTMLElement | null}>(
 // triangle (the component is multi-root, so $el isn't reliably the <ul>).
 defineExpose({getRoot: () => $menuRoot.value})
 
-const $childReference = computed(() => {
+const $childReference = computed<HTMLElement | null>(() => {
 	if (hoverIndex.value === -1) return null
 
 	return $lists.value?.[hoverIndex.value] ?? null

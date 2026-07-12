@@ -94,7 +94,7 @@ const shiftY = ref(0)
 const shiftStyle = computed<Record<string, string>>(() =>
 	shiftX.value || shiftY.value
 		? {transform: `translate(${shiftX.value}px, ${shiftY.value}px)`}
-		: {}
+		: ({} as Record<string, string>)
 )
 
 // Keep this much gap between the popover and the viewport edge when shifting.

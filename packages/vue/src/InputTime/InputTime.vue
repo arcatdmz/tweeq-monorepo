@@ -43,7 +43,7 @@ const $input = useTemplateRef('$input')
 // The tweak overlay renders in the browser top layer (a full-viewport popover),
 // so it can't centre on the input with CSS percentages — that would centre it on
 // the viewport. Position it at the input's viewport-space centre instead.
-const inputBounds = useElementBounding($input)
+const inputBounds = useElementBounding($input as any)
 const overlayStyle = computed(() => ({
 	left: `${inputBounds.x.value + inputBounds.width.value / 2}px`,
 	top: `${inputBounds.y.value + inputBounds.height.value / 2}px`,

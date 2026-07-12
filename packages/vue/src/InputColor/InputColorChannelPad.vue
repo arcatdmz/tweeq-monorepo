@@ -15,7 +15,7 @@ import {
 } from './utils'
 
 interface Props {
-	axes: [ColorChannel, ColorChannel]
+	axes: readonly [ColorChannel, ColorChannel]
 	modelValue: HSVA
 }
 
