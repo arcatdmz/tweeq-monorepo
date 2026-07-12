@@ -55,7 +55,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputComplex | SFC | ✅ | — | layout-modals | |
 | InputCubicBezier | SFC | ✅ | `cubicBezier` | color-curves | |
 | InputDropdown | SFC | ✅ | `dropdown` | shared contract + components-parity, dropdown-code | shared empty/wrap navigation; click confirm, Escape rollback, and listbox ARIA aligned in Phase 4 |
-| InputDrum | SFC | ✅ | `inputDrum` | temporal | |
+| InputDrum | SFC | ✅ | `inputDrum` | shared contract + core controller + temporal | controlled selection, keyboard/type-ahead, multi-step wheel input, disabled/invalid state, layout, drag math, and stable parts aligned in Phase 4 |
 | InputGroup | SFC | ✅ | — | shared contract + primitives | fragment/whitespace flattening and horizontal/vertical child positions aligned in Phase 4 |
 | InputNumber | SFC | ✅ | `inputNumber` | shared contract + docs-pages, number-vectors | controlled edits, expressions, configured steps, disabled state, stable parts, decimal precision, and drag-scale protected |
 | InputPosition | SFC | ✅ | `inputTranslate` | shared child contracts + number-vectors | forwards controlled bounds, disabled/invalid state, and lifecycle events to aligned InputTranslate/InputVec adapters |

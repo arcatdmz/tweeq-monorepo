@@ -1,4 +1,13 @@
 <script lang="ts" setup generic="T">
+import {
+	DRUM_DRAG_STEP_PX,
+	advanceDrumDragIndex,
+	clampDrumIndex,
+	consumeDrumWheel,
+	findDrumTypeAheadIndex,
+	getDrumCellWidth,
+	getDrumClickOffset,
+} from '@tweeq/core'
 import {useElementBounding, useResizeObserver} from '@vueuse/core'
 import {computed, onMounted, ref, shallowRef, watch} from 'vue'
 
@@ -45,11 +54,6 @@ const measuredWidth = ref(0)
 const emPx = ref(16)
 const $measure = shallowRef<HTMLElement | null>(null)
 
-// Cap how far the cells may stretch past the widest label, so on a wide drum the
-// labels don't drift so far apart they're tedious to scrub past (e.g. shutter
-// speed's long list).
-const MAX_GAP_EM = 2
-
 function measure() {
 	const m = $measure.value
 	if (!m) return
@@ -65,34 +69,21 @@ onMounted(measure)
 useResizeObserver($measure, measure)
 
 const cellWidth = computed(() => {
-	if (props.cellWidth) return Math.max(props.cellWidth, 1)
-
-	const label = measuredWidth.value
-	const W = viewportWidth.value
-	if (!label || !W) return Math.max(label, 1)
-
-	// Stretch the cells to an EVEN count across the width. With the active value
-	// centred, an even count puts the viewport edges exactly on the two edge
-	// cells' centres — so a half (and therefore mask-faded) label always peeks on
-	// each side, signalling there's more to scroll. Keep cells ≥ the widest label
-	// so nothing clips.
-	let cells = Math.floor(W / label)
-	if (cells % 2 === 1) cells -= 1
-	if (cells < 2) cells = 2
-
-	// Stretch to fill the width, but never let the gap past the label exceed
-	// MAX_GAP_EM (the drum then just doesn't span the full width — the mask still
-	// fades the edges).
-	return Math.min(W / cells, label + MAX_GAP_EM * emPx.value)
+	return getDrumCellWidth({
+		cellWidth: props.cellWidth,
+		measuredLabelWidth: measuredWidth.value,
+		viewportWidth: viewportWidth.value,
+		emPx: emPx.value,
+	})
 })
 
 function clampIndex(i: number) {
-	return Math.max(0, Math.min(props.options.length - 1, i))
+	return clampDrumIndex(i, props.options.length)
 }
 
 function setIndex(i: number) {
 	const next = props.options[clampIndex(i)]
-	if (next !== undefined && next !== model.value) {
+	if (next !== undefined && !Object.is(next, model.value)) {
 		model.value = next
 	}
 }
@@ -101,12 +92,6 @@ function setIndex(i: number) {
 // smoothly; the bound value snaps to the nearest whole option as it crosses.
 const floatIndex = ref(0)
 let dragStartIndex = 0
-
-// Pixels of (locked) pointer movement per option step while dragging. Fixed —
-// NOT the cell width — so a wide label (e.g. shutter speed's "1/8000") doesn't
-// stretch the cells and make the drum sluggish to scrub. The pointer is locked
-// during a drag, so there's no on-screen cursor to keep aligned with the cells.
-const DRAG_STEP_PX = 40
 
 const {dragging} = useDrag($root, {
 	disabled,
@@ -123,8 +108,11 @@ const {dragging} = useDrag($root, {
 		// Accumulate this frame's movement and clamp each step (not the total
 		// offset from pointerdown) — so dragging past an end builds up no hidden
 		// overshoot and a reversal turns the drum back immediately.
-		floatIndex.value = clampIndex(
-			floatIndex.value - state.delta[0] / DRAG_STEP_PX
+		floatIndex.value = advanceDrumDragIndex(
+			floatIndex.value,
+			state.delta[0],
+			props.options.length,
+			DRUM_DRAG_STEP_PX
 		)
 		setIndex(Math.round(floatIndex.value))
 	},
@@ -138,7 +126,11 @@ const {dragging} = useDrag($root, {
 		const root = $root.value
 		if (!root) return
 		const x = state.xy[0] - root.getBoundingClientRect().left
-		const offset = Math.round((x - viewportWidth.value / 2) / cellWidth.value)
+		const offset = getDrumClickOffset(
+			x,
+			viewportWidth.value,
+			cellWidth.value
+		)
 		if (offset !== 0) {
 			setIndex(activeIndex.value + offset)
 		}
@@ -171,13 +163,9 @@ const trackStyle = computed(() => ({
 let wheelAccum = 0
 function onWheel(e: WheelEvent) {
 	if (disabled.value) return
-	wheelAccum += e.deltaX || e.deltaY
-	const threshold = 24
-	while (Math.abs(wheelAccum) >= threshold) {
-		const dir = Math.sign(wheelAccum)
-		setIndex(activeIndex.value + dir)
-		wheelAccum -= dir * threshold
-	}
+	const consumed = consumeDrumWheel(wheelAccum, e.deltaX || e.deltaY)
+	wheelAccum = consumed.remainder
+	if (consumed.steps) setIndex(activeIndex.value + consumed.steps)
 }
 
 // Type-ahead: while focused, typing jumps to the option whose label starts with
@@ -192,8 +180,9 @@ function typeAhead(char: string): boolean {
 	clearTimeout(typeTimer)
 	typeTimer = setTimeout(() => (typeBuffer = ''), 800)
 	typeBuffer += char.toLowerCase()
-	const i = completeOptions.value.findIndex(o =>
-		o.label.toLowerCase().startsWith(typeBuffer)
+	const i = findDrumTypeAheadIndex(
+		completeOptions.value.map(option => option.label),
+		typeBuffer
 	)
 	if (i >= 0) {
 		setIndex(i)
@@ -236,7 +225,9 @@ function onKeyDown(e: KeyboardEvent) {
 		}"
 		:inline-position="inlinePosition"
 		:block-position="blockPosition"
+		:aria-invalid="invalid || undefined"
 		:tabindex="disabled ? -1 : 0"
+		data-tq-part="root"
 		@keydown="onKeyDown"
 		@wheel.prevent="onWheel"
 		@focus="emit('focus')"
@@ -244,14 +235,15 @@ function onKeyDown(e: KeyboardEvent) {
 	>
 		<!-- Centre ruler mark: a fixed, full-height line at the selection point.
 			Before .viewport in the DOM so it paints behind the labels. -->
-		<span class="center-mark" />
-		<div class="viewport">
-			<div class="track" :style="trackStyle">
+		<span class="center-mark" data-tq-part="center-mark" />
+		<div class="viewport" data-tq-part="viewport">
+			<div class="track" :style="trackStyle" data-tq-part="track">
 				<div
 					v-for="(op, i) in completeOptions"
 					:key="op.label"
 					class="cell"
 					:class="{active: i === activeIndex, numeric: font === 'numeric'}"
+					:data-tq-part="i === activeIndex ? 'active-cell' : 'cell'"
 				>
 					{{ op.label }}
 					<span class="tick" />

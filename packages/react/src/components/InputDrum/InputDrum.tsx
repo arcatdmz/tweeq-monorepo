@@ -1,6 +1,11 @@
 import {
+	advanceDrumDragIndex,
+	clampDrumIndex,
+	consumeDrumWheel,
 	DRUM_DRAG_STEP_PX,
+	findDrumTypeAheadIndex,
 	getDrumCellWidth,
+	getDrumClickOffset,
 	getLabelizer,
 	type InputBoxProps,
 	type InputEvents,
@@ -133,7 +138,7 @@ export function InputDrum<T>({
 	}
 	const setIndex = (index: number) => {
 		const current = stateRef.current
-		const clamped = Math.max(0, Math.min(current.options.length - 1, index))
+		const clamped = clampDrumIndex(index, current.options.length)
 		const next = current.options[clamped]
 		if (next !== undefined && !Object.is(next, current.value)) {
 			current.onChange?.(next)
@@ -150,13 +155,11 @@ export function InputDrum<T>({
 				setFloatIndex(index)
 			},
 			onDrag(state: DragState) {
-				const max = stateRef.current.options.length - 1
-				const next = Math.max(
-					0,
-					Math.min(
-						max,
-						floatIndexRef.current - state.delta[0] / DRUM_DRAG_STEP_PX
-					)
+				const next = advanceDrumDragIndex(
+					floatIndexRef.current,
+					state.delta[0],
+					stateRef.current.options.length,
+					DRUM_DRAG_STEP_PX
 				)
 				floatIndexRef.current = next
 				setFloatIndex(next)
@@ -170,8 +173,10 @@ export function InputDrum<T>({
 				const element = root.current
 				if (!element) return
 				const x = state.xy[0] - element.getBoundingClientRect().left
-				const offset = Math.round(
-					(x - stateRef.current.viewportWidth / 2) / stateRef.current.cellWidth
+				const offset = getDrumClickOffset(
+					x,
+					stateRef.current.viewportWidth,
+					stateRef.current.cellWidth
 				)
 				if (offset) setIndex(stateRef.current.activeIndex + offset)
 			},
@@ -190,12 +195,12 @@ export function InputDrum<T>({
 	const handleWheel = (event: WheelEvent) => {
 		if (disabled) return
 		event.preventDefault()
-		wheelAccum.current += event.deltaX || event.deltaY
-		while (Math.abs(wheelAccum.current) >= 24) {
-			const direction = Math.sign(wheelAccum.current)
-			setIndex(stateRef.current.activeIndex + direction)
-			wheelAccum.current -= direction * 24
-		}
+		const consumed = consumeDrumWheel(
+			wheelAccum.current,
+			event.deltaX || event.deltaY
+		)
+		wheelAccum.current = consumed.remainder
+		if (consumed.steps) setIndex(stateRef.current.activeIndex + consumed.steps)
 	}
 	const handleKeyDown = (event: KeyboardEvent) => {
 		if (disabled) return
@@ -216,8 +221,9 @@ export function InputDrum<T>({
 			clearTimeout(typeTimer.current)
 			typeTimer.current = setTimeout(() => (typeBuffer.current = ''), 800)
 			typeBuffer.current += event.key.toLowerCase()
-			const index = completeOptions.findIndex(option =>
-				option.label.toLowerCase().startsWith(typeBuffer.current)
+			const index = findDrumTypeAheadIndex(
+				completeOptions.map(option => option.label),
+				typeBuffer.current
 			)
 			if (index >= 0) {
 				event.stopPropagation()
@@ -245,15 +251,17 @@ export function InputDrum<T>({
 			block-position={blockPosition}
 			aria-invalid={invalid || undefined}
 			tabIndex={disabled ? -1 : 0}
+			data-tq-part="root"
 			onKeyDown={handleKeyDown}
 			onWheel={handleWheel}
 			onFocus={onFocus}
 			onBlur={onBlur}
 		>
-			<span className={styles.centerMark} />
-			<div className={styles.viewport}>
+			<span className={styles.centerMark} data-tq-part="center-mark" />
+			<div className={styles.viewport} data-tq-part="viewport">
 				<div
 					className={styles.track}
+					data-tq-part="track"
 					style={{
 						transform: `translateX(${transform}px)`,
 						transition: drag.dragging || !animating ? 'none' : undefined,
@@ -267,6 +275,7 @@ export function InputDrum<T>({
 								index === activeIndex && styles.active,
 								font === 'numeric' && styles.numeric
 							)}
+							data-tq-part={index === activeIndex ? 'active-cell' : 'cell'}
 						>
 							{option.label}
 							<span className={styles.tick} />

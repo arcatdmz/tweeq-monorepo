@@ -114,6 +114,13 @@ contain renderer markup only and no copied state transition.
   invalid expressions, and stable text-input parts.
 - Vue InputTime no longer emits blur while mounting, confirms consistently on
   real blur, and blocks drag interaction while disabled.
+- InputDrum now shares cell layout, drag advancement, click offsets, wheel
+  accumulation, index clamping, and type-ahead matching through core helpers.
+  Its shared renderer contract also protects controlled selection, keyboard
+  navigation, disabled/invalid state, and stable visual parts.
+- Wheel events spanning multiple thresholds now advance every requested step;
+  the prior adapters repeatedly selected only the first step before a
+  controlled parent could re-render.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 
