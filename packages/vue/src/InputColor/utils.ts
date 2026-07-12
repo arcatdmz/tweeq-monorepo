@@ -3,6 +3,7 @@
 // original './utils' import paths working unchanged.
 export {
 	css2hsva,
+	getColorPadTweak,
 	getHSVAChannel,
 	hsv2rgb,
 	hsva2hex,

@@ -8,7 +8,7 @@ import {
 } from '@vueuse/core'
 import chroma from 'chroma-js'
 import Color from 'colorjs.io'
-import {scalar, vec2} from 'linearly'
+import {vec2} from 'linearly'
 import {computed, ref, shallowRef, useTemplateRef, watch} from 'vue'
 
 import {GlslCanvas} from '../GlslCanvas'
@@ -31,10 +31,10 @@ import {
 } from './types'
 import {
 	css2hsva,
+	getColorPadTweak,
 	getHSVAChannel,
 	hsv2rgb,
 	hsva2hex,
-	setHSVAChannel,
 	tweakHSVAChannel,
 } from './utils'
 import WheelFragmentString from '@tweeq/dom/shaders/wheel.frag'
@@ -112,47 +112,15 @@ const {origin, dragging: tweaking} = useDrag($button, {
 
 		const mode = tweakMode.value
 
-		if (mode === 'pad') {
-			local.value = tweakHSVAChannel(local.value, 's', dx)
-			local.value = tweakHSVAChannel(local.value, 'v', dy)
-
-			const {s: is, v: iv} = localOnTweak!
-			const {s: cs, v: cv} = local.value
-
-			multi.update(hsva => {
-				if (cs !== is) {
-					hsva = setHSVAChannel(hsva, 's', s =>
-						cs < is
-							? scalar.lerp(0, s, cs / is)
-							: scalar.lerp(1, s, (1 - cs) / (1 - is))
-					)
-				}
-				if (cv !== iv) {
-					hsva = setHSVAChannel(hsva, 'v', v =>
-						cv < iv
-							? scalar.lerp(0, v, cv / iv)
-							: scalar.lerp(1, v, (1 - cv) / (1 - iv))
-					)
-				}
-				return hsva
-			})
-		} else {
-			local.value = tweakHSVAChannel(local.value, mode, mode === 'v' ? dy : dx)
-
-			const current = getHSVAChannel(local.value, mode)
-			const initial = getHSVAChannel(localOnTweak!, mode)
-
-			if (mode === 'h' || initial === 0) {
-				const delta = current - initial
-				multi.update(hsva => tweakHSVAChannel(hsva, 'h', delta))
-			} else {
-				const scale = current / initial
-				multi.update(hsva => {
-					const v = getHSVAChannel(hsva, mode)
-					return setHSVAChannel(hsva, mode, v * scale)
-				})
-			}
-		}
+		const result = getColorPadTweak(
+			local.value,
+			localOnTweak!,
+			mode,
+			dx,
+			dy
+		)
+		local.value = result.value
+		multi.update(result.updateRelated)
 
 		model.value = compose(local.value)
 	},

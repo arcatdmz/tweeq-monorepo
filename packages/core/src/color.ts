@@ -6,6 +6,7 @@ import {unsignedMod} from './util.js'
 export type ColorChannel = 'r' | 'g' | 'b' | 'a' | 'h' | 's' | 'v'
 export type ColorPicker = ColorChannel | `${ColorChannel}${ColorChannel}`
 export type ColorSpace = 'rgb' | 'hsv' | 'hex'
+export type ColorTweakMode = ColorChannel | 'pad'
 export type ColorPickerComponent =
 	| readonly [type: 'slider', axis: ColorChannel]
 	| readonly [type: 'pad', axes: readonly [ColorChannel, ColorChannel]]
@@ -165,6 +166,62 @@ export function createInputColorPickerController(
 			local = css2hsva(next)
 			notify()
 			emit(next)
+		},
+	}
+}
+
+export interface ColorPadTweakResult {
+	value: HSVA
+	updateRelated(value: HSVA): HSVA
+}
+
+/** Apply one pointer delta and produce the equivalent multi-selection update. */
+export function getColorPadTweak(
+	current: HSVA,
+	initial: HSVA,
+	mode: ColorTweakMode,
+	dx: number,
+	dy: number
+): ColorPadTweakResult {
+	if (mode === 'pad') {
+		let value = tweakHSVAChannel(current, 's', dx)
+		value = tweakHSVAChannel(value, 'v', dy)
+		return {
+			value,
+			updateRelated(related) {
+				let next = related
+				for (const channel of ['s', 'v'] as const) {
+					const from = initial[channel]
+					const to = value[channel]
+					if (to === from) continue
+					next = setHSVAChannel(next, channel, relatedValue =>
+						to < from
+							? from === 0
+								? to
+								: relatedValue * (to / from)
+							: relatedValue +
+								(1 - relatedValue) * ((to - from) / (1 - from))
+					)
+				}
+				return next
+			},
+		}
+	}
+
+	const value = tweakHSVAChannel(current, mode, mode === 'v' ? dy : dx)
+	const from = getHSVAChannel(initial, mode)
+	const to = getHSVAChannel(value, mode)
+	return {
+		value,
+		updateRelated(related) {
+			if (mode === 'h' || from === 0) {
+				return tweakHSVAChannel(related, mode, to - from)
+			}
+			return setHSVAChannel(
+				related,
+				mode,
+				getHSVAChannel(related, mode) * (to / from)
+			)
 		},
 	}
 }

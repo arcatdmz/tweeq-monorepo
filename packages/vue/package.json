@@ -58,8 +58,6 @@
 		"linearly": "catalog:",
 		"lodash-es": "catalog:",
 		"monaco-editor": "^0.54.0",
-		"monaco-editor-vue3": "^1.0.4",
-		"p-queue": "^8.0.1",
-		"regl": "^2.1.1"
+		"monaco-editor-vue3": "^1.0.4"
 	}
 }

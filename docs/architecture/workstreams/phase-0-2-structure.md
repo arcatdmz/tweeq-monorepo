@@ -159,7 +159,7 @@ contain renderer markup only and no copied state transition.
   speed-aware updates, confirm, and disposal; Vue also clears its popup element
   registration during unmount.
 
-## Phase 4 family 6 (in progress)
+## Phase 4 family 6 (complete)
 
 - InputCubicBezier uses core path/point helpers in both renderers. Its shared
   contract covers controlled paths, native disabled/invalid state, touch
@@ -180,6 +180,12 @@ contain renderer markup only and no copied state transition.
 - Markdown now renders through one core-owned MarkdownIt plugin pipeline. Vue
   renders synchronously for SSR with a standard div root; its duplicated setup
   and abandoned commented Monaco highlighter were removed.
+- InputColorPad's drag/multi-selection transition is core-owned, including
+  correct additive behavior for zero-valued RGB channels. Vue no longer owns
+  redundant regl or queue dependencies.
+- Family gate: core/workspace tests, renderer builds, lint, boundaries,
+  SSR/CJS rendering/imports, packed React/Vue consumers, and all 21 Playwright
+  tests pass.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

@@ -3,13 +3,13 @@ import {
 	colorChannelToIndex,
 	type ColorPickerComponent,
 	css2hsva,
+	getColorPadTweak,
 	getHSVAChannel,
 	hsv2rgb,
 	type HSVA,
 	hsva2hex,
 	type InputBoxProps,
 	type InputEvents,
-	setHSVAChannel,
 	tweakHSVAChannel,
 } from '@tweeq/core'
 import {type DragState, themeStore} from '@tweeq/dom'
@@ -154,55 +154,17 @@ export function InputColorPad({
 			onDrag: ({delta}: DragState) => {
 				const [dx, dy] = [delta[0] / popupWidth, delta[1] / -popupWidth]
 				const mode = modeRef.current
-				let next = localRef.current
 				const initial = localOnTweak.current
 				if (!initial) return
-
-				if (mode === 'pad') {
-					next = tweakHSVAChannel(next, 's', dx)
-					next = tweakHSVAChannel(next, 'v', dy)
-					const currentS = next.s
-					const currentV = next.v
-					multiRef.current?.update((hsva: HSVA) => {
-						let result = hsva
-						if (currentS !== initial.s) {
-							result = setHSVAChannel(result, 's', channel =>
-								currentS < initial.s
-									? initial.s === 0
-										? currentS
-										: channel * (currentS / initial.s)
-									: channel +
-										(1 - channel) * ((currentS - initial.s) / (1 - initial.s))
-							)
-						}
-						if (currentV !== initial.v) {
-							result = setHSVAChannel(result, 'v', channel =>
-								currentV < initial.v
-									? initial.v === 0
-										? currentV
-										: channel * (currentV / initial.v)
-									: channel +
-										(1 - channel) * ((currentV - initial.v) / (1 - initial.v))
-							)
-						}
-						return result
-					})
-				} else {
-					next = tweakHSVAChannel(next, mode, mode === 'v' ? dy : dx)
-					const currentValue = getHSVAChannel(next, mode)
-					const initialValue = getHSVAChannel(initial, mode)
-					if (mode === 'h' || initialValue === 0) {
-						const amount = currentValue - initialValue
-						multiRef.current?.update((hsva: HSVA) =>
-							tweakHSVAChannel(hsva, 'h', amount)
-						)
-					} else {
-						const scale = currentValue / initialValue
-						multiRef.current?.update((hsva: HSVA) =>
-							setHSVAChannel(hsva, mode, getHSVAChannel(hsva, mode) * scale)
-						)
-					}
-				}
+				const result = getColorPadTweak(
+					localRef.current,
+					initial,
+					mode,
+					dx,
+					dy
+				)
+				const next = result.value
+				multiRef.current?.update(result.updateRelated)
 
 				localRef.current = next
 				setLocal(next)

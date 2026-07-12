@@ -456,12 +456,6 @@ importers:
       monaco-editor-vue3:
         specifier: ^1.0.4
         version: 1.0.5(monaco-editor@0.54.0)(vue@3.5.39(typescript@5.9.3))
-      p-queue:
-        specifier: ^8.0.1
-        version: 8.1.1
-      regl:
-        specifier: ^2.1.1
-        version: 2.1.1
     devDependencies:
       '@tweeq/styles':
         specifier: workspace:^

@@ -3,6 +3,7 @@ import {describe, expect, it} from 'vitest'
 import {
 	createInputColorPickerController,
 	css2hsva,
+	getColorPadTweak,
 	hsv2rgb,
 	hsva2hex,
 	rgb2hsv,
@@ -52,5 +53,26 @@ describe('input color picker controller', () => {
 
 		controller.sync('#ffffff')
 		expect(controller.value).toMatchObject({h: 0, s: 0, v: 1, a: 1})
+	})
+})
+
+describe('color pad tweak', () => {
+	it('scales saturation and value across related colors', () => {
+		const initial = {h: 0, s: 0.5, v: 0.5, a: 1}
+		const tweak = getColorPadTweak(initial, initial, 'pad', 0.25, -0.25)
+		expect(tweak.value).toMatchObject({s: 0.75, v: 0.25})
+		const related = tweak.updateRelated({h: 0.5, s: 0.2, v: 0.8, a: 1})
+		expect(related.h).toBe(0.5)
+		expect(related.s).toBeCloseTo(0.6)
+		expect(related.v).toBeCloseTo(0.4)
+		expect(related.a).toBe(1)
+	})
+
+	it('updates a zero RGB channel without accidentally changing hue', () => {
+		const initial = {h: 0.5, s: 1, v: 1, a: 1}
+		const tweak = getColorPadTweak(initial, initial, 'r', 0.2, 0)
+		const related = tweak.updateRelated({h: 0.5, s: 1, v: 0.5, a: 1})
+		expect(hsv2rgb(related).r).toBeCloseTo(0.2)
+		expect(related.h).not.toBe(initial.h + 0.2)
 	})
 })
