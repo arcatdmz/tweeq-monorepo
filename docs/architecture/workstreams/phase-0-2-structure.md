@@ -26,10 +26,11 @@ Plan: [../monorepo-migration.md](../monorepo-migration.md)
 
 ## Verification state
 
-`pnpm build`, `pnpm test` (60 core + 26 dom), `pnpm lint`,
-`pnpm check:boundaries`, `pnpm test:packed`, and the full 19-test Playwright
-suite are all green. The docs app compiles the React packages from source
-via Vite aliases; packed-artifact coverage is the examples' job.
+`pnpm build`, `pnpm test`, `pnpm lint`, `pnpm check:boundaries`,
+`pnpm test:ssr`, `pnpm test:packed`, and the full 21-test Playwright suite are
+CI gates. The browser suite includes representative light/dark/mobile visual
+baselines. The docs app compiles the React packages from source via Vite
+aliases; packed-artifact coverage is the examples' job.
 
 ## Phase 3 leaf tier (done 2026-07-13)
 
@@ -98,3 +99,14 @@ contain renderer markup only and no copied state transition.
 - InputSize now uses the core aspect-ratio controller in both renderers, and its
   ratio toggle is a native button with matching disabled and pressed semantics.
 - Vue InputVec now propagates disabled and invalid state to each numeric input.
+
+## Retrospective Phase 0–2 audit repair (2026-07-13)
+
+- Core and DOM production ESM now uses explicit `.js` specifiers and is
+  importable by plain Node.
+- Vue removed its remaining Pave dependency in favor of shared core geometry
+  and SVG paths, lazily creates regl/Monaco browser state, and is safe to import
+  without DOM globals.
+- Vue declaration generation excludes renderer contract tests.
+- CI now enforces SSR imports and Chromium parity/visual tests; Changesets
+  record the accumulated user-visible Phase 4 behavior changes.

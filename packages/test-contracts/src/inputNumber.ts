@@ -43,9 +43,8 @@ export function runInputNumberContract(
 		})
 
 		it('applies the configured keyboard step', async () => {
-			harness = await createHarness('InputNumber', {value: 3, step: 2})
+			harness = await createHarness('InputNumber', {value: 4, step: 2})
 			await harness.key({type: 'down', key: 'ArrowUp'}, 'input')
-			// Step validation snaps the incremented value to the step grid.
 			expect(harness.value()).toBe(6)
 		})
 
