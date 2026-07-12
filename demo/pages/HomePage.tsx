@@ -1,9 +1,15 @@
+import {assetPath} from '../assetPath'
 import {Heading} from './docs'
 
 export function HomePage() {
 	return <>
 		<header className="vp-hero">
-			<img className="vp-hero-image" src="/logo.svg" alt="" height="160" />
+			<img
+				className="vp-hero-image"
+				src={assetPath('logo.svg')}
+				alt=""
+				height="160"
+			/>
 			<h1 id="main-title">Tweeq</h1>
 			<p className="vp-hero-description" />
 			<p className="vp-hero-actions">

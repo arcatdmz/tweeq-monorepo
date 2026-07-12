@@ -8,6 +8,7 @@ import {
 
 import {themeStore} from '../src/core'
 import {Viewport} from '../src/react'
+import {assetPath} from './assetPath'
 import {ColorsPage} from './pages/ColorsPage'
 import {ComponentsPage} from './pages/ComponentsPage'
 import {ExamplesPage} from './pages/ExamplesPage'
@@ -316,7 +317,11 @@ export function DemoApp(): ReactNode {
 				</div>
 				<span>
 					<a className="route-link" href="#/home">
-						<img className="vp-site-logo" src="/logo.svg" alt="Tweeq" />
+						<img
+							className="vp-site-logo"
+							src={assetPath('logo.svg')}
+							alt="Tweeq"
+						/>
 						<span className="vp-site-name vp-hide-mobile" aria-hidden="true">
 							Tweeq
 						</span>

@@ -1,4 +1,5 @@
 import {TitleBar} from '../../src/react'
+import {assetPath} from '../assetPath'
 
 export default function TitleBarSection() {
 	return (
@@ -6,7 +7,7 @@ export default function TitleBarSection() {
 			<h2>TitleBar</h2>
 			<TitleBar
 				name="Tweeq Demo"
-				icon="/favicon.svg"
+				icon={assetPath('logo.svg')}
 				style={{position: 'relative'}}
 				center="Center"
 				right="Right"

@@ -1,4 +1,5 @@
 import {App, TitleBar} from '../../src/react'
+import {assetPath} from '../assetPath'
 
 export default function AppSection() {
 	return (
@@ -11,7 +12,7 @@ export default function AppSection() {
 				title={
 					<TitleBar
 						name="Embedded"
-						icon="/favicon.svg"
+						icon={assetPath('logo.svg')}
 						style={{position: 'absolute'}}
 					/>
 				}
