@@ -28,7 +28,6 @@ export interface TabsProps {
 
 export interface TabsState {
 	activeId: string
-	lastActiveId: string
 	tabs: Array<Tab>
 }
 

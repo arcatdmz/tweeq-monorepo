@@ -84,7 +84,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | Popover | SFC | ✅ | `popover` | shared contract + core geometry + overlay | CSS anchor/native lifecycle, controlled open state, coordinate placement, manual/auto mode, shift/arrow geometry, and stable parts aligned in Phase 4 |
 | Ruler | SFC | ✅ | — | shared contract + core geometry + mobile-docs | default/custom scales, finite zero-size geometry, pointer mapping, and stable parts aligned in Phase 4 |
 | SvgIcon | SFC | ✅ | `svgPath` | — | |
-| Tabs | SFC | ✅ | — | layout-modals | |
+| Tabs | SFC | ✅ | `tabs` | shared contract + core selection + layout-modals | enabled persisted/default/fallback selection, custom storage keys, native disabled buttons, active/click lifecycle, id re-registration, ARIA, and stable parts aligned in Phase 4 |
 | Timeline | SFC | ✅ | `timeline` | shared contract + core controller + temporal | native wheel pan/zoom, imperative range transitions, controlled frame width, scrollbar slot, and stable parts aligned in Phase 4 |
 | TitleBar | SFC | ✅ | — | — | |
 | Tooltip | SFC | ✅ | `tooltip` | DOM controller fixtures + Popover contract + overlay | one shared delay/anchor/snapshot state machine; plain/HTML/structured parsing, hover/focus handoff, native close synchronization, and stable content parts aligned in Phase 4 |

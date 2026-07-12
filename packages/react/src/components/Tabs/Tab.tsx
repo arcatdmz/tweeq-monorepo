@@ -1,3 +1,4 @@
+import {normalizeTabId} from '@tweeq/core'
 import {type HTMLAttributes, useContext, useEffect, useMemo} from 'react'
 
 import {classNames} from '../../classNames'
@@ -21,7 +22,7 @@ export function Tab({
 	const context = useContext(TabsContext)
 	if (!context) throw new Error('Tab must be rendered inside Tabs')
 	const {activeId, register, update} = context
-	const id = idProp ?? name.toLowerCase().replaceAll(' ', '-')
+	const id = idProp ?? normalizeTabId(name)
 	const registration = useMemo(
 		() => ({id, name, isDisabled, paneId: `${id}-pane`}),
 		[id, isDisabled, name]
@@ -41,6 +42,7 @@ export function Tab({
 				className
 			)}
 			data-tab-id={id}
+			data-tq-part={`panel-${id}`}
 			aria-hidden={!active}
 			role="tabpanel"
 			tabIndex={-1}

@@ -1,3 +1,4 @@
+import {resolveActiveTabId} from '@tweeq/core'
 import {appConfigStore} from '@tweeq/dom'
 import {
 	type HTMLAttributes,
@@ -58,8 +59,8 @@ export function Tabs({
 		(id: string, event?: MouseEvent) => {
 			const selected = tabs.find(tab => tab.id === id)
 			if (!selected) return
-			if (event && selected.isDisabled) {
-				event.preventDefault()
+			if (selected.isDisabled) {
+				event?.preventDefault()
 				return
 			}
 			if (activeId === selected.id) {
@@ -75,16 +76,14 @@ export function Tabs({
 
 	useEffect(() => {
 		if (!tabs.length) return
-		if (activeId && tabs.some(tab => tab.id === activeId)) return
-		const next =
-			(persistedId && tabs.some(tab => tab.id === persistedId)
-				? persistedId
-				: undefined) ??
-			(options?.defaultTabId &&
-			tabs.some(tab => tab.id === options.defaultTabId)
-				? options.defaultTabId
-				: tabs[0].id)
-		select(next)
+		const next = resolveActiveTabId(
+			tabs,
+			activeId,
+			persistedId,
+			options?.defaultTabId
+		)
+		if (next && next !== activeId) select(next)
+		else if (!next && activeId) setActiveId('')
 	}, [activeId, options?.defaultTabId, persistedId, select, tabs])
 
 	const context = useMemo(
@@ -102,10 +101,15 @@ export function Tabs({
 					vertical && styles.vertical,
 					className
 				)}
+				data-tq-part="root"
 			>
 				<div className={styles.tablistWrapper}>
 					{beforeTablist && <div>{beforeTablist}</div>}
-					<ul role="tablist" className={styles.tablist}>
+					<ul
+						role="tablist"
+						aria-orientation={vertical ? 'vertical' : 'horizontal'}
+						className={styles.tablist}
+					>
 						{tabs.map(tab => (
 							<li
 								key={tab.id}
@@ -123,6 +127,7 @@ export function Tabs({
 									aria-selected={tab.id === activeId}
 									disabled={tab.isDisabled}
 									className={styles.tablistLink}
+									data-tq-part={`tab-${tab.id}`}
 									onClick={event => select(tab.id, event)}
 								>
 									{tab.name}

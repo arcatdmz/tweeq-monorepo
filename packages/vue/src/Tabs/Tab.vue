@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {normalizeTabId} from '@tweeq/core'
 import {computed, onBeforeMount, onBeforeUnmount, watch} from 'vue'
 
 import {AddTabKey, DeleteTabKey, TabsProviderKey, UpdateTabKey} from './symbols'
@@ -21,31 +22,33 @@ const updateTab = injectStrict(UpdateTabKey)
 const deleteTab = injectStrict(DeleteTabKey)
 
 const id = computed(() =>
-	props.id ? props.id : props.name.toLowerCase().replace(/ /g, '-')
+	props.id ? props.id : normalizeTabId(props.name)
 )
 const paneId = computed(() => id.value + '-pane')
 const isActive = computed(() => id.value === tabsProvider.activeId)
 
-watch(
-	() => Object.assign({}, props),
-	() => {
-		updateTab(id.value, {
+const descriptor = () => ({
+	name: props.name,
+	isDisabled: props.isDisabled,
+	id: id.value,
+	paneId: paneId.value,
+})
+
+watch([id, () => props.name, () => props.isDisabled], ([nextId], [oldId]) => {
+	if (oldId && oldId !== nextId) {
+		deleteTab(oldId)
+		addTab(descriptor())
+	} else {
+		updateTab(nextId, {
 			name: props.name,
 			isDisabled: props.isDisabled,
-			id: id.value,
+			id: nextId,
 			paneId: paneId.value,
 		})
 	}
-)
-
-onBeforeMount(() => {
-	addTab({
-		name: props.name,
-		isDisabled: props.isDisabled,
-		id: id.value,
-		paneId: paneId.value,
-	})
 })
+
+onBeforeMount(() => addTab(descriptor()))
 
 onBeforeUnmount(() => {
 	deleteTab(id.value)
@@ -59,6 +62,7 @@ onBeforeUnmount(() => {
 		class="TqTab"
 		:class="{active: isActive}"
 		:data-tab-id="id"
+		:data-tq-part="`panel-${id}`"
 		:aria-hidden="!isActive"
 		role="tabpanel"
 		tabindex="-1"

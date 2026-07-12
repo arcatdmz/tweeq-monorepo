@@ -187,6 +187,12 @@ contain renderer markup only and no copied state transition.
   SSR/CJS rendering/imports, packed React/Vue consumers, and all 21 Playwright
   tests pass.
 
+## Phase 4 family 7 (in progress)
+
+- Tabs uses core enabled-tab resolution and a shared renderer contract. Custom
+  persistence keys, native disabled buttons, initial/change/re-click events,
+  ARIA orientation, stable parts, and reactive id re-registration are aligned.
+
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 
 - Core and DOM production ESM now uses explicit `.js` specifiers and is

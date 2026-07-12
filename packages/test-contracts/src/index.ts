@@ -57,3 +57,4 @@ export {
 	runInputCubicBezierContract,
 } from './inputCubicBezier'
 export {type InputColorContractProps, runInputColorContract} from './inputColor'
+export {type TabsContractProps, runTabsContract} from './tabs'

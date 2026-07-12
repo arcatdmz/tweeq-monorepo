@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {resolveActiveTabId} from '@tweeq/core'
 import {provide, reactive, watch} from 'vue'
 
 import {useAppConfigStore} from '../stores/appConfig'
@@ -14,21 +15,20 @@ const emit = defineEmits<{
 
 const state: TabsState = reactive({
 	activeId: '',
-	lastActiveId: '',
 	tabs: [] as Tab[],
 })
 
 provide(TabsProviderKey, state)
 
 provide(AddTabKey, tab => {
-	state.tabs.push(tab)
+	if (!state.tabs.some(item => item.id === tab.id)) state.tabs.push(tab)
 })
 
 provide(UpdateTabKey, (id: string, data: Tab) => {
 	const tabIndex = state.tabs.findIndex(tab => tab.id === id)
+	if (tabIndex < 0) return
 
 	data.isActive = state.tabs[tabIndex].isActive
-
 	state.tabs[tabIndex] = data
 })
 
@@ -39,7 +39,10 @@ provide(DeleteTabKey, id => {
 })
 
 const appConfig = useAppConfigStore()
-const activeId = appConfig.ref<null | string>(`${props.name}.active`, null)
+const activeId = appConfig.ref<null | string>(
+	props.options?.storageKey ?? `${props.name}.active`,
+	null
+)
 
 const selectTab = (id: string, event?: Event): void => {
 	const selectedTab = findTab(id)
@@ -48,12 +51,12 @@ const selectTab = (id: string, event?: Event): void => {
 		return
 	}
 
-	if (event && selectedTab.isDisabled) {
-		event.preventDefault()
+	if (selectedTab.isDisabled) {
+		event?.preventDefault()
 		return
 	}
 
-	if (state.lastActiveId === selectedTab.id) {
+	if (state.activeId === selectedTab.id) {
 		emit('clicked', selectedTab)
 		return
 	}
@@ -64,7 +67,7 @@ const selectTab = (id: string, event?: Event): void => {
 
 	emit('changed', selectedTab)
 
-	state.lastActiveId = state.activeId = selectedTab.id
+	state.activeId = selectedTab.id
 
 	activeId.value = selectedTab.id
 }
@@ -80,29 +83,37 @@ const findTab = (id: string): Tab | undefined => {
 // selected. Preference: the persisted tab, then an explicit default, then tab 0.
 function ensureActiveTab() {
 	if (!state.tabs.length) return
-	// A valid tab is already active → leave it.
-	if (state.activeId && findTab(state.activeId)) return
-
-	const next =
-		(activeId.value && findTab(activeId.value) && activeId.value) ||
-		(props.options?.defaultTabId &&
-			findTab(props.options.defaultTabId) &&
-			props.options.defaultTabId) ||
-		state.tabs[0].id
-
-	selectTab(next)
+	const next = resolveActiveTabId(
+		state.tabs,
+		state.activeId,
+		activeId.value,
+		props.options?.defaultTabId
+	)
+	if (next && next !== state.activeId) selectTab(next)
+	else if (!next && state.activeId) {
+		state.activeId = ''
+		state.tabs.forEach(tab => (tab.isActive = false))
+	}
 }
 
-watch(() => state.tabs.map(tab => tab.id), ensureActiveTab, {immediate: true})
+watch(
+	() => state.tabs.map(tab => `${tab.id}:${tab.isDisabled}`),
+	ensureActiveTab,
+	{immediate: true}
+)
 </script>
 
 <template>
-	<div class="TqTabs" :class="{vertical}">
+	<div class="TqTabs" :class="{vertical}" data-tq-part="root">
 		<div class="tablist-wrapper">
 			<div v-if="$slots['before-tablist']" class="before-tablist">
 				<slot name="before-tablist" />
 			</div>
-			<ul role="tablist" class="tablist">
+			<ul
+				role="tablist"
+				:aria-orientation="vertical ? 'vertical' : 'horizontal'"
+				class="tablist"
+			>
 				<li
 					v-for="(tab, i) in state.tabs"
 					:key="i"
@@ -110,15 +121,17 @@ watch(() => state.tabs.map(tab => tab.id), ensureActiveTab, {immediate: true})
 					:class="{disabled: tab.isDisabled, active: tab.isActive}"
 					role="presentation"
 				>
-					<a
+					<button
+						type="button"
 						class="tablist-link"
 						:class="{disabled: tab.isDisabled, active: tab.isActive}"
 						role="tab"
 						:aria-controls="tab.paneId"
 						:aria-selected="tab.isActive"
-						tabindex="0"
+						:disabled="tab.isDisabled"
+						:data-tq-part="`tab-${tab.id}`"
 						@click="selectTab(tab.id, $event)"
-						>{{ tab.name }}</a
+						>{{ tab.name }}</button
 					>
 				</li>
 			</ul>
