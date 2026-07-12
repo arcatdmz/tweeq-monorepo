@@ -355,7 +355,7 @@ export function DemoApp(): ReactNode {
 				<main className="vp-page" ref={setContent}>
 					<Fragment key={page}>
 						{page === 'features' && <FeaturesPage />}
-						{page === 'components' && <ComponentsPage sections={sections} />}
+						{page === 'components' && <ComponentsPage />}
 						{page === 'colors' && <ColorsPage />}
 						{page === 'example' && <ExamplesPage />}
 						{page === 'all-components' && <AllComponentsPage />}

@@ -39,4 +39,4 @@ fs.writeFileSync(
 		partials.map(name => `@use './${name}';`).join('\n') +
 		'\n'
 )
-console.log(`extracted ${partials.length} partials`)
+process.stdout.write(`extracted ${partials.length} partials\n`)

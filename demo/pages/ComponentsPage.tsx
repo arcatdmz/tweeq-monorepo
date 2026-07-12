@@ -1,5 +1,3 @@
-import {type ComponentType} from 'react'
-
 import {InputAngle, InputButton, type Scheme} from '../../src/react'
 import {DemoComponent, useAnchorScroll} from './DemoComponent'
 import {Heading} from './docs'
@@ -14,9 +12,7 @@ import {Heading} from './docs'
  * definition-list interaction notes rendered as the markdown would be).
  */
 
-export function ComponentsPage(_props: {
-	sections?: [string, ComponentType][]
-}) {
+export function ComponentsPage() {
 	useAnchorScroll()
 	return (
 		<div {...{'vp-content': ''}}>

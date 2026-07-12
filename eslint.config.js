@@ -6,7 +6,13 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
 	{
-		ignores: ['lib/**', 'test-results/**', 'src/**/*.vue'],
+		ignores: [
+			'lib/**',
+			'test-results/**',
+			'src/**/*.vue',
+			// node maintenance script, not app code
+			'demo/styles/extract-theme-styles.mjs',
+		],
 	},
 	eslint.configs.recommended,
 	...tseslint.configs.recommended,
