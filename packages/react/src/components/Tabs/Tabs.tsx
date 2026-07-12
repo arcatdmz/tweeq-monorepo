@@ -1,3 +1,4 @@
+import {appConfigStore} from '@tweeq/dom'
 import {
 	type HTMLAttributes,
 	type MouseEvent,
@@ -9,7 +10,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import {appConfigStore} from '../../core'
 import {useConfigRef} from '../../hooks'
 import styles from './Tabs.module.styl'
 import {type TabRegistration, TabsContext} from './TabsContext'

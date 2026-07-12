@@ -1,11 +1,11 @@
 import Editor, {loader, type OnMount} from '@monaco-editor/react'
+import {themeStore} from '@tweeq/dom'
 import {type vec2} from 'linearly'
 import type * as Monaco from 'monaco-editor'
 import {type HTMLAttributes, useEffect, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
 import {classNames} from '../../classNames'
-import {themeStore} from '../../core'
 import styles from './MonacoEditor.module.styl'
 
 type MonacoApi = typeof Monaco

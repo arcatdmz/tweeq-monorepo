@@ -1,4 +1,10 @@
 import {
+	createDragHandler,
+	type DragHandler,
+	type DragHandlerOptions,
+	type DragState,
+} from '@tweeq/dom'
+import {
 	type RefObject,
 	useCallback,
 	useEffect,
@@ -7,12 +13,6 @@ import {
 	useState,
 } from 'react'
 
-import {
-	createDragHandler,
-	type DragHandler,
-	type DragHandlerOptions,
-	type DragState,
-} from '../core'
 import {useEventListener} from './useEventListener'
 import {useResizeObserver} from './useResizeObserver'
 

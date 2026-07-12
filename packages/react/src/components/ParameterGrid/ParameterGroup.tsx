@@ -1,7 +1,7 @@
+import {appConfigStore} from '@tweeq/dom'
 import {type HTMLAttributes, type ReactNode, useMemo, useState} from 'react'
 
 import {classNames} from '../../classNames'
-import {appConfigStore} from '../../core'
 import {useConfigRef} from '../../hooks'
 import {Icon} from '../Icon'
 import styles from './ParameterGroup.module.styl'

@@ -1,7 +1,7 @@
+import type {InputBoxProps, InputEvents} from '@tweeq/core'
 import {type HTMLAttributes, useId, useRef} from 'react'
 
 import {classNames} from '../../classNames'
-import {type InputBoxProps, type InputEvents} from '../../core'
 import {Icon} from '../Icon'
 import {InputSwitchOverlay, useInputSwitch} from '../InputSwitch'
 import styles from './InputCheckbox.module.styl'

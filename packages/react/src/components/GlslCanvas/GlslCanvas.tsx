@@ -1,3 +1,4 @@
+import {drawGlslToImage, type GlslUniforms} from '@tweeq/dom'
 import {
 	forwardRef,
 	type ImgHTMLAttributes,
@@ -7,7 +8,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import {drawGlslToImage, type GlslUniforms} from '../../core'
 import {useResizeObserver} from '../../hooks'
 import styles from './GlslCanvas.module.styl'
 

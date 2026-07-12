@@ -1,6 +1,5 @@
+import type {ValidateResult, Validator} from '@tweeq/core'
 import {useMemo, useRef} from 'react'
-
-import {type ValidateResult, type Validator} from '../core'
 
 export interface ValidatorResult<T> {
 	validLocal: T | undefined

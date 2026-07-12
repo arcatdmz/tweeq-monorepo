@@ -1,6 +1,6 @@
+import type {InputEvents, InputProps} from '@tweeq/core'
 import {type vec2} from 'linearly'
 
-import {type InputEvents, type InputProps} from '../../core'
 import {InputGroup} from '../InputGroup'
 import {InputTranslate} from '../InputTranslate'
 import {InputVec} from '../InputVec'

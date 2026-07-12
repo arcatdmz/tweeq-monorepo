@@ -1,6 +1,5 @@
+import type {ConfigEntry} from '@tweeq/dom'
 import {useCallback, useSyncExternalStore} from 'react'
-
-import {type ConfigEntry} from '../core'
 
 export type ConfigSetter<T> = (value: T | ((current: T) => T)) => void
 

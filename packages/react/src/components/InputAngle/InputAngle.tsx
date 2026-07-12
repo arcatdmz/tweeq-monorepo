@@ -1,7 +1,8 @@
+import type {InputEvents} from '@tweeq/core'
+import {themeStore} from '@tweeq/dom'
 import {useRef} from 'react'
 import {useStore} from 'zustand'
 
-import {type InputEvents, themeStore} from '../../core'
 import {useElementBounding} from '../../hooks'
 import {InputNumber} from '../InputNumber'
 import {InputRotary, type InputRotaryProps} from '../InputRotary'

@@ -1,4 +1,5 @@
-import {multiSelectStore} from '../../core'
+import {multiSelectStore} from '@tweeq/dom'
+
 import {IconIndicator} from '../IconIndicator'
 import styles from './MultiSelectPopup.module.styl'
 

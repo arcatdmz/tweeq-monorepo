@@ -1,11 +1,10 @@
-import {useCallback, useLayoutEffect, useRef} from 'react'
-import {useStore} from 'zustand'
-
 import {
 	type MultiSelectHandle,
 	type MultiSelectSource,
 	multiSelectStore,
-} from '../core'
+} from '@tweeq/dom'
+import {useCallback, useLayoutEffect, useRef} from 'react'
+import {useStore} from 'zustand'
 
 export interface MultiSelectHook
 	extends Omit<MultiSelectHandle, 'dispose' | 'id'> {

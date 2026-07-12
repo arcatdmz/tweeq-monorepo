@@ -1,8 +1,9 @@
+import type {MenuItem} from '@tweeq/core'
+import {type ActionItem, actionsStore} from '@tweeq/dom'
 import {type HTMLAttributes, type ReactNode, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
 import {classNames} from '../../classNames'
-import {type ActionItem, actionsStore, type MenuItem} from '../../core'
 import {ColorIcon} from '../ColorIcon'
 import {Menu} from '../Menu'
 import {Popover} from '../Popover'

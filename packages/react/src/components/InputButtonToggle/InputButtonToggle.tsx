@@ -1,7 +1,7 @@
+import type {InputBoxProps} from '@tweeq/core'
 import {type ButtonHTMLAttributes} from 'react'
 
 import {classNames} from '../../classNames'
-import {type InputBoxProps} from '../../core'
 import {Icon} from '../Icon'
 import styles from './InputButtonToggle.module.styl'
 

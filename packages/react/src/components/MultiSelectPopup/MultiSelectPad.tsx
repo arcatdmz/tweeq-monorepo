@@ -1,8 +1,8 @@
+import {type DragState, multiSelectStore} from '@tweeq/dom'
 import {type vec2} from 'linearly'
 import {useEffect, useMemo, useRef} from 'react'
 
 import {classNames} from '../../classNames'
-import {type DragState, multiSelectStore} from '../../core'
 import {useDrag, useKeys} from '../../hooks'
 import {IconIndicator} from '../IconIndicator'
 import styles from './MultiSelectPopup.module.styl'

@@ -1,7 +1,7 @@
+import type {InputBoxProps, InputEvents} from '@tweeq/core'
 import {type HTMLAttributes, useId, useRef} from 'react'
 
 import {classNames} from '../../classNames'
-import {type InputBoxProps, type InputEvents} from '../../core'
 import styles from './InputSwitch.module.styl'
 import {useInputSwitch} from './useInputSwitch'
 
