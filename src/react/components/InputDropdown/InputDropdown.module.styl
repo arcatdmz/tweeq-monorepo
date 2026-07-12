@@ -1,0 +1,102 @@
+@import '../../../common.styl'
+
+.tqInputDropdown
+	position relative
+	display flex
+	flex-grow 1
+	height var(--tq-input-height)
+
+.field
+	flex-grow 1
+	cursor default
+	padding-right calc(.7 * var(--tq-input-height))
+
+.hideText input
+	opacity 0
+
+.valueDisplay
+	position absolute
+	inset 0
+	padding 0 calc(.7 * var(--tq-input-height))
+	display flex
+	align-items center
+	justify-content center
+	gap var(--tq-gap-related)
+	pointer-events none
+	z-index 5
+
+	&.numeric
+		font-numeric()
+
+.valueIcon
+	flex-shrink 0
+	width calc(var(--tq-input-height) - 4px)
+	height calc(var(--tq-input-height) - 4px)
+
+.valueLabel
+	white-space nowrap
+	overflow hidden
+	text-overflow ellipsis
+
+.chevron
+	position absolute
+	top 0
+	z-index 10
+	right 2px
+	width calc(.7 * var(--tq-input-height))
+	height 100%
+	pointer-events none
+	color var(--tq-color-text-subtle)
+	opacity .4
+
+.selectWrapper
+	position relative
+
+.select
+	margin 1px
+	padding 0
+	overflow-y auto
+	overscroll-behavior contain
+	overflow-anchor none
+	scrollbar-width none
+	background set-alpha(--tq-color-input, .8)
+	backdrop-filter blur(var(--tq-popup-blur))
+	border 1px solid var(--tq-color-border)
+	border-radius var(--tq-radius-input)
+	use-input-align()
+	use-input-font()
+
+.option
+	padding 0 calc(.7 * var(--tq-input-height)) 0 .5em
+	height var(--tq-input-height)
+	line-height var(--tq-input-height)
+	display flex
+	gap var(--tq-gap-related)
+	align-items center
+	justify-content center
+	border-radius var(--tq-radius-input)
+
+	&.current
+		background var(--tq-color-accent-soft)
+
+	&.active
+		background var(--tq-color-accent)
+		color var(--tq-color-on-accent)
+
+.scrollArrow
+	position absolute
+	left 2px
+	right 2px
+	height calc(var(--tq-input-height) * .7)
+	display flex
+	align-items center
+	justify-content center
+	z-index 20
+
+	&.top
+		top 1px
+		background linear-gradient(to bottom, var(--tq-color-input) 45%, transparent)
+
+	&.bottom
+		bottom 1px
+		background linear-gradient(to top, var(--tq-color-input) 45%, transparent)

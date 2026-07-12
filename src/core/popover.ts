@@ -123,26 +123,21 @@ export function getPopoverGeometry({
 	arrow: boolean
 	viewportMargin?: number
 }): PopoverGeometry {
-	const [side] = placement.split('-')
-	const horizontal = side === 'top' || side === 'bottom'
+	const [requestedSide] = placement.split('-')
 	let shiftX = 0
 	let shiftY = 0
-
-	if (horizontal) {
-		const left = popover.left - currentShiftX
-		const right = popover.right - currentShiftX
-		if (right > viewportWidth - viewportMargin) {
-			shiftX = viewportWidth - viewportMargin - right
-		}
-		if (left + shiftX < viewportMargin) shiftX = viewportMargin - left
-	} else {
-		const top = popover.top - currentShiftY
-		const bottom = popover.bottom - currentShiftY
-		if (bottom > viewportHeight - viewportMargin) {
-			shiftY = viewportHeight - viewportMargin - bottom
-		}
-		if (top + shiftY < viewportMargin) shiftY = viewportMargin - top
+	const left = popover.left - currentShiftX
+	const right = popover.right - currentShiftX
+	const top = popover.top - currentShiftY
+	const bottom = popover.bottom - currentShiftY
+	if (right > viewportWidth - viewportMargin) {
+		shiftX = viewportWidth - viewportMargin - right
 	}
+	if (left + shiftX < viewportMargin) shiftX = viewportMargin - left
+	if (bottom > viewportHeight - viewportMargin) {
+		shiftY = viewportHeight - viewportMargin - bottom
+	}
+	if (top + shiftY < viewportMargin) shiftY = viewportMargin - top
 
 	if (!arrow) return {shiftX, shiftY, arrowOffset: 0}
 
@@ -158,7 +153,16 @@ export function getPopoverGeometry({
 	if (finalRect.top >= reference.bottom - 1) arrowSide = 'top'
 	else if (finalRect.bottom <= reference.top + 1) arrowSide = 'bottom'
 	else if (finalRect.left >= reference.right - 1) arrowSide = 'left'
-	else arrowSide = 'right'
+	else {
+		arrowSide =
+			requestedSide === 'bottom'
+				? 'top'
+				: requestedSide === 'top'
+					? 'bottom'
+					: requestedSide === 'right'
+						? 'left'
+						: 'right'
+	}
 
 	const arrowOffset =
 		arrowSide === 'top' || arrowSide === 'bottom'

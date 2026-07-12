@@ -52,4 +52,33 @@ describe('popover geometry', () => {
 			arrowOffset: 58,
 		})
 	})
+
+	it('also shifts along the placement axis when neither flip can fit', () => {
+		expect(
+			getPopoverGeometry({
+				reference: {
+					left: 20,
+					right: 40,
+					top: 80,
+					bottom: 100,
+					width: 20,
+					height: 20,
+				},
+				popover: {
+					left: 20,
+					right: 120,
+					top: 100,
+					bottom: 260,
+					width: 100,
+					height: 160,
+				},
+				placement: 'bottom-start',
+				currentShiftX: 0,
+				currentShiftY: 0,
+				viewportWidth: 200,
+				viewportHeight: 180,
+				arrow: false,
+			})
+		).toMatchObject({shiftX: 0, shiftY: -88})
+	})
 })

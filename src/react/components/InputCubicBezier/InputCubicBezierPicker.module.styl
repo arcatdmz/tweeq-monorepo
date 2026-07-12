@@ -1,0 +1,32 @@
+.picker, .pad
+	width 100%
+	height 100%
+
+.pad
+	overflow visible
+
+	*
+		vector-effect non-scaling-stroke
+
+	g
+		transform scaleY(-1)
+		transform-origin 50% 50%
+
+	path, line, circle
+		fill none
+		stroke-linecap round
+
+	path, circle
+		stroke-width 2
+		stroke var(--tq-color-accent)
+
+	line
+		stroke-width 1
+		stroke var(--tq-color-accent)
+
+	circle
+		fill var(--tq-color-background)
+		cursor grab
+
+		&:hover
+			fill var(--tq-color-accent)

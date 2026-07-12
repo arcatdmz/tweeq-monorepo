@@ -115,3 +115,28 @@ date · agent · what was done · deviations from PLAN/CONVENTIONS · exact next
 - Demo/e2e verifies InputAngle, time expressions, drum keys, rotary rendering, and Timeline zoom. Pointer-lock paths share the already unit-tested drag core.
 
 **Next-batch contracts:** `inputTimeFormatEntry` is the sole persisted display-format source; future modal/menus should use `useConfigRef` rather than create another context. Timeline consumers receive all Vue scoped-slot fields through the `children` render prop. Rotary/Time overlays must remain inside TweakOverlay to escape containing blocks.
+
+## 2026-07-12 · Batch 6 agent (Codex)
+
+**Done: dropdown/palette/code — InputDropdown, CommandPalette, MultiSelectPopup, MonacoEditor, InputCode, Markdown.** Core owns tested dropdown viewport placement. TweeqProvider now mounts the shared command palette and multi-select popup roots. Gates: TypeScript + ESLint clean, 76 Vitest tests, 7 Playwright tests.
+
+- InputDropdown preserves controlled value preview, fuzzy filtering, label/icon customization, keyboard navigation, current/active rows, selected-item placement, and hover-driven scroll arrows. Its listbox/option roles also make selection semantics accessible.
+- CommandPalette uses the native Popover API, Cmd/Ctrl+P, fuzzy action search, keyboard/pointer execution, and persisted recent-action history. It consumes the Phase 1 vanilla action store rather than introducing component-local registration.
+- MultiSelectPopup anchors to the focused selected input and exposes additive/multiplicative number sliders, a two-number pad, and compatible-value swapping. Its shared root and viewport reset are mounted once by TweeqProvider.
+- MonacoEditor uses the bundled Monaco instance through `@monaco-editor/react`, tracks Tweeq theme changes, controlled content/cursor state, and error markers. InputCode provides the styled input wrapper. Markdown retains the legacy markdown-it anchor/definition-list/footnote/TOC pipeline.
+- Demo/e2e covers all six public components and verifies dropdown selection, a real registered palette action, both Monaco surfaces, and rendered Markdown links/headings.
+
+**Next-batch contracts:** InputColor channel selection should reuse InputDropdown and pass stable option arrays/labels. GlslCanvas should remain the only WebGL surface and clean up its regl resources. Keep shared top-layer roots in TweeqProvider; individual inputs must not mount duplicate palette or multi-select roots.
+
+## 2026-07-12 · Batch 7 agent (Codex)
+
+**Done: color/GL/curves — GlslCanvas, the full InputColor family, and InputCubicBezier.** Core now owns tested RGB/HSV/CSS/hex conversion, per-channel edits, cubic-bezier paths/handle updates, and the serialized shared offscreen regl renderer. Gates: TypeScript + ESLint clean, 82 Vitest tests, 8 Playwright tests.
+
+- GlslCanvas is a controlled React image surface over the legacy shared-canvas/PQueue design. It redraws on props or size changes, suppresses stale jobs per image, reuses the existing GLSL fragment assets, and degrades safely when WebGL is unavailable.
+- InputColor includes the responsive color-code/alpha wrapper, pointer-lock InputColorPad, full popup picker, arbitrary two-channel pad and sliders, RGB/HSV/hex channel values, merged app/local presets, EyeDropper support, copy/paste, channel hotkeys, wheel hue editing, multi-select propagation, and the top-layer visual tweak UI.
+- TweeqProvider now supplies app-wide color presets and shared color-space state. `colorPresets` is part of TweeqOptions but is intentionally kept out of the theme defaults passed to the core store.
+- InputCubicBezier exposes both the compact popover control and picker. Handle drag updates are clamped to the unit square and confirmation is emitted at gesture end.
+- A tall color picker revealed that Popover only shifted on the cross axis. Its core geometry now clamps both viewport axes (covered by a regression test), and the picker scrolls inside the available viewport.
+- Demo/e2e validates actual WebGL PNG output, a controlled preset update, top-layer picker layout, and a real cubic-bezier handle drag.
+
+**Next-batch contracts:** layout and modal components should continue using Popover's shared top-layer geometry rather than custom viewport math. InputComplex can dispatch color fields directly to InputColor and bezier fields to InputCubicBezier. Preserve TweeqProvider's InputColorProvider wrapper when adding the modal roots.

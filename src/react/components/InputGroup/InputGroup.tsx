@@ -1,6 +1,7 @@
 import {
 	Children,
 	cloneElement,
+	forwardRef,
 	Fragment,
 	type HTMLAttributes,
 	isValidElement,
@@ -40,41 +41,42 @@ function flattenChildren(children: ReactNode): ReactNode[] {
 	return output
 }
 
-export function InputGroup({
-	direction = 'horizontal',
-	children,
-	className,
-	...props
-}: InputGroupProps) {
-	const flattened = flattenChildren(children)
-	const elementCount = flattened.filter(isValidElement).length
-	let elementIndex = 0
-	const positionProp =
-		direction === 'vertical' ? 'blockPosition' : 'inlinePosition'
+export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
+	function InputGroupComponent(
+		{direction = 'horizontal', children, className, ...props},
+		forwardedRef
+	) {
+		const flattened = flattenChildren(children)
+		const elementCount = flattened.filter(isValidElement).length
+		let elementIndex = 0
+		const positionProp =
+			direction === 'vertical' ? 'blockPosition' : 'inlinePosition'
 
-	const positioned = flattened.map(child => {
-		if (!isValidElement(child) || elementCount <= 1) return child
+		const positioned = flattened.map(child => {
+			if (!isValidElement(child) || elementCount <= 1) return child
 
-		const position: InputPosition =
-			elementIndex === 0
-				? 'start'
-				: elementIndex === elementCount - 1
-					? 'end'
-					: 'middle'
-		elementIndex += 1
+			const position: InputPosition =
+				elementIndex === 0
+					? 'start'
+					: elementIndex === elementCount - 1
+						? 'end'
+						: 'middle'
+			elementIndex += 1
 
-		return cloneElement(child as ReactElement<InputBoxProps>, {
-			[positionProp]: position,
+			return cloneElement(child as ReactElement<InputBoxProps>, {
+				[positionProp]: position,
+			})
 		})
-	})
 
-	return (
-		<div
-			{...props}
-			className={classNames(styles.tqInputGroup, className)}
-			data-direction={direction}
-		>
-			{positioned}
-		</div>
-	)
-}
+		return (
+			<div
+				{...props}
+				ref={forwardedRef}
+				className={classNames(styles.tqInputGroup, className)}
+				data-direction={direction}
+			>
+				{positioned}
+			</div>
+		)
+	}
+)
