@@ -2,20 +2,30 @@
 import {Icon} from '../Icon'
 import {IconIndicatorProps} from './types'
 
-defineProps<IconIndicatorProps>()
+const props = defineProps<IconIndicatorProps>()
 
-defineEmits<{
+const emit = defineEmits<{
 	'update:active': [boolean]
 }>()
+
+function toggle() {
+	emit('update:active', !props.active)
+}
 </script>
 
 <template>
 	<div
 		class="IconIndicator"
 		:class="{active: active, inactive: active === false, inline}"
-		@click="$emit('update:active', !active)"
+		role="button"
+		tabindex="0"
+		:aria-pressed="active"
+		data-tq-part="root"
+		@click="toggle"
+		@keydown.enter.prevent="toggle"
+		@keydown.space.prevent="toggle"
 	>
-		<Icon v-if="icon" class="icon" :icon="icon" />
+		<Icon v-if="icon" class="icon" :icon="icon" data-tq-part="icon" />
 	</div>
 </template>
 

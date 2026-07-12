@@ -19,6 +19,7 @@ export function IconIndicator({
 	inline = false,
 	onChangeActive,
 	onClick,
+	onKeyDown,
 	className,
 	...props
 }: IconIndicatorProps) {
@@ -38,8 +39,22 @@ export function IconIndicator({
 				className
 			)}
 			onClick={handleClick}
+			onKeyDown={event => {
+				onKeyDown?.(event)
+				if (
+					!event.defaultPrevented &&
+					(event.key === 'Enter' || event.key === ' ')
+				) {
+					event.preventDefault()
+					onChangeActive?.(!active)
+				}
+			}}
+			role="button"
+			tabIndex={0}
+			aria-pressed={active}
+			data-tq-part="root"
 		>
-			{icon && <Icon className={styles.icon} icon={icon} />}
+			{icon && <Icon className={styles.icon} icon={icon} data-tq-part="icon" />}
 		</div>
 	)
 }

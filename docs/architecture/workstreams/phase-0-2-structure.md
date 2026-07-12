@@ -67,4 +67,6 @@ and public export is unchanged.
   coverage as the stateless button baseline.
   InputGroup runs the same fragment/whitespace and horizontal/vertical child
   position contract in both renderer harnesses.
+  Icon source parsing is shared core logic, while IconIndicator now has aligned
+  pressed semantics, pointer/keyboard activation, and stable parts.
 - Do not publish any package until ADR 0001's ownership question is settled.

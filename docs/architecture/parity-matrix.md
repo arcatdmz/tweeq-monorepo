@@ -45,7 +45,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | CommandPalette | SFC | ✅ | — | dropdown-code | fuzzy search via `fast-fuzzy` in both |
 | GlslCanvas | SFC | ✅ | `glsl` | color-curves | regl-based; WebGL feature detection |
 | Icon | SFC | ✅ | — | core fixtures | shared source parsing; framework-specific Iconify adapters/cache |
-| IconIndicator | SFC | ✅ | — | — | |
+| IconIndicator | SFC | ✅ | — | shared contract | controlled active state, pointer/keyboard activation, `aria-pressed`, and stable parts aligned in Phase 4 |
 | InputAngle | SFC | ✅ | (`inputRotary`) | rotary-snap, temporal | wraps rotary semantics |
 | InputButton | SFC | ✅ | — | shared contract + text-toggles | action, native disabled state, invalid state, and stable content parts aligned in Phase 4 |
 | InputButtonToggle | SFC | ✅ | — | shared contract | controlled activation, native disabled state, `aria-pressed`, and stable parts aligned in Phase 4 |
