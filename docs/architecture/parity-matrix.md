@@ -10,6 +10,10 @@ implementation, pass the shared contract suite, and every superseded copy is
 deleted. Anything not listed under "Known intentional differences" is a
 regression.
 
+The first executable renderer-neutral suite lives in
+`@tweeq/test-contracts` and runs the same InputSwitch controlled-value and
+keyboard/confirm contract against both React and Vue.
+
 ## Baseline record (Phase 0 gate)
 
 Captured on `feat/monorepo` at `d859bed` with Node 24.16.0 / yarn 1.x:
@@ -108,9 +112,9 @@ by both implementations (`—` = logic still duplicated in renderer code);
    `initTweeq(app)`. Permanent.
 3. **Monaco/Iconify wrappers**: framework-specific wrapper packages remain in
    each renderer.
-4. **Store backend (temporary)**: React uses zustand-vanilla factories, Vue
-   uses Pinia. Converges on shared store factories in Phase 3; Pinia survives
-   only behind the compatibility adapter (Stage V3) until Stage V4 deletion.
+4. **Store adapters**: both renderers use the shared zustand-vanilla stores.
+   Vue exposes framework-native refs and lifecycle disposal around those same
+   instances; its temporary Pinia compatibility layer was removed in Stage V4.
 5. **Slots vs render props** for Menu, panes, ParameterGrid, Tooltip content.
    Permanent, per architecture rule 2.
 

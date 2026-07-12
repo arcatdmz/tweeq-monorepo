@@ -1,6 +1,6 @@
 # Workstream status: Phases 0–2 (baseline, workspace, relocation) + Phase 3 leaf tier
 
-Status: **Phases 0–2 complete; Phase 3 leaf-utility tier complete** (2026-07-13)  
+Status: **Phases 0–2 complete; Phase 3 foundations and Stage V4 compatibility cleanup complete** (2026-07-13)
 Owner: integration worker  
 Plan: [../monorepo-migration.md](../monorepo-migration.md)
 
@@ -55,6 +55,7 @@ and public export is unchanged.
   `@tweeq/dom` drag controller. Stage V4 removed the component-local InputTime
   and regl Pinia wrappers as well, so the Vue package and its consumers no
   longer require Pinia.
-- `@tweeq/test-contracts` has the harness interface but no suites yet; the
-  first suite should target InputNumber (richest fixtures in core).
+- `@tweeq/test-contracts` now supplies the parameterized InputSwitch public
+  behavior suite. React and Vue each implement the harness and run the same
+  controlled-value and keyboard/confirm contract in jsdom.
 - Do not publish any package until ADR 0001's ownership question is settled.
