@@ -16,7 +16,7 @@
 	},
 	"files": [
 		"dist",
-		"src"
+		"src/shaders"
 	],
 	"scripts": {
 		"build": "rm -rf dist && tsc -p tsconfig.build.json",

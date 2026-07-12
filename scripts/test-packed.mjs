@@ -5,9 +5,8 @@
  * outside the workspace, and build them. Catches missing files, bad export
  * maps, accidental source aliases, and undeclared dependencies.
  *
- * Packages are `"private": true` until the publishing ADR is resolved
- * (docs/architecture/adr/0001), so the pack step temporarily flips the flag
- * in a scratch copy of each manifest and restores it afterwards.
+ * Packages remain `"private": true` until the publishing ADR is resolved;
+ * packing is an artifact check only and never mutates or publishes manifests.
  */
 import {execSync} from 'node:child_process'
 import {cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync} from 'node:fs'
@@ -31,22 +30,22 @@ try {
 	run(`pnpm --filter './packages/*' build`, root)
 	for (const name of publicPackages) {
 		const dir = join(root, 'packages', name)
-		const manifestPath = join(dir, 'package.json')
-		const original = readFileSync(manifestPath, 'utf8')
-		const manifest = JSON.parse(original)
-		delete manifest.private
-		writeFileSync(manifestPath, JSON.stringify(manifest, null, '\t') + '\n')
-		try {
-			const out = execSync(
-				`pnpm pack --pack-destination ${JSON.stringify(tarballDir)}`,
-				{cwd: dir, encoding: 'utf8'},
+		const out = execSync(
+			`pnpm pack --pack-destination ${JSON.stringify(tarballDir)}`,
+			{cwd: dir, encoding: 'utf8'},
+		)
+		const tarball = out.trim().split('\n').at(-1)
+		tarballs[`@tweeq/${name}`] = tarball
+		const packedFiles = execSync(`tar -tf ${JSON.stringify(tarball)}`, {
+			encoding: 'utf8',
+		}).trim().split('\n')
+		const packedTests = packedFiles.filter(file => /\.test\.[^/]+$/.test(file))
+		if (packedTests.length > 0) {
+			throw new Error(
+				`@tweeq/${name} packed test files:\n${packedTests.join('\n')}`,
 			)
-			const tarball = out.trim().split('\n').at(-1)
-			tarballs[`@tweeq/${name}`] = tarball
-			console.log(`packed @tweeq/${name} -> ${tarball}`)
-		} finally {
-			writeFileSync(manifestPath, original)
 		}
+		console.log(`packed @tweeq/${name} -> ${tarball}`)
 	}
 
 	// 2. Install tarballs into out-of-workspace copies of the examples.
@@ -80,6 +79,11 @@ try {
 
 		console.log(`\n=== ${example}: installing packed tarballs`)
 		run('pnpm install --no-frozen-lockfile', dest)
+		const renderer = example === 'react-vite' ? '@tweeq/react' : '@tweeq/vue'
+		console.log(`=== ${example}: requiring packed CommonJS entry`)
+		run(`node -e "require('${renderer}')"`, dest)
+		console.log(`=== ${example}: checking packed declarations`)
+		run('pnpm run typecheck', dest)
 		console.log(`=== ${example}: building against packed artifacts`)
 		run('pnpm exec vite build', dest)
 		console.log(`=== ${example}: OK`)

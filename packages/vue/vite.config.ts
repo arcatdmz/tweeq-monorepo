@@ -6,8 +6,8 @@ import {defineConfig} from 'vitest/config'
 
 import {tweeqStylusOptions} from '../../scripts/vite-stylus'
 
-// Mirrors the upstream baku89/tweeq build so Stage V1 stays a pure
-// relocation: same entry shape, same externals, same SSR settings.
+// Keep the upstream browser UMD artifact while also exposing code-split ES/CJS
+// package entries. The CJS entry is required for a truthful `require` export.
 export default defineConfig({
 	plugins: [glsl(), vue(), dts({tsconfigPath: './tsconfig.build.json'})],
 	css: {preprocessorOptions: {styl: tweeqStylusOptions}},
@@ -16,7 +16,13 @@ export default defineConfig({
 		lib: {
 			name: 'Tweeq',
 			entry: resolve(__dirname, 'src/index.ts'),
-			fileName: format => `index.${format}.js`,
+			formats: ['es', 'cjs', 'umd'],
+			fileName: format =>
+				format === 'es'
+					? 'index.es.js'
+					: format === 'cjs'
+						? 'index.cjs'
+						: 'index.umd.js',
 		},
 		outDir: 'dist',
 		rollupOptions: {
@@ -27,10 +33,6 @@ export default defineConfig({
 				},
 			},
 		},
-	},
-	ssr: {
-		noExternal: ['@baku89/pave'],
-		external: ['paper', 'paper-jsdom-canvas'],
 	},
 	define: {
 		// This is needed to make the PromiseQueue class available in the browser.

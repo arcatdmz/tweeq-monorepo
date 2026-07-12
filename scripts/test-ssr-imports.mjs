@@ -4,8 +4,9 @@
  * ADR 0002 smoke test: every JavaScript package entry must be importable by
  * plain Node without DOM globals or bundler-only resolution behavior.
  */
-import {pathToFileURL} from 'node:url'
+import {createRequire} from 'node:module'
 import {resolve} from 'node:path'
+import {pathToFileURL} from 'node:url'
 
 const root = resolve(new URL('..', import.meta.url).pathname)
 const entries = [
@@ -19,4 +20,13 @@ const entries = [
 for (const [name, entry] of entries) {
 	await import(pathToFileURL(resolve(root, entry)).href)
 	console.log(`SSR import OK: ${name}`)
+}
+
+const require = createRequire(import.meta.url)
+for (const [name, entry] of [
+	['@tweeq/react', 'packages/react/dist/index.cjs'],
+	['@tweeq/vue', 'packages/vue/dist/index.cjs'],
+]) {
+	require(resolve(root, entry))
+	console.log(`CJS require OK: ${name}`)
 }

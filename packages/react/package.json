@@ -32,6 +32,7 @@
 	},
 	"devDependencies": {
 		"@tweeq/test-contracts": "workspace:*",
+		"@tweeq/styles": "workspace:^",
 		"@types/chroma-js": "^2.4.3",
 		"@types/lodash-es": "catalog:",
 		"@types/markdown-it": "^14.1.2",
@@ -53,7 +54,6 @@
 		"@monaco-editor/react": "^4.7.0",
 		"@tweeq/core": "workspace:^",
 		"@tweeq/dom": "workspace:^",
-		"@tweeq/styles": "workspace:^",
 		"bndr-js": "catalog:",
 		"case": "^1.6.3",
 		"chroma-js": "^3.1.1",

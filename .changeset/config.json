@@ -7,7 +7,7 @@
 	],
 	"linked": [],
 	"access": "restricted",
-	"baseBranch": "feat/monorepo",
+	"baseBranch": "feat/react",
 	"updateInternalDependencies": "patch",
 	"privatePackages": {
 		"version": true,
