@@ -1,3 +1,15 @@
+import {
+	compileTimeExpression,
+	formatTimecode,
+	type InputBoxProps,
+	type InputEvents,
+	type MenuItem,
+	mergeSvgPaths,
+	quantizeTimeTweakValue,
+	svgLine,
+	type TimeFormat,
+} from '@tweeq/core'
+import {type DragState, inputTimeFormatEntry} from '@tweeq/dom'
 import {scalar, vec2} from 'linearly'
 import {range} from 'lodash-es'
 import {
@@ -10,19 +22,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import {
-	compileTimeExpression,
-	type DragState,
-	formatTimecode,
-	type InputBoxProps,
-	type InputEvents,
-	inputTimeFormatEntry,
-	type MenuItem,
-	mergeSvgPaths,
-	quantizeTimeTweakValue,
-	svgLine,
-	type TimeFormat,
-} from '../../core'
 import {
 	useConfigRef,
 	useDrag,

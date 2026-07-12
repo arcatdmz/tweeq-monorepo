@@ -1,3 +1,18 @@
+import {
+	type ColorChannel,
+	colorChannelToIndex,
+	type ColorPickerComponent,
+	css2hsva,
+	getHSVAChannel,
+	hsv2rgb,
+	type HSVA,
+	hsva2hex,
+	type InputBoxProps,
+	type InputEvents,
+	setHSVAChannel,
+	tweakHSVAChannel,
+} from '@tweeq/core'
+import {type DragState, themeStore} from '@tweeq/dom'
 import PadFragmentString from '@tweeq/dom/shaders/pad.frag'
 import SliderFragmentString from '@tweeq/dom/shaders/slider.frag'
 import WheelFragmentString from '@tweeq/dom/shaders/wheel.frag'
@@ -16,22 +31,6 @@ import {
 import {useStore} from 'zustand'
 
 import {classNames} from '../../classNames'
-import {
-	type ColorChannel,
-	colorChannelToIndex,
-	type ColorPickerComponent,
-	css2hsva,
-	type DragState,
-	getHSVAChannel,
-	hsv2rgb,
-	type HSVA,
-	hsva2hex,
-	type InputBoxProps,
-	type InputEvents,
-	setHSVAChannel,
-	themeStore,
-	tweakHSVAChannel,
-} from '../../core'
 import {
 	useCopyPaste,
 	useDrag,

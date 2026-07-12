@@ -1,7 +1,7 @@
+import {type PopoverPlacement} from '@tweeq/core'
 import {type HTMLAttributes, useEffect, useRef, useState} from 'react'
 
 import {classNames} from '../../classNames'
-import {type PopoverPlacement} from '../../core'
 import {Icon} from '../Icon'
 import {Popover} from '../Popover'
 import styles from './PaneExpandable.module.styl'

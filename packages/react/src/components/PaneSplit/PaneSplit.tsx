@@ -1,3 +1,5 @@
+import {clampSplitSize} from '@tweeq/core'
+import {appConfigStore, type DragState} from '@tweeq/dom'
 import {
 	type CSSProperties,
 	type HTMLAttributes,
@@ -7,7 +9,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import {appConfigStore, clampSplitSize, type DragState} from '../../core'
 import {useConfigRef, useDrag, useElementBounding} from '../../hooks'
 import styles from './PaneSplit.module.styl'
 

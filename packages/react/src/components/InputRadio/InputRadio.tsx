@@ -1,4 +1,9 @@
 import {
+	getLabelizer,
+	type InputEvents,
+	type LabelizerProps,
+} from '@tweeq/core'
+import {
 	type HTMLAttributes,
 	type PointerEvent,
 	type ReactNode,
@@ -13,11 +18,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import {
-	getLabelizer,
-	type InputEvents,
-	type LabelizerProps,
-} from '../../core'
 import {useEventListener, useResizeObserver} from '../../hooks'
 import {Icon} from '../Icon'
 import {useTooltip} from '../Tooltip'

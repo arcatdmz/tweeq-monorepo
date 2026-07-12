@@ -1,3 +1,17 @@
+import {
+	clampPosWithinRect,
+	getRotaryDragValue,
+	type InputBoxProps,
+	type InputEvents,
+	mergeSvgPaths,
+	type Rect,
+	signedAngleBetween,
+	svgArc,
+	svgCircle,
+	svgLine,
+	unsignedMod,
+} from '@tweeq/core'
+import {type DragState, themeStore} from '@tweeq/dom'
 import {scalar, vec2} from 'linearly'
 import {range} from 'lodash-es'
 import {
@@ -11,21 +25,6 @@ import {
 import {useStore} from 'zustand'
 
 import {classNames} from '../../classNames'
-import {
-	clampPosWithinRect,
-	type DragState,
-	getRotaryDragValue,
-	type InputBoxProps,
-	type InputEvents,
-	mergeSvgPaths,
-	type Rect,
-	signedAngleBetween,
-	svgArc,
-	svgCircle,
-	svgLine,
-	themeStore,
-	unsignedMod,
-} from '../../core'
 import {
 	useCopyPaste,
 	useCursorStyle,

@@ -1,7 +1,7 @@
+import {type BalloonArrowSide, getBalloonGeometry} from '@tweeq/core'
 import {type HTMLAttributes, useMemo, useRef} from 'react'
 
 import {classNames} from '../../classNames'
-import {type BalloonArrowSide, getBalloonGeometry} from '../../core'
 import {useElementBounding} from '../../hooks'
 import styles from './Balloon.module.styl'
 

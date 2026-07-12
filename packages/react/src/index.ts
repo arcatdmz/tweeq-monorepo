@@ -1,4 +1,7 @@
-export * from './core'
+// Preserve the renderer's existing convenience exports without a local
+// compatibility barrel; each symbol now resolves from its owning package.
+export * from '@tweeq/core'
+export * from '@tweeq/dom'
 export * from './components/App'
 export * from './components/BindIcon'
 export * from './components/Balloon'

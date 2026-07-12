@@ -1,6 +1,3 @@
-import PadFragmentString from '@tweeq/dom/shaders/pad.frag'
-import {type CSSProperties, useMemo, useRef} from 'react'
-
 import {
 	type ColorChannel,
 	colorChannelToIndex,
@@ -10,7 +7,10 @@ import {
 	setHSVAChannel,
 	toPercent,
 	tweakHSVAChannel,
-} from '../../core'
+} from '@tweeq/core'
+import PadFragmentString from '@tweeq/dom/shaders/pad.frag'
+import {type CSSProperties, useMemo, useRef} from 'react'
+
 import {useDrag} from '../../hooks'
 import {GlslCanvas} from '../GlslCanvas'
 import styles from './InputColorChannelPad.module.styl'

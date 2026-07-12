@@ -1,12 +1,12 @@
-import {type vec2} from 'linearly'
-import {useRef, useState} from 'react'
-
-import {classNames} from '../../classNames'
 import {
 	type InputEvents,
 	type InputProps,
 	updateSizeWithRatio,
-} from '../../core'
+} from '@tweeq/core'
+import {type vec2} from 'linearly'
+import {useRef, useState} from 'react'
+
+import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
 import {InputVec} from '../InputVec'
 import styles from './InputSize.module.styl'

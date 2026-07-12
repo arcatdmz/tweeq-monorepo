@@ -1,12 +1,12 @@
-import {type ButtonHTMLAttributes, type CSSProperties, useState} from 'react'
-
-import {classNames} from '../../classNames'
 import {
 	type CubicBezierValue,
 	getCubicBezierPath,
 	type InputBoxProps,
 	type InputEvents,
-} from '../../core'
+} from '@tweeq/core'
+import {type ButtonHTMLAttributes, type CSSProperties, useState} from 'react'
+
+import {classNames} from '../../classNames'
 import {Popover} from '../Popover'
 import styles from './InputCubicBezier.module.styl'
 import {InputCubicBezierPicker} from './InputCubicBezierPicker'

@@ -1,15 +1,15 @@
+import {
+	type ColorPickerComponent,
+	type InputBoxProps,
+	type InputEvents,
+	validator,
+} from '@tweeq/core'
+import {themeStore} from '@tweeq/dom'
 import chroma from 'chroma-js'
 import {type HTMLAttributes, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
 import {classNames} from '../../classNames'
-import {
-	type ColorPickerComponent,
-	type InputBoxProps,
-	type InputEvents,
-	themeStore,
-	validator,
-} from '../../core'
 import {useElementBounding} from '../../hooks'
 import {InputGroup} from '../InputGroup'
 import {InputNumber} from '../InputNumber'

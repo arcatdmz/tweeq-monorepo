@@ -1,3 +1,5 @@
+import {type FloatingPanePosition, resizeFloatingPane} from '@tweeq/core'
+import {appConfigStore, type DragState} from '@tweeq/dom'
 import {
 	type CSSProperties,
 	type HTMLAttributes,
@@ -7,12 +9,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import {
-	appConfigStore,
-	type DragState,
-	type FloatingPanePosition,
-	resizeFloatingPane,
-} from '../../core'
 import {useConfigRef, useDrag, useWindowSize} from '../../hooks'
 import {Icon} from '../Icon'
 import styles from './PaneFloating.module.styl'

@@ -1,13 +1,4 @@
 import {
-	forwardRef,
-	type HTMLAttributes,
-	useImperativeHandle,
-	useLayoutEffect,
-	useRef,
-	useState,
-} from 'react'
-
-import {
 	compileStringExpression,
 	type InputAlign,
 	type InputBoxProps,
@@ -16,7 +7,16 @@ import {
 	type InputTheme,
 	type Validator,
 	validator as validators,
-} from '../../core'
+} from '@tweeq/core'
+import {
+	forwardRef,
+	type HTMLAttributes,
+	useImperativeHandle,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react'
+
 import {useMultiSelect, useValidator} from '../../hooks'
 import {InputTextBase, type InputTextBaseHandle} from '../InputTextBase'
 

@@ -1,4 +1,11 @@
 import {
+	type InputAlign,
+	type InputBoxProps,
+	type InputFont,
+	type InputTheme,
+	type MenuItem,
+} from '@tweeq/core'
+import {
 	type FocusEvent,
 	forwardRef,
 	type HTMLAttributes,
@@ -12,13 +19,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import {
-	type InputAlign,
-	type InputBoxProps,
-	type InputFont,
-	type InputTheme,
-	type MenuItem,
-} from '../../core'
 import {Icon} from '../Icon'
 import {Menu} from '../Menu'
 import {Popover} from '../Popover'

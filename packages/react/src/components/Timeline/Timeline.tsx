@@ -1,3 +1,9 @@
+import {
+	clampTimelineRange,
+	getTimelineScrollBounds,
+	showTimelineRange,
+	toPercent,
+} from '@tweeq/core'
 import {scalar, type vec2} from 'linearly'
 import {
 	type CSSProperties,
@@ -13,12 +19,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import {
-	clampTimelineRange,
-	getTimelineScrollBounds,
-	showTimelineRange,
-	toPercent,
-} from '../../core'
 import {useElementBounding} from '../../hooks'
 import styles from './Timeline.module.styl'
 

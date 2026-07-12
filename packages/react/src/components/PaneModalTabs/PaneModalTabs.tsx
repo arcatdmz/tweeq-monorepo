@@ -1,4 +1,12 @@
 import {
+	type ModalComponentTab as CoreComponentTab,
+	type ModalFormTab as CoreFormTab,
+	modalStore,
+	type ModalTab as CoreModalTab,
+	type PromptTabsFn,
+	type TabsShowOptions,
+} from '@tweeq/dom'
+import {
 	type ComponentType,
 	createElement,
 	useEffect,
@@ -6,14 +14,6 @@ import {
 	useState,
 } from 'react'
 
-import {
-	type ModalComponentTab as CoreComponentTab,
-	type ModalFormTab as CoreFormTab,
-	modalStore,
-	type ModalTab as CoreModalTab,
-	type PromptTabsFn,
-	type TabsShowOptions,
-} from '../../core'
 import {useEventListener} from '../../hooks'
 import {InputButton} from '../InputButton'
 import {InputComplex, type Scheme} from '../InputComplex'

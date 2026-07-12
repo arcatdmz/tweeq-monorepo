@@ -1,3 +1,10 @@
+import {
+	getPopoverGeometry,
+	getPopoverPositionStyles,
+	type PopoverOffset,
+	type PopoverPlacement,
+} from '@tweeq/core'
+import {addAnchorName} from '@tweeq/dom'
 import {type vec2} from 'linearly'
 import {
 	type CSSProperties,
@@ -11,13 +18,6 @@ import {
 import {createPortal} from 'react-dom'
 
 import {classNames} from '../../classNames'
-import {
-	addAnchorName,
-	getPopoverGeometry,
-	getPopoverPositionStyles,
-	type PopoverOffset,
-	type PopoverPlacement,
-} from '../../core'
 import {useEventListener, useResizeObserver} from '../../hooks'
 import {Balloon} from '../Balloon'
 import styles from './Popover.module.styl'

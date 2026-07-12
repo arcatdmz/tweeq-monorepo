@@ -1,3 +1,4 @@
+import {type InputBoxProps, type InputPosition} from '@tweeq/core'
 import {
 	Children,
 	cloneElement,
@@ -10,7 +11,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import {type InputBoxProps, type InputPosition} from '../../core'
 import styles from './InputGroup.module.styl'
 
 export interface InputGroupProps extends HTMLAttributes<HTMLDivElement> {

@@ -5,7 +5,8 @@ import {
 	type HSVA,
 	setHSVAChannel,
 	validator,
-} from '../../core'
+} from '@tweeq/core'
+
 import {InputDropdown} from '../InputDropdown'
 import {InputGroup} from '../InputGroup'
 import {InputNumber} from '../InputNumber'

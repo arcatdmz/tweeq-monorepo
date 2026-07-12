@@ -1,3 +1,11 @@
+import {
+	decomposeVec2,
+	getTranslateOverlayGeometry,
+	type InputBoxProps,
+	type InputEvents,
+	precisionOf,
+} from '@tweeq/core'
+import type {DragState} from '@tweeq/dom'
 import {type vec2} from 'linearly'
 import {
 	type ButtonHTMLAttributes,
@@ -7,14 +15,6 @@ import {
 	useState,
 } from 'react'
 
-import {
-	decomposeVec2,
-	type DragState,
-	getTranslateOverlayGeometry,
-	type InputBoxProps,
-	type InputEvents,
-	precisionOf,
-} from '../../core'
 import {useDrag, useKeys} from '../../hooks'
 import {Icon} from '../Icon'
 import {Tooltip} from '../Tooltip'

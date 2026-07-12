@@ -1,3 +1,15 @@
+import {
+	getDropdownTop,
+	getLabelizer,
+	type InputAlign,
+	type InputBoxProps,
+	type InputEvents,
+	type InputFont,
+	type InputTheme,
+	type LabelizerProps,
+	unsignedMod,
+} from '@tweeq/core'
+import {themeStore} from '@tweeq/dom'
 import {search} from 'fast-fuzzy'
 import {
 	type HTMLAttributes,
@@ -10,18 +22,6 @@ import {
 import {useStore} from 'zustand'
 
 import {classNames} from '../../classNames'
-import {
-	getDropdownTop,
-	getLabelizer,
-	type InputAlign,
-	type InputBoxProps,
-	type InputEvents,
-	type InputFont,
-	type InputTheme,
-	type LabelizerProps,
-	themeStore,
-	unsignedMod,
-} from '../../core'
 import {useElementBounding, useWindowSize} from '../../hooks'
 import {Icon} from '../Icon'
 import {InputString, type InputStringHandle} from '../InputString'

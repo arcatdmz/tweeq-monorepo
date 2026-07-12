@@ -1,11 +1,11 @@
-import {useEffect, useRef, useState} from 'react'
-
 import {
 	type ModalScheme,
 	modalStore,
 	type PromptFn,
 	type ShowOptions,
-} from '../../core'
+} from '@tweeq/dom'
+import {useEffect, useRef, useState} from 'react'
+
 import {useEventListener} from '../../hooks'
 import {InputButton} from '../InputButton'
 import {InputComplex, type Scheme} from '../InputComplex'

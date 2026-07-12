@@ -1,4 +1,4 @@
-import {appConfigStore, type ThemeDefaults, themeStore} from './core'
+import {appConfigStore, type ThemeDefaults, themeStore} from '@tweeq/dom'
 
 export interface TweeqOptions extends ThemeDefaults {
 	colorPresets?: readonly string[]

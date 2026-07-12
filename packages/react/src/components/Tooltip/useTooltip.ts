@@ -1,5 +1,3 @@
-import {type RefObject, useEffect, useMemo, useRef} from 'react'
-
 import {
 	clearTooltipAnchor,
 	closeTooltip,
@@ -8,7 +6,9 @@ import {
 	showTooltip,
 	type TooltipContent,
 	updateTooltip,
-} from '../../core'
+} from '@tweeq/dom'
+import {type RefObject, useEffect, useMemo, useRef} from 'react'
+
 import {useEventListener} from '../../hooks'
 
 export type TooltipValue =

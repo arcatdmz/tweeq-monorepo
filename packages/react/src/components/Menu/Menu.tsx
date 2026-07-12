@@ -1,4 +1,10 @@
 import {
+	isPointInTriangle,
+	type MenuItem,
+	type Point,
+} from '@tweeq/core'
+import {themeStore} from '@tweeq/dom'
+import {
 	forwardRef,
 	type PointerEvent,
 	useImperativeHandle,
@@ -8,12 +14,6 @@ import {
 import {useStore} from 'zustand'
 
 import {classNames} from '../../classNames'
-import {
-	isPointInTriangle,
-	type MenuItem,
-	type Point,
-	themeStore,
-} from '../../core'
 import {BindIcon} from '../BindIcon'
 import {Icon} from '../Icon'
 import {Popover} from '../Popover'

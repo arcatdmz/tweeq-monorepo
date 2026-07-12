@@ -1,3 +1,16 @@
+import {
+	compileNumberExpression,
+	getInputNumberPrecision,
+	type InputBoxProps,
+	type InputEvents,
+	type NumberScrubState,
+	precisionOf,
+	toFixed,
+	toPercent,
+	updateNumberScrub,
+	validator as validators,
+} from '@tweeq/core'
+import type {DragState} from '@tweeq/dom'
 import {scalar} from 'linearly'
 import {
 	type CSSProperties,
@@ -13,19 +26,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import {
-	compileNumberExpression,
-	type DragState,
-	getInputNumberPrecision,
-	type InputBoxProps,
-	type InputEvents,
-	type NumberScrubState,
-	precisionOf,
-	toFixed,
-	toPercent,
-	updateNumberScrub,
-	validator as validators,
-} from '../../core'
 import {
 	useDrag,
 	useElementBounding,

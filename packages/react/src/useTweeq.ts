@@ -1,6 +1,5 @@
+import {actionsStore, appConfigStore, modalStore, themeStore} from '@tweeq/dom'
 import {useStore} from 'zustand'
-
-import {actionsStore, appConfigStore, modalStore, themeStore} from './core'
 
 /** Subscribe to Tweeq's four public stores as React state. */
 export function useTweeq() {

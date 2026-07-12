@@ -1,4 +1,14 @@
 import {
+	DRUM_DRAG_STEP_PX,
+	getDrumCellWidth,
+	getLabelizer,
+	type InputBoxProps,
+	type InputEvents,
+	type InputFont,
+	type LabelizerProps,
+} from '@tweeq/core'
+import type {DragState} from '@tweeq/dom'
+import {
 	type HTMLAttributes,
 	type KeyboardEvent,
 	useEffect,
@@ -9,16 +19,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import {
-	type DragState,
-	DRUM_DRAG_STEP_PX,
-	getDrumCellWidth,
-	getLabelizer,
-	type InputBoxProps,
-	type InputEvents,
-	type InputFont,
-	type LabelizerProps,
-} from '../../core'
 import {useDrag, useElementBounding, useResizeObserver} from '../../hooks'
 import styles from './InputDrum.module.styl'
 

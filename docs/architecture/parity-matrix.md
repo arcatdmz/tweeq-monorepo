@@ -148,19 +148,19 @@ introduced-in, removal criteria, status.
 
 | Item | Introduced | Removal criteria | Status |
 | --- | --- | --- | --- |
-| `packages/react/src/core/index.ts` barrel forwarding `@tweeq/core` + `@tweeq/dom` | Phase 2 (React relocation) | every React source imports the owning package explicitly (migrate per family during Phases 3–4); `rg "from '(\.\./)*core'" packages/react/src` empty | active |
+| `packages/react/src/core/index.ts` barrel forwarding `@tweeq/core` + `@tweeq/dom` | Phase 2 (React relocation) | every React source imports the owner explicitly; renderer entry preserves convenience exports directly from the owning packages | **done 2026-07-13**: all internal consumers migrated and the local barrel deleted |
 | `packages/react/src/common.styl` stylus forwarder to `@tweeq/styles` | Phase 2 (React relocation) | no renderer stylesheet imports the forwarder; source-building Vite configs inject the owned mixins by absolute path | **done 2026-07-13** via shared `scripts/vite-stylus.ts` configuration |
 | `packages/vue/src/common.styl` stylus forwarder to `@tweeq/styles` | Phase 2 (Vue relocation) | no renderer stylesheet imports the forwarder; source-building Vite configs inject the owned mixins by absolute path | **done 2026-07-13** via shared `scripts/vite-stylus.ts` configuration |
 | Pinia stores and component-local contexts in `packages/vue` | upstream legacy, kept in Stage V1 | app stores use shared instances; local contexts become plain Vue/module state; `rg "pinia\|defineStore\|createPinia" packages/vue apps/playground-vue examples/vue-vite` is empty | **done 2026-07-13**: actions, appConfig, modal, multiSelect, and theme share DOM stores; InputTime and regl no longer require Pinia |
-| Duplicated pure logic in `packages/vue/src/` (`util.ts`, `validator.ts`, `theme/`, per-component `utils.ts`) | upstream legacy, kept in Stage V1 | Stage V2 leaf replacement: shared fixtures written, Vue+React switched to `@tweeq/core`, both contract suites green | **done 2026-07-13** for util, validator, theme (incl. store computation via `computeTheme`/`applyThemeToDOM`), timecode, CubicBezierValue, InputShuffle generators, and InputColor channel math/types (files are now re-export shims); remaining: `InputSwitch/utils.ts` (composable) and `InputRotary/utils.ts` `clampPosWithinRect` variant — controller-shaped → Stage V3/Phase 4 |
+| Duplicated pure logic in `packages/vue/src/` (`util.ts`, `validator.ts`, `theme/`, per-component `utils.ts`) | upstream legacy, kept in Stage V1 | Vue and React call the shared core/controller implementations without copied transitions | **done 2026-07-13** for util, validator, theme, timecode, CubicBezierValue, InputShuffle, InputColor, InputSwitch, and InputRotary |
 | Re-export shims left by Stage V2 (`packages/vue/src/{util,validator}.ts`, `InputTime/utils.ts` function re-exports, `InputCubicBezier/util.ts`, `InputShuffle/generators.ts`) | Phase 3 leaf replacement | Vue callers import owning packages directly; shim files deleted when `rg "from '\.\./(util|validator)'" packages/vue/src` is empty | **done 2026-07-13**: public compatibility exports now forward from the package entry points without renderer-local files |
 | Legacy vue-tsc diagnostics in `@tweeq/vue` build (non-fatal, pre-existing upstream typing issues) | Stage V1 build restoration | declaration generation completes without TypeScript diagnostics | **done 2026-07-13**: recursive Menu refs/props, readonly color axes, generic vector bounds, event overloads, and element/style typing corrected |
 
 ## Stage V1 completion note (2026-07-13)
 
 The Vue renderer builds again as `@tweeq/vue` (ES + UMD + `style.css` +
-partial declarations) from byte-identical upstream sources; the only source
-edits are the shared-asset seams (InputColor shaders from
-`@tweeq/dom/shaders/*`, `common.styl` forwarder). Verified by
+declarations). The original relocation baseline was verified with shared-asset
+seams for InputColor shaders and Stylus; later stages replaced those temporary
+seams with owned package imports and shared Vite injection. Verified by
 `apps/playground-vue` booting with zero console errors and by the packed
 `examples/vue-vite` build.

@@ -1,16 +1,14 @@
 import './CommandPalette.global.styl'
 
+import {
+	unsignedMod,
+} from '@tweeq/core'
+import {type ActionItem, actionsStore, appConfigStore} from '@tweeq/dom'
 import {search} from 'fast-fuzzy'
 import {useEffect, useMemo, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
 import {classNames} from '../../classNames'
-import {
-	type ActionItem,
-	actionsStore,
-	appConfigStore,
-	unsignedMod,
-} from '../../core'
 import {useConfigRef, useEventListener} from '../../hooks'
 import {BindIcon} from '../BindIcon'
 import {Icon} from '../Icon'

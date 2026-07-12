@@ -1,3 +1,4 @@
+import type {InputEvents} from '@tweeq/core'
 import Case from 'case'
 import {
 	type ComponentType,
@@ -8,7 +9,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import type {InputEvents} from '../../core'
 import {InputAngle, type InputAngleProps} from '../InputAngle'
 import {InputCheckbox, type InputCheckboxProps} from '../InputCheckbox'
 import {InputCode, type InputCodeProps} from '../InputCode'

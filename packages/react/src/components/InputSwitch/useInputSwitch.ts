@@ -1,4 +1,10 @@
 import {
+	getSwitchKeyValue,
+	getSwitchTweakValue,
+	type InputEvents,
+} from '@tweeq/core'
+import type {DragState} from '@tweeq/dom'
+import {
 	type ChangeEvent,
 	type FocusEvent,
 	type KeyboardEvent,
@@ -8,12 +14,6 @@ import {
 	useState,
 } from 'react'
 
-import {
-	type DragState,
-	getSwitchKeyValue,
-	getSwitchTweakValue,
-	type InputEvents,
-} from '../../core'
 import {type MultiSelectHook, useDrag, useMultiSelect} from '../../hooks'
 
 export interface InputSwitchControls extends InputEvents {

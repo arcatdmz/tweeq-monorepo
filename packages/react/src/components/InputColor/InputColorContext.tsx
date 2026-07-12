@@ -1,3 +1,4 @@
+import {type ColorSpace, PALETTE} from '@tweeq/core'
 import {
 	createContext,
 	type PropsWithChildren,
@@ -5,8 +6,6 @@ import {
 	useMemo,
 	useState,
 } from 'react'
-
-import {type ColorSpace, PALETTE} from '../../core'
 
 export const DEFAULT_COLOR_PRESETS = Object.values(PALETTE)
 

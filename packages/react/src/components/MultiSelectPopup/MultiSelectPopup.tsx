@@ -1,14 +1,14 @@
 import './MultiSelectPopup.global.styl'
 
-import {type CSSProperties, useEffect, useMemo, useRef} from 'react'
-import {useStore} from 'zustand'
-
-import {classNames} from '../../classNames'
 import {
 	addAnchorName,
 	multiSelectStore,
 	type MultiSelectType,
-} from '../../core'
+} from '@tweeq/dom'
+import {type CSSProperties, useEffect, useMemo, useRef} from 'react'
+import {useStore} from 'zustand'
+
+import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
 import {MultiSelectButton} from './MultiSelectButton'
 import {MultiSelectPad} from './MultiSelectPad'

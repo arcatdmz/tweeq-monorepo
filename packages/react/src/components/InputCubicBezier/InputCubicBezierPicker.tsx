@@ -1,11 +1,11 @@
-import {type HTMLAttributes, useMemo, useRef} from 'react'
-
-import {classNames} from '../../classNames'
 import {
 	type CubicBezierValue,
 	getCubicBezierPath,
 	updateCubicBezierPoint,
-} from '../../core'
+} from '@tweeq/core'
+import {type HTMLAttributes, useMemo, useRef} from 'react'
+
+import {classNames} from '../../classNames'
 import {useDrag} from '../../hooks'
 import styles from './InputCubicBezierPicker.module.styl'
 

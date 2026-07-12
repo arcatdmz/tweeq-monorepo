@@ -1,13 +1,13 @@
-import {type HTMLAttributes, useEffect, useRef, useState} from 'react'
-
-import {classNames} from '../../classNames'
 import {
 	type ColorPickerComponent,
 	css2hsva,
 	DEFAULT_COLOR_PICKERS,
 	type HSVA,
 	hsva2hex,
-} from '../../core'
+} from '@tweeq/core'
+import {type HTMLAttributes, useEffect, useRef, useState} from 'react'
+
+import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
 import {InputColorChannelPad} from './InputColorChannelPad'
 import {InputColorChannelSlider} from './InputColorChannelSlider'

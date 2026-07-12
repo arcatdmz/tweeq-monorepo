@@ -1,12 +1,12 @@
-import {useSyncExternalStore} from 'react'
-
-import {classNames} from '../../classNames'
 import {
 	getTooltipSnapshot,
 	setTooltipOpen,
 	subscribeTooltip,
 	TOOLTIP_ANCHOR_NAME,
-} from '../../core'
+} from '@tweeq/dom'
+import {useSyncExternalStore} from 'react'
+
+import {classNames} from '../../classNames'
 import {Popover} from '../Popover'
 import styles from './TooltipRoot.module.styl'
 
