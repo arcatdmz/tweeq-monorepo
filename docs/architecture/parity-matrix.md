@@ -114,6 +114,13 @@ by both implementations (`—` = logic still duplicated in renderer code);
 5. **Slots vs render props** for Menu, panes, ParameterGrid, Tooltip content.
    Permanent, per architecture rule 2.
 
+### Converged during Phase 3
+
+- `replaceTimecodeWithFrames`: legacy Vue parsed comma timecodes inside
+  expressions at a hardcoded 24 fps; both renderers now use the shared core
+  implementation, which honors the actual `frameRate` (fixture:
+  `core/src/inputTime.test.ts`, `'1:00', 30 → '30'`).
+
 ## Protected fixtures (Phase 0)
 
 These test files encode edge-case behavior that must not change without an
@@ -145,7 +152,8 @@ introduced-in, removal criteria, status.
 | `packages/react/src/common.styl` stylus forwarder to `@tweeq/styles` | Phase 2 (React relocation) | React components consume shared style parts from `@tweeq/styles` directly (Stage V3 per family) | active |
 | `packages/vue/src/common.styl` stylus forwarder to `@tweeq/styles` | Phase 2 (Vue relocation) | Vue components consume shared style parts from `@tweeq/styles` directly (Stage V3 per family) | active |
 | Pinia stores in `packages/vue/src/stores/` duplicating `@tweeq/dom` store factories | upstream legacy, kept in Stage V1 | replaced one store at a time by injected shared instances behind a `useTweeq()` facade (Stage V3); no `from 'pinia'` outside the compatibility adapter | active |
-| Duplicated pure logic in `packages/vue/src/` (`util.ts`, `validator.ts`, `theme/`, per-component `utils.ts`) | upstream legacy, kept in Stage V1 | Stage V2 leaf replacement: shared fixtures written, Vue+React switched to `@tweeq/core`, both contract suites green | active |
+| Duplicated pure logic in `packages/vue/src/` (`util.ts`, `validator.ts`, `theme/`, per-component `utils.ts`) | upstream legacy, kept in Stage V1 | Stage V2 leaf replacement: shared fixtures written, Vue+React switched to `@tweeq/core`, both contract suites green | **done 2026-07-13** for util, validator, theme, timecode, CubicBezierValue, InputShuffle generators (files are now re-export shims); remaining: `InputColor/utils.ts`, `InputSwitch/utils.ts`, `InputRotary/utils.ts` (composable/controller-shaped → Stage V3/Phase 4) |
+| Re-export shims left by Stage V2 (`packages/vue/src/{util,validator}.ts`, `InputTime/utils.ts` function re-exports, `InputCubicBezier/util.ts`, `InputShuffle/generators.ts`) | Phase 3 leaf replacement | Vue callers import `@tweeq/core` directly during Stage V3 family work; shim files deleted when `rg "from '\.\./(util|validator)'" packages/vue/src` is empty | active |
 | Legacy vue-tsc diagnostics in `@tweeq/vue` build (non-fatal, pre-existing upstream typing issues) | Stage V1 build restoration | resolved per family during Stage V2/V3 refactors | active |
 
 ## Stage V1 completion note (2026-07-13)

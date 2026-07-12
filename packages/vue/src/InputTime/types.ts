@@ -1,6 +1,7 @@
 import {InputBoxProps} from '../types'
 
-export type TimeFormat = 'frames' | 'timecode'
+// Stage V2: shared with @tweeq/core.
+export type {TimeFormat} from '@tweeq/core'
 
 export type InputTimeProps = InputBoxProps & {
 	frameRate?: number

@@ -1,1 +1,2 @@
-export type CubicBezierValue = readonly [number, number, number, number]
+// Stage V2: the shared value type lives in @tweeq/core.
+export type {CubicBezierValue} from '@tweeq/core'
