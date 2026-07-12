@@ -141,4 +141,18 @@ introduced-in, removal criteria, status.
 
 | Item | Introduced | Removal criteria | Status |
 | --- | --- | --- | --- |
-| (none yet) | | | |
+| `packages/react/src/core/index.ts` barrel forwarding `@tweeq/core` + `@tweeq/dom` | Phase 2 (React relocation) | every React source imports the owning package explicitly (migrate per family during Phases 3–4); `rg "from '(\.\./)*core'" packages/react/src` empty | active |
+| `packages/react/src/common.styl` stylus forwarder to `@tweeq/styles` | Phase 2 (React relocation) | React components consume shared style parts from `@tweeq/styles` directly (Stage V3 per family) | active |
+| `packages/vue/src/common.styl` stylus forwarder to `@tweeq/styles` | Phase 2 (Vue relocation) | Vue components consume shared style parts from `@tweeq/styles` directly (Stage V3 per family) | active |
+| Pinia stores in `packages/vue/src/stores/` duplicating `@tweeq/dom` store factories | upstream legacy, kept in Stage V1 | replaced one store at a time by injected shared instances behind a `useTweeq()` facade (Stage V3); no `from 'pinia'` outside the compatibility adapter | active |
+| Duplicated pure logic in `packages/vue/src/` (`util.ts`, `validator.ts`, `theme/`, per-component `utils.ts`) | upstream legacy, kept in Stage V1 | Stage V2 leaf replacement: shared fixtures written, Vue+React switched to `@tweeq/core`, both contract suites green | active |
+| Legacy vue-tsc diagnostics in `@tweeq/vue` build (non-fatal, pre-existing upstream typing issues) | Stage V1 build restoration | resolved per family during Stage V2/V3 refactors | active |
+
+## Stage V1 completion note (2026-07-13)
+
+The Vue renderer builds again as `@tweeq/vue` (ES + UMD + `style.css` +
+partial declarations) from byte-identical upstream sources; the only source
+edits are the shared-asset seams (InputColor shaders from
+`@tweeq/dom/shaders/*`, `common.styl` forwarder). Verified by
+`apps/playground-vue` booting with zero console errors and by the packed
+`examples/vue-vite` build.

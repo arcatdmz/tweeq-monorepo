@@ -1,6 +1,7 @@
 # Shared-core React/Vue monorepo migration
 
-Status: proposed execution plan  
+Status: in execution — Phases 0–2 complete (see
+[workstreams/](./workstreams/) for current state); Phases 3–6 open  
 Audience: worker agents and human maintainers  
 Scope: the next major structural change after the first React port  
 Upstream reference: [baku89/tweeq](https://github.com/baku89/tweeq)

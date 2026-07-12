@@ -8,7 +8,7 @@
 </div>
 
 > [!NOTE]
-> This repository is a React fork of [baku89/tweeq](https://github.com/baku89/tweeq), the original Vue implementation created by [Baku Hashimoto](https://baku89.com). The component design, interaction model, and research originate from Baku's work; this fork ports that work to React.
+> This repository is a fork of [baku89/tweeq](https://github.com/baku89/tweeq), the original Vue implementation created by [Baku Hashimoto](https://baku89.com). The component design, interaction model, and research originate from Baku's work. The fork first ported that work to React and is now being consolidated into a shared-core monorepo maintaining both renderers (see [docs/architecture/monorepo-migration.md](docs/architecture/monorepo-migration.md)).
 
 > [!NOTE]
 > For the React live demo of [the UIST paper](https://dl.acm.org/doi/10.1145/3746059.3747723), see [the UIST 2025 page](https://arcatdmz.github.io/tweeq/#/uist2025). The [original Vue demo](https://baku89.github.io/tweeq/uist2025.html) remains available as the source reference.
@@ -19,22 +19,31 @@ The original project has been continuously developed by Baku Hashimoto. This for
 
 ## Project Setup
 
+This is a [pnpm workspace](https://pnpm.io/workspaces). The packages live in
+`packages/` (`@tweeq/core`, `@tweeq/dom`, `@tweeq/styles`, `@tweeq/react`,
+`@tweeq/vue`), the documentation app and Vue playground in `apps/`, and
+minimal packed-package consumers in `examples/`.
+
 ```
-yarn
-yarn dev
-yarn build
+pnpm install
+pnpm dev          # React docs/demo app (apps/docs)
+pnpm --filter @tweeq/playground-vue dev   # Vue playground
+pnpm build        # build every package and app
+pnpm test         # package unit tests
+pnpm e2e          # Playwright suite against the docs app
+pnpm test:packed  # pack + install + build the example consumers
 ```
 
 ## React usage
 
-Tweeq requires React 18 or newer. Import the generated stylesheet once and wrap the application in `TweeqProvider`; inputs use controlled `value` / `onChange` props.
+Tweeq requires React 18 or newer. Import the generated stylesheet once and wrap the application in `TweeqProvider`; inputs use controlled `value` / `onChange` props. (The `@tweeq/*` names are workspace-internal until publishing is settled — see [ADR 0001](docs/architecture/adr/0001-package-naming-and-publishing.md).)
 
 **All base styles (font, CSS reset, selection/scrollbar chrome) are scoped to `<Viewport>`'s subtree** — same as the Vue version, where they were tied to `.TqViewport`. `TweeqProvider` alone only provides stores and overlay roots; components rendered outside a `<Viewport>` (or `<App>`, which includes one) will look unstyled.
 
 ```tsx
 import {useState} from 'react'
-import {InputNumber, TweeqProvider, Viewport} from 'tweeq'
-import 'tweeq/style.css'
+import {InputNumber, TweeqProvider, Viewport} from '@tweeq/react'
+import '@tweeq/react/style.css'
 
 export function Example() {
   const [value, setValue] = useState(24)
