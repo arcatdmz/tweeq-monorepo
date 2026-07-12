@@ -1,3 +1,5 @@
+import {scalar} from 'linearly'
+
 import {appConfigStore} from './stores/appConfig'
 import {type ValidateResult} from './validator'
 
@@ -7,6 +9,31 @@ export const inputTimeFormatEntry = appConfigStore
 	.getState()
 	.group('inputTime')
 	.ref<TimeFormat>('format', 'frames')
+
+/**
+ * Quantize the continuous drag accumulator before exposing it as a frame value.
+ * A tweaked time value is always integral in its base unit (frames); unit
+ * snapping only widens that step to the active second/minute/hour scale.
+ */
+export function quantizeTimeTweakValue(
+	value: number,
+	frameRate: number,
+	scale: number,
+	snapToUnit: boolean,
+	offsetValue: number
+): number {
+	const unitStep =
+		scale <= 0
+			? 1
+			: scale === 1
+				? frameRate
+				: scale === 2
+					? frameRate * 60
+					: frameRate * 3600
+	const step = snapToUnit ? unitStep : 1
+	const offset = snapToUnit ? offsetValue % step : 0
+	return scalar.quantize(value, step, offset)
+}
 
 export function formatTimecode(frames: number, frameRate: number): string {
 	let sign = ''

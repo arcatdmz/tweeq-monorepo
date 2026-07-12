@@ -18,6 +18,7 @@ import {
 	inputTimeFormatEntry,
 	type MenuItem,
 	mergeSvgPaths,
+	quantizeTimeTweakValue,
 	svgLine,
 	type TimeFormat,
 } from '../../../core'
@@ -125,18 +126,13 @@ export function InputTime({
 	}
 	const applySnap = (next: number) => {
 		const {frameRate: fps, min: lower, max: upper} = propsRef.current
-		if (keysRef.current.q) {
-			const scale = getScale()
-			const step =
-				scale === 0
-					? 1
-					: scale === 1
-						? fps
-						: scale === 2
-							? fps * 60
-							: fps * 3600
-			next = scalar.quantize(next, step, valueRef.current % step)
-		}
+		next = quantizeTimeTweakValue(
+			next,
+			fps,
+			getScale(),
+			keysRef.current.q,
+			valueRef.current
+		)
 		return scalar.clamp(next, lower, upper)
 	}
 
