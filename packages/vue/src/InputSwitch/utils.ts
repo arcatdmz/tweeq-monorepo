@@ -1,3 +1,4 @@
+import {getSwitchKeyValue, getSwitchTweakValue} from '@tweeq/core'
 import {useEventListener, useFocus} from '@vueuse/core'
 import {computed, Ref, toRef, watch} from 'vue'
 
@@ -42,17 +43,16 @@ export function useInputSwitch({
 		},
 	})
 
-	const tweakingValue = computed(() => {
-		if (!dragging.value) return null
-
-		const dx = xy.value[0] - initial.value[0]
-
-		if (Math.abs(dx) <= tweakThreshold) {
-			return !valueOnTweak
-		} else {
-			return dx > 0
-		}
-	})
+	// Stage V2: the drag-to-toggle transition lives in @tweeq/core.
+	const tweakingValue = computed(() =>
+		getSwitchTweakValue({
+			dragging: dragging.value,
+			initialX: initial.value[0],
+			currentX: xy.value[0],
+			valueOnTweak: valueOnTweak ?? false,
+			threshold: tweakThreshold,
+		})
+	)
 
 	watch(tweakingValue, value => {
 		if (value === null) return
@@ -61,24 +61,16 @@ export function useInputSwitch({
 	})
 
 	useEventListener(input, 'keydown', (e: KeyboardEvent) => {
-		const key = e.key.toLowerCase()
+		// Stage V2: the shortcut mapping lives in @tweeq/core.
+		const value = getSwitchKeyValue(e.key, props.modelValue)
+		if (value === undefined) return
 
-		if (key === ' ') {
-			update(!props.modelValue)
-		} else if (key === 't' || key === '1' || key === 'y' || key === 'p') {
-			update(true)
-		} else if (key === 'f' || key === '0' || key === 'n' || key === 'm') {
-			update(false)
-		}
-
-		function update(value: boolean) {
-			e.preventDefault()
-			// The switch consumed the key (e.g. "m"); don't also let it trigger an
-			// app-wide shortcut bound to the same key.
-			e.stopPropagation()
-			emit('update:modelValue', value)
-			emit('confirm')
-		}
+		e.preventDefault()
+		// The switch consumed the key (e.g. "m"); don't also let it trigger an
+		// app-wide shortcut bound to the same key.
+		e.stopPropagation()
+		emit('update:modelValue', value)
+		emit('confirm')
 	})
 
 	useEventListener(input, 'input', () => {
