@@ -1,0 +1,45 @@
+{
+	"name": "@tweeq/react",
+	"version": "0.0.0",
+	"private": true,
+	"description": "React renderer for Tweeq",
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.es.js",
+	"style": "./dist/style.css",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.es.js",
+			"require": "./dist/index.cjs"
+		},
+		"./style.css": "./dist/style.css"
+	},
+	"sideEffects": [
+		"**/*.css"
+	],
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "rm -rf dist && vite build",
+		"test": "vitest run"
+	},
+	"peerDependencies": {
+		"react": ">=18.0.0",
+		"react-dom": ">=18.0.0"
+	},
+	"devDependencies": {
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"@vitejs/plugin-react": "catalog:",
+		"react": "catalog:",
+		"react-dom": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:",
+		"vite-plugin-dts": "catalog:",
+		"vite-plugin-glsl": "catalog:",
+		"vitest": "catalog:"
+	}
+}

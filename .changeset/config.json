@@ -1,0 +1,17 @@
+{
+	"$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
+	"changelog": "@changesets/cli/changelog",
+	"commit": false,
+	"fixed": [
+		["@tweeq/core", "@tweeq/dom", "@tweeq/styles", "@tweeq/react", "@tweeq/vue"]
+	],
+	"linked": [],
+	"access": "restricted",
+	"baseBranch": "feat/monorepo",
+	"updateInternalDependencies": "patch",
+	"privatePackages": {
+		"version": true,
+		"tag": false
+	},
+	"ignore": []
+}

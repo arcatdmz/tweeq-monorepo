@@ -3,6 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"type": "module",
+	"packageManager": "pnpm@11.12.0",
 	"scripts": {
 		"dev": "vite serve demo --port 5174",
 		"dev:demo": "vite serve demo --port 5174",
@@ -10,6 +11,9 @@
 		"e2e": "LD_LIBRARY_PATH=$HOME/.cache/ms-playwright/local-libs playwright test",
 		"build:vite": "vite build",
 		"build": "rm -rf lib && npm run build:vite",
+		"build:packages": "pnpm -r --if-present build",
+		"test:packages": "pnpm -r --if-present test",
+		"check:boundaries": "node scripts/check-boundaries.mjs",
 		"lint": "eslint src/core src/react demo e2e",
 		"test": "vitest"
 	},
@@ -60,6 +64,7 @@
 		"zustand": "^5.0.14"
 	},
 	"devDependencies": {
+		"@changesets/cli": "^2.31.0",
 		"@eslint/js": "^9.21.0",
 		"@playwright/test": "^1.61.1",
 		"@types/chroma-js": "^2.4.3",

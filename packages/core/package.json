@@ -1,0 +1,27 @@
+{
+	"name": "@tweeq/core",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Framework-neutral value semantics, validation, formatting, and state transitions for Tweeq",
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "rm -rf dist && tsc -p tsconfig.build.json",
+		"test": "vitest run"
+	},
+	"devDependencies": {
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	}
+}

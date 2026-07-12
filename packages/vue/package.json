@@ -1,0 +1,41 @@
+{
+	"name": "@tweeq/vue",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Vue 3 renderer for Tweeq (legacy upstream implementation, Stage V1)",
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"main": "./dist/index.umd.js",
+	"module": "./dist/index.es.js",
+	"style": "./dist/style.css",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.es.js",
+			"require": "./dist/index.umd.js"
+		},
+		"./style.css": "./dist/style.css"
+	},
+	"sideEffects": [
+		"**/*.css"
+	],
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "rm -rf dist && vite build",
+		"test": "vitest run"
+	},
+	"peerDependencies": {
+		"vue": "^3.0.0"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:",
+		"vite-plugin-dts": "catalog:",
+		"vite-plugin-glsl": "catalog:",
+		"vitest": "catalog:",
+		"vue": "catalog:"
+	}
+}

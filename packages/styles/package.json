@@ -1,0 +1,19 @@
+{
+	"name": "@tweeq/styles",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Design tokens, reset, and shared component style parts for Tweeq",
+	"type": "module",
+	"exports": {
+		"./style.css": "./dist/style.css"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "rm -rf dist && mkdir -p dist && stylus --compress --out dist src/style.styl"
+	},
+	"devDependencies": {
+		"stylus": "catalog:"
+	}
+}
