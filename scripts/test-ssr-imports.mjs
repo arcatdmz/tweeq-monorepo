@@ -9,6 +9,12 @@ import {resolve} from 'node:path'
 import {pathToFileURL} from 'node:url'
 
 const root = resolve(new URL('..', import.meta.url).pathname)
+const requireReact = createRequire(resolve(root, 'packages/react/package.json'))
+const requireVue = createRequire(resolve(root, 'packages/vue/package.json'))
+const {createElement} = requireReact('react')
+const {renderToString: renderReactToString} = requireReact('react-dom/server')
+const {createSSRApp, h} = requireVue('vue')
+const {renderToString: renderVueToString} = requireVue('vue/server-renderer')
 const entries = [
 	['@tweeq/core', 'packages/core/dist/index.js'],
 	['@tweeq/core/validator', 'packages/core/dist/validator.js'],
@@ -17,10 +23,26 @@ const entries = [
 	['@tweeq/vue', 'packages/vue/dist/index.es.js'],
 ]
 
+const imported = new Map()
 for (const [name, entry] of entries) {
-	await import(pathToFileURL(resolve(root, entry)).href)
+	imported.set(name, await import(pathToFileURL(resolve(root, entry)).href))
 	console.log(`SSR import OK: ${name}`)
 }
+
+const react = imported.get('@tweeq/react')
+renderReactToString(
+	createElement(react.InputColorPicker, {value: '#336699', pickers: []})
+)
+console.log('SSR render OK: React InputColorPicker')
+
+const vue = imported.get('@tweeq/vue')
+await renderVueToString(
+	createSSRApp({
+		render: () =>
+			h(vue.InputColorPicker, {modelValue: '#336699', pickers: []}),
+	})
+)
+console.log('SSR render OK: Vue InputColorPicker')
 
 const require = createRequire(import.meta.url)
 for (const [name, entry] of [

@@ -51,7 +51,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputButtonToggle | SFC | ✅ | — | shared contract | controlled activation, native disabled state, `aria-pressed`, and stable parts aligned in Phase 4 |
 | InputCheckbox | SFC | ✅ | — | components-parity, text-toggles | |
 | InputCode | SFC | ✅ | — | dropdown-code | Monaco integration differs by wrapper lib |
-| InputColor | SFC | ✅ | `color` | color-curves | popover + channel sliders/pad |
+| InputColor | SFC | ✅ | `color` | shared contract + core picker controller + color-curves | controlled color synchronization, preset/EyeDropper confirm, SSR-safe capability detection, and disabled channel/control propagation aligned in Phase 4 |
 | InputComplex | SFC | ✅ | — | layout-modals | |
 | InputCubicBezier | SFC | ✅ | `cubicBezier` | shared contract + core geometry + color-curves | controlled path, touch/pen/mouse handle drag, clamped point updates, disabled/invalid state, confirm lifecycle, and stable picker parts aligned in Phase 4 |
 | InputDropdown | SFC | ✅ | `dropdown` | shared contract + components-parity, dropdown-code | shared empty/wrap navigation; click confirm, Escape rollback, and listbox ARIA aligned in Phase 4 |

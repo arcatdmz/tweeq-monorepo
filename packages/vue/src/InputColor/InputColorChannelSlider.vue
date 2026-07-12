@@ -17,6 +17,7 @@ import {
 interface Props {
 	modelValue: HSVA
 	axis: ColorChannel
+	disabled?: boolean
 }
 
 const props = defineProps<Props>()
@@ -37,6 +38,7 @@ const {
 	bottom,
 	xy,
 } = useDrag($root, {
+	disabled: computed(() => props.disabled),
 	dragDelaySeconds: 0,
 	onDragStart({xy: [x], left, right}, event) {
 		local = props.modelValue
@@ -101,6 +103,9 @@ const circleStyle = computed(() => {
 			:uniforms="uniforms"
 		/>
 		<button
+			type="button"
+			:disabled="props.disabled"
+			:aria-label="`${props.axis.toUpperCase()} channel`"
 			class="circle"
 			:class="{tweaking: sliderTweaking}"
 			:style="circleStyle"

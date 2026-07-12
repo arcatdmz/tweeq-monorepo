@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import {computedInject} from '@vueuse/core'
+import {computed, inject} from 'vue'
 
-import {InputColorPresetsKey} from './useInputColor'
+import {DefaultColorPresets, InputColorPresetsKey} from './useInputColor'
 
 interface Props {
 	presets?: string[]
+	disabled?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -15,16 +16,19 @@ const emit = defineEmits<{
 	'update:modelValue': [string]
 }>()
 
-const presetsMerged = computedInject(InputColorPresetsKey, injectedPresets => {
-	return [...(injectedPresets ?? []), ...props.presets]
-})
+const injectedPresets = inject(InputColorPresetsKey, DefaultColorPresets)
+const presetsMerged = computed(() => [...injectedPresets, ...props.presets])
 </script>
 
 <template>
-	<div class="TqInputColorPresets">
+	<div class="TqInputColorPresets" data-tq-part="presets">
 		<button
-			v-for="preset in presetsMerged"
+			v-for="(preset, index) in presetsMerged"
 			:key="preset"
+			type="button"
+			:disabled="props.disabled"
+			:aria-label="`Use ${preset}`"
+			:data-tq-part="`preset-${index}`"
 			:style="{background: preset}"
 			@click="emit('update:modelValue', preset)"
 		/>

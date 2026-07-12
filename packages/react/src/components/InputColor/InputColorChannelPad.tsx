@@ -19,12 +19,14 @@ export interface InputColorChannelPadProps {
 	value: HSVA
 	onChange?: (value: HSVA) => void
 	axes: readonly [ColorChannel, ColorChannel]
+	disabled?: boolean
 }
 
 export function InputColorChannelPad({
 	value,
 	onChange,
 	axes,
+	disabled,
 }: InputColorChannelPadProps) {
 	const root = useRef<HTMLDivElement>(null)
 	const local = useRef(value)
@@ -32,6 +34,7 @@ export function InputColorChannelPad({
 	current.current = {value, onChange, axes}
 	const dragOptions = useMemo(
 		() => ({
+			disabled: () => Boolean(disabled),
 			dragDelaySeconds: 0,
 			onDragStart: (
 				state: {
@@ -78,7 +81,7 @@ export function InputColorChannelPad({
 				current.current.onChange?.(next)
 			},
 		}),
-		[]
+		[disabled]
 	)
 	const drag = useDrag(root, dragOptions)
 	const uniforms = useMemo(() => {

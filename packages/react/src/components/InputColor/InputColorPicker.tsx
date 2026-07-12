@@ -1,11 +1,10 @@
 import {
 	type ColorPickerComponent,
-	css2hsva,
+	createInputColorPickerController,
 	DEFAULT_COLOR_PICKERS,
 	type HSVA,
-	hsva2hex,
 } from '@tweeq/core'
-import {type HTMLAttributes, useEffect, useRef, useState} from 'react'
+import {type HTMLAttributes, useEffect, useMemo, useState} from 'react'
 
 import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
@@ -31,6 +30,7 @@ export interface InputColorPickerProps
 	alpha?: boolean
 	pickers?: readonly ColorPickerComponent[]
 	presets?: readonly string[]
+	disabled?: boolean
 }
 
 export function InputColorPicker({
@@ -40,33 +40,32 @@ export function InputColorPicker({
 	alpha = true,
 	pickers = DEFAULT_COLOR_PICKERS,
 	presets,
+	disabled,
 	className,
 	...props
 }: InputColorPickerProps) {
-	const [local, setLocal] = useState<HSVA>(() => css2hsva(value))
-	const emitted = useRef<string | null>(null)
+	const [, setLocal] = useState<HSVA>()
+	const controller = useMemo(
+		() => createInputColorPickerController(value),
+		[]
+	)
+	controller.setCallbacks({onChange, onUpdate: setLocal})
+	const local = controller.value
 
 	useEffect(() => {
-		if (value !== emitted.current) setLocal(css2hsva(value))
-	}, [value])
-
-	const updateLocal = (next: HSVA) => {
-		setLocal(next)
-		emitted.current = hsva2hex(next)
-		onChange?.(emitted.current)
-	}
-	const updateCode = (next: string) => {
-		setLocal(css2hsva(next))
-		emitted.current = next
-		onChange?.(next)
-	}
+		controller.sync(value)
+	}, [controller, value])
 	const EyeDropper =
 		typeof window === 'undefined'
 			? undefined
 			: (window as unknown as {EyeDropper?: EyeDropperConstructor}).EyeDropper
 
 	return (
-		<div {...props} className={classNames(styles.picker, className)}>
+		<div
+			{...props}
+			className={classNames(styles.picker, className)}
+			data-tq-part="picker"
+		>
 			{pickers.map((picker, index) => {
 				if (picker[0] === 'pad') {
 					return (
@@ -74,7 +73,8 @@ export function InputColorPicker({
 							key={index}
 							value={local}
 							axes={picker[1]}
-							onChange={updateLocal}
+							disabled={disabled}
+							onChange={controller.updateHSVA}
 						/>
 					)
 				}
@@ -85,7 +85,8 @@ export function InputColorPicker({
 							key={index}
 							value={local}
 							axis={picker[1]}
-							onChange={updateLocal}
+							disabled={disabled}
+							onChange={controller.updateHSVA}
 						/>
 					)
 				}
@@ -96,8 +97,9 @@ export function InputColorPicker({
 							colorCode={value}
 							value={local}
 							alpha={alpha}
-							onChange={updateLocal}
-							onChangeColorCode={updateCode}
+							disabled={disabled}
+							onChange={controller.updateHSVA}
+							onChangeColorCode={controller.updateCode}
 						/>
 					)
 				}
@@ -105,20 +107,28 @@ export function InputColorPicker({
 			})}
 			<InputColorPresets
 				presets={presets}
+				disabled={disabled}
 				onChange={next => {
-					updateCode(next)
+					controller.updateCode(next)
 					onConfirm?.()
 				}}
 			/>
 			{EyeDropper && (
 				<button
 					type="button"
+					disabled={disabled}
 					className={styles.eyeDropper}
 					aria-label="Pick a color from the screen"
+					data-tq-part="eye-dropper"
 					onClick={async () => {
-						const result = await new EyeDropper().open()
-						updateCode(result.sRGBHex)
-						onConfirm?.()
+						try {
+							const result = await new EyeDropper().open()
+							controller.updateCode(result.sRGBHex)
+							onConfirm?.()
+						} catch (error) {
+							if (error instanceof DOMException && error.name === 'AbortError') return
+							throw error
+						}
 					}}
 				>
 					<Icon icon="material-symbols:colorize" />

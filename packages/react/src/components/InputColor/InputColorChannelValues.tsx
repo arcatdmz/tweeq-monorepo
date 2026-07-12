@@ -22,6 +22,7 @@ export interface InputColorChannelValuesProps {
 	value: HSVA
 	onChange?: (value: HSVA) => void
 	alpha?: boolean
+	disabled?: boolean
 }
 
 export function InputColorChannelValues({
@@ -30,6 +31,7 @@ export function InputColorChannelValues({
 	value,
 	onChange,
 	alpha = true,
+	disabled,
 }: InputColorChannelValuesProps) {
 	const {colorSpace, setColorSpace} = useInputColorContext()
 	const rgb = hsv2rgb(value)
@@ -41,6 +43,7 @@ export function InputColorChannelValues({
 			<InputDropdown
 				className={styles.colorSpace}
 				theme="minimal"
+				disabled={disabled}
 				value={colorSpace}
 				onChange={setColorSpace}
 				options={COLOR_SPACES}
@@ -54,6 +57,7 @@ export function InputColorChannelValues({
 						max={255}
 						precision={0}
 						bar={false}
+						disabled={disabled}
 						onChange={next => update('r', next / 255)}
 					/>
 					<InputNumber
@@ -62,6 +66,7 @@ export function InputColorChannelValues({
 						max={255}
 						precision={0}
 						bar={false}
+						disabled={disabled}
 						onChange={next => update('g', next / 255)}
 					/>
 					<InputNumber
@@ -70,6 +75,7 @@ export function InputColorChannelValues({
 						max={255}
 						precision={0}
 						bar={false}
+						disabled={disabled}
 						onChange={next => update('b', next / 255)}
 					/>
 					{alpha && (
@@ -79,6 +85,7 @@ export function InputColorChannelValues({
 							max={100}
 							precision={0}
 							bar={false}
+							disabled={disabled}
 							suffix="%"
 							onChange={next => update('a', next / 100)}
 						/>
@@ -93,6 +100,7 @@ export function InputColorChannelValues({
 						max={360}
 						precision={0}
 						bar={false}
+						disabled={disabled}
 						suffix="°"
 						onChange={next => update('h', next / 360)}
 					/>
@@ -102,6 +110,7 @@ export function InputColorChannelValues({
 						max={100}
 						precision={0}
 						bar={false}
+						disabled={disabled}
 						suffix="%"
 						onChange={next => update('s', next / 100)}
 					/>
@@ -111,6 +120,7 @@ export function InputColorChannelValues({
 						max={100}
 						precision={0}
 						bar={false}
+						disabled={disabled}
 						suffix="%"
 						onChange={next => update('v', next / 100)}
 					/>
@@ -121,6 +131,7 @@ export function InputColorChannelValues({
 							max={100}
 							precision={0}
 							bar={false}
+							disabled={disabled}
 							suffix="%"
 							onChange={next => update('a', next / 100)}
 						/>
@@ -133,6 +144,7 @@ export function InputColorChannelValues({
 					font="monospace"
 					value={colorCode}
 					validator={validator.colorCode}
+					disabled={disabled}
 					onChange={onChangeColorCode}
 				/>
 			)}

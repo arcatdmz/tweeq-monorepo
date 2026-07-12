@@ -13,6 +13,7 @@ interface Props {
 	colorCode: string
 	hsva: HSVA
 	alpha?: boolean
+	disabled?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {alpha: true})
@@ -39,6 +40,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 			v-model="colorSpace"
 			class="color-space"
 			theme="minimal"
+			:disabled="props.disabled"
 			:options="['rgb', 'hsv', 'hex']"
 			:labelizer="s => s.toUpperCase()"
 		/>
@@ -49,6 +51,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 				:max="255"
 				:precision="0"
 				:bar="false"
+				:disabled="props.disabled"
 				inline-position="start"
 				@update:modelValue="onUpdateChannel('r', $event / 255)"
 			/>
@@ -58,6 +61,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 				:max="255"
 				:precision="0"
 				:bar="false"
+				:disabled="props.disabled"
 				inline-position="middle"
 				@update:modelValue="onUpdateChannel('g', $event / 255)"
 			/>
@@ -67,6 +71,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 				:max="255"
 				:precision="0"
 				:bar="false"
+				:disabled="props.disabled"
 				:inline-position="props.alpha ? 'middle' : 'end'"
 				@update:modelValue="onUpdateChannel('b', $event / 255)"
 			/>
@@ -77,6 +82,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 				:max="100"
 				:precision="0"
 				:bar="false"
+				:disabled="props.disabled"
 				suffix="%"
 				inline-position="end"
 				@update:modelValue="onUpdateChannel('a', $event / 100)"
@@ -89,6 +95,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 				:max="360"
 				:precision="0"
 				:bar="false"
+				:disabled="props.disabled"
 				suffix="°"
 				inline-position="start"
 				@update:modelValue="onUpdateChannel('h', $event / 360)"
@@ -99,6 +106,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 				:max="100"
 				:precision="0"
 				:bar="false"
+				:disabled="props.disabled"
 				suffix="%"
 				inline-position="middle"
 				@update:modelValue="onUpdateChannel('s', $event / 100)"
@@ -109,6 +117,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 				:max="100"
 				:precision="0"
 				:bar="false"
+				:disabled="props.disabled"
 				suffix="%"
 				:inline-position="props.alpha ? 'middle' : 'end'"
 				@update:modelValue="onUpdateChannel('v', $event / 100)"
@@ -120,6 +129,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 				:max="100"
 				:precision="0"
 				:bar="false"
+				:disabled="props.disabled"
 				suffix="%"
 				inline-position="end"
 				@update:modelValue="onUpdateChannel('a', $event / 100)"
@@ -131,6 +141,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 			class="channel"
 			:modelValue="colorCode"
 			:validator="V.colorCode"
+			:disabled="props.disabled"
 			@update:modelValue="emit('update:colorCode', $event)"
 		/>
 	</InputGroup>

@@ -166,6 +166,10 @@ contain renderer markup only and no copied state transition.
   pointer drag, clamped updates, confirm lifecycle, and stable picker parts.
 - Vue's mouse-only handle selection and missing confirm propagation were fixed;
   picker drag is now gated while disabled in both adapters.
+- InputColor uses a shared controlled-value picker controller. Preset and
+  EyeDropper changes now synchronize HSVA and confirm in both renderers;
+  EyeDropper detection is SSR-safe and disabled state reaches picker channels,
+  direct actions, and the outer text/number controls.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

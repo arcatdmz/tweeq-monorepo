@@ -17,6 +17,7 @@ import {
 interface Props {
 	axes: readonly [ColorChannel, ColorChannel]
 	modelValue: HSVA
+	disabled?: boolean
 }
 
 const props = defineProps<Props>()
@@ -38,6 +39,7 @@ const {
 	bottom,
 	xy,
 } = useDrag($root, {
+	disabled: computed(() => props.disabled),
 	dragDelaySeconds: 0,
 	onDragStart({left, right, top, bottom, xy}, event) {
 		local = props.modelValue

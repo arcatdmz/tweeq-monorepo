@@ -60,6 +60,7 @@ export function InputColor({
 			className={classNames(styles.inputColor, className)}
 			data-inline-position={inlinePosition}
 			data-block-position={blockPosition}
+			data-tq-part="root"
 		>
 			<InputColorPad
 				className={classNames(!showColorCode && styles.onlyPad)}
@@ -109,6 +110,8 @@ export function InputColor({
 					disabled={disabled}
 					invalid={invalid}
 					onChange={next => onChange?.(parsed.alpha(next / 100).hex())}
+					onFocus={onFocus}
+					onBlur={onBlur}
 					onConfirm={onConfirm}
 				/>
 			)}

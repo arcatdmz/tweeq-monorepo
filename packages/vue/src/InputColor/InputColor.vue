@@ -53,7 +53,13 @@ function onUpdateAlpha(value: number) {
 </script>
 
 <template>
-	<InputGroup ref="$root" class="TqInputColor">
+<InputGroup
+		ref="$root"
+		class="TqInputColor"
+		:inline-position="props.inlinePosition"
+		:block-position="props.blockPosition"
+		data-tq-part="root"
+	>
 		<InputColorPad
 			v-bind="props"
 			v-model="model"
@@ -71,6 +77,8 @@ function onUpdateAlpha(value: number) {
 			font="monospace"
 			:modelValue="opaqueColor"
 			:validator="V.colorCode"
+			:disabled="props.disabled"
+			:invalid="props.invalid"
 			:inlinePosition="props.alpha ? 'middle' : 'end'"
 			@update:modelValue="onInputOpaqueColor"
 			@focus="emit('focus')"
@@ -85,8 +93,13 @@ function onUpdateAlpha(value: number) {
 			suffix="%"
 			:min="0"
 			:max="100"
+			:disabled="props.disabled"
+			:invalid="props.invalid"
 			inlinePosition="end"
 			@update:modelValue="onUpdateAlpha"
+			@focus="emit('focus')"
+			@blur="emit('blur')"
+			@confirm="emit('confirm')"
 		/>
 	</InputGroup>
 </template>

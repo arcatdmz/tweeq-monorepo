@@ -123,3 +123,48 @@ export function css2hsva(value: string): HSVA {
 		a,
 	}
 }
+
+export interface InputColorPickerControllerCallbacks {
+	onChange?(value: string): void
+	onUpdate?(value: HSVA): void
+}
+
+/** Shared controlled-value state for the React and Vue color pickers. */
+export function createInputColorPickerController(
+	value: string,
+	callbacks: InputColorPickerControllerCallbacks = {}
+) {
+	let local = css2hsva(value)
+	let emitted: string | null = null
+	let currentCallbacks = callbacks
+
+	const notify = () => currentCallbacks.onUpdate?.(local)
+	const emit = (next: string) => {
+		emitted = next
+		currentCallbacks.onChange?.(next)
+	}
+
+	return {
+		get value(): HSVA {
+			return local
+		},
+		setCallbacks(next: InputColorPickerControllerCallbacks): void {
+			currentCallbacks = next
+		},
+		sync(next: string): void {
+			if (next === emitted) return
+			local = css2hsva(next)
+			notify()
+		},
+		updateHSVA(next: HSVA): void {
+			local = next
+			notify()
+			emit(hsva2hex(next))
+		},
+		updateCode(next: string): void {
+			local = css2hsva(next)
+			notify()
+			emit(next)
+		},
+	}
+}

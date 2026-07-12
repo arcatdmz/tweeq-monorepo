@@ -56,3 +56,4 @@ export {
 	type InputCubicBezierContractProps,
 	runInputCubicBezierContract,
 } from './inputCubicBezier'
+export {type InputColorContractProps, runInputColorContract} from './inputColor'

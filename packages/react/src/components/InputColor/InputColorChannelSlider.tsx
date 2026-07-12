@@ -19,12 +19,14 @@ export interface InputColorChannelSliderProps {
 	value: HSVA
 	onChange?: (value: HSVA) => void
 	axis: ColorChannel
+	disabled?: boolean
 }
 
 export function InputColorChannelSlider({
 	value,
 	onChange,
 	axis,
+	disabled,
 }: InputColorChannelSliderProps) {
 	const root = useRef<HTMLDivElement>(null)
 	const local = useRef(value)
@@ -32,6 +34,7 @@ export function InputColorChannelSlider({
 	current.current = {value, onChange, axis}
 	const dragOptions = useMemo(
 		() => ({
+			disabled: () => Boolean(disabled),
 			dragDelaySeconds: 0,
 			onDragStart: (
 				state: {xy: readonly [number, number]; left: number; right: number},
@@ -57,7 +60,7 @@ export function InputColorChannelSlider({
 				)
 			},
 		}),
-		[]
+		[disabled]
 	)
 	const drag = useDrag(root, dragOptions)
 	const uniforms = useMemo(() => {
@@ -85,6 +88,7 @@ export function InputColorChannelSlider({
 			<button
 				type="button"
 				aria-label={`${axis.toUpperCase()} channel`}
+				disabled={disabled}
 				className={`${styles.circle} ${drag.dragging ? styles.tweaking : ''}`}
 				style={{
 					left: toPercent(getHSVAChannel(value, axis)),
