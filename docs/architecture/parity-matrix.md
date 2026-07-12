@@ -160,6 +160,12 @@ introduced-in, removal criteria, status.
 | Re-export shims left by Stage V2 (`packages/vue/src/{util,validator}.ts`, `InputTime/utils.ts` function re-exports, `InputCubicBezier/util.ts`, `InputShuffle/generators.ts`) | Phase 3 leaf replacement | Vue callers import owning packages directly; shim files deleted when `rg "from '\.\./(util|validator)'" packages/vue/src` is empty | **done 2026-07-13**: public compatibility exports now forward from the package entry points without renderer-local files |
 | Legacy vue-tsc diagnostics in `@tweeq/vue` build (non-fatal, pre-existing upstream typing issues) | Stage V1 build restoration | declaration generation completes without TypeScript diagnostics | **done 2026-07-13**: recursive Menu refs/props, readonly color axes, generic vector bounds, event overloads, and element/style typing corrected |
 
+## Phase 4 family status
+
+| Family | Status | Evidence |
+| --- | --- | --- |
+| 1. primitives, icons, groups, buttons, switches | **done 2026-07-13** | shared contracts run against both renderers for InputButton, InputButtonToggle, InputSwitch, InputCheckbox, InputGroup, and IconIndicator; Icon source parsing has core fixtures; BindIcon/SvgIcon remain renderer-only markup; packed examples and relevant Playwright specs pass |
+
 ## Stage V1 completion note (2026-07-13)
 
 The Vue renderer builds again as `@tweeq/vue` (ES + UMD + `style.css` +

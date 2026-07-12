@@ -43,6 +43,14 @@ parity matrix), `CubicBezierValue`/`TimeFormat`, InputShuffle generators
 The touched Vue modules are re-export shims so every legacy import path
 and public export is unchanged.
 
+## Phase 4 family 1 (done 2026-07-13)
+
+The primitives/icons/groups/buttons/switches family is complete. Shared
+contracts run in React and Vue for InputButton, InputButtonToggle, InputSwitch,
+InputCheckbox, InputGroup, and IconIndicator. Icon source parsing is owned by
+core; Iconify loading/cache remains a framework adapter. BindIcon and SvgIcon
+contain renderer markup only and no copied state transition.
+
 ## Notes for Phase 3/4 workers
 
 - Temporary compatibility items are tracked in the parity matrix's deletion
@@ -58,7 +66,7 @@ and public export is unchanged.
 - `@tweeq/test-contracts` now supplies the parameterized InputSwitch public
   behavior suite. React and Vue each implement the harness and run the same
   controlled-value and keyboard/confirm contract in jsdom.
-- Phase 4 family 1 is in progress: InputSwitch and InputCheckbox expose
+- Phase 4 family 1 completed with InputSwitch and InputCheckbox exposing
   identical stable `data-tq-part` names in both renderers and run the same
   controlled-value, keyboard/confirm, disabled, and label contract.
   InputButtonToggle additionally shares controlled activation, native disabled,
