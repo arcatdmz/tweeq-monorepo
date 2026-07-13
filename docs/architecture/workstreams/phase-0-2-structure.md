@@ -257,7 +257,8 @@ contain renderer markup only and no copied state transition.
   pass its cleanup gate until shared style-part ownership is completed.
 - Style convergence has started with the first primitive/control families:
   buttons, switches, indicators, ColorIcon/GlslCanvas, InputAngle, InputGroup,
-  and ParameterGrid. Both renderers emit the same stable component/part/state
+  ParameterGrid, Markdown, InputPosition, BindIcon, and TweakOverlay. Both
+  renderers emit the same stable component/part/state
   attributes, consume one shared rule set, and deleted their scoped/CSS-module
   copies. The styles package now emits real component CSS rather than only the
   initial placeholder.

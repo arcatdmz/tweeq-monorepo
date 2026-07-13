@@ -4,8 +4,6 @@ import {
 } from '@tweeq/core'
 import {type HTMLAttributes, useMemo} from 'react'
 
-import {classNames} from '../../classNames'
-import styles from './Markdown.module.styl'
 
 export interface MarkdownProps extends HTMLAttributes<HTMLDivElement> {
 	source?: string
@@ -37,7 +35,8 @@ export function Markdown({
 	return (
 		<div
 			{...props}
-			className={classNames(styles.markdown, className)}
+			className={className}
+			data-tq-component="markdown"
 			data-tq-part="root"
 			dangerouslySetInnerHTML={{__html: rendered}}
 		/>

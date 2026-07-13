@@ -22,5 +22,5 @@ const rendered = computed(() => renderMarkdown(props.source, props))
 </script>
 
 <template>
-	<div class="MarkdownIt" data-tq-part="root" v-html="rendered" />
+	<div class="MarkdownIt" data-tq-component="markdown" data-tq-part="root" v-html="rendered" />
 </template>

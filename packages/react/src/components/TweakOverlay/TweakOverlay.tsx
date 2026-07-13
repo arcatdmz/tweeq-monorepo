@@ -1,7 +1,5 @@
 import {type HTMLAttributes, useEffect, useRef} from 'react'
 
-import {classNames} from '../../classNames'
-import styles from './TweakOverlay.module.styl'
 
 export type TweakOverlayProps = HTMLAttributes<HTMLDivElement>
 
@@ -37,7 +35,9 @@ export function TweakOverlay({
 		<div
 			{...props}
 			ref={root}
-			className={classNames(styles.tqTweakOverlay, className)}
+			className={className}
+			data-tq-component="tweak-overlay"
+			data-tq-part="root"
 			popover="manual"
 		>
 			{children}

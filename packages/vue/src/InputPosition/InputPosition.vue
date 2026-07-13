@@ -15,7 +15,7 @@ const emit = defineEmits<InputEmits>()
 </script>
 
 <template>
-	<InputGroup class="TqInputPosition">
+	<InputGroup class="TqInputPosition" data-tq-variant="input-position">
 		<InputTranslate
 			v-bind="props"
 			v-model="model"
@@ -34,9 +34,3 @@ const emit = defineEmits<InputEmits>()
 		/>
 	</InputGroup>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqInputPosition
-	gap 3px
-</style>

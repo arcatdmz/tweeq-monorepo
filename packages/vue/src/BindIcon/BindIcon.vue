@@ -11,22 +11,10 @@ defineProps<Props>()
 </script>
 
 <template>
-	<div class="BindIcon">
+	<div class="BindIcon" data-tq-component="bind-icon" data-tq-part="root">
 		<template v-for="(ic, index) in icon" :key="index">
 			<span v-if="typeof ic === 'string'">{{ ic }}</span>
-			<Icon class="icon" v-else-if="ic.type === 'iconify'" :icon="ic.icon" />
+			<Icon class="icon" v-else-if="ic.type === 'iconify'" :icon="ic.icon" data-tq-part="icon" />
 		</template>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-.BindIcon
-	display flex
-	align-items center
-	gap var(--tq-gap-group)
-
-.icon
-	width 1em
-	height 1em
-</style>

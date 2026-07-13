@@ -4,7 +4,6 @@ import {type vec2} from 'linearly'
 import {InputGroup} from '../InputGroup'
 import {InputTranslate} from '../InputTranslate'
 import {InputVec} from '../InputVec'
-import styles from './InputPosition.module.styl'
 
 export interface InputPositionProps extends InputProps, InputEvents {
 	value: vec2
@@ -27,7 +26,7 @@ export function InputPosition({
 	onConfirm,
 }: InputPositionProps) {
 	return (
-		<InputGroup className={styles.tqInputPosition}>
+		<InputGroup data-tq-variant="input-position">
 			<InputTranslate
 				value={value}
 				min={min}

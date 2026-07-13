@@ -29,24 +29,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<div ref="$root" class="TqTweakOverlay" popover="manual">
+	<div ref="$root" class="TqTweakOverlay" popover="manual" data-tq-component="tweak-overlay" data-tq-part="root">
 		<slot />
 	</div>
 </template>
-
-<style scoped lang="stylus">
-.TqTweakOverlay
-	// Reset the UA popover box to a transparent, click-through full-viewport
-	// layer. Crucially uses no transform / backdrop-filter / filter / contain, so
-	// it doesn't itself become a containing block for the fixed overlay inside.
-	position fixed
-	inset 0
-	width 100vw
-	height 100vh
-	margin 0
-	padding 0
-	border 0
-	background transparent
-	overflow visible
-	pointer-events none
-</style>

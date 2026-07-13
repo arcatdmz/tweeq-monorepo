@@ -336,3 +336,30 @@
 
 	&[data-direction='vertical']
 		flex-direction column
+
+[data-tq-component='markdown']
+	display block
+
+[data-tq-component='input-group'][data-tq-variant='input-position']
+	gap 3px
+
+[data-tq-component='bind-icon']
+	display flex
+	align-items center
+	gap var(--tq-gap-group)
+
+	[data-tq-part='icon']
+		width 1em
+		height 1em
+
+[data-tq-component='tweak-overlay']
+	position fixed
+	inset 0
+	width 100vw
+	height 100vh
+	margin 0
+	padding 0
+	border 0
+	background transparent
+	overflow visible
+	pointer-events none
