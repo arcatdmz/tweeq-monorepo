@@ -62,11 +62,17 @@ const operationsPerSecond = Math.round(iterations * 3 / (medianMs / 1000))
 const reactTests = countVitestTests('@tweeq/react')
 const vueTests = countVitestTests('@tweeq/vue')
 const playwrightTests = countPlaywrightTests()
-const recordedDate = new Date().toISOString().slice(0, 10)
+const now = new Date()
+const recordedDate = [
+	now.getFullYear(),
+	String(now.getMonth() + 1).padStart(2, '0'),
+	String(now.getDate()).padStart(2, '0'),
+].join('-')
+const recordedTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 const markdown = `# Phase 6 release baseline
 
-Recorded: ${recordedDate}
+Recorded: ${recordedDate} (${recordedTimeZone})
 Runtime: Node ${process.versions.node}, ${process.platform}/${process.arch}
 Command: \`pnpm build && pnpm baseline:record\`
 

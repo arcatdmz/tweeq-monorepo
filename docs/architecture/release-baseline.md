@@ -1,6 +1,6 @@
 # Phase 6 release baseline
 
-Recorded: 2026-07-13
+Recorded: 2026-07-14 (Asia/Tokyo)
 Runtime: Node 24.16.0, linux/x64
 Command: `pnpm build && pnpm baseline:record`
 
@@ -16,9 +16,9 @@ excluded from runtime size totals.
 | @tweeq/core JavaScript | 35 | 74.88 KiB | 25.90 KiB |
 | @tweeq/dom JavaScript | 17 | 52.41 KiB | 16.40 KiB |
 | @tweeq/styles CSS | 1 | 362.91 KiB | 97.99 KiB |
-| @tweeq/react JavaScript | 175 | 11937.18 KiB | 3093.62 KiB |
+| @tweeq/react JavaScript | 179 | 19899.14 KiB | 4952.24 KiB |
 | @tweeq/react CSS | 1 | 362.91 KiB | 97.99 KiB |
-| @tweeq/vue JavaScript | 178 | 17017.91 KiB | 4442.52 KiB |
+| @tweeq/vue JavaScript | 182 | 24980.41 KiB | 6301.27 KiB |
 | @tweeq/vue CSS | 1 | 362.91 KiB | 97.99 KiB |
 
 The renderer totals include Monaco and its language workers. They establish
@@ -35,8 +35,8 @@ renderer source no longer emits independent owned CSS.
 The benchmark runs `unsignedMod`, ruler coordinate conversion, and enabled-tab
 resolution once per iteration (100,000 iterations, seven samples).
 
-- Median: 2.54 ms
-- Aggregate operations: 117,991,084 operations/second
+- Median: 3.33 ms
+- Aggregate operations: 89,977,470 operations/second
 
 This is a comparison baseline, not a CI timing threshold. Functional runtime
 parity remains enforced by the renderer-neutral contracts and browser suite.
@@ -45,7 +45,7 @@ parity remains enforced by the renderer-neutral contracts and browser suite.
 
 - React renderer contracts: 85 tests
 - Vue renderer contracts and compatibility warning: 84 tests
-- Cross-page Playwright interaction/visual suite: 22 tests
+- Cross-page Playwright interaction/visual suite: 23 tests
 - Packed downstream consumers: React Vite and Vue Vite, each typechecked and built
 
 Regenerate this document on the release runner immediately before each
