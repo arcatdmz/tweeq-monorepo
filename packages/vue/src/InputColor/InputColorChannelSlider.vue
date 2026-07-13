@@ -95,10 +95,13 @@ const circleStyle = computed(() => {
 	<div
 		ref="$root"
 		class="TqInputColorChannelSlider"
+		data-tq-component="input-color-channel-slider"
+		data-tq-part="root"
 		:style="{cursor: tweakingInside ? 'none' : undefined}"
 	>
 		<GlslCanvas
 			class="canvas"
+			data-tq-part="canvas"
 			:fragmentString="SliderFragmentString"
 			:uniforms="uniforms"
 		/>
@@ -108,27 +111,9 @@ const circleStyle = computed(() => {
 			:aria-label="`${props.axis.toUpperCase()} channel`"
 			class="circle"
 			:class="{tweaking: sliderTweaking}"
+			:data-tq-tweaking="sliderTweaking ? '' : undefined"
+			data-tq-part="handle"
 			:style="circleStyle"
 		/>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-@import './common.styl'
-
-.TqInputColorChannelSlider
-	position relative
-	width 100%
-	height calc(0.7 * var(--tq-input-height))
-
-.canvas
-	position absolute
-	width 100%
-	height 100%
-	border-radius var(--tq-radius-input)
-	background-checkerboard(transparent)
-
-.circle
-	circle()
-	z-index 1
-</style>

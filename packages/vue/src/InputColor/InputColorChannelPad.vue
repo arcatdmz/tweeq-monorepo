@@ -101,37 +101,22 @@ const circleStyle = computed(() => {
 	<div
 		ref="$root"
 		class="TqInputColorChannelPad"
+		data-tq-component="input-color-channel-pad"
+		data-tq-part="root"
 		:style="{cursor: tweakingInside ? 'none' : undefined}"
 	>
 		<GlslCanvas
 			class="canvas"
+			data-tq-part="canvas"
 			:fragmentString="FragmentString"
 			:uniforms="uniforms"
 		/>
 		<div
 			class="circle"
 			:class="{tweaking: sliderTweaking}"
+			:data-tq-tweaking="sliderTweaking ? '' : undefined"
+			data-tq-part="handle"
 			:style="circleStyle"
 		/>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-@import './common.styl'
-
-.TqInputColorChannelPad
-	position relative
-	width 100%
-	aspect-ratio 1
-
-.canvas
-	position absolute
-	width 100%
-	height 100%
-	border-radius var(--tq-radius-input)
-	background-checkerboard()
-
-.circle
-	circle()
-	z-index 1
-</style>

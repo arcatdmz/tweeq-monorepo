@@ -13,7 +13,6 @@ import {type CSSProperties, useMemo, useRef} from 'react'
 
 import {useDrag} from '../../hooks'
 import {GlslCanvas} from '../GlslCanvas'
-import styles from './InputColorChannelPad.module.styl'
 
 export interface InputColorChannelPadProps {
 	value: HSVA
@@ -100,16 +99,18 @@ export function InputColorChannelPad({
 	return (
 		<div
 			ref={root}
-			className={styles.pad}
+			data-tq-component="input-color-channel-pad"
+			data-tq-part="root"
 			style={{cursor: tweakingInside ? 'none' : undefined}}
 		>
 			<GlslCanvas
-				className={styles.canvas}
+				data-tq-part="canvas"
 				fragmentString={PadFragmentString}
 				uniforms={uniforms}
 			/>
 			<div
-				className={`${styles.circle} ${drag.dragging ? styles.tweaking : ''}`}
+				data-tq-part="handle"
+				data-tq-tweaking={drag.dragging ? '' : undefined}
 				style={
 					{
 						left: toPercent(x),

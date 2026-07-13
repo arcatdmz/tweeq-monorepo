@@ -13,7 +13,6 @@ import {useMemo, useRef} from 'react'
 
 import {useDrag} from '../../hooks'
 import {GlslCanvas} from '../GlslCanvas'
-import styles from './InputColorChannelSlider.module.styl'
 
 export interface InputColorChannelSliderProps {
 	value: HSVA
@@ -77,11 +76,12 @@ export function InputColorChannelSlider({
 	return (
 		<div
 			ref={root}
-			className={styles.slider}
+			data-tq-component="input-color-channel-slider"
+			data-tq-part="root"
 			style={{cursor: tweakingInside ? 'none' : undefined}}
 		>
 			<GlslCanvas
-				className={styles.canvas}
+				data-tq-part="canvas"
 				fragmentString={SliderFragmentString}
 				uniforms={uniforms}
 			/>
@@ -89,7 +89,8 @@ export function InputColorChannelSlider({
 				type="button"
 				aria-label={`${axis.toUpperCase()} channel`}
 				disabled={disabled}
-				className={`${styles.circle} ${drag.dragging ? styles.tweaking : ''}`}
+				data-tq-part="handle"
+				data-tq-tweaking={drag.dragging ? '' : undefined}
 				style={{
 					left: toPercent(getHSVAChannel(value, axis)),
 					background: hsva2hex({...value, a: 1}),

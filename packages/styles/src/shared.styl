@@ -1,6 +1,13 @@
 // Renderer-neutral component rules. Components opt in through stable
 // data-tq-component/data-tq-part attributes; renderer class names are not used.
 
+tq-background-checkerboard(color = currentColor)
+	size = 6px
+	background-color white
+	background-image linear-gradient(to right, color, color), linear-gradient(45deg, #ddd 25%, transparent 25%), linear-gradient(135deg, #ddd 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ddd 75%), linear-gradient(135deg, transparent 75%, #ddd 75%)
+	background-position 0 0, 0 0, size 0, size (-1 * size), 0 size
+	background-size 2 * size 2 * size
+
 [data-tq-component='input-button-toggle']
 	border-radius var(--tq-radius-input)
 	background var(--tq-color-input)
@@ -494,3 +501,43 @@
 
 	[data-tq-part='channel']
 		flex-grow 1
+
+[data-tq-component='input-color-channel-pad'],
+[data-tq-component='input-color-channel-slider']
+	position relative
+	width 100%
+
+	[data-tq-part='canvas']
+		position absolute
+		width 100%
+		height 100%
+		border-radius var(--tq-radius-input)
+
+	[data-tq-part='handle']
+		position absolute
+		margin-bottom calc(-.35 * var(--tq-input-height))
+		margin-left calc(-.35 * var(--tq-input-height))
+		width calc(.7 * var(--tq-input-height))
+		height calc(.7 * var(--tq-input-height))
+		border-radius 50%
+		box-shadow 0 0 0 1.5px #fff, inset 0 0 0 1px rgba(0, 0, 0, .2), 0 0 1px 2px rgba(0, 0, 0, .4)
+		active-transition(transform)
+		z-index 1
+
+		&:hover
+			box-shadow 0 0 0 2px #fff, inset 0 0 0 1px rgba(0, 0, 0, .2), 0 0 1px 3px rgba(0, 0, 0, .4)
+
+		&[data-tq-tweaking]
+			transform scale(2)
+
+[data-tq-component='input-color-channel-pad']
+	aspect-ratio 1
+
+	[data-tq-part='canvas']
+		tq-background-checkerboard()
+
+[data-tq-component='input-color-channel-slider']
+	height calc(.7 * var(--tq-input-height))
+
+	[data-tq-part='canvas']
+		tq-background-checkerboard(transparent)
