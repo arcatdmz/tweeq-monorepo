@@ -73,6 +73,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - uses: actions/configure-pages@v5
+      - name: Build workspace libraries
+        run: pnpm build:packages
       - name: Build React documentation and playground
         run: pnpm build:demo --base "/${{ github.event.repository.name }}/"
       - name: Build Vue research playground

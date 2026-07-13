@@ -260,6 +260,10 @@ contain renderer markup only and no copied state transition.
   could not trigger because it was absent from the repository's `feat/react`
   default branch; integrating the job makes the successful commit and its
   least-privilege deployment path explicit.
+- Each Pages runner owns a fresh checkout, so it builds all workspace
+  libraries in dependency order before building the React docs and Vue
+  playground applications. This keeps Vue's strict typecheck and SFC type
+  analysis independent of stale local output or artifacts from the CI job.
 - A generated release baseline records emitted raw/gzip artifact sizes, core
   transition throughput, renderer contract counts, browser coverage, and the
   packed downstream-consumer evidence. Normal CI uploads this as a
