@@ -309,3 +309,30 @@
 		width var(--tq-input-height)
 		height var(--tq-input-height)
 		transition transform .3s cubic-bezier(.19, 1.6, .42, 1)
+
+[data-tq-component='color-icon']
+	aspect-ratio 1
+	background currentColor
+
+[data-tq-component='glsl-canvas']
+	display block
+	pointer-events none
+
+[data-tq-component='input-angle']
+	display flex
+	gap var(--tq-gap-control)
+
+[data-tq-component='parameter-grid']
+	display grid
+	grid-template-columns minmax(60px, max-content) minmax(0, 1fr)
+	gap var(--tq-gap-control)
+	padding-left 3px
+	align-items start
+
+[data-tq-component='input-group']
+	display flex
+	flex-grow 1
+	gap var(--tq-gap-group)
+
+	&[data-direction='vertical']
+		flex-direction column

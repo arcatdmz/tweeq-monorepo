@@ -7,9 +7,7 @@ import {
 	useRef,
 } from 'react'
 
-import {classNames} from '../../classNames'
 import {useResizeObserver} from '../../hooks'
-import styles from './GlslCanvas.module.styl'
 
 const DEFAULT_FRAGMENT = `
 	precision mediump float;
@@ -52,7 +50,9 @@ export const GlslCanvas = forwardRef<HTMLImageElement, GlslCanvasProps>(
 				{...props}
 				ref={image}
 				alt={alt}
-				className={classNames(styles.glslCanvas, className)}
+				className={className}
+				data-tq-component="glsl-canvas"
+				data-tq-part="image"
 			/>
 		)
 	}

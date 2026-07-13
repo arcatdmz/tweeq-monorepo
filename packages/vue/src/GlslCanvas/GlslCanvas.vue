@@ -40,11 +40,5 @@ onUnmounted(() => cancelDraw?.())
 </script>
 
 <template>
-	<img ref="$img" class="GlslCanvas" alt="" data-tq-part="image" />
+	<img ref="$img" class="GlslCanvas" alt="" data-tq-component="glsl-canvas" data-tq-part="image" />
 </template>
-
-<style lang="stylus" scoped>
-
-.GlslCanvas
-	pointer-events none
-</style>

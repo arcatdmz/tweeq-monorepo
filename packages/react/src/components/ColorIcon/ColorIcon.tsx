@@ -1,7 +1,5 @@
 import {forwardRef, type HTMLAttributes} from 'react'
 
-import {classNames} from '../../classNames'
-import styles from './ColorIcon.module.styl'
 
 export interface ColorIconProps extends HTMLAttributes<HTMLDivElement> {
 	src: string
@@ -13,7 +11,9 @@ export const ColorIcon = forwardRef<HTMLDivElement, ColorIconProps>(
 			<div
 				{...props}
 				ref={ref}
-				className={classNames(styles.colorIcon, className)}
+				className={className}
+				data-tq-component="color-icon"
+				data-tq-part="root"
 				style={{...style, maskImage: `url(${src})`}}
 			/>
 		)

@@ -6,7 +6,6 @@ import {useStore} from 'zustand'
 import {useElementBounding} from '../../hooks'
 import {InputNumber} from '../InputNumber'
 import {InputRotary, type InputRotaryProps} from '../InputRotary'
-import styles from './InputAngle.module.styl'
 
 export interface InputAngleProps
 	extends Omit<
@@ -33,7 +32,7 @@ export function InputAngle(props: InputAngleProps) {
 	}
 
 	return (
-		<div ref={root} className={styles.tqInputAngle} data-tq-part="angle-root">
+		<div ref={root} data-tq-component="input-angle" data-tq-part="angle-root">
 			<InputRotary
 				{...shared}
 				snap={props.snap}

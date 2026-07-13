@@ -59,17 +59,7 @@ function PositionedChildren(): VNode[] {
 </script>
 
 <template>
-	<div class="TqInputGroup" :data-direction="direction" data-tq-part="root">
+	<div class="TqInputGroup" :data-direction="direction" data-tq-component="input-group" data-tq-part="root">
 		<PositionedChildren />
 	</div>
 </template>
-
-<style scoped lang="stylus">
-.TqInputGroup
-	display flex
-	flex-grow 1
-	gap var(--tq-gap-group)
-
-	&[data-direction=vertical]
-		flex-direction column
-</style>

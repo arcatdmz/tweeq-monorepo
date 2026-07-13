@@ -1,7 +1,6 @@
 import {type HTMLAttributes} from 'react'
 
 import {classNames} from '../../classNames'
-import styles from './ParameterGrid.module.styl'
 
 export function ParameterGrid({
 	className,
@@ -10,7 +9,9 @@ export function ParameterGrid({
 	return (
 		<ul
 			{...props}
-			className={classNames('TqParameterGrid', styles.grid, className)}
+			className={classNames('TqParameterGrid', className)}
+			data-tq-component="parameter-grid"
+			data-tq-part="root"
 		/>
 	)
 }

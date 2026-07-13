@@ -13,11 +13,5 @@ const style = computed(() => {
 </script>
 
 <template>
-	<div class="ColorIcon" :style="style" />
+	<div class="ColorIcon" :style="style" data-tq-component="color-icon" data-tq-part="root" />
 </template>
-
-<style lang="stylus" scoped>
-.ColorIcon
-	aspect-ratio 1
-	background currentColor
-</style>

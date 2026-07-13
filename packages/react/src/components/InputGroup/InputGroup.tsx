@@ -11,7 +11,6 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import styles from './InputGroup.module.styl'
 
 export interface InputGroupProps extends HTMLAttributes<HTMLDivElement> {
 	direction?: 'horizontal' | 'vertical'
@@ -75,8 +74,9 @@ export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
 			<div
 				{...props}
 				ref={forwardedRef}
-				className={classNames(styles.tqInputGroup, className)}
+				className={classNames('TqInputGroup', className)}
 				data-direction={direction}
+				data-tq-component="input-group"
 				data-tq-part="root"
 			>
 				{positioned}

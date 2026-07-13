@@ -255,9 +255,9 @@ contain renderer markup only and no copied state transition.
 - The initial baseline exposed MF-044: the canonical styles artifact was only
   a placeholder while renderer CSS was generated separately. Phase 6 cannot
   pass its cleanup gate until shared style-part ownership is completed.
-- Style convergence has started with the button/switch primitives,
-  InputShuffle, and IconIndicator: both renderers emit the same stable
-  component/part and state
+- Style convergence has started with the first primitive/control families:
+  buttons, switches, indicators, ColorIcon/GlslCanvas, InputAngle, InputGroup,
+  and ParameterGrid. Both renderers emit the same stable component/part/state
   attributes, consume one shared rule set, and deleted their scoped/CSS-module
   copies. The styles package now emits real component CSS rather than only the
   initial placeholder.

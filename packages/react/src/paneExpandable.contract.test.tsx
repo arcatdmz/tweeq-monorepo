@@ -8,8 +8,17 @@ import {
 } from '@tweeq/test-contracts'
 import {act} from 'react'
 import {createRoot} from 'react-dom/client'
+import {vi} from 'vitest'
 
 import {PaneExpandable} from './components/PaneExpandable'
+
+vi.mock('@iconify/react', () => ({
+	Icon: () => null,
+	addIcon: () => undefined,
+	getIcon: () => undefined,
+	iconLoaded: () => true,
+	loadIcon: async () => undefined,
+}))
 
 ;(globalThis as typeof globalThis & {IS_REACT_ACT_ENVIRONMENT: boolean})
 	.IS_REACT_ACT_ENVIRONMENT = true
