@@ -26,12 +26,13 @@ const {tweakingValue, subfocus} = useInputSwitch({
 </script>
 
 <template>
-	<div class="TqInputSwitch" data-tq-part="root" :aria-invalid="invalid || undefined">
+	<div class="TqInputSwitch" data-tq-component="input-switch" data-tq-part="root" :aria-invalid="invalid || undefined">
 		<div
 			ref="track"
 			class="track"
 			:class="{subfocus}"
 			data-tq-part="track"
+			:data-subfocus="subfocus || undefined"
 			:inline-position="inlinePosition"
 			:block-position="blockPosition"
 		>
@@ -47,6 +48,7 @@ const {tweakingValue, subfocus} = useInputSwitch({
 			<div
 				class="handle"
 				:class="{tweaking: tweakingValue !== null}"
+				:data-tweaking="tweakingValue !== null || undefined"
 				data-tq-part="handle"
 			/>
 		</div>
@@ -55,65 +57,3 @@ const {tweakingValue, subfocus} = useInputSwitch({
 		</label>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqInputSwitch
-	display flex
-	align-items center
-	gap 1em
-
-.track
-	position relative
-	width calc(var(--tq-input-height) * 2)
-	border-radius 9999px
-	background-color var(--tq-color-input)
-	active-transition(background-color)
-	height var(--tq-input-height)
-
-	&:hover
-		background-color var(--tq-color-input-hover)
-
-	&:has(:checked)
-		background-color var(--tq-color-accent)
-
-		&:hover
-			background-color var(--tq-color-accent-hover)
-
-	&:has(.input:focus),
-	&.subfocus
-		&:before
-			content ''
-			position absolute
-			inset -3px
-			border 1px solid var(--tq-color-accent)
-			border-radius 999px
-
-.handle
-	position absolute
-	top 4px
-	left 4px
-	width calc(var(--tq-input-height) - 8px)
-	height calc(var(--tq-input-height) - 8px)
-	border-radius 9999px
-	background-color var(--tq-color-text-subtle)
-	active-transition(left, width, background-color)
-	pointer-events none
-
-	&.tweaking
-		width calc(var(--tq-input-height) - 4px)
-
-	:checked + &
-		left calc(100% - var(--tq-input-height) + 4px)
-		background-color var(--tq-color-background)
-
-		&.tweaking
-			left calc(100% - var(--tq-input-height))
-.input
-	position absolute
-	opacity 0
-	pointer-events none
-
-	&:focus
-		pointer-events auto
-</style>

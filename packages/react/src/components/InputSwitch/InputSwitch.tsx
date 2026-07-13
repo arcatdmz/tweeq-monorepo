@@ -1,8 +1,6 @@
 import type {InputBoxProps, InputEvents} from '@tweeq/core'
 import {type HTMLAttributes, useId, useRef} from 'react'
 
-import {classNames} from '../../classNames'
-import styles from './InputSwitch.module.styl'
 import {useInputSwitch} from './useInputSwitch'
 
 export interface InputSwitchProps
@@ -45,18 +43,16 @@ export function InputSwitch({
 	return (
 		<div
 			{...props}
-			className={classNames(styles.tqInputSwitch, className)}
+			className={className}
 			aria-invalid={invalid || undefined}
+			data-tq-component="input-switch"
 			data-tq-part="root"
 		>
 			<div
 				ref={track}
-				className={classNames(
-					styles.track,
-					controls.subfocus && styles.subfocus
-				)}
 				inline-position={inlinePosition}
 				block-position={blockPosition}
+				data-subfocus={controls.subfocus || undefined}
 				data-tq-part="track"
 			>
 				<input
@@ -64,7 +60,6 @@ export function InputSwitch({
 					ref={input}
 					checked={value}
 					disabled={disabled}
-					className={styles.input}
 					data-tq-part="input"
 					type="checkbox"
 					onChange={controls.onChangeInput}
@@ -73,10 +68,7 @@ export function InputSwitch({
 					onBlur={controls.onBlurInput}
 				/>
 				<div
-					className={classNames(
-						styles.handle,
-						controls.tweakingValue !== null && styles.tweaking
-					)}
+					data-tweaking={controls.tweakingValue !== null || undefined}
 					data-tq-part="handle"
 				/>
 			</div>

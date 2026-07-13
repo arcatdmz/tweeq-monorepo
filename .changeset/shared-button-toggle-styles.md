@@ -4,6 +4,6 @@
 '@tweeq/vue': patch
 ---
 
-Move InputButton, InputButtonToggle, and InputCheckbox styling to stable
-renderer-neutral component rules owned by `@tweeq/styles`, with matching
-component, part, and state selectors emitted by React and Vue.
+Move InputButton, InputButtonToggle, InputCheckbox, and InputSwitch styling to
+stable renderer-neutral component rules owned by `@tweeq/styles`, with
+matching component, part, and state selectors emitted by React and Vue.

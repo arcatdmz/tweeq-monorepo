@@ -195,3 +195,64 @@
 
 	[data-tq-part='input']:checked + [data-tq-part='mark']
 		color var(--tq-color-background)
+
+[data-tq-component='input-switch']
+	display flex
+	align-items center
+	gap 1em
+
+	[data-tq-part='track']
+		position relative
+		width calc(var(--tq-input-height) * 2)
+		border-radius 9999px
+		background-color var(--tq-color-input)
+		active-transition(background-color)
+		height var(--tq-input-height)
+		use-input-position()
+
+		&:hover
+			background-color var(--tq-color-input-hover)
+
+		&:has(:checked)
+			background-color var(--tq-color-accent)
+
+			&:hover
+				background-color var(--tq-color-accent-hover)
+
+		&:has([data-tq-part='input']:focus),
+		&[data-subfocus='true']
+			&:before
+				content ''
+				position absolute
+				inset -3px
+				border 1px solid var(--tq-color-accent)
+				border-radius 999px
+
+	[data-tq-part='handle']
+		position absolute
+		top 4px
+		left 4px
+		width calc(var(--tq-input-height) - 8px)
+		height calc(var(--tq-input-height) - 8px)
+		border-radius 9999px
+		background-color var(--tq-color-text-subtle)
+		active-transition(left, width, background-color)
+		pointer-events none
+
+		&[data-tweaking='true']
+			width calc(var(--tq-input-height) - 4px)
+
+	[data-tq-part='input']:checked + [data-tq-part='handle']
+		left calc(100% - var(--tq-input-height) + 4px)
+		background-color var(--tq-color-background)
+
+		&[data-tweaking='true']
+			left calc(100% - var(--tq-input-height))
+
+	[data-tq-part='input']
+		position absolute
+		opacity 0
+		pointer-events none
+
+		&:focus
+			pointer-events auto
