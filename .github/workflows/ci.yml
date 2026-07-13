@@ -48,3 +48,40 @@ jobs:
           name: release-baseline-${{ github.sha }}
           path: ${{ runner.temp }}/release-baseline.md
           retention-days: 14
+
+  deploy:
+    name: Deploy renderer demos to GitHub Pages
+    needs: build
+    if: github.ref == 'refs/heads/feat/monorepo'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: deploy
+      cancel-in-progress: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4.4.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/configure-pages@v5
+      - name: Build React documentation and playground
+        run: pnpm build:demo --base "/${{ github.event.repository.name }}/"
+      - name: Build Vue research playground
+        run: pnpm build:demo:vue --base "/${{ github.event.repository.name }}/vue/"
+      - name: Add Vue playground to Pages artifact
+        run: cp -R apps/playground-vue/dist apps/docs/dist/vue
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/docs/dist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

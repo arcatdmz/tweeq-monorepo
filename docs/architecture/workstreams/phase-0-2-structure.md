@@ -255,6 +255,11 @@ contain renderer markup only and no copied state transition.
   compatibility override: v6 for checkout, setup-node, and upload-artifact,
   plus the exact `pnpm/action-setup@v4.4.0` release that directly installs the
   repository-pinned pnpm version.
+- Pages deployment is a `needs: build` job in the push CI workflow and runs
+  only for `feat/monorepo`. The earlier standalone `workflow_run` definition
+  could not trigger because it was absent from the repository's `feat/react`
+  default branch; integrating the job makes the successful commit and its
+  least-privilege deployment path explicit.
 - A generated release baseline records emitted raw/gzip artifact sizes, core
   transition throughput, renderer contract counts, browser coverage, and the
   packed downstream-consumer evidence. Normal CI uploads this as a
@@ -321,8 +326,9 @@ contain renderer markup only and no copied state transition.
   shader files, removed stale renderer dependencies, checks packed artifacts
   for test leakage, and extended the boundary gate to reject undeclared
   workspace imports and dependency cycles.
-- GitHub Pages deployment now runs only for a successful CI workflow commit,
-  instead of racing the required gates on the same push.
+- GitHub Pages deployment now runs as a dependent job for a successful CI
+  workflow commit, instead of racing the required gates or relying on a
+  default-branch-only `workflow_run` event.
 - The packed-package audit now rejects leaked tests, exercises each renderer's
   CommonJS export, and type-checks clean React/Vue consumers before bundling.
   It no longer rewrites live package manifests while creating artifacts.
