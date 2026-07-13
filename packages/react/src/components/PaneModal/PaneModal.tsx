@@ -4,7 +4,6 @@ import {type HTMLAttributes, useEffect, useRef, useState} from 'react'
 
 import {classNames} from '../../classNames'
 import {useEventListener} from '../../hooks'
-import styles from './PaneModal.module.styl'
 
 export interface PaneModalProps extends HTMLAttributes<HTMLDivElement> {
 	open: boolean
@@ -40,11 +39,12 @@ export function PaneModal({open, className, ...props}: PaneModalProps) {
 			ref={root}
 			className={classNames(
 				'TqPaneModal',
-				styles.modal,
-				emphasize && styles.emphasize,
+				emphasize && 'emphasize',
 				className
 			)}
 			popover="manual"
+			data-tq-component="pane-modal"
+			data-tq-emphasize={emphasize ? '' : undefined}
 			data-tq-part="root"
 			onAnimationEnd={() => setEmphasize(false)}
 		/>

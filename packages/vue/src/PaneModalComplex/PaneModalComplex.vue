@@ -98,8 +98,13 @@ defineExpose({
 
 <template>
 	<PaneModal v-model:open="open">
-		<div v-if="desc" class="TqPaneModalComplex">
-			<div class="body">
+		<div
+			v-if="desc"
+			class="TqPaneModalComplex"
+			data-tq-component="pane-modal-complex"
+			data-tq-part="root"
+		>
+			<div class="body" data-tq-part="body">
 				<InputComplex
 					:title="desc.options?.title"
 					:scheme="desc.scheme"
@@ -107,41 +112,10 @@ defineExpose({
 					@update:modelValue="onUpdate"
 				/>
 			</div>
-			<div class="footer">
+			<div class="footer" data-tq-part="footer">
 				<InputButton subtle label="Cancel" @click="onCancel" />
 				<InputButton label="Save" @click="onConfirm" />
 			</div>
 		</div>
 	</PaneModal>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqPaneModalComplex
-	display flex
-	flex-direction column
-	gap var(--tq-gap-section)
-	// Size to content (so the modal doesn't collapse), but allow shrinking to the
-	// PaneModal's max-height. NB: no `flex: 1` here — with the PaneModal's height
-	// being auto, a 0 flex-basis would collapse the whole modal to nothing.
-	min-height 0
-
-	// The form takes the slack and scrolls; the footer below stays pinned.
-	.body
-		flex 1 1 auto
-		min-height 0
-		overflow-y auto
-		// Room so focus rings / inputs aren't clipped by the scroll edge.
-		margin-right calc(-1 * var(--tq-pane-padding))
-		padding-right var(--tq-pane-padding)
-		scroll-fade-mask()
-
-	.footer
-		flex 0 0 auto
-		display flex
-		gap var(--tq-gap-control)
-
-		// Split the width evenly between Cancel and Save.
-		> *
-			flex 1
-</style>

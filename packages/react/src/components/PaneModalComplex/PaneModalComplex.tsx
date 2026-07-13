@@ -11,7 +11,6 @@ import {useEventListener} from '../../hooks'
 import {InputButton} from '../InputButton'
 import {InputComplex, type Scheme} from '../InputComplex'
 import {PaneModal} from '../PaneModal'
-import styles from './PaneModalComplex.module.styl'
 
 interface Description {
 	value: Record<string, unknown>
@@ -93,8 +92,8 @@ export function PaneModalComplex() {
 	return (
 		<PaneModal open={open}>
 			{description && (
-				<div className={styles.modalComplex}>
-					<div className={styles.body}>
+				<div data-tq-component="pane-modal-complex" data-tq-part="root">
+					<div data-tq-part="body">
 						<InputComplex
 							title={description.options?.title}
 							scheme={description.scheme}
@@ -107,7 +106,7 @@ export function PaneModalComplex() {
 							}}
 						/>
 					</div>
-					<div className={styles.footer}>
+					<div data-tq-part="footer">
 						<InputButton
 							subtle
 							label="Cancel"

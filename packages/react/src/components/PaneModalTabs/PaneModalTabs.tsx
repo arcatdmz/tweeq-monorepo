@@ -20,7 +20,6 @@ import {InputButton} from '../InputButton'
 import {InputComplex, type Scheme} from '../InputComplex'
 import {PaneModal} from '../PaneModal'
 import {Tab, Tabs} from '../Tabs'
-import styles from './PaneModalTabs.module.styl'
 
 export interface PaneModalFormTab<
 	T extends Record<string, unknown> = Record<string, unknown>,
@@ -112,14 +111,14 @@ export function PaneModalTabs() {
 	return (
 		<PaneModal open={open}>
 			{description && (
-				<div className={styles.modalTabs}>
+				<div data-tq-component="pane-modal-tabs" data-tq-part="root">
 					{description.options?.title && (
-						<div className={styles.title}>{description.options.title}</div>
+						<div data-tq-part="title">{description.options.title}</div>
 					)}
 					<Tabs
 						name={`modal-${description.options?.title ?? 'tabs'}`}
 						vertical
-						className={styles.body}
+						data-tq-part="body"
 					>
 						{description.tabs.map(tab => (
 							<Tab key={tab.id} id={tab.id} name={tab.title}>
@@ -138,7 +137,7 @@ export function PaneModalTabs() {
 							</Tab>
 						))}
 					</Tabs>
-					<div className={styles.footer}>
+					<div data-tq-part="footer">
 						<InputButton subtle label="Cancel" onClick={cancel} />
 						<InputButton label="Done" onClick={finish} />
 					</div>

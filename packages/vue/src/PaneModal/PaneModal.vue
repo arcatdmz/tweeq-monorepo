@@ -51,6 +51,8 @@ useEventListener('pointerdown', e => {
 		class="TqPaneModal"
 		:class="{emphasize}"
 		popover="manual"
+		data-tq-component="pane-modal"
+		:data-tq-emphasize="emphasize ? '' : undefined"
 		data-tq-part="root"
 		@animationend="emphasize = false"
 	>
@@ -67,56 +69,4 @@ useEventListener('pointerdown', e => {
 <style lang="stylus">
 
 reset-viewport('.TqPaneModal')
-</style>
-
-<style scoped lang="stylus">
-
-.TqPaneModal
-	popup-style()
-	inset 0
-	margin auto
-	padding var(--tq-pane-padding)
-	// Never let tall content spill past the viewport without a way to reach it.
-	// Cap to the viewport minus a gutter (so a full-height modal still keeps a
-	// margin from the screen edges — margin:auto splits the slack evenly) and
-	// let the slotted content own its own scrolling.
-	max-height calc(100dvh - 2 * var(--tq-pane-margin))
-	max-width calc(100dvw - 2 * var(--tq-pane-margin))
-	overflow hidden
-	display flex
-	flex-direction column
-	transition opacity var(-tq-transition-duration), transform var(-tq-transition-duration), overlay var(-tq-transition-duration) allow-discrete, display var(-tq-transition-duration) allow-discrete
-	opacity 0
-	transform translateY(calc(var(--tq-rem) / -2))
-
-	&[popover]::backdrop
-		backdrop-filter blur(0px)
-		transition backdrop-filter var(-tq-transition-duration)
-
-	&:popover-open
-		opacity 1
-		transform translateY(0)
-
-		&::backdrop
-			backdrop-filter blur(4px)
-
-		@starting-style
-			&
-				transform translateY(calc(var(--tq-rem) / -2))
-				opacity 0
-
-			&::backdrop
-				backdrop-filter blur(0px)
-
-	// Bounce when the user clicks outside, signalling the modal won't dismiss.
-	&.emphasize
-		animation modal-emphasize 0.2s ease
-
-@keyframes modal-emphasize
-	0%
-		transform scale(1)
-	35%
-		transform scale(1.03)
-	100%
-		transform scale(1)
 </style>

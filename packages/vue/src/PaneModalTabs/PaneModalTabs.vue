@@ -88,14 +88,20 @@ useEventListener('keydown', (e: KeyboardEvent) => {
 
 <template>
 	<PaneModal v-model:open="open">
-		<div v-if="desc" class="TqPaneModalTabs">
-			<div v-if="desc.options?.title" class="title">
+		<div
+			v-if="desc"
+			class="TqPaneModalTabs"
+			data-tq-component="pane-modal-tabs"
+			data-tq-part="root"
+		>
+			<div v-if="desc.options?.title" class="title" data-tq-part="title">
 				{{ desc.options.title }}
 			</div>
 			<Tabs
 				:name="`modal-${desc.options?.title ?? 'tabs'}`"
 				vertical
 				class="body"
+				data-tq-part="body"
 			>
 				<Tab
 					v-for="tab in desc.tabs"
@@ -112,37 +118,10 @@ useEventListener('keydown', (e: KeyboardEvent) => {
 					<component :is="tab.component" v-else v-bind="tab.props" />
 				</Tab>
 			</Tabs>
-			<div class="footer">
+			<div class="footer" data-tq-part="footer">
 				<InputButton subtle label="Cancel" @click="onCancel" />
 				<InputButton label="Done" @click="endEdit" />
 			</div>
 		</div>
 	</PaneModal>
 </template>
-
-<style lang="stylus" scoped>
-.TqPaneModalTabs
-	display flex
-	flex-direction column
-	gap var(--tq-gap-section)
-	min-height 0
-	width 44rem
-	max-width 100%
-
-	.title
-		font-family var(--tq-font-heading)
-		font-size 14px
-		font-weight bold
-
-	// The tabs fill the space (the right-hand panel scrolls internally); the
-	// footer stays pinned.
-	.body
-		flex 1 1 auto
-		min-height 0
-
-	.footer
-		flex 0 0 auto
-		display flex
-		justify-content flex-end
-		gap var(--tq-gap-control)
-</style>
