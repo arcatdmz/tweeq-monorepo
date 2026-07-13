@@ -8,6 +8,8 @@ export interface InputTranslateContractProps {
 	max?: number | [number, number]
 	disabled?: boolean
 	invalid?: boolean
+	inlinePosition?: 'start' | 'middle' | 'end'
+	blockPosition?: 'start' | 'middle' | 'end'
 }
 
 export function runInputTranslateContract(
@@ -26,11 +28,15 @@ export function runInputTranslateContract(
 				value: [0, 0],
 				disabled: true,
 				invalid: true,
+				inlinePosition: 'start',
+				blockPosition: 'end',
 			})
 			const root = harness.part('root') as HTMLButtonElement
 			expect(root.type).toBe('button')
 			expect(root.disabled).toBe(true)
 			expect(root.getAttribute('aria-invalid')).toBe('true')
+			expect(root.getAttribute('inline-position')).toBe('start')
+			expect(root.getAttribute('block-position')).toBe('end')
 			expect(harness.part('icon')).not.toBeNull()
 
 			await harness.update({disabled: false, invalid: false})

@@ -110,6 +110,9 @@ const geometry = computed(() =>
 		type="button"
 		:disabled="props.disabled"
 		:aria-invalid="props.invalid || undefined"
+		:inline-position="props.inlinePosition"
+		:block-position="props.blockPosition"
+		data-tq-component="input-translate"
 		data-tq-part="root"
 	>
 		<Icon
@@ -117,22 +120,28 @@ const geometry = computed(() =>
 			icon="mingcute:dot-grid-fill"
 			data-tq-part="icon"
 		/>
-		<Transition>
+		<Transition
+			enter-from-class="tq-input-translate-overlay-hidden"
+			leave-to-class="tq-input-translate-overlay-hidden"
+		>
 			<div v-if="tweaking" class="overlay" data-tq-part="overlay">
 				<div
 					class="overlay-grid"
 					:style="geometry.grid"
 					data-tq-part="overlay-grid"
 				>
-					<div v-if="x" class="axis x" />
-					<div v-if="y" class="axis y" />
+					<div v-if="x" data-tq-part="axis" data-tq-axis="x" />
+					<div v-if="y" data-tq-part="axis" data-tq-axis="y" />
 					<div
 						class="zero"
 						:style="geometry.zero"
 						data-tq-part="zero"
 					/>
 				</div>
-				<Tooltip v-if="showOverlayLabel" class="overlay-label">
+				<Tooltip
+					v-if="showOverlayLabel"
+					data-tq-part="overlay-label"
+				>
 					<label>X</label>
 					{{ overlayLabelValues[0] }}
 					<label>Y</label>
@@ -142,83 +151,3 @@ const geometry = computed(() =>
 		</Transition>
 	</button>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqInputTranslate
-	z-index 1
-	position relative
-	width var(--tq-input-height)
-	height var(--tq-input-height)
-	border-radius var(--tq-radius-input)
-	background var(--tq-color-accent)
-	display flex
-	align-items center
-	justify-content center
-
-	&:focus-visible
-		button-focus-style()
-
-	&:hover
-		background var(--tq-color-accent-hover)
-
-.grid-icon
-	color var(--tq-color-on-accent)
-	margin calc((var(--tq-input-height) - var(--tq-icon-size)) / 2)
-	z-index 1
-
-.overlay
-	pointer-events none
-	transition-duration var(--tq-hover-transition-duration)
-
-.overlay-grid
-	position absolute
-	inset calc(-150px + var(--tq-input-height) / 2)
-
-	background-image radial-gradient(circle at 1px 1px, var(--tq-color-text-subtle) 1px, transparent 1px)
-	background-repeat repeat
-	mask radial-gradient(closest-side, black 50%, transparent 100%)
-	hover-transition(transform)
-
-	.v-enter-from &,
-	.v-leave-to &
-		transform scale(0)
-
-.overlay-label
-	position absolute
-	top 0
-	left 50%
-	tab-size 4
-	white-space pre
-	transform translate(-50%, calc(-100% - var(--tq-input-height) * .2))
-	hover-transition(transform, opacity)
-
-	.v-enter-from &,
-	.v-leave-to &
-		opacity 0
-		transform translate(-50%, calc(-100% - var(--tq-input-height) * 0)) scale(.5)
-
-	:deep(i)
-		color var(--tq-color-text-mute)
-
-.axis
-	position absolute
-	background var(--tq-color-accent)
-
-	&.x
-		top calc(50% - 1px)
-		left 0
-		width 100%
-		height 2px
-
-	&.y
-		top 0
-		left calc(50% - 1px)
-		width 2px
-		height 100%
-
-.zero
-	position absolute
-	border 1px solid var(--tq-color-accent)
-	outline 1px solid var(--tq-color-accent)
-</style>

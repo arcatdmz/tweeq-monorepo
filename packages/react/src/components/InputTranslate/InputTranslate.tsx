@@ -18,7 +18,6 @@ import {
 import {useDrag, useKeys} from '../../hooks'
 import {Icon} from '../Icon'
 import {Tooltip} from '../Tooltip'
-import styles from './InputTranslate.module.styl'
 
 const TRANSLATE_KEYS = ['Shift', 'Alt', 'x', 'y'] as const
 
@@ -47,6 +46,7 @@ export function InputTranslate({
 	invalid,
 	inlinePosition,
 	blockPosition,
+	className,
 	onFocus,
 	onBlur,
 	onConfirm,
@@ -123,6 +123,27 @@ export function InputTranslate({
 		[]
 	)
 	const drag = useDrag(button, dragOptions)
+	const [overlayMounted, setOverlayMounted] = useState(false)
+	const [overlayLeaving, setOverlayLeaving] = useState(false)
+
+	useEffect(() => {
+		if (drag.dragging) {
+			setOverlayMounted(true)
+			setOverlayLeaving(false)
+			return
+		}
+		if (!overlayMounted) return
+
+		setOverlayLeaving(true)
+		// The transform transition normally removes the overlay through its
+		// transitionend handler. Keep a fallback for reduced-motion/user CSS.
+		const timeout = window.setTimeout(() => {
+			setOverlayMounted(false)
+			setOverlayLeaving(false)
+		}, 200)
+		return () => window.clearTimeout(timeout)
+	}, [drag.dragging, overlayMounted])
+
 	const geometry = getTranslateOverlayGeometry({
 		value,
 		min,
@@ -135,36 +156,47 @@ export function InputTranslate({
 		<button
 			{...props}
 			ref={button}
-			className={styles.tqInputTranslate}
+			className={className}
 			type="button"
 			disabled={disabled}
 			aria-invalid={invalid || undefined}
 			inline-position={inlinePosition}
 			block-position={blockPosition}
+			data-tq-component="input-translate"
 			data-tq-part="root"
 		>
 			<Icon
-				className={styles.gridIcon}
 				icon="mingcute:dot-grid-fill"
 				data-tq-part="icon"
 			/>
-			{drag.dragging && (
-				<div className={styles.overlay} data-tq-part="overlay">
+			{(drag.dragging || overlayMounted) && (
+				<div
+					className={
+						overlayLeaving
+							? 'tq-input-translate-overlay-hidden'
+							: undefined
+					}
+					data-tq-part="overlay"
+				>
 					<div
-						className={styles.overlayGrid}
 						style={geometry.grid}
 						data-tq-part="overlay-grid"
+						onTransitionEnd={event => {
+							if (overlayLeaving && event.propertyName === 'transform') {
+								setOverlayMounted(false)
+								setOverlayLeaving(false)
+							}
+						}}
 					>
-						{keys.x && <div className={`${styles.axis} ${styles.x}`} />}
-						{keys.y && <div className={`${styles.axis} ${styles.y}`} />}
+						{keys.x && <div data-tq-part="axis" data-tq-axis="x" />}
+						{keys.y && <div data-tq-part="axis" data-tq-axis="y" />}
 						<div
-							className={styles.zero}
 							style={geometry.zero}
 							data-tq-part="zero"
 						/>
 					</div>
 					{showOverlayLabel && (
-						<Tooltip className={styles.overlayLabel}>
+						<Tooltip data-tq-part="overlay-label">
 							<label>X</label> {value[0].toFixed(precision)} <label>Y</label>{' '}
 							{value[1].toFixed(precision)}
 						</Tooltip>

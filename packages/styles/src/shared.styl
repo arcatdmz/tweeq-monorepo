@@ -1551,3 +1551,85 @@ reset-viewport('[data-tq-component="viewport"]')
 			bottom 1px
 			border-radius 0 0 var(--tq-radius-input) var(--tq-radius-input)
 			background linear-gradient(to top, var(--tq-color-input) 45%, transparent)
+
+[data-tq-component='input-translate']
+	z-index 1
+	position relative
+	width var(--tq-input-height)
+	height var(--tq-input-height)
+	border-radius var(--tq-radius-input)
+	background var(--tq-color-accent)
+	display flex
+	align-items center
+	justify-content center
+	use-input-position()
+
+	&:focus-visible
+		button-focus-style()
+
+	&:hover
+		background var(--tq-color-accent-hover)
+
+	> [data-tq-part='icon']
+		color var(--tq-color-on-accent)
+		margin calc((var(--tq-input-height) - var(--tq-icon-size)) / 2)
+		z-index 1
+
+	> [data-tq-part='overlay']
+		pointer-events none
+		transition-duration var(--tq-hover-transition-duration)
+
+		> [data-tq-part='overlay-grid']
+			position absolute
+			inset calc(-150px + var(--tq-input-height) / 2)
+			background-image radial-gradient(circle at 1px 1px, var(--tq-color-text-subtle) 1px, transparent 1px)
+			background-repeat repeat
+			mask radial-gradient(closest-side, black 50%, transparent 100%)
+			hover-transition(transform)
+
+			> [data-tq-part='axis']
+				position absolute
+				background var(--tq-color-accent)
+
+				&[data-tq-axis='x']
+					top calc(50% - 1px)
+					left 0
+					width 100%
+					height 2px
+
+				&[data-tq-axis='y']
+					top 0
+					left calc(50% - 1px)
+					width 2px
+					height 100%
+
+			> [data-tq-part='zero']
+				position absolute
+				border 1px solid var(--tq-color-accent)
+				outline 1px solid var(--tq-color-accent)
+
+		> [data-tq-part='overlay-label']
+			position absolute
+			top 0
+			left 50%
+			tab-size 4
+			white-space pre
+			transform translate(-50%, calc(-100% - var(--tq-input-height) * .2))
+			hover-transition(transform, opacity)
+
+		&.tq-input-translate-overlay-hidden
+			> [data-tq-part='overlay-grid']
+				transform scale(0)
+
+			> [data-tq-part='overlay-label']
+				opacity 0
+				transform translate(-50%, -100%) scale(.5)
+
+@starting-style
+	[data-tq-component='input-translate'] > [data-tq-part='overlay']
+		> [data-tq-part='overlay-grid']
+			transform scale(0)
+
+		> [data-tq-part='overlay-label']
+			opacity 0
+			transform translate(-50%, -100%) scale(.5)
