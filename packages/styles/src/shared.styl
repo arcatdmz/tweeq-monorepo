@@ -8,6 +8,8 @@ tq-background-checkerboard(color = currentColor)
 	background-position 0 0, 0 0, size 0, size (-1 * size), 0 size
 	background-size 2 * size 2 * size
 
+reset-viewport('[data-tq-component="viewport"]')
+
 [data-tq-component='input-button-toggle']
 	border-radius var(--tq-radius-input)
 	background var(--tq-color-input)
@@ -860,3 +862,21 @@ tq-background-checkerboard(color = currentColor)
 			&:hover
 				fill var(--tq-color-accent)
 				stroke var(--tq-color-accent)
+
+[data-tq-app]
+	--titlebar-area-height env(titlebar-area-height, 38px)
+	position fixed
+	inset 0
+	background var(--tq-color-background)
+
+	[data-tq-part='main']
+		position fixed
+		inset var(--titlebar-area-height) 0 0
+
+	&[data-tq-embedded]
+		position relative
+		inset auto
+		min-height 10rem
+
+		[data-tq-part='main']
+			position absolute

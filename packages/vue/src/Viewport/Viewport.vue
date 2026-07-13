@@ -9,15 +9,12 @@ if (props.initialize) initTweeq(props.appId)
 </script>
 
 <template>
-	<div class="TqViewport" data-tq-part="viewport">
+	<div class="TqViewport" data-tq-component="viewport" data-tq-part="viewport">
 		<slot />
 	</div>
 </template>
 
 <style lang="stylus">
-
-reset-viewport('.TqViewport')
-
 // Global (non-scoped) so scroll-fade-mask()'s keyframe names resolve everywhere.
 scroll-fade-globals()
 </style>

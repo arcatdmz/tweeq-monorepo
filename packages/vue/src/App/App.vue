@@ -30,10 +30,12 @@ defineSlots<{
 			:initialize="false"
 			class="TqApp"
 			:class="{embedded: props.embedded}"
+			data-tq-app=""
+			:data-tq-embedded="props.embedded ? '' : undefined"
 			data-tq-part="root"
 		>
 			<slot name="title" />
-			<main class="main"><slot /></main>
+			<main class="main" data-tq-part="main"><slot /></main>
 		</Viewport>
 	</TweeqProvider>
 	<Viewport
@@ -41,29 +43,11 @@ defineSlots<{
 		:app-id="props.appId"
 		class="TqApp"
 		:class="{embedded: props.embedded}"
+		data-tq-app=""
+		:data-tq-embedded="props.embedded ? '' : undefined"
 		data-tq-part="root"
 	>
 		<slot name="title" />
-		<main class="main"><slot /></main>
+		<main class="main" data-tq-part="main"><slot /></main>
 	</Viewport>
 </template>
-
-<style lang="stylus" scoped>
-.TqApp
-	--titlebar-area-height env(titlebar-area-height, 38px)
-	position fixed
-	inset 0
-	background var(--tq-color-background)
-
-.main
-	position fixed
-	inset var(--titlebar-area-height) 0 0
-
-.embedded
-	position relative
-	inset auto
-	min-height 10rem
-
-	.main
-		position absolute
-</style>

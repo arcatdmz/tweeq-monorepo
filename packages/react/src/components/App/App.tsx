@@ -1,10 +1,8 @@
 import {type HTMLAttributes, type ReactNode} from 'react'
 
-import {classNames} from '../../classNames'
 import {type TweeqOptions} from '../../initTweeq'
 import {TweeqProvider} from '../TweeqProvider'
 import {Viewport} from '../Viewport'
-import styles from './App.module.styl'
 
 export interface AppProps
 	extends Omit<HTMLAttributes<HTMLDivElement>, 'title'>,
@@ -32,12 +30,14 @@ export function App({
 	const content = (
 		<Viewport
 			{...props}
-			className={classNames(styles.app, embedded && styles.embedded, className)}
+			className={className}
 			appId={appId}
+			data-tq-app=""
+			data-tq-embedded={embedded ? '' : undefined}
 			data-tq-part="root"
 		>
 			{title}
-			<main className={styles.main}>{children}</main>
+			<main data-tq-part="main">{children}</main>
 		</Viewport>
 	)
 	if (!withProvider) return content

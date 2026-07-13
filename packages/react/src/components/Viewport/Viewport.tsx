@@ -4,7 +4,6 @@ import {type HTMLAttributes, useRef} from 'react'
 
 import {classNames} from '../../classNames'
 import {initTweeq} from '../../initTweeq'
-import styles from './Viewport.module.styl'
 
 export interface ViewportProps extends HTMLAttributes<HTMLDivElement> {
 	/** App config namespace used by the standalone viewport. */
@@ -26,7 +25,9 @@ export function Viewport({
 	return (
 		<div
 			{...props}
-			className={classNames('TqViewport', styles.tqViewport, className)}
+			className={classNames('TqViewport', className)}
+			data-tq-component="viewport"
+			data-tq-part="viewport"
 		>
 			{children}
 		</div>
