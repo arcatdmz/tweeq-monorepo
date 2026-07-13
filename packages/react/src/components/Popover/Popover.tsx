@@ -17,10 +17,8 @@ import {
 } from 'react'
 import {createPortal} from 'react-dom'
 
-import {classNames} from '../../classNames'
 import {useEventListener, useResizeObserver} from '../../hooks'
 import {Balloon} from '../Balloon'
-import styles from './Popover.module.styl'
 
 let instanceCount = 0
 
@@ -173,13 +171,11 @@ export function Popover({
 		<div
 			{...props}
 			ref={popover}
-			className={classNames(
-				styles.popover,
-				exitTransition && styles.animateExit,
-				className
-			)}
+			className={className}
 			popover={lightDismiss ? 'auto' : 'manual'}
 			style={mergedStyle}
+			data-tq-component="popover"
+			data-tq-exit-transition={exitTransition ? '' : undefined}
 			data-tq-part="root"
 		>
 			{arrow ? (

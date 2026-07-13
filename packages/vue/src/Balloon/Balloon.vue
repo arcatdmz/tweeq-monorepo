@@ -136,6 +136,7 @@ const transformOrigin = computed(() => {
 <template>
 	<div
 		class="TqBalloon"
+		data-tq-balloon=""
 		:class="{flash}"
 		:style="[wrapperStyle, {transformOrigin}]"
 	>

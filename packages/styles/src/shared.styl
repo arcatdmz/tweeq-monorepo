@@ -880,3 +880,34 @@ reset-viewport('[data-tq-component="viewport"]')
 
 		[data-tq-part='main']
 			position absolute
+
+[data-tq-component='popover']
+	position fixed
+	inset auto
+	background transparent
+	overflow visible
+	transition opacity var(--tq-active-transition-duration) ease-out
+
+@starting-style
+	[data-tq-component='popover']:popover-open
+		opacity 0
+
+[data-tq-component='popover'][data-tq-exit-transition]
+	opacity 0
+	transition opacity var(--tq-active-transition-duration) ease-out, display var(--tq-active-transition-duration) allow-discrete, overlay var(--tq-active-transition-duration) allow-discrete
+
+	[data-tq-balloon]
+		transform scale(.96)
+
+	&:popover-open
+		opacity 1
+
+		[data-tq-balloon]
+			transform scale(1)
+
+@starting-style
+	[data-tq-component='popover'][data-tq-exit-transition]:popover-open
+		opacity 0
+
+		[data-tq-balloon]
+			transform scale(.96)

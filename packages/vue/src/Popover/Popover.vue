@@ -165,6 +165,8 @@ let instanceCount = 0
 			:class="{'animate-exit': exitTransition}"
 			:style="[styles, shiftStyle]"
 			:popover="lightDismiss ? 'auto' : 'manual'"
+			data-tq-component="popover"
+			:data-tq-exit-transition="exitTransition ? '' : undefined"
 			data-tq-part="root"
 		>
 			<Balloon
@@ -179,50 +181,3 @@ let instanceCount = 0
 		</div>
 	</Teleport>
 </template>
-
-<style lang="stylus" scoped>
-// A transparent wrapper; consumers style their own box inside. Positioned with
-// CSS Anchor Positioning (no JS library) — `inset: auto` clears the popover UA
-// default so the anchor()/coordinate insets from `styles` take over. Fade the
-// whole popup in on open (native popover → @starting-style); the exit is instant
-// (display flips with no allow-discrete) to keep dismissal snappy.
-.Popover
-	position fixed
-	inset auto
-	background transparent
-	overflow visible
-	transition opacity var(--tq-active-transition-duration) ease-out
-
-@starting-style
-	.Popover:popover-open
-		opacity 0
-
-// Opt-in animated exit. The element stays mounted while closed (v-if keeps it),
-// and `display ... allow-discrete` defers the display:none flip so the fade-out
-// + the Balloon's scale-down can play first. Because the element is never
-// re-created per open, the Balloon's own @starting-style won't re-fire — so the
-// scale is driven here from the popover's :popover-open state instead.
-.Popover.animate-exit
-	opacity 0
-	// `overlay allow-discrete` keeps the popover in the top layer for the whole
-	// fade — without it hidePopover() drops it out of the top layer at once and it
-	// vanishes instantly despite the opacity transition. `display allow-discrete`
-	// likewise defers the display:none flip.
-	transition opacity var(--tq-active-transition-duration) ease-out, display var(--tq-active-transition-duration) allow-discrete, overlay var(--tq-active-transition-duration) allow-discrete
-
-	:deep(.TqBalloon)
-		transform scale(0.96)
-
-.Popover.animate-exit:popover-open
-	opacity 1
-
-	:deep(.TqBalloon)
-		transform scale(1)
-
-@starting-style
-	.Popover.animate-exit:popover-open
-		opacity 0
-
-		:deep(.TqBalloon)
-			transform scale(0.96)
-</style>
