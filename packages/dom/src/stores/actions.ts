@@ -1,7 +1,7 @@
 import type {MenuCommand, MenuItem} from '@tweeq/core'
 import * as Bndr from 'bndr-js'
 import Case from 'case'
-import {createStore} from 'zustand/vanilla'
+import {createStore, type StoreApi} from 'zustand/vanilla'
 
 interface ActionItemBase {
 	id: string
@@ -78,56 +78,6 @@ export interface ActionsState {
 	setMenuExtras(groupId: string, items: MenuCommand[]): void
 }
 
-// Lazily initialized on the client only (SSR-safe, as in the legacy store).
-let keyboard: ReturnType<typeof Bndr.keyboard> | undefined
-let gamepad: ReturnType<typeof Bndr.gamepad> | undefined
-
-function initBndr() {
-	if (typeof window !== 'undefined' && (!keyboard || !gamepad)) {
-		keyboard = Bndr.keyboard()
-		gamepad = Bndr.gamepad()
-	}
-}
-
-function bindDescriptorToEmitter(
-	descriptor: BindDescriptor
-): Bndr.Emitter | undefined {
-	if (typeof window === 'undefined') {
-		return undefined
-	}
-
-	initBndr()
-
-	const binds = Array.isArray(descriptor) ? descriptor : [descriptor]
-
-	const emitters = binds.map(b => {
-		if (typeof b === 'string') {
-			if (b.startsWith('gamepad:')) {
-				// Gamepad
-				const button = b.split(':')[1]
-				return gamepad!.button(button as Bndr.ButtonName).down()
-			} else {
-				const repeat = b.endsWith('?repeat')
-				b = b.replace(/\?.+$/, '')
-
-				// Keyboard
-				return keyboard!.hotkey(b, {
-					capture: true,
-					preventDefault: true,
-					repeat,
-				})
-			}
-		}
-		return b
-	})
-
-	if (emitters.length === 1) {
-		return emitters[0]
-	} else if (emitters.length > 1) {
-		return Bndr.combine(...emitters)
-	}
-}
-
 // Recursively sort each menu / submenu by its items' `order` (ascending, stable
 // so equal/unset keys keep registration order — `order` only ranks siblings),
 // and append any registered extras (a separator + the extra items) to the group
@@ -150,20 +100,58 @@ function buildMenu(
 	})
 }
 
-// Mutable registries (the zustand state exposes rebuilt snapshots of these).
-const allActions: Record<string, ActionItem> = {}
-const menuRaw: Action[] = []
-let menuExtras: Record<string, MenuCommand[]> = {}
-
-const onBeforePerformHooks = new Set<(action: ActionItem) => void>()
-
-function runBeforePerformHooks(action: ActionItem) {
-	for (const hook of onBeforePerformHooks) {
-		hook(action)
-	}
+export interface ActionsStore extends StoreApi<ActionsState> {
+	dispose(): void
 }
 
-export const actionsStore = createStore<ActionsState>(set => {
+/** Create one isolated action registry and its lazily owned input devices. */
+export function createActionsStore(): ActionsStore {
+	let keyboard: ReturnType<typeof Bndr.keyboard> | undefined
+	let gamepad: ReturnType<typeof Bndr.gamepad> | undefined
+	const allActions: Record<string, ActionItem> = {}
+	const menuRaw: Action[] = []
+	let menuExtras: Record<string, MenuCommand[]> = {}
+	const onBeforePerformHooks = new Set<(action: ActionItem) => void>()
+	const activeEmitters = new Set<Bndr.Emitter>()
+
+	function initBndr() {
+		if (typeof window !== 'undefined' && (!keyboard || !gamepad)) {
+			keyboard = Bndr.keyboard()
+			gamepad = Bndr.gamepad()
+		}
+	}
+
+	function bindDescriptorToEmitter(
+		descriptor: BindDescriptor
+	): Bndr.Emitter | undefined {
+		if (typeof window === 'undefined') return undefined
+		initBndr()
+		const binds = Array.isArray(descriptor) ? descriptor : [descriptor]
+		const emitters = binds.map(b => {
+			if (typeof b === 'string') {
+				if (b.startsWith('gamepad:')) {
+					const button = b.split(':')[1]
+					return gamepad!.button(button as Bndr.ButtonName).down()
+				}
+				const repeat = b.endsWith('?repeat')
+				b = b.replace(/\?.+$/, '')
+				return keyboard!.hotkey(b, {
+					capture: true,
+					preventDefault: true,
+					repeat,
+				})
+			}
+			return b
+		})
+		if (emitters.length === 1) return emitters[0]
+		if (emitters.length > 1) return Bndr.combine(...emitters)
+	}
+
+	function runBeforePerformHooks(action: ActionItem) {
+		for (const hook of onBeforePerformHooks) hook(action)
+	}
+
+	const store = createStore<ActionsState>(set => {
 	function commit() {
 		set({
 			allActions: {...allActions},
@@ -188,7 +176,10 @@ export const actionsStore = createStore<ActionsState>(set => {
 			for (const action of options) {
 				delete allActions[action.id]
 			}
-			emitters.forEach(emitter => emitter.dispose())
+			emitters.forEach(emitter => {
+				emitter.dispose()
+				activeEmitters.delete(emitter)
+			})
 			emitters.clear()
 			commit()
 		}
@@ -249,6 +240,7 @@ export const actionsStore = createStore<ActionsState>(set => {
 
 			if (bind) {
 				emitters.add(bind)
+				activeEmitters.add(bind)
 			}
 
 			const index = parent.findIndex(a => a.id === option.id)
@@ -298,4 +290,21 @@ export const actionsStore = createStore<ActionsState>(set => {
 		onBeforePerform,
 		setMenuExtras,
 	}
-})
+	})
+
+	return Object.assign(store, {
+		dispose() {
+			for (const emitter of activeEmitters) emitter.dispose()
+			activeEmitters.clear()
+			keyboard?.dispose()
+			gamepad?.dispose()
+			keyboard = undefined
+			gamepad = undefined
+			onBeforePerformHooks.clear()
+			for (const id of Object.keys(allActions)) delete allActions[id]
+			menuRaw.length = 0
+			menuExtras = {}
+			store.setState({allActions: {}, menu: []})
+		},
+	})
+}

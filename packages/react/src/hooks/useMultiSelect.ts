@@ -1,10 +1,11 @@
 import {
 	type MultiSelectHandle,
 	type MultiSelectSource,
-	multiSelectStore,
 } from '@tweeq/dom'
 import {useCallback, useLayoutEffect, useRef} from 'react'
 import {useStore} from 'zustand'
+
+import {useTweeqRuntime} from '../runtime'
 
 export interface MultiSelectHook
 	extends Omit<MultiSelectHandle, 'dispose' | 'id'> {
@@ -20,6 +21,7 @@ export function useMultiSelect(
 	source: MultiSelectSource,
 	focusing?: boolean
 ): MultiSelectHook {
+	const {multiSelectStore} = useTweeqRuntime()
 	const sourceRef = useRef(source)
 	sourceRef.current = source
 	const handleRef = useRef<MultiSelectHandle | undefined>(undefined)
@@ -44,7 +46,7 @@ export function useMultiSelect(
 			handle.dispose()
 			if (handleRef.current === handle) handleRef.current = undefined
 		}
-	}, [source.type])
+	}, [multiSelectStore, source.type])
 
 	useLayoutEffect(() => {
 		if (focusing !== undefined) handleRef.current?.setFocusing(focusing)

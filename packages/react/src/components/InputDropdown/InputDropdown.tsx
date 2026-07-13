@@ -9,7 +9,6 @@ import {
 	type InputTheme,
 	type LabelizerProps,
 } from '@tweeq/core'
-import {themeStore} from '@tweeq/dom'
 import {search} from 'fast-fuzzy'
 import {
 	type HTMLAttributes,
@@ -22,6 +21,7 @@ import {
 import {useStore} from 'zustand'
 
 import {useElementBounding, useWindowSize} from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {Icon} from '../Icon'
 import {InputString, type InputStringHandle} from '../InputString'
 import {Popover} from '../Popover'
@@ -63,6 +63,7 @@ export function InputDropdown<T>({
 	className,
 	...props
 }: InputDropdownProps<T>) {
+	const {themeStore} = useTweeqRuntime()
 	const root = useRef<HTMLDivElement>(null)
 	const input = useRef<InputStringHandle>(null)
 	const select = useRef<HTMLUListElement>(null)

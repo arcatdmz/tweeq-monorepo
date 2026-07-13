@@ -1,11 +1,11 @@
 import Editor, {loader, type OnMount} from '@monaco-editor/react'
 import {type CodeEditorErrorInfo, createCodeEditorMarkers} from '@tweeq/core'
-import {themeStore} from '@tweeq/dom'
 import {type vec2} from 'linearly'
 import type * as Monaco from 'monaco-editor'
 import {type HTMLAttributes, useEffect, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
+import {useTweeqRuntime} from '../../runtime'
 
 type MonacoApi = typeof Monaco
 let monacoPromise: Promise<MonacoApi> | undefined
@@ -44,6 +44,7 @@ export function MonacoEditor({
 	className,
 	...props
 }: MonacoEditorProps) {
+	const {themeStore} = useTweeqRuntime()
 	const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null)
 	const [monaco, setMonaco] = useState<MonacoApi | null>(null)
 	const monacoTheme = useStore(themeStore, state => state.monacoTheme)

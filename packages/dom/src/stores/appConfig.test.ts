@@ -1,10 +1,6 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest'
 
-/**
- * The appConfig store keeps module-level entry state, so every test gets a
- * fresh module instance (vi.resetModules + dynamic import) and a fresh
- * in-memory localStorage stub.
- */
+import {createAppConfigStore} from './appConfig'
 
 function createMemoryStorage(): Storage {
 	const map = new Map<string, string>()
@@ -33,13 +29,11 @@ function createMemoryStorage(): Storage {
 
 let storage: Storage
 
-async function loadStore() {
-	const {appConfigStore} = await import('./appConfig')
-	return appConfigStore.getState()
+function loadStore() {
+	return createAppConfigStore({storage}).getState()
 }
 
 beforeEach(() => {
-	vi.resetModules()
 	storage = createMemoryStorage()
 	vi.stubGlobal('localStorage', storage)
 })
@@ -168,7 +162,7 @@ describe('setAppId', () => {
 	it('re-keys entries: reloads stored values from the new namespace', async () => {
 		storage.setItem('my-app.foo', JSON.stringify(99))
 
-		const {appConfigStore} = await import('./appConfig')
+		const appConfigStore = createAppConfigStore({storage})
 		const config = appConfigStore.getState()
 		const entry = config.ref('foo', 0)
 		expect(entry.value).toBe(0)

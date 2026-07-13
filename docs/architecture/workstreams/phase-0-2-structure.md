@@ -1,6 +1,6 @@
 # Workstream status: Phases 0–2 (baseline, workspace, relocation) + Phase 3 leaf tier
 
-Status: **Phases 0–2 complete; Phase 3 foundations and Stage V4 compatibility cleanup complete** (2026-07-13)
+Status: **Phases 0–5 complete; Phase 6 prerelease preparation and cleanup in progress** (2026-07-13)
 Owner: integration worker  
 Plan: [../monorepo-migration.md](../monorepo-migration.md)
 
@@ -62,8 +62,10 @@ contain renderer markup only and no copied state transition.
   checklist — extend it, don't add TODO comments.
 - Stage V3 now shares the InputSwitch transitions and InputRotary clamp logic.
   The five app-level Vue stores (actions, appConfig, modal, multiSelect, theme)
-  are compatibility facades over the same `@tweeq/dom` instances React uses;
-  their duplicated Pinia state and behavior have been deleted.
+  are compatibility facades over the per-application `@tweeq/dom` runtime
+  injected by the Vue provider; their duplicated Pinia state and behavior have
+  been deleted. React consumes the same runtime factories through React
+  context, without sharing mutable instances across applications.
 - The Vue `useDrag` composable is now a ref/lifecycle adapter over the shared
   `@tweeq/dom` drag controller. Stage V4 removed the component-local InputTime
   and regl Pinia wrappers as well, so the Vue package and its consumers no
@@ -252,6 +254,11 @@ contain renderer markup only and no copied state transition.
   and registry-installed React/Vue downstream builds.
 - No local publish command is part of the workflow; publication is GitHub
   Actions-only, as required by repository policy.
+- DOM stores now come only from explicit factories. Each React/Vue provider or
+  standalone viewport owns an isolated runtime, theme binding, and listener
+  disposal; provider-less legacy calls resolve a lazy compatibility runtime.
+  The boundary gate rejects renderer imports of those compatibility stores,
+  and DOM tests cover concurrent isolation plus bind/dispose behavior.
 - The initial baseline exposed MF-044: the canonical styles artifact was only
   a placeholder while renderer CSS was generated separately. The completed
   convergence covers these primitive/control families:

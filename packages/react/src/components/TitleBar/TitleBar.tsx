@@ -1,7 +1,8 @@
-import {actionsStore, decorateActionMenuItems} from '@tweeq/dom'
+import {decorateActionMenuItems} from '@tweeq/dom'
 import {type HTMLAttributes, type ReactNode, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
+import {useTweeqRuntime} from '../../runtime'
 import {ColorIcon} from '../ColorIcon'
 import {Menu} from '../Menu'
 import {Popover} from '../Popover'
@@ -23,6 +24,7 @@ export function TitleBar({
 	className,
 	...props
 }: TitleBarProps) {
+	const {actionsStore} = useTweeqRuntime()
 	const appIcon = useRef<HTMLDivElement>(null)
 	const menu = useStore(actionsStore, state => state.menu)
 	const [menuShown, setMenuShown] = useState(false)

@@ -1,4 +1,4 @@
-import {createStore} from 'zustand/vanilla'
+import {createStore, type StoreApi} from 'zustand/vanilla'
 
 /**
  * Port of the legacy pinia `appConfig` store: app-scoped, localStorage-backed
@@ -15,11 +15,8 @@ import {createStore} from 'zustand/vanilla'
  *   group's path prefix; in-memory values are left untouched (legacy did the
  *   same).
  *
- * Deviation from legacy: pinia stores were created lazily, so config refs
- * were keyed after `initTweeq` had set the appId. Vanilla zustand stores are
- * created eagerly at module import, so entries resolve their storage key
- * dynamically from the current appId and reload their value from localStorage
- * whenever `setAppId` changes it.
+ * Entries resolve their storage key dynamically from the current appId and
+ * reload their value whenever `setAppId` changes it.
  */
 
 export interface ConfigEntry<T> {
@@ -70,16 +67,28 @@ interface EntryImpl {
 	listeners: Set<ConfigEntryListener<any>>
 }
 
-// Entries are registered once per relative key and shared between callers
-// (legacy created an independent ref per call; sharing avoids divergent
-// copies of the same persisted key).
-const entries = new Map<string, EntryImpl>()
-
-function getStorage(): Storage | null {
-	return typeof localStorage === 'undefined' ? null : localStorage
+export interface AppConfigStoreOptions {
+	appId?: string
+	/** Override persistence for tests, non-window realms, or custom hosts. */
+	storage?: Storage | null
 }
 
-export const appConfigStore = createStore<AppConfigState>((set, get) => {
+export type AppConfigStore = StoreApi<AppConfigState>
+
+/** Create an isolated application-config store. No state is created at import. */
+export function createAppConfigStore(
+	options: AppConfigStoreOptions = {}
+): AppConfigStore {
+	// Entries are shared by callers of this store instance, never across apps.
+	const entries = new Map<string, EntryImpl>()
+	const getStorage = () =>
+		options.storage !== undefined
+			? options.storage
+			: typeof localStorage === 'undefined'
+				? null
+				: localStorage
+
+	return createStore<AppConfigState>((set, get) => {
 	function fullKey(relKey: string) {
 		return `${get().appId}.${relKey}`
 	}
@@ -228,9 +237,10 @@ export const appConfigStore = createStore<AppConfigState>((set, get) => {
 	const rootGroup = createGroup('')
 
 	return {
-		appId: 'tweeq',
+		appId: options.appId ?? 'tweeq',
 		revision: 0,
 		setAppId,
 		...rootGroup,
 	}
-})
+	})
+}

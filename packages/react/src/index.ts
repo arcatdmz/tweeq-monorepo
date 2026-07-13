@@ -58,4 +58,10 @@ export * from './components/Tooltip'
 export * from './components/Viewport'
 export * from './hooks'
 export * from './initTweeq'
+export {
+	TweeqRuntimeProvider,
+	type TweeqRuntimeProviderProps,
+	useOptionalTweeqRuntime,
+	useTweeqRuntime,
+} from './runtime'
 export * from './useTweeq'

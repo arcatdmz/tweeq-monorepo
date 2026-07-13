@@ -1,9 +1,10 @@
 import {
-	appConfigStore,
 	type ConfigEntry,
 	type ConfigGroup,
 } from '@tweeq/dom'
 import {customRef, type Ref} from 'vue'
+
+import {useTweeqRuntime} from '../runtime'
 
 export type ConfigRef<T> = Ref<T> & {default: T}
 
@@ -44,18 +45,27 @@ function toVueGroup(group: ConfigGroup) {
 	}
 }
 
-const root = appConfigStore.getState()
-const facade = {
-	get appId() {
-		return appConfigStore.getState().appId
-	},
-	set appId(appId: string) {
-		appConfigStore.getState().setAppId(appId)
-	},
-	...toVueGroup(root),
+const facades = new WeakMap<object, ReturnType<typeof createFacade>>()
+
+function createFacade(appConfigStore: ReturnType<typeof useTweeqRuntime>['appConfigStore']) {
+	return {
+		get appId() {
+			return appConfigStore.getState().appId
+		},
+		set appId(appId: string) {
+			appConfigStore.getState().setAppId(appId)
+		},
+		...toVueGroup(appConfigStore.getState()),
+	}
 }
 
 /** Vue compatibility facade over the shared app-config store. */
 export function useAppConfigStore() {
+	const {appConfigStore} = useTweeqRuntime()
+	let facade = facades.get(appConfigStore)
+	if (!facade) {
+		facade = createFacade(appConfigStore)
+		facades.set(appConfigStore, facade)
+	}
 	return facade
 }

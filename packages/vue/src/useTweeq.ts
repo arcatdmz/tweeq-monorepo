@@ -1,4 +1,9 @@
 import type {ColorMode} from '@tweeq/core'
+import {
+	configureDefaultTweeqRuntime,
+	type TweeqRuntime,
+} from '@tweeq/dom'
+import {getCurrentInstance} from 'vue'
 
 import * as components from './components'
 import {useInputColor} from './InputColor/useInputColor'
@@ -6,6 +11,8 @@ import {useActionsStore} from './stores/actions'
 import {useAppConfigStore} from './stores/appConfig'
 import {useModalStore} from './stores/modal'
 import {useThemeStore} from './stores/theme'
+
+let unbindDefaultRuntime: (() => void) | undefined
 
 export interface TweeqOptions {
 	colorMode?: ColorMode
@@ -18,14 +25,16 @@ export interface TweeqOptions {
 
 let didWarnAboutComponentFacade = false
 
-export function initTweeq(appId: string, options: TweeqOptions = {}) {
-	const appConfig = useAppConfigStore()
-	appConfig.appId = appId
-
-	const theme = useThemeStore()
-	theme.setDefault(options)
-
-	useInputColor(options.colorPresets)
+export function initTweeq(
+	appId: string,
+	options: TweeqOptions = {}
+): TweeqRuntime {
+	const runtime = configureDefaultTweeqRuntime(appId, options)
+	if (!unbindDefaultRuntime && typeof document !== 'undefined') {
+		unbindDefaultRuntime = runtime.bind()
+	}
+	if (getCurrentInstance()) useInputColor(options.colorPresets)
+	return runtime
 }
 
 export function useTweeq() {

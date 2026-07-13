@@ -1,9 +1,9 @@
 import type {InputEvents} from '@tweeq/core'
-import {themeStore} from '@tweeq/dom'
 import {useRef} from 'react'
 import {useStore} from 'zustand'
 
 import {useElementBounding} from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {InputNumber} from '../InputNumber'
 import {InputRotary, type InputRotaryProps} from '../InputRotary'
 
@@ -18,6 +18,7 @@ export interface InputAngleProps
 }
 
 export function InputAngle(props: InputAngleProps) {
+	const {themeStore} = useTweeqRuntime()
 	const root = useRef<HTMLDivElement>(null)
 	const {width} = useElementBounding(root)
 	const inputHeight = useStore(themeStore, state => state.inputHeight)

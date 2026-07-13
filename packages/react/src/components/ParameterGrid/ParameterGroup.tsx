@@ -1,7 +1,7 @@
-import {appConfigStore} from '@tweeq/dom'
 import {type HTMLAttributes, type ReactNode, useMemo, useState} from 'react'
 
 import {useConfigRef} from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {Icon} from '../Icon'
 import {ParameterHeading} from './ParameterHeading'
 
@@ -21,7 +21,11 @@ export function ParameterGroup({
 	className,
 	...props
 }: ParameterGroupProps) {
-	const entry = useMemo(() => appConfigStore.getState().ref(name, true), [name])
+	const {appConfigStore} = useTweeqRuntime()
+	const entry = useMemo(
+		() => appConfigStore.getState().ref(name, true),
+		[appConfigStore, name]
+	)
 	const [expanded, setExpanded] = useConfigRef(entry)
 	const [clipped, setClipped] = useState(!expanded)
 

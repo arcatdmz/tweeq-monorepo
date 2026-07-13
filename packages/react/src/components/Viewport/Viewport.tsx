@@ -1,7 +1,11 @@
-import {type HTMLAttributes, useRef} from 'react'
+import {type HTMLAttributes} from 'react'
 
 import {classNames} from '../../classNames'
-import {initTweeq} from '../../initTweeq'
+import {
+	TweeqRuntimeProvider,
+	useOptionalTweeqRuntime,
+	useOwnedTweeqRuntime,
+} from '../../runtime'
 
 export interface ViewportProps extends HTMLAttributes<HTMLDivElement> {
 	/** App config namespace used by the standalone viewport. */
@@ -14,13 +18,9 @@ export function Viewport({
 	children,
 	...props
 }: ViewportProps) {
-	const initialized = useRef(false)
-	if (!initialized.current) {
-		initTweeq(appId)
-		initialized.current = true
-	}
-
-	return (
+	const parentRuntime = useOptionalTweeqRuntime()
+	const ownedRuntime = useOwnedTweeqRuntime(appId, {}, parentRuntime)
+	const content = (
 		<div
 			{...props}
 			className={classNames('TqViewport', className)}
@@ -29,5 +29,11 @@ export function Viewport({
 		>
 			{children}
 		</div>
+	)
+	if (parentRuntime) return content
+	return (
+		<TweeqRuntimeProvider runtime={ownedRuntime} bind disposeOnUnmount>
+			{content}
+		</TweeqRuntimeProvider>
 	)
 }

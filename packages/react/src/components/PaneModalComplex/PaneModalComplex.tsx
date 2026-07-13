@@ -1,13 +1,13 @@
 import {
 	isMultilineEditorTarget,
 	type ModalScheme,
-	modalStore,
 	type PromptFn,
 	type ShowOptions,
 } from '@tweeq/dom'
 import {useEffect, useRef, useState} from 'react'
 
 import {useEventListener} from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {InputButton} from '../InputButton'
 import {InputComplex, type Scheme} from '../InputComplex'
 import {PaneModal} from '../PaneModal'
@@ -25,6 +25,7 @@ interface Session {
 }
 
 export function PaneModalComplex() {
+	const {modalStore} = useTweeqRuntime()
 	const [description, setDescription] = useState<Description | null>(null)
 	const [open, setOpen] = useState(false)
 	const descriptionRef = useRef(description)
@@ -62,7 +63,7 @@ export function PaneModalComplex() {
 			modalStore.getState().registerPrompt(null)
 			if (session.current) session.current.resolve(null)
 		}
-	}, [])
+	}, [modalStore])
 
 	useEventListener<KeyboardEvent>(
 		typeof window === 'undefined' ? null : window,

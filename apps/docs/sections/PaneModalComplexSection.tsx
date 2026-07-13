@@ -1,4 +1,4 @@
-import {InputButton, modalStore, type Scheme} from '@tweeq/react'
+import {InputButton, type Scheme, useTweeq} from '@tweeq/react'
 import {useState} from 'react'
 
 type Value = {name: string; count: number}
@@ -8,6 +8,7 @@ const scheme: Scheme<Value> = {
 }
 
 export default function PaneModalComplexSection() {
+	const {modal} = useTweeq()
 	const [result, setResult] = useState('none')
 	return (
 		<section data-testid="PaneModalComplex">
@@ -15,8 +16,7 @@ export default function PaneModalComplexSection() {
 			<InputButton
 				label="Open generated modal"
 				onClick={() => {
-					void modalStore
-						.getState()
+					void modal
 						.prompt({name: 'Initial', count: 2}, scheme, {
 							title: 'Edit values',
 						})

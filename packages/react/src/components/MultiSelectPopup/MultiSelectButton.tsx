@@ -1,5 +1,4 @@
-import {multiSelectStore} from '@tweeq/dom'
-
+import {useTweeqRuntime} from '../../runtime'
 import {IconIndicator} from '../IconIndicator'
 
 export function MultiSelectButton({
@@ -9,6 +8,7 @@ export function MultiSelectButton({
 	icon: string
 	update: (values: number[]) => number[]
 }) {
+	const {multiSelectStore} = useTweeqRuntime()
 	const edit = () => {
 		multiSelectStore.getState().updateValues(update)
 		multiSelectStore.getState().confirmValues()

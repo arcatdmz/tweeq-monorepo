@@ -1,11 +1,11 @@
 import {
 	addAnchorName,
 	getMultiSelectActions,
-	multiSelectStore,
 } from '@tweeq/dom'
 import {type CSSProperties, useEffect, useMemo, useRef} from 'react'
 import {useStore} from 'zustand'
 
+import {useTweeqRuntime} from '../../runtime'
 import {Icon} from '../Icon'
 import {MultiSelectButton} from './MultiSelectButton'
 import {MultiSelectPad} from './MultiSelectPad'
@@ -13,6 +13,7 @@ import {MultiSelectPad} from './MultiSelectPad'
 const ANCHOR_NAME = '--tq-multi-select-anchor'
 
 export function MultiSelectPopup() {
+	const {multiSelectStore} = useTweeqRuntime()
 	const root = useRef<HTMLDivElement>(null)
 	useStore(multiSelectStore)
 	const state = multiSelectStore.getState()
@@ -38,7 +39,7 @@ export function MultiSelectPopup() {
 			// Unsupported native popover.
 		}
 		return () => multiSelectStore.getState().setPopupEl(null)
-	}, [visible])
+	}, [multiSelectStore, visible])
 
 	return (
 		<div

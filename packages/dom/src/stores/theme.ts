@@ -5,10 +5,10 @@ import {
 	type Theme,
 	type ThemeSettings,
 } from '@tweeq/core'
-import {createStore} from 'zustand/vanilla'
+import {createStore, type StoreApi} from 'zustand/vanilla'
 
 import {applyThemeToDOM} from '../applyThemeToDOM.js'
-import {appConfigStore} from './appConfig.js'
+import type {AppConfigStore} from './appConfig.js'
 
 export interface ThemeDefaults {
 	colorMode?: ColorMode
@@ -34,92 +34,102 @@ export interface ThemeState extends ThemeSettings, Theme {
 	setDefault(options: ThemeDefaults): void
 }
 
-const config = appConfigStore.getState().group('theme')
-
-const accentColor = config.ref('accentColor', '#0000ff')
-const colorMode = config.ref<ColorMode>('colorMode', 'light')
-const grayColor = config.ref('grayColor', '#8B8D98')
-const backgroundColor = config.ref(
-	'backgroundColor',
-	colorMode.value === 'light' ? '#ffffff' : '#111111'
-)
-
-function computeState(): ThemeSettings &
-	Theme & {theme: Theme; monacoTheme: MonacoThemeData} {
-	const settings: ThemeSettings = {
-		colorMode: colorMode.value,
-		accentColor: accentColor.value,
-		grayColor: grayColor.value,
-		backgroundColor: backgroundColor.value,
-	}
-
-	const {theme, monacoTheme} = computeTheme(settings)
-
-	return {...settings, ...theme, theme, monacoTheme}
+export interface ThemeStore extends StoreApi<ThemeState> {
+	dispose(): void
 }
 
-export const themeStore = createStore<ThemeState>(() => ({
-	...computeState(),
+/** Create an isolated theme store derived from one app-config instance. */
+export function createThemeStore(appConfigStore: AppConfigStore): ThemeStore {
+	const config = appConfigStore.getState().group('theme')
+	const accentColor = config.ref('accentColor', '#0000ff')
+	const colorMode = config.ref<ColorMode>('colorMode', 'light')
+	const grayColor = config.ref('grayColor', '#8B8D98')
+	const backgroundColor = config.ref(
+		'backgroundColor',
+		colorMode.value === 'light' ? '#ffffff' : '#111111'
+	)
 
-	setAccentColor(color: string) {
-		accentColor.value = color
-	},
-	setColorMode(mode: ColorMode) {
-		colorMode.value = mode
-	},
-	setGrayColor(color: string) {
-		grayColor.value = color
-	},
-	setBackgroundColor(color: string) {
-		backgroundColor.value = color
-	},
-	setDefault(options: ThemeDefaults) {
-		if (options.colorMode) {
-			colorMode.default = options.colorMode
+	function computeState(): ThemeSettings &
+		Theme & {theme: Theme; monacoTheme: MonacoThemeData} {
+		const settings: ThemeSettings = {
+			colorMode: colorMode.value,
+			accentColor: accentColor.value,
+			grayColor: grayColor.value,
+			backgroundColor: backgroundColor.value,
 		}
-		if (options.accentColor) {
-			accentColor.default = options.accentColor
-		}
-		if (options.backgroundColor) {
-			backgroundColor.default = options.backgroundColor
-		}
-		if (options.grayColor) {
-			grayColor.default = options.grayColor
-		}
-	},
-}))
+		const {theme, monacoTheme} = computeTheme(settings)
+		return {...settings, ...theme, theme, monacoTheme}
+	}
 
-function refresh() {
-	themeStore.setState(computeState())
+	const store = createStore<ThemeState>(() => ({
+		...computeState(),
+		setAccentColor(color: string) {
+			accentColor.value = color
+		},
+		setColorMode(mode: ColorMode) {
+			colorMode.value = mode
+		},
+		setGrayColor(color: string) {
+			grayColor.value = color
+		},
+		setBackgroundColor(color: string) {
+			backgroundColor.value = color
+		},
+		setDefault(options: ThemeDefaults) {
+			if (options.colorMode) colorMode.default = options.colorMode
+			if (options.accentColor) accentColor.default = options.accentColor
+			if (options.backgroundColor) {
+				backgroundColor.default = options.backgroundColor
+			}
+			if (options.grayColor) grayColor.default = options.grayColor
+		},
+	}))
+
+	const refresh = () => store.setState(computeState())
+	const disposers = [
+		accentColor.subscribe(refresh),
+		grayColor.subscribe(refresh),
+		backgroundColor.subscribe(refresh),
+		colorMode.subscribe((mode, {reload}) => {
+			if (!reload) {
+				backgroundColor.value = mode === 'light' ? '#ffffff' : '#111111'
+			}
+			refresh()
+		}),
+	]
+
+	return Object.assign(store, {
+		dispose() {
+			for (const dispose of disposers) dispose()
+		},
+	})
 }
 
-accentColor.subscribe(refresh)
-grayColor.subscribe(refresh)
-backgroundColor.subscribe(refresh)
+/**
+ * Explicitly bind a theme store to a DOM root and return its disposer.
+ * Calling this function, rather than importing the module, owns the browser
+ * write/listener lifecycle.
+ */
+export function bindThemeStoreToDOM(
+	themeStore: ThemeStore,
+	rootElement?: HTMLElement
+): () => void {
+	const doc = rootElement?.ownerDocument ??
+		(typeof document === 'undefined' ? undefined : document)
+	if (!doc) return () => {}
 
-// Snap the background to the appearance's default when the user toggles
-// light/dark, but leave it untouched afterwards (and on load) so a custom
-// background sticks. Skipped for appId re-key reloads (the port's analogue of
-// "not immediate": restoring a saved colorMode must not clobber a saved
-// custom background).
-colorMode.subscribe((mode, {reload}) => {
-	if (!reload) {
-		backgroundColor.value = mode === 'light' ? '#ffffff' : '#111111'
-	}
-	refresh()
-})
-
-// Promote the theme to CSS variables automatically (the legacy store's
-// `watch(theme, …, {immediate: true})`).
-if (typeof document !== 'undefined') {
+	let unsubscribe: (() => void) | undefined
+	let disposed = false
 	const apply = () => {
+		const root = rootElement ?? doc.body
+		if (!root) return
 		const {theme, colorMode} = themeStore.getState()
-		applyThemeToDOM(theme, colorMode)
+		applyThemeToDOM(theme, colorMode, root)
 	}
-
 	const start = () => {
+		if (disposed || unsubscribe) return
 		apply()
-		themeStore.subscribe((state, prevState) => {
+		unsubscribe = themeStore.subscribe((state, prevState) => {
 			if (
 				state.theme !== prevState.theme ||
 				state.colorMode !== prevState.colorMode
@@ -128,10 +138,15 @@ if (typeof document !== 'undefined') {
 			}
 		})
 	}
-
-	if (document.body) {
+	if (rootElement || doc.body) {
 		start()
 	} else {
-		document.addEventListener('DOMContentLoaded', start, {once: true})
+		doc.addEventListener('DOMContentLoaded', start, {once: true})
+	}
+
+	return () => {
+		disposed = true
+		doc.removeEventListener('DOMContentLoaded', start)
+		unsubscribe?.()
 	}
 }

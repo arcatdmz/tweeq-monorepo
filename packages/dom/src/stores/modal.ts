@@ -1,4 +1,4 @@
-import {createStore} from 'zustand/vanilla'
+import {createStore, type StoreApi} from 'zustand/vanilla'
 
 /**
  * Structural stand-in for InputComplex's `Scheme` type. The legacy `Scheme`
@@ -70,33 +70,42 @@ export interface ModalState {
 const NO_UI =
 	'No modal UI. Wrap your app with TweeqProvider once, or use the App / Viewport layout which includes it.'
 
-let delegate: PromptFn | null = null
-let tabsDelegate: PromptTabsFn | null = null
+export interface ModalStore extends StoreApi<ModalState> {
+	dispose(): void
+}
 
-export const modalStore = createStore<ModalState>(() => ({
-	prompt: async (defaultValue, scheme, options) => {
-		if (typeof window === 'undefined') {
-			throw new Error('modal.prompt is only available in the browser')
-		}
-		const fn = delegate
-		if (!fn) throw new Error(NO_UI)
-		return fn(defaultValue, scheme, options)
-	},
-
-	async promptTabs(tabs, options) {
-		if (typeof window === 'undefined') {
-			throw new Error('modal.promptTabs is only available in the browser')
-		}
-		const fn = tabsDelegate
-		if (!fn) throw new Error(NO_UI)
-		return fn(tabs, options)
-	},
-
-	registerPrompt(fn) {
-		delegate = fn
-	},
-
-	registerPromptTabs(fn) {
-		tabsDelegate = fn
-	},
-}))
+/** Create an isolated set of modal UI delegates. */
+export function createModalStore(): ModalStore {
+	let delegate: PromptFn | null = null
+	let tabsDelegate: PromptTabsFn | null = null
+	const store = createStore<ModalState>(() => ({
+		prompt: async (defaultValue, scheme, options) => {
+			if (typeof window === 'undefined') {
+				throw new Error('modal.prompt is only available in the browser')
+			}
+			const fn = delegate
+			if (!fn) throw new Error(NO_UI)
+			return fn(defaultValue, scheme, options)
+		},
+		async promptTabs(tabs, options) {
+			if (typeof window === 'undefined') {
+				throw new Error('modal.promptTabs is only available in the browser')
+			}
+			const fn = tabsDelegate
+			if (!fn) throw new Error(NO_UI)
+			return fn(tabs, options)
+		},
+		registerPrompt(fn) {
+			delegate = fn
+		},
+		registerPromptTabs(fn) {
+			tabsDelegate = fn
+		},
+	}))
+	return Object.assign(store, {
+		dispose() {
+			delegate = null
+			tabsDelegate = null
+		},
+	})
+}

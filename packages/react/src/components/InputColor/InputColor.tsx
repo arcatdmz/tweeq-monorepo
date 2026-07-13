@@ -4,12 +4,12 @@ import {
 	type InputEvents,
 	validator,
 } from '@tweeq/core'
-import {themeStore} from '@tweeq/dom'
 import chroma from 'chroma-js'
 import {type HTMLAttributes, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
 import {useElementBounding} from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {InputGroup} from '../InputGroup'
 import {InputNumber} from '../InputNumber'
 import {InputString} from '../InputString'
@@ -42,6 +42,7 @@ export function InputColor({
 	className,
 	...props
 }: InputColorProps) {
+	const {themeStore} = useTweeqRuntime()
 	const root = useRef<HTMLDivElement>(null)
 	const {width} = useElementBounding(root)
 	const inputHeight = useStore(themeStore, state => state.inputHeight)

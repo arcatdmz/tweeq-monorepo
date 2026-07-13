@@ -1,5 +1,4 @@
-import {themeStore} from '@tweeq/react'
-import {Viewport} from '@tweeq/react'
+import {useTweeq, Viewport} from '@tweeq/react'
 import {
 	type ComponentType,
 	Fragment,
@@ -238,8 +237,8 @@ function NavbarItems({page}: {page: Page}) {
 }
 
 function ColorModeToggle() {
-	const [mode, setMode] = useState(themeStore.getState().colorMode)
-	useEffect(() => themeStore.subscribe(state => setMode(state.colorMode)), [])
+	const {theme} = useTweeq()
+	const mode = theme.colorMode
 	// Mirror VuePress: <html data-theme="..."> drives the vendored stylesheet.
 	useEffect(() => {
 		document.documentElement.dataset.theme = mode
@@ -249,11 +248,7 @@ function ColorModeToggle() {
 			type="button"
 			className="vp-toggle-color-mode-button"
 			title="toggle color mode"
-			onClick={() =>
-				themeStore
-					.getState()
-					.setColorMode(mode === 'light' ? 'dark' : 'light')
-			}
+			onClick={() => theme.setColorMode(mode === 'light' ? 'dark' : 'light')}
 		>
 			<svg
 				className="light-icon"

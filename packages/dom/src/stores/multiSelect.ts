@@ -6,7 +6,7 @@ import {
 	uniteRects,
 } from '@tweeq/core'
 import {vec2} from 'linearly'
-import {createStore} from 'zustand/vanilla'
+import {createStore, type StoreApi} from 'zustand/vanilla'
 
 import {nodeContains, rectFromDOMRect} from '../domUtil.js'
 
@@ -155,18 +155,21 @@ interface InputImpl extends MultiSelectInput {
 	focusing: boolean
 }
 
-const inputs = new Map<symbol, InputImpl>()
+export interface MultiSelectStore extends StoreApi<MultiSelectState> {
+	dispose(): void
+}
 
-let popupEl: HTMLElement | null = null
+/** Create one isolated selection registry and browser-listener lifecycle. */
+export function createMultiSelectStore(): MultiSelectStore {
+	const inputs = new Map<symbol, InputImpl>()
+	let popupEl: HTMLElement | null = null
+	let meta = false
+	let control = false
+	let shift = false
+	let listenersAttached = false
+	let detachListeners = () => {}
 
-// Modifier key tracking (the legacy `useMagicKeys`).
-let meta = false
-let control = false
-let shift = false
-
-let listenersAttached = false
-
-export const multiSelectStore = createStore<MultiSelectState>((set, get) => {
+	const store = createStore<MultiSelectState>((set, get) => {
 	function bump() {
 		set(state => ({revision: state.revision + 1}))
 	}
@@ -291,6 +294,15 @@ export const multiSelectStore = createStore<MultiSelectState>((set, get) => {
 		window.addEventListener('keydown', onKeyDown)
 		window.addEventListener('keyup', onKeyUp)
 		window.addEventListener('blur', onWindowBlur)
+	}
+
+	detachListeners = () => {
+		if (!listenersAttached || typeof window === 'undefined') return
+		window.removeEventListener('pointerdown', onPointerDown)
+		window.removeEventListener('keydown', onKeyDown)
+		window.removeEventListener('keyup', onKeyUp)
+		window.removeEventListener('blur', onWindowBlur)
+		listenersAttached = false
 	}
 
 	// Entry point for multi select for each input component
@@ -461,4 +473,21 @@ export const multiSelectStore = createStore<MultiSelectState>((set, get) => {
 		getSelectedInputs,
 		getFocusedElement,
 	}
-})
+	})
+
+	return Object.assign(store, {
+		dispose() {
+			detachListeners()
+			inputs.clear()
+			popupEl = null
+			meta = control = shift = false
+			store.setState({
+				selectedIds: [],
+				multiSelected: false,
+				shift: false,
+				ctrlOrCommand: false,
+				revision: store.getState().revision + 1,
+			})
+		},
+	})
+}

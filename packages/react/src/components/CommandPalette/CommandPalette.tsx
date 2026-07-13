@@ -2,18 +2,16 @@ import {
 	moveCommandSelection,
 	updateCommandHistory,
 } from '@tweeq/core'
-import {type ActionItem, actionsStore, appConfigStore} from '@tweeq/dom'
+import {type ActionItem} from '@tweeq/dom'
 import {search} from 'fast-fuzzy'
 import {useEffect, useMemo, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
 import {useConfigRef, useEventListener} from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {BindIcon} from '../BindIcon'
 import {Icon} from '../Icon'
 
-const historyEntry = appConfigStore
-	.getState()
-	.ref<string[]>('commandPalette.performedActionsHistory', [])
 const ACTION_LIST_ID = 'tq-command-palette-actions'
 
 function actionDomId(id: string) {
@@ -21,6 +19,14 @@ function actionDomId(id: string) {
 }
 
 export function CommandPalette() {
+	const {actionsStore, appConfigStore} = useTweeqRuntime()
+	const historyEntry = useMemo(
+		() =>
+			appConfigStore
+				.getState()
+				.ref<string[]>('commandPalette.performedActionsHistory', []),
+		[appConfigStore]
+	)
 	const root = useRef<HTMLDivElement>(null)
 	const input = useRef<HTMLInputElement>(null)
 	const allActions = useStore(actionsStore, state => state.allActions)

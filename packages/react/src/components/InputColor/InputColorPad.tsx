@@ -12,7 +12,7 @@ import {
 	type InputEvents,
 	tweakHSVAChannel,
 } from '@tweeq/core'
-import {type DragState, themeStore} from '@tweeq/dom'
+import {type DragState} from '@tweeq/dom'
 import PadFragmentString from '@tweeq/dom/shaders/pad.frag'
 import SliderFragmentString from '@tweeq/dom/shaders/slider.frag'
 import WheelFragmentString from '@tweeq/dom/shaders/wheel.frag'
@@ -37,6 +37,7 @@ import {
 	useKeys,
 	useMultiSelect,
 } from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {GlslCanvas} from '../GlslCanvas'
 import {Popover} from '../Popover'
 import {Tooltip} from '../Tooltip'
@@ -92,6 +93,7 @@ export function InputColorPad({
 	className,
 	...props
 }: InputColorPadProps) {
+	const {themeStore} = useTweeqRuntime()
 	const button = useRef<HTMLButtonElement>(null)
 	const floating = useRef<HTMLDivElement>(null)
 	const [open, setOpen] = useState(false)

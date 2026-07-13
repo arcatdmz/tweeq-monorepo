@@ -1,12 +1,21 @@
 // @vitest-environment jsdom
 
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 
-import {getMultiSelectActions, multiSelectStore} from './multiSelect'
+import {
+	createMultiSelectStore,
+	getMultiSelectActions,
+	type MultiSelectStore,
+} from './multiSelect'
+
+let multiSelectStore: MultiSelectStore
+
+beforeEach(() => {
+	multiSelectStore = createMultiSelectStore()
+})
 
 afterEach(() => {
-	multiSelectStore.getState().defocusAll()
-	window.dispatchEvent(new KeyboardEvent('keyup', {key: 'Control'}))
+	multiSelectStore.dispose()
 })
 
 describe('multi-select controller', () => {

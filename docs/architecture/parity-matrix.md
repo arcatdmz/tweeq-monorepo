@@ -89,7 +89,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | TitleBar | SFC | ✅ | shared actions/menu stores | layout-modals | mouse/keyboard menu trigger, accessible button semantics, descendant focus/OS drag-region lifecycle, bind icons, and stable parts aligned in Phase 4 |
 | Tooltip | SFC | ✅ | `tooltip` | DOM controller fixtures + Popover contract + overlay | one shared delay/anchor/snapshot state machine; plain/HTML/structured parsing, hover/focus handoff, native close synchronization, and stable content parts aligned in Phase 4 |
 | TweakOverlay | SFC | ✅ | — | — | |
-| TweeqProvider | SFC | ✅ | — | — | React-only name; Vue equivalent is `initTweeq` plugin |
+| TweeqProvider | SFC | ✅ | — | runtime isolation contracts | both adapters inject one application-owned DOM runtime and dispose its browser lifecycle |
 | Viewport | SFC | ✅ | — | docs-pages, mobile-docs | style-scoping root (`.TqViewport`) |
 
 ## Non-component surface
@@ -97,8 +97,8 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | Surface | Vue | React | Target owner |
 | --- | --- | --- | --- |
 | `initTweeq` / `useTweeq` | plugin + composable | `initTweeq` + `useTweeq` hook | renderer adapters over shared store factories |
-| Stores: actions, appConfig, modal, multiSelect, theme | Vue compatibility facades over shared stores | zustand-vanilla stores | **done 2026-07-13**: both renderers consume the `@tweeq/dom` instances; Vue adapters add refs and lifecycle disposal without duplicating state transitions |
-| Theme generation | ~~`src/theme`~~ → shared | `core/theme` | **done 2026-07-13**: both renderers compute via `@tweeq/core` `computeTheme`, apply via `@tweeq/dom` `applyThemeToDOM`, and subscribe to the same `themeStore` |
+| Stores: actions, appConfig, modal, multiSelect, theme | Vue compatibility facades over an injected runtime | React hooks/context over an injected runtime | **done 2026-07-13**: both renderers create isolated instances through `@tweeq/dom` factories; Vue refs and React hooks adapt those instances without duplicating transitions |
+| Theme generation | ~~`src/theme`~~ → shared | `core/theme` | **done 2026-07-13**: both renderers compute via `@tweeq/core` `computeTheme`, then explicitly bind and dispose their application runtime's `themeStore` through `@tweeq/dom` |
 | Composables/hooks: useBndr, useFlash, useDrag, useCursorStyle, … | `src/use` | `src/react/hooks` | thin adapters over `@tweeq/dom` controllers |
 | Gesture engine | Vue ref adapter over `createDragHandler` | React hook over `createDragHandler` | **done 2026-07-13**: pointer state transitions and thresholds live in `@tweeq/dom`; renderer adapters only publish reactive snapshots and lifecycle disposal |
 | Validators/formatting | ~~local copies~~ → shared | `core/validator`, `core/util` | **done 2026-07-13**: Vue's `util.ts`/`validator.ts` are re-export shims over `@tweeq/core`/`@tweeq/dom` |
@@ -108,13 +108,15 @@ by both implementations (`—` = logic still duplicated in renderer code);
 
 1. **Controlled-value convention**: React `value`/`onChange` vs Vue
    `modelValue`/`update:modelValue`. Permanent, per architecture rule 2.
-2. **Provider bootstrapping**: React `TweeqProvider`/`initTweeq` vs Vue plugin
-   `initTweeq(app)`. Permanent.
+2. **Provider bootstrapping**: React Context and Vue provide/inject remain
+   framework-native adapters; both expose `App`/`TweeqProvider`, with
+   `initTweeq` retained for provider-less compatibility roots. Permanent.
 3. **Monaco/Iconify wrappers**: framework-specific wrapper packages remain in
    each renderer.
-4. **Store adapters**: both renderers use the shared zustand-vanilla stores.
-   Vue exposes framework-native refs and lifecycle disposal around those same
-   instances; its temporary Pinia compatibility layer was removed in Stage V4.
+4. **Store adapters**: both renderers use stores produced by the shared
+   zustand-vanilla factories. Each application owns distinct instances; Vue
+   exposes framework-native refs around its runtime while React uses hooks.
+   The temporary Pinia compatibility layer was removed in Stage V4.
 5. **Slots vs render props** for Menu, panes, ParameterGrid, Tooltip content.
    Permanent, per architecture rule 2.
 
@@ -155,12 +157,15 @@ introduced-in, removal criteria, status.
 | `packages/react/src/core/index.ts` barrel forwarding `@tweeq/core` + `@tweeq/dom` | Phase 2 (React relocation) | every React source imports the owner explicitly; renderer entry preserves convenience exports directly from the owning packages | **done 2026-07-13**: all internal consumers migrated and the local barrel deleted |
 | `packages/react/src/common.styl` stylus forwarder to `@tweeq/styles` | Phase 2 (React relocation) | no renderer stylesheet imports the forwarder; canonical CSS is built only by `@tweeq/styles` | **done 2026-07-13**: forwarder and final renderer Stylus toolchain removed |
 | `packages/vue/src/common.styl` stylus forwarder to `@tweeq/styles` | Phase 2 (Vue relocation) | no renderer stylesheet imports the forwarder; canonical CSS is built only by `@tweeq/styles` | **done 2026-07-13**: forwarder and final renderer Stylus toolchain removed |
-| Pinia stores and component-local contexts in `packages/vue` | upstream legacy, kept in Stage V1 | app stores use shared instances; local contexts become plain Vue/module state; `rg "pinia\|defineStore\|createPinia" packages/vue apps/playground-vue examples/vue-vite` is empty | **done 2026-07-13**: actions, appConfig, modal, multiSelect, and theme share DOM stores; InputTime and regl no longer require Pinia |
+| Pinia stores and component-local contexts in `packages/vue` | upstream legacy, kept in Stage V1 | app stores use shared factories and injected instances; local contexts become plain Vue/module state; `rg "pinia\|defineStore\|createPinia" packages/vue apps/playground-vue examples/vue-vite` is empty | **done 2026-07-13**: actions, appConfig, modal, multiSelect, and theme use the injected DOM runtime; InputTime and regl no longer require Pinia |
 | Duplicated pure logic in `packages/vue/src/` (`util.ts`, `validator.ts`, `theme/`, per-component `utils.ts`) | upstream legacy, kept in Stage V1 | Vue and React call the shared core/controller implementations without copied transitions | **done 2026-07-13** for util, validator, theme, timecode, CubicBezierValue, InputShuffle, InputColor, InputSwitch, and InputRotary |
 | Re-export shims left by Stage V2 (`packages/vue/src/{util,validator}.ts`, `InputTime/utils.ts` function re-exports, `InputCubicBezier/util.ts`, `InputShuffle/generators.ts`) | Phase 3 leaf replacement | Vue callers import owning packages directly; shim files deleted when `rg "from '\.\./(util|validator)'" packages/vue/src` is empty | **done 2026-07-13**: public compatibility exports now forward from the package entry points without renderer-local files |
 | Legacy vue-tsc diagnostics in `@tweeq/vue` build (non-fatal, pre-existing upstream typing issues) | Stage V1 build restoration | declaration generation completes without TypeScript diagnostics | **done 2026-07-13**: recursive Menu refs/props, readonly color axes, generic vector bounds, event overloads, and element/style typing corrected |
 | Renderer-local component styles and reset stubs | upstream legacy and React port | stable parts cover every renderer family; no renderer `.styl` import, SFC style block, CSS Module, or global style stub remains; packed renderer CSS aliases the canonical artifact | **done 2026-07-13**: 139 copies/stubs deleted, source style imports removed, and packed byte identity enforced |
 | `packages/vue/src/Markdown/katex.css` orphan | upstream legacy | no import or KaTeX renderer exists, and both Markdown adapters consume the shared core pipeline | **done 2026-07-13**: unreferenced stylesheet with missing font assets deleted |
+| `@tweeq/dom` lazy default-runtime store exports (`actionsStore`, `appConfigStore`, `modalStore`, `multiSelectStore`, `themeStore`, `inputTimeFormatEntry`) | Phase 6, MF-105 compatibility repair | renderer internals and repository consumers use injected runtimes; retain only for the promised React compatibility window, then remove with the renderer convenience re-exports in `@tweeq/react` 2.0.0 | **retained intentionally**: imports are side-effect-free lazy proxies, deprecated in declarations, and forbidden inside both renderer implementations by the boundary gate |
+| `@tweeq/react` convenience re-exports of `@tweeq/core` and `@tweeq/dom` | Phase 2 relocation | preserve current React imports through one major release, then require direct owner-package imports for non-renderer APIs | **retained until `@tweeq/react` 2.0.0**, matching the public API policy in plan §6 |
+| Vue `useTweeq().Component` namespace | upstream compatibility surface | named component imports documented and consumers migrated; removal version announced before deletion | **retained until `@tweeq/vue` 2.0.0** with a once-per-session deprecation warning and migration-guide replacement |
 
 ## Phase 4 family status
 

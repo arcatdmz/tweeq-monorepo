@@ -45,6 +45,16 @@ const domGlobalPattern =
 
 const importPattern =
 	/(?:^|\n)\s*(?:(?:import|export)[^'"]*?from\s*['"]([^'"]+)['"]|import\s*['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\))/g
+const compatibilityStoreNames = new Set([
+	'actionsStore',
+	'appConfigStore',
+	'modalStore',
+	'multiSelectStore',
+	'themeStore',
+	'inputTimeFormatEntry',
+])
+const domNamedImportPattern =
+	/import\s*{([^}]*)}\s*from\s*['"]@tweeq\/dom['"]/gs
 
 function* walk(dir) {
 	for (const entry of readdirSync(dir)) {
@@ -102,6 +112,28 @@ for (const [pkg, forbidden] of Object.entries(rules)) {
 			if (domHit) {
 				console.error(`✗ ${rel}: core must not touch DOM global '${domHit[0].trim()}'`)
 				failures++
+			}
+		}
+		if (
+			pkg === 'packages/dom' &&
+			!file.endsWith('.test.ts') &&
+			/export\s+const\s+\w+Store\s*=\s*createStore\b/.test(text)
+		) {
+			console.error(`✗ ${rel}: DOM stores must be created by exported factories`)
+			failures++
+		}
+		if (pkg === 'packages/react' || pkg === 'packages/vue') {
+			for (const match of text.matchAll(domNamedImportPattern)) {
+				const imported = match[1]
+					.split(',')
+					.map(name => name.trim().replace(/^type\s+/, '').split(/\s+as\s+/)[0])
+				const shared = imported.find(name => compatibilityStoreNames.has(name))
+				if (shared) {
+					console.error(
+						`✗ ${rel}: renderer internals must resolve '${shared}' from an injected TweeqRuntime`,
+					)
+					failures++
+				}
 			}
 		}
 	}

@@ -1,5 +1,5 @@
 import {type FloatingPanePosition, resizeFloatingPane} from '@tweeq/core'
-import {appConfigStore, type DragState} from '@tweeq/dom'
+import {type DragState} from '@tweeq/dom'
 import {
 	type CSSProperties,
 	type HTMLAttributes,
@@ -9,6 +9,7 @@ import {
 } from 'react'
 
 import {useConfigRef, useDrag, useWindowSize} from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {Icon} from '../Icon'
 
 const DEFAULT_POSITION: FloatingPanePosition = {
@@ -36,6 +37,7 @@ export function PaneFloating({
 	style,
 	...props
 }: PaneFloatingProps) {
+	const {appConfigStore} = useTweeqRuntime()
 	const root = useRef<HTMLDivElement>(null)
 	const top = useRef<HTMLDivElement>(null)
 	const right = useRef<HTMLDivElement>(null)
@@ -44,7 +46,7 @@ export function PaneFloating({
 	const windowSize = useWindowSize()
 	const entry = useMemo(
 		() => appConfigStore.getState().ref(`${name}.position`, defaultPosition),
-		[defaultPosition, name]
+		[appConfigStore, defaultPosition, name]
 	)
 	const [position, setStoredPosition] = useConfigRef(entry)
 	const positionRef = useRef(position)

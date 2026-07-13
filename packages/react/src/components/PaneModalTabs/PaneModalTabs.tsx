@@ -2,7 +2,6 @@ import {
 	isMultilineEditorTarget,
 	type ModalComponentTab as CoreComponentTab,
 	type ModalFormTab as CoreFormTab,
-	modalStore,
 	type ModalTab as CoreModalTab,
 	type PromptTabsFn,
 	type TabsShowOptions,
@@ -16,6 +15,7 @@ import {
 } from 'react'
 
 import {useEventListener} from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {InputButton} from '../InputButton'
 import {InputComplex, type Scheme} from '../InputComplex'
 import {PaneModal} from '../PaneModal'
@@ -36,6 +36,7 @@ export type PaneModalTab = PaneModalFormTab | PaneModalComponentTab
 export type {TabsShowOptions}
 
 export function PaneModalTabs() {
+	const {modalStore} = useTweeqRuntime()
 	const [description, setDescription] = useState<{
 		tabs: PaneModalTab[]
 		options?: TabsShowOptions
@@ -77,7 +78,7 @@ export function PaneModalTabs() {
 			modalStore.getState().registerPromptTabs(null)
 			resolveRef.current?.()
 		}
-	}, [])
+	}, [modalStore])
 
 	const cancel = () => {
 		for (const tab of descriptionRef.current?.tabs ?? []) {

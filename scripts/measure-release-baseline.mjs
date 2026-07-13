@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {execFileSync} from 'node:child_process'
 import {readdirSync, readFileSync, statSync, writeFileSync} from 'node:fs'
 import {dirname, extname, join, relative, resolve} from 'node:path'
 import {fileURLToPath} from 'node:url'
@@ -50,11 +51,15 @@ const iterations = 100_000
 const samples = Array.from({length: 7}, () => benchmark(iterations)).sort((a, b) => a - b)
 const medianMs = samples[Math.floor(samples.length / 2)]
 const operationsPerSecond = Math.round(iterations * 3 / (medianMs / 1000))
+const reactTests = countVitestTests('@tweeq/react')
+const vueTests = countVitestTests('@tweeq/vue')
+const playwrightTests = countPlaywrightTests()
+const recordedDate = new Date().toISOString().slice(0, 10)
 
 const markdown = `# Phase 6 release baseline
 
-Recorded: 2026-07-13  
-Runtime: Node ${process.versions.node}, ${process.platform}/${process.arch}  
+Recorded: ${recordedDate}
+Runtime: Node ${process.versions.node}, ${process.platform}/${process.arch}
 Command: \`pnpm build && pnpm baseline:record\`
 
 This is the first shared-core prerelease baseline. Artifact sizes sum the
@@ -90,9 +95,9 @@ parity remains enforced by the renderer-neutral contracts and browser suite.
 
 ## Interaction evidence
 
-- React renderer contracts: 82 tests
-- Vue renderer contracts and compatibility warning: 83 tests
-- Cross-page Playwright interaction/visual suite: 21 tests
+- React renderer contracts: ${reactTests.toLocaleString()} tests
+- Vue renderer contracts and compatibility warning: ${vueTests.toLocaleString()} tests
+- Cross-page Playwright interaction/visual suite: ${playwrightTests.toLocaleString()} tests
 - Packed downstream consumers: React Vite and Vue Vite, each typechecked and built
 
 Regenerate this document on the release runner immediately before each
@@ -108,6 +113,47 @@ function walk(directory) {
 		if (entry.isDirectory()) return walk(path)
 		return statSync(path).isFile() ? [path] : []
 	})
+}
+
+function countVitestTests(packageName) {
+	const report = JSON.parse(
+		execFileSync(
+			'pnpm',
+			['--filter', packageName, 'exec', 'vitest', 'run', '--reporter=json'],
+			{cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit']},
+		)
+	)
+	if (!report.success || report.numPassedTests !== report.numTotalTests) {
+		throw new Error(`${packageName} tests are not all passing`)
+	}
+	return report.numTotalTests
+}
+
+function countPlaywrightTests() {
+	const report = JSON.parse(
+		execFileSync(
+			'pnpm',
+			['exec', 'playwright', 'test', '--list', '--reporter=json'],
+			{cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit']},
+		)
+	)
+	if (report.errors.length > 0) {
+		throw new Error('Playwright could not enumerate the browser suite')
+	}
+	return countSpecs(report.suites)
+}
+
+function countSpecs(suites) {
+	return suites.reduce(
+		(total, suite) =>
+			total +
+			(suite.specs ?? []).reduce(
+				(sum, spec) => sum + spec.tests.length,
+				0,
+			) +
+			countSpecs(suite.suites ?? []),
+		0,
+	)
 }
 
 function benchmark(count) {

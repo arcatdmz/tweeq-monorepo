@@ -1,6 +1,7 @@
-import {Fragment, type PropsWithChildren, useRef} from 'react'
+import {Fragment, type PropsWithChildren, useEffect} from 'react'
 
-import {initTweeq, type TweeqOptions} from '../../initTweeq'
+import {type TweeqOptions} from '../../initTweeq'
+import {TweeqRuntimeProvider, useOwnedTweeqRuntime} from '../../runtime'
 import {CommandPalette} from '../CommandPalette'
 import {InputColorProvider} from '../InputColor/InputColorContext'
 import {MultiSelectPopup} from '../MultiSelectPopup'
@@ -21,28 +22,33 @@ export function TweeqProvider({
 	colorPresets,
 	children,
 }: TweeqProviderProps) {
-	const initialized = useRef(false)
-	if (!initialized.current) {
-		initTweeq(appId, {
+	const runtime = useOwnedTweeqRuntime(appId, {
+		colorMode,
+		accentColor,
+		backgroundColor,
+		grayColor,
+	})
+	useEffect(() => {
+		runtime.configure(appId, {
 			colorMode,
 			accentColor,
 			backgroundColor,
 			grayColor,
-			colorPresets,
 		})
-		initialized.current = true
-	}
+	}, [accentColor, appId, backgroundColor, colorMode, grayColor, runtime])
 
 	return (
-		<InputColorProvider presets={colorPresets}>
-			<Fragment>
-				{children}
-				<CommandPalette />
-				<MultiSelectPopup />
-				<PaneModalComplex />
-				<PaneModalTabs />
-				<TooltipRoot />
-			</Fragment>
-		</InputColorProvider>
+		<TweeqRuntimeProvider runtime={runtime} bind disposeOnUnmount>
+			<InputColorProvider presets={colorPresets}>
+				<Fragment>
+					{children}
+					<CommandPalette />
+					<MultiSelectPopup />
+					<PaneModalComplex />
+					<PaneModalTabs />
+					<TooltipRoot />
+				</Fragment>
+			</InputColorProvider>
+		</TweeqRuntimeProvider>
 	)
 }

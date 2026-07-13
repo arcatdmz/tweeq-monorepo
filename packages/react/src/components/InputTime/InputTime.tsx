@@ -9,7 +9,7 @@ import {
 	svgLine,
 	type TimeFormat,
 } from '@tweeq/core'
-import {type DragState, inputTimeFormatEntry} from '@tweeq/dom'
+import {type DragState} from '@tweeq/dom'
 import {scalar, vec2} from 'linearly'
 import {range} from 'lodash-es'
 import {
@@ -28,6 +28,7 @@ import {
 	useKeys,
 	useMultiSelect,
 } from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {InputTextBase, type InputTextBaseHandle} from '../InputTextBase'
 import {Tooltip} from '../Tooltip'
 import {TweakOverlay} from '../TweakOverlay'
@@ -66,6 +67,7 @@ export function InputTime({
 	className,
 	...props
 }: InputTimeProps) {
+	const {inputTimeFormatEntry} = useTweeqRuntime()
 	const base = useRef<InputTextBaseHandle>(null)
 	const target = useMemo(
 		() => ({

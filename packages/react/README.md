@@ -13,8 +13,13 @@ Import the canonical stylesheet once at the application entry:
 
 ```tsx
 import '@tweeq/react/style.css'
-import {InputNumber, TweeqProvider, Viewport} from '@tweeq/react'
+import {App, InputNumber, TweeqProvider, Viewport} from '@tweeq/react'
 ```
+
+`App`, `TweeqProvider`, and a standalone `Viewport` each establish an isolated
+application runtime; do not nest them unless the inner application is
+intentionally independent. Pass `appId` and theme defaults to the component
+that owns the runtime.
 
 `@tweeq/core` and `@tweeq/dom` are normal dependencies of this renderer and do
 not need to be installed separately unless an application imports them

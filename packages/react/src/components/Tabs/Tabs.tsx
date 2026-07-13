@@ -1,5 +1,4 @@
 import {resolveActiveTabId} from '@tweeq/core'
-import {appConfigStore} from '@tweeq/dom'
 import {
 	type HTMLAttributes,
 	type MouseEvent,
@@ -12,6 +11,7 @@ import {
 
 import {classNames} from '../../classNames'
 import {useConfigRef} from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {type TabRegistration, TabsContext} from './TabsContext'
 
 export interface TabsProps extends HTMLAttributes<HTMLDivElement> {
@@ -34,12 +34,13 @@ export function Tabs({
 	className,
 	...props
 }: TabsProps) {
+	const {appConfigStore} = useTweeqRuntime()
 	const entry = useMemo(
 		() =>
 			appConfigStore
 				.getState()
 				.ref<string | null>(options?.storageKey ?? `${name}.active`, null),
-		[name, options?.storageKey]
+		[appConfigStore, name, options?.storageKey]
 	)
 	const [persistedId, setPersistedId] = useConfigRef(entry)
 	const [tabs, setTabs] = useState<TabRegistration[]>([])

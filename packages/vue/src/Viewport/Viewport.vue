@@ -1,11 +1,29 @@
 <script lang="ts" setup>
-import {initTweeq} from '../useTweeq'
+import {createTweeqRuntime} from '@tweeq/dom'
+import {onBeforeUnmount, onMounted} from 'vue'
+
+import {
+	provideTweeqRuntime,
+	useOptionalTweeqRuntime,
+} from '../runtime'
 
 const props = withDefaults(
 	defineProps<{appId?: string; initialize?: boolean}>(),
 	{appId: 'viewport', initialize: true}
 )
-if (props.initialize) initTweeq(props.appId)
+const parentRuntime = useOptionalTweeqRuntime()
+const runtime = parentRuntime ?? createTweeqRuntime({appId: props.appId})
+if (!parentRuntime) provideTweeqRuntime(runtime)
+let unbind: (() => void) | undefined
+onMounted(() => {
+	if (!parentRuntime && props.initialize) unbind = runtime.bind()
+})
+onBeforeUnmount(() => {
+	if (!parentRuntime) {
+		unbind?.()
+		runtime.dispose()
+	}
+})
 </script>
 
 <template>

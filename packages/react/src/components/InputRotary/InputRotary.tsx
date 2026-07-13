@@ -11,7 +11,7 @@ import {
 	svgLine,
 	unsignedMod,
 } from '@tweeq/core'
-import {type DragState, themeStore} from '@tweeq/dom'
+import {type DragState} from '@tweeq/dom'
 import {scalar, vec2} from 'linearly'
 import {range} from 'lodash-es'
 import {
@@ -34,6 +34,7 @@ import {
 	useMultiSelect,
 	useWindowSize,
 } from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {SvgIcon} from '../SvgIcon'
 import {Tooltip} from '../Tooltip'
 import {TweakOverlay} from '../TweakOverlay'
@@ -68,6 +69,7 @@ export function InputRotary({
 	className,
 	...props
 }: InputRotaryProps) {
+	const {themeStore} = useTweeqRuntime()
 	const root = useRef<HTMLButtonElement>(null)
 	const center = useElementCenter(root)
 	const centerRef = useRef(center)

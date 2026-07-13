@@ -3,7 +3,6 @@ import {
 	type MenuItem,
 	type Point,
 } from '@tweeq/core'
-import {themeStore} from '@tweeq/dom'
 import {
 	forwardRef,
 	type PointerEvent,
@@ -13,6 +12,7 @@ import {
 } from 'react'
 import {useStore} from 'zustand'
 
+import {useTweeqRuntime} from '../../runtime'
 import {BindIcon} from '../BindIcon'
 import {Icon} from '../Icon'
 import {Popover} from '../Popover'
@@ -30,6 +30,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 	{items, onClose},
 	forwardedRef
 ) {
+	const {themeStore} = useTweeqRuntime()
 	const popupPadding = useStore(themeStore, state => state.popupPadding)
 	const [hoverIndex, setHoverIndex] = useState(-1)
 	const [candidateIndex, setCandidateIndex] = useState(-1)

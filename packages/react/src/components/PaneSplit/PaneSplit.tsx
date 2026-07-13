@@ -1,5 +1,5 @@
 import {resizeSplitPane} from '@tweeq/core'
-import {appConfigStore, type DragState} from '@tweeq/dom'
+import {type DragState} from '@tweeq/dom'
 import {
 	type CSSProperties,
 	type HTMLAttributes,
@@ -9,6 +9,7 @@ import {
 } from 'react'
 
 import {useConfigRef, useDrag} from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 
 export interface PaneSplitProps extends HTMLAttributes<HTMLDivElement> {
 	name: string
@@ -34,6 +35,7 @@ export function PaneSplit({
 	style,
 	...props
 }: PaneSplitProps) {
+	const {appConfigStore} = useTweeqRuntime()
 	const root = useRef<HTMLDivElement>(null)
 	const divider = useRef<HTMLDivElement>(null)
 	const entry = useMemo(
@@ -41,7 +43,7 @@ export function PaneSplit({
 			appConfigStore
 				.getState()
 				.ref(fixed ? `${name}.px` : `${name}.width`, defaultSize),
-		[defaultSize, fixed, name]
+		[appConfigStore, defaultSize, fixed, name]
 	)
 	const [size, setSize] = useConfigRef(entry)
 	const startSize = useRef(size)

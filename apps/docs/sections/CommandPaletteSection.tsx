@@ -1,7 +1,8 @@
-import {actionsStore} from '@tweeq/react'
+import {useTweeqRuntime} from '@tweeq/react'
 import {useEffect, useState} from 'react'
 
 export default function CommandPaletteSection() {
+	const {actionsStore} = useTweeqRuntime()
 	const [count, setCount] = useState(0)
 
 	useEffect(
@@ -14,7 +15,7 @@ export default function CommandPaletteSection() {
 					perform: () => setCount(current => current + 1),
 				},
 			]),
-		[]
+		[actionsStore]
 	)
 
 	return (

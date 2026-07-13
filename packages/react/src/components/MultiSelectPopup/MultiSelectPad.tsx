@@ -1,8 +1,9 @@
-import {type DragState, multiSelectStore} from '@tweeq/dom'
+import {type DragState} from '@tweeq/dom'
 import {type vec2} from 'linearly'
 import {useEffect, useMemo, useRef} from 'react'
 
 import {useDrag, useKeys} from '../../hooks'
+import {useTweeqRuntime} from '../../runtime'
 import {IconIndicator} from '../IconIndicator'
 
 const PAD_KEYS = ['x', 'y', '1', '2'] as const
@@ -16,6 +17,7 @@ export interface MultiSelectPadProps {
 }
 
 export function MultiSelectPad({type, update, icon}: MultiSelectPadProps) {
+	const {multiSelectStore} = useTweeqRuntime()
 	const root = useRef<HTMLDivElement>(null)
 	const keys = useKeys(PAD_KEYS)
 	const keysRef = useRef(keys)
@@ -58,7 +60,7 @@ export function MultiSelectPad({type, update, icon}: MultiSelectPadProps) {
 				multiSelectStore.getState().confirmValues()
 			},
 		}),
-		[]
+		[multiSelectStore]
 	)
 	const drag = useDrag(root, options)
 
@@ -69,7 +71,7 @@ export function MultiSelectPad({type, update, icon}: MultiSelectPadProps) {
 			origin.current = drag.xy
 		}
 		previousConstraint.current = constrained
-	}, [drag.xy, keys])
+	}, [drag.xy, keys, multiSelectStore])
 
 	return (
 		<div

@@ -43,17 +43,11 @@ export function HomePage() {
 			{react ? <>
 				<Heading level={3} id="main-tsx">main.tsx</Heading>
 				<div className="language-ts"><pre><code>{`import {createRoot} from 'react-dom/client'
-import {TweeqProvider} from '@tweeq/react'
 import '@tweeq/react/style.css'
+import {MyApp} from './App'
 
 createRoot(document.getElementById('root')!).render(
-  <TweeqProvider
-    appId="com.yourid.yourapp"
-    colorMode="dark"
-    accentColor="#ff0000"
-  >
-    <MyApp />
-  </TweeqProvider>,
+  <MyApp />,
 )`}</code></pre></div>
 				<Heading level={3} id="app-tsx">App.tsx</Heading>
 				<div className="language-ts"><pre><code>{`import {useState} from 'react'
@@ -63,6 +57,9 @@ export function MyApp() {
   const [opacity, setOpacity] = useState(1)
 
   return <App
+    appId="com.yourid.yourapp"
+    colorMode="dark"
+    accentColor="#ff0000"
     title={<TitleBar name="My App" icon="favicon.svg" />}
   >
     <ParameterGrid>
@@ -74,16 +71,10 @@ export function MyApp() {
 }`}</code></pre></div>
 			</> : <>
 				<Heading level={3} id="main-ts">main.ts</Heading><div className="language-ts"><pre><code>{`import {createApp} from 'vue'
-import {initTweeq} from '@tweeq/vue'
 import '@tweeq/vue/style.css'
 import Root from './App.vue'
 
-const app = createApp(Root)
-initTweeq('com.yourid.yourapp', {
-  colorMode: 'dark',
-  accentColor: '#ff0000',
-})
-app.mount('#app')`}</code></pre></div>
+createApp(Root).mount('#app')`}</code></pre></div>
 				<Heading level={3} id="app-vue">App.vue</Heading><div className="language-html"><pre><code>{`<script setup lang="ts">
 import {ref} from 'vue'
 import {App, InputNumber, Parameter, ParameterGrid, TitleBar} from '@tweeq/vue'
@@ -91,7 +82,11 @@ const opacity = ref(1)
 </script>
 
 <template>
-  <App>
+  <App
+    app-id="com.yourid.yourapp"
+    color-mode="dark"
+    accent-color="#ff0000"
+  >
     <template #title><TitleBar name="My App" icon="favicon.svg" /></template>
     <ParameterGrid>
       <Parameter label="Opacity">

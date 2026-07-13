@@ -1,10 +1,11 @@
-import {InputButton, modalStore, type Scheme} from '@tweeq/react'
+import {InputButton, type Scheme, useTweeq} from '@tweeq/react'
 import {useState} from 'react'
 
 type Value = {speed: number}
 const scheme: Scheme<Value> = {speed: {type: 'number', min: 0}}
 
 export default function PaneModalTabsSection() {
+	const {modal} = useTweeq()
 	const [done, setDone] = useState(false)
 	return (
 		<section data-testid="PaneModalTabs">
@@ -12,8 +13,7 @@ export default function PaneModalTabsSection() {
 			<InputButton
 				label="Open tabbed modal"
 				onClick={() => {
-					void modalStore
-						.getState()
+					void modal
 						.promptTabs([
 							{
 								id: 'motion',
@@ -21,7 +21,8 @@ export default function PaneModalTabsSection() {
 								value: {speed: 3},
 								scheme,
 							},
-						])
+							]
+						)
 						.then(() => setDone(true))
 				}}
 			/>
