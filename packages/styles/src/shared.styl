@@ -1731,3 +1731,32 @@ reset-viewport('[data-tq-component="viewport"]')
 			> [data-tq-part='option-icon']
 				display block
 				flex none
+
+[data-tq-component='input-switch-overlay']
+	position absolute
+	pointer-events none
+	inset 0 calc(var(--tq-input-height) * -1.2)
+	active-transition(inset)
+	padding calc((var(--tq-input-height) - var(--tq-icon-size)) / 2) 0
+
+	&.tq-input-switch-overlay-hidden
+		inset 0 calc(var(--tq-input-height) * -1)
+
+	> [data-tq-part='switch-state-icon']
+		position absolute
+		width var(--tq-icon-size)
+		height var(--tq-icon-size)
+		color var(--tq-color-border)
+		active-transition(color)
+		background var(--tq-color-background)
+		border-radius 50%
+
+		&[data-tq-active]
+			color var(--tq-color-accent)
+
+		&[data-tq-value='on']
+			right 0
+
+@starting-style
+	[data-tq-component='input-switch-overlay']
+		inset 0 calc(var(--tq-input-height) * -1)

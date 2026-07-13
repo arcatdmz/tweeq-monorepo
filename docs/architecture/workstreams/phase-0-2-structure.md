@@ -265,7 +265,8 @@ contain renderer markup only and no copied state transition.
   TooltipRoot, PaneModal, PaneModalTabs, PaneModalComplex, Timeline,
   InputCubicBezier, InputCubicBezierPicker, App, Viewport, Popover, and
   InputSize, TitleBar, ParameterGroup, Balloon, Menu, PaneSplit, Tabs, and
-  InputTextBase, InputDropdown, InputTranslate, and InputRadio. Both renderers emit the same stable
+  InputTextBase, InputDropdown, InputTranslate, InputRadio, and
+  InputSwitchOverlay. Both renderers emit the same stable
   component/part/state
   attributes, consume one shared rule set, and deleted their scoped/CSS-module
   copies. The styles package now emits real component CSS rather than only the
