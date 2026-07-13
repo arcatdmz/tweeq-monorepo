@@ -15,10 +15,23 @@ export default defineConfig({
 	plugins: [glsl(), vue()],
 	css: {preprocessorOptions: {styl: tweeqStylusOptions}},
 	resolve: {
-		alias: {
-			'@tweeq/vue': path.resolve(here, '../../packages/vue/src'),
-			'@tweeq/core': path.resolve(here, '../../packages/core/src'),
-			'@tweeq/dom': path.resolve(here, '../../packages/dom/src'),
-		},
+		alias: [
+			{
+				find: '@tweeq/vue/style.css',
+				replacement: path.resolve(here, '../../packages/styles/src/style.styl'),
+			},
+			{
+				find: '@tweeq/vue',
+				replacement: path.resolve(here, '../../packages/vue/src'),
+			},
+			{
+				find: '@tweeq/core',
+				replacement: path.resolve(here, '../../packages/core/src'),
+			},
+			{
+				find: '@tweeq/dom',
+				replacement: path.resolve(here, '../../packages/dom/src'),
+			},
+		],
 	},
 })

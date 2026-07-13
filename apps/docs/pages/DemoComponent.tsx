@@ -95,11 +95,13 @@ export function DemoComponent<V, T extends Record<string, unknown>>({
 					</div>
 					{!isFullscreen && (
 						<div className="options">
-							<InputComplex
-								value={options}
-								scheme={scheme}
-								onChange={setOptions}
-							/>
+							{Object.keys(scheme).length > 0 && (
+								<InputComplex
+									value={options}
+									scheme={scheme}
+									onChange={setOptions}
+								/>
+							)}
 						</div>
 					)}
 				</>

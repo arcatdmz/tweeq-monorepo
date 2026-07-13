@@ -23,7 +23,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "rm -rf dist && vite build",
+		"build": "rm -rf dist && vite build && node ../../scripts/copy-style-artifact.mjs vue",
 		"test": "vitest run --passWithNoTests"
 	},
 	"peerDependencies": {
@@ -36,7 +36,6 @@
 		"@types/lodash-es": "catalog:",
 		"@vitejs/plugin-vue": "catalog:",
 		"jsdom": "^26.1.0",
-		"stylus": "catalog:",
 		"typescript": "catalog:",
 		"vite": "catalog:",
 		"vite-plugin-dts": "catalog:",

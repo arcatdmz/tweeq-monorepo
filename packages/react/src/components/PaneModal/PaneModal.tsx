@@ -1,5 +1,3 @@
-import './PaneModal.global.styl'
-
 import {type HTMLAttributes, useEffect, useRef, useState} from 'react'
 
 import {classNames} from '../../classNames'

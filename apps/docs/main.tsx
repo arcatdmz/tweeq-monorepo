@@ -4,6 +4,7 @@
 // reproduces the theme's DOM (class names from its SFC sources).
 import '@vuepress/helper/colors.css'
 import '@vuepress/helper/normalize.css'
+import '@tweeq/react/style.css'
 import './styles/index.scss'
 import './demo.css'
 

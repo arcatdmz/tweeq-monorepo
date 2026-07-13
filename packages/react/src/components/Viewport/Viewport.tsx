@@ -1,5 +1,3 @@
-import './Viewport.global.styl'
-
 import {type HTMLAttributes, useRef} from 'react'
 
 import {classNames} from '../../classNames'

@@ -14,9 +14,10 @@
 		"src"
 	],
 	"scripts": {
-		"build": "rm -rf dist && mkdir -p dist && stylus --compress --out dist src/style.styl"
+		"build": "rm -rf dist && mkdir -p dist && stylus --compress --out dist src/style.styl && node ../../scripts/append-monaco-styles.mjs"
 	},
 	"devDependencies": {
+		"monaco-editor": "^0.54.0",
 		"stylus": "catalog:"
 	}
 }

@@ -13,8 +13,3 @@ if (props.initialize) initTweeq(props.appId)
 		<slot />
 	</div>
 </template>
-
-<style lang="stylus">
-// Global (non-scoped) so scroll-fade-mask()'s keyframe names resolve everywhere.
-scroll-fade-globals()
-</style>

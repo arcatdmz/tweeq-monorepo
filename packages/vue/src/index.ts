@@ -1,5 +1,3 @@
-import '@tweeq/styles/shared.styl'
-
 export * from './components'
 export type {
 	Action,

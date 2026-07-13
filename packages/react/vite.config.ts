@@ -4,8 +4,6 @@ import dts from 'vite-plugin-dts'
 import glsl from 'vite-plugin-glsl'
 import {defineConfig} from 'vitest/config'
 
-import {tweeqStylusOptions} from '../../scripts/vite-stylus'
-
 export default defineConfig({
 	plugins: [
 		glsl(),
@@ -15,7 +13,6 @@ export default defineConfig({
 			rollupTypes: true,
 		}),
 	],
-	css: {preprocessorOptions: {styl: tweeqStylusOptions}},
 	publicDir: false,
 	build: {
 		lib: {

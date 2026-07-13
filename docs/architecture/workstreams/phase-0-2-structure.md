@@ -253,9 +253,8 @@ contain renderer markup only and no copied state transition.
 - No local publish command is part of the workflow; publication is GitHub
   Actions-only, as required by repository policy.
 - The initial baseline exposed MF-044: the canonical styles artifact was only
-  a placeholder while renderer CSS was generated separately. Phase 6 cannot
-  pass its cleanup gate until shared style-part ownership is completed.
-- Style convergence has started with the first primitive/control families:
+  a placeholder while renderer CSS was generated separately. The completed
+  convergence covers these primitive/control families:
   buttons, switches, indicators, ColorIcon/GlslCanvas, InputAngle, InputGroup,
   ParameterGrid, Markdown, InputPosition, BindIcon, TweakOverlay,
   InputNumberScales, Tab, ParameterHeading, InputCode, MonacoEditor, Icon,
@@ -268,10 +267,12 @@ contain renderer markup only and no copied state transition.
   InputTextBase, InputDropdown, InputTranslate, InputRadio,
   InputSwitchOverlay, InputDrum, InputRotary, PaneFloating, InputColorPad,
   MultiSelectPopup, CommandPalette, InputTime, and InputNumber. Both renderers
-  emit the same
-  stable component/part/state attributes, consume one shared rule set, and
-  deleted their scoped/CSS-module copies. The styles package now emits real
-  component CSS rather than only the initial placeholder.
+  emit the same stable component/part/state attributes and all 139 local
+  component/reset copies are deleted. Renderer builds copy the compressed
+  `@tweeq/styles/style.css` artifact. The artifact retains the common Monaco
+  base CSS before Tweeq's editor overrides; baseline and packed gates require
+  the three public CSS aliases to remain byte-identical and the packed gate
+  rejects an artifact that drops Monaco's required rules.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

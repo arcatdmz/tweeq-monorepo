@@ -11,7 +11,16 @@ tq-background-checkerboard(color = currentColor)
 tq-color-wheel-dot(angle)
 	'radial-gradient(closest-side, black 80%, transparent 100%) calc(50% + sin(%s) * (50% - 6px)) calc(50% - cos(%s) * (50% - 6px)) / 4px 4px' % (angle angle)
 
+// CSS imports must precede every emitted rule. Keep these renderer-wide
+// declarations outside reset-viewport(), which is expanded for several roots.
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap')
+
+:root
+	interpolate-size allow-keywords
+
+scroll-fade-globals()
 reset-viewport('[data-tq-component="viewport"]')
+reset-viewport('[data-tq-component="pane-modal"]')
 
 [data-tq-component='input-button-toggle']
 	border-radius var(--tq-radius-input)

@@ -4,13 +4,10 @@ import dts from 'vite-plugin-dts'
 import glsl from 'vite-plugin-glsl'
 import {defineConfig} from 'vitest/config'
 
-import {tweeqStylusOptions} from '../../scripts/vite-stylus'
-
 // Keep the upstream browser UMD artifact while also exposing code-split ES/CJS
 // package entries. The CJS entry is required for a truthful `require` export.
 export default defineConfig({
 	plugins: [glsl(), vue(), dts({tsconfigPath: './tsconfig.build.json'})],
-	css: {preprocessorOptions: {styl: tweeqStylusOptions}},
 	publicDir: false,
 	build: {
 		lib: {

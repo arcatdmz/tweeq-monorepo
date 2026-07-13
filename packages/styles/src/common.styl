@@ -184,11 +184,6 @@ scroll-fade-mask(size = calc(var(--tq-input-height) / 2))
 	animation-range unquote('0 var(--tq-scroll-fade-size), calc(100% - var(--tq-scroll-fade-size)) 100%')
 
 reset-viewport(selector)
-	@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap')
-
-	:root
-		interpolate-size allow-keywords
-
 	@layer tweeq
 		{selector}
 			line-height 1

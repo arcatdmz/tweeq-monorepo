@@ -16,7 +16,11 @@ test('overlay stack renders and performs commands', async ({page}) => {
 			)
 	).toBe(true)
 
-	await page.getByTestId('Menu').getByText('Run command').click()
+	await page
+		.getByTestId('Menu')
+		.locator('[data-tq-part="item"]')
+		.filter({hasText: 'Run command'})
+		.click()
 	await expect(page.getByTestId('menu-result')).toHaveText('run')
 
 	await page.getByRole('button', {name: 'Hover for tooltip'}).hover()

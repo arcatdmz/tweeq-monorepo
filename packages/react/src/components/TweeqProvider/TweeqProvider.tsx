@@ -1,5 +1,3 @@
-import '@tweeq/styles/common.styl'
-
 import {Fragment, type PropsWithChildren, useRef} from 'react'
 
 import {initTweeq, type TweeqOptions} from '../../initTweeq'

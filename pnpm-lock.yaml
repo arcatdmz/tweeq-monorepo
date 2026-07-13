@@ -384,9 +384,6 @@ importers:
       react-dom:
         specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
-      stylus:
-        specifier: 'catalog:'
-        version: 0.63.0
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -405,6 +402,9 @@ importers:
 
   packages/styles:
     devDependencies:
+      monaco-editor:
+        specifier: ^0.54.0
+        version: 0.54.0
       stylus:
         specifier: 'catalog:'
         version: 0.63.0
@@ -478,9 +478,6 @@ importers:
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
-      stylus:
-        specifier: 'catalog:'
-        version: 0.63.0
       typescript:
         specifier: 'catalog:'
         version: 5.9.3

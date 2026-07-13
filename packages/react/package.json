@@ -23,7 +23,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "rm -rf dist && vite build",
+		"build": "rm -rf dist && vite build && node ../../scripts/copy-style-artifact.mjs react",
 		"test": "vitest run --passWithNoTests"
 	},
 	"peerDependencies": {
@@ -41,7 +41,6 @@
 		"jsdom": "^26.1.0",
 		"react": "catalog:",
 		"react-dom": "catalog:",
-		"stylus": "catalog:",
 		"typescript": "catalog:",
 		"vite": "catalog:",
 		"vite-plugin-dts": "catalog:",

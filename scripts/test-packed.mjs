@@ -8,7 +8,7 @@
  * Packages remain `"private": true` until the publishing ADR is resolved;
  * packing is an artifact check only and never mutates or publishes manifests.
  */
-import {execSync} from 'node:child_process'
+import {execFileSync, execSync} from 'node:child_process'
 import {cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync} from 'node:fs'
 import {tmpdir} from 'node:os'
 import {join, resolve} from 'node:path'
@@ -25,6 +25,7 @@ function run(cmd, cwd) {
 }
 
 const tarballs = {}
+const packedStyles = {}
 try {
 	// 1. Build and pack every public package.
 	run(`pnpm --filter './packages/*' build`, root)
@@ -36,6 +37,13 @@ try {
 		)
 		const tarball = out.trim().split('\n').at(-1)
 		tarballs[`@tweeq/${name}`] = tarball
+		if (name === 'styles' || name === 'react' || name === 'vue') {
+			packedStyles[name] = execFileSync('tar', [
+				'-xOf',
+				tarball,
+				'package/dist/style.css',
+			])
+		}
 		const packedFiles = execSync(`tar -tf ${JSON.stringify(tarball)}`, {
 			encoding: 'utf8',
 		}).trim().split('\n')
@@ -47,6 +55,17 @@ try {
 		}
 		console.log(`packed @tweeq/${name} -> ${tarball}`)
 	}
+	for (const renderer of ['react', 'vue']) {
+		if (!packedStyles.styles.equals(packedStyles[renderer])) {
+			throw new Error(
+				`@tweeq/${renderer}/style.css differs from packed @tweeq/styles artifact`,
+			)
+		}
+	}
+	if (!packedStyles.styles.includes(Buffer.from('.monaco-editor'))) {
+		throw new Error('packed canonical CSS is missing the Monaco base rules')
+	}
+	console.log('packed renderer style aliases match @tweeq/styles byte-for-byte')
 
 	// 2. Install tarballs into out-of-workspace copies of the examples.
 	for (const example of examples) {

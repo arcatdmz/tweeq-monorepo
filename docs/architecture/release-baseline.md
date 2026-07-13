@@ -15,35 +15,36 @@ excluded from runtime size totals.
 | --- | ---: | ---: | ---: |
 | @tweeq/core JavaScript | 35 | 74.88 KiB | 25.90 KiB |
 | @tweeq/dom JavaScript | 14 | 42.14 KiB | 14.07 KiB |
-| @tweeq/styles CSS | 1 | 101.10 KiB | 12.46 KiB |
+| @tweeq/styles CSS | 1 | 362.91 KiB | 97.99 KiB |
 | @tweeq/react JavaScript | 174 | 11672.84 KiB | 3009.82 KiB |
-| @tweeq/react CSS | 1 | 361.57 KiB | 97.67 KiB |
+| @tweeq/react CSS | 1 | 362.91 KiB | 97.99 KiB |
 | @tweeq/vue JavaScript | 177 | 16753.44 KiB | 4356.20 KiB |
-| @tweeq/vue CSS | 1 | 359.61 KiB | 97.49 KiB |
+| @tweeq/vue CSS | 1 | 362.91 KiB | 97.99 KiB |
 
 The renderer totals include Monaco and its language workers. They establish
 the MF-011 starting point; code splitting should be evaluated against these
 numbers rather than inferred from Vite's 500 kB warning alone.
 
-The shared-style entry contains only migrated families. Its much smaller size
-than either renderer stylesheet shows that MF-044 canonical style ownership is
-still incomplete; renderer CSS remains separate until that finding is closed.
+The three CSS rows are byte-identical aliases of the canonical shared style
+artifact, which includes Monaco's common base rules before Tweeq's editor
+overrides. Renderer builds and the packed-artifact gate verify both invariants;
+renderer source no longer emits independent owned CSS.
 
 ## Core transition throughput
 
 The benchmark runs `unsignedMod`, ruler coordinate conversion, and enabled-tab
 resolution once per iteration (100,000 iterations, seven samples).
 
-- Median: 1.90 ms
-- Aggregate operations: 158,024,899 operations/second
+- Median: 3.02 ms
+- Aggregate operations: 99,490,278 operations/second
 
 This is a comparison baseline, not a CI timing threshold. Functional runtime
 parity remains enforced by the renderer-neutral contracts and browser suite.
 
 ## Interaction evidence
 
-- React renderer contracts: 76 tests
-- Vue renderer contracts and compatibility warning: 77 tests
+- React renderer contracts: 82 tests
+- Vue renderer contracts and compatibility warning: 83 tests
 - Cross-page Playwright interaction/visual suite: 21 tests
 - Packed downstream consumers: React Vite and Vue Vite, each typechecked and built
 

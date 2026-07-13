@@ -19,21 +19,34 @@ export default defineConfig({
 		},
 	},
 	resolve: {
-		alias: {
+		alias: [
 			// Compile the workspace packages from source so the playground gets
 			// HMR and always tracks the working tree. Packed-artifact coverage
 			// lives in examples/react-vite instead.
-			'@tweeq/react': path.resolve(here, '../../packages/react/src'),
-			'@tweeq/core': path.resolve(here, '../../packages/core/src'),
-			'@tweeq/dom': path.resolve(here, '../../packages/dom/src'),
+			{
+				find: '@tweeq/react/style.css',
+				replacement: path.resolve(here, '../../packages/styles/src/style.styl'),
+			},
+			{
+				find: '@tweeq/react',
+				replacement: path.resolve(here, '../../packages/react/src'),
+			},
+			{
+				find: '@tweeq/core',
+				replacement: path.resolve(here, '../../packages/core/src'),
+			},
+			{
+				find: '@tweeq/dom',
+				replacement: path.resolve(here, '../../packages/dom/src'),
+			},
 			// In a real VuePress build this specifier is a generated temp file
 			// forwarding the user's .vuepress/styles/palette.scss — this repo
 			// has none, so the file is empty. Shim it for the theme's
 			// _variables.scss (see styles/index.scss).
-			'@vuepress/plugin-palette/palette': path.resolve(
-				here,
-				'styles/_empty-palette.scss'
-			),
-		},
+			{
+				find: '@vuepress/plugin-palette/palette',
+				replacement: path.resolve(here, 'styles/_empty-palette.scss'),
+			},
+		],
 	},
 })

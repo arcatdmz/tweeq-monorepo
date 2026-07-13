@@ -33,6 +33,19 @@ const rows = artifacts.map(([label, directory, extensions]) => {
 	}
 })
 
+const canonicalStyle = readFileSync(join(root, 'packages/styles/dist/style.css'))
+if (!canonicalStyle.includes(Buffer.from('.monaco-editor'))) {
+	throw new Error('@tweeq/styles is missing the shared Monaco base CSS')
+}
+for (const renderer of ['react', 'vue']) {
+	const rendererStyle = readFileSync(
+		join(root, `packages/${renderer}/dist/style.css`)
+	)
+	if (!canonicalStyle.equals(rendererStyle)) {
+		throw new Error(`@tweeq/${renderer}/style.css is not the canonical artifact`)
+	}
+}
+
 const iterations = 100_000
 const samples = Array.from({length: 7}, () => benchmark(iterations)).sort((a, b) => a - b)
 const medianMs = samples[Math.floor(samples.length / 2)]
@@ -59,9 +72,10 @@ The renderer totals include Monaco and its language workers. They establish
 the MF-011 starting point; code splitting should be evaluated against these
 numbers rather than inferred from Vite's 500 kB warning alone.
 
-The shared-style entry contains only migrated families. Its much smaller size
-than either renderer stylesheet shows that MF-044 canonical style ownership is
-still incomplete; renderer CSS remains separate until that finding is closed.
+The three CSS rows are byte-identical aliases of the canonical shared style
+artifact, which includes Monaco's common base rules before Tweeq's editor
+overrides. Renderer builds and the packed-artifact gate verify both invariants;
+renderer source no longer emits independent owned CSS.
 
 ## Core transition throughput
 
@@ -76,8 +90,8 @@ parity remains enforced by the renderer-neutral contracts and browser suite.
 
 ## Interaction evidence
 
-- React renderer contracts: 76 tests
-- Vue renderer contracts and compatibility warning: 77 tests
+- React renderer contracts: 82 tests
+- Vue renderer contracts and compatibility warning: 83 tests
 - Cross-page Playwright interaction/visual suite: 21 tests
 - Packed downstream consumers: React Vite and Vue Vite, each typechecked and built
 
