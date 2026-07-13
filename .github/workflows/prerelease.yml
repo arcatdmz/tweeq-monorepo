@@ -1,10 +1,18 @@
-name: Publish next prerelease
+name: Publish npm release
 
 on:
   workflow_dispatch:
     inputs:
+      channel:
+        description: Publish a prerelease to next or a feedback-approved stable release to latest
+        required: true
+        default: next
+        type: choice
+        options:
+          - next
+          - latest
       confirmation:
-        description: Type publish-next after npm ownership is approved
+        description: Type publish-next or publish-latest after all release gates are approved
         required: true
         type: string
 
@@ -13,10 +21,14 @@ permissions:
   id-token: write
 
 jobs:
-  publish-next:
-    if: inputs.confirmation == 'publish-next'
+  publish:
+    if: >-
+      (inputs.channel == 'next' && inputs.confirmation == 'publish-next') ||
+      (inputs.channel == 'latest' && inputs.confirmation == 'publish-latest')
     runs-on: ubuntu-latest
-    environment: npm-prerelease
+    environment: npm-release
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -32,9 +44,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Verify approved package names and prerelease versions
+      - name: Verify approved package names and release version
         env:
           NPM_SCOPE_APPROVED: ${{ secrets.NPM_SCOPE_APPROVED }}
+          RELEASE_CHANNEL: ${{ inputs.channel }}
+          STABLE_RELEASE_APPROVED: ${{ secrets.STABLE_RELEASE_APPROVED }}
         run: pnpm check:release -- --release
 
       - name: Run reproducibility gates
@@ -66,16 +80,17 @@ jobs:
       - name: Upload exact release artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: npm-next-artifacts
+          name: npm-${{ inputs.channel }}-artifacts
           path: release-artifacts/*.tgz
 
-      - name: Publish provenance-enabled next artifacts
+      - name: Publish provenance-enabled release artifacts
         shell: bash
         run: |
           for package in core dom styles react vue; do
-            npm publish release-artifacts/tweeq-$package-*.tgz --tag next --provenance --access public
+            npm publish release-artifacts/tweeq-$package-*.tgz --tag "$RELEASE_CHANNEL" --provenance --access public
           done
         env:
+          RELEASE_CHANNEL: ${{ inputs.channel }}
           # npm 11.5.1+ prefers the workflow's OIDC identity. This protected
           # fallback is needed only to bootstrap packages before npm trusted
           # publishers can be configured, and should then be revoked.
@@ -88,5 +103,24 @@ jobs:
 
       - name: Test registry-installed downstream applications
         env:
-          TWEEQ_PRERELEASE_VERSION: ${{ steps.version.outputs.version }}
-        run: node scripts/test-prerelease.mjs
+          TWEEQ_RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: node scripts/test-registry-release.mjs
+
+  tag:
+    name: Tag verified release
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Tag the verified fixed release
+        env:
+          VERSION: ${{ needs.publish.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag --annotate "v$VERSION" --message "Tweeq v$VERSION"
+          git push origin "v$VERSION"

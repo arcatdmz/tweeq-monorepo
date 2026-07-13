@@ -5,12 +5,12 @@ import {tmpdir} from 'node:os'
 import {join, resolve} from 'node:path'
 
 const root = resolve(new URL('..', import.meta.url).pathname)
-const version = process.env.TWEEQ_PRERELEASE_VERSION
-if (!/^\d+\.\d+\.\d+-(?:next|rc)\.\d+$/.test(version ?? '')) {
-	throw new Error('TWEEQ_PRERELEASE_VERSION must be an explicit next/rc version')
+const version = process.env.TWEEQ_RELEASE_VERSION
+if (!/^\d+\.\d+\.\d+(?:-(?:next|rc)\.\d+)?$/.test(version ?? '')) {
+	throw new Error('TWEEQ_RELEASE_VERSION must be an explicit stable, next, or rc version')
 }
 
-const scratch = mkdtempSync(join(tmpdir(), 'tweeq-prerelease-'))
+const scratch = mkdtempSync(join(tmpdir(), 'tweeq-registry-release-'))
 try {
 	for (const example of ['react-vite', 'vue-vite']) {
 		const destination = join(scratch, example)
@@ -28,11 +28,14 @@ try {
 			}
 		}
 		writeFileSync(manifestPath, `${JSON.stringify(manifest, null, '\t')}\n`)
-		writeFileSync(join(destination, 'pnpm-workspace.yaml'), 'packages: []\nallowBuilds:\n  esbuild: true\n  vue-demi: true\n')
+		writeFileSync(
+			join(destination, 'pnpm-workspace.yaml'),
+			'packages: []\nallowBuilds:\n  esbuild: true\n  vue-demi: true\n',
+		)
 		run('pnpm install --no-frozen-lockfile', destination)
 		run('pnpm run typecheck', destination)
 		run('pnpm exec vite build', destination)
-		console.log(`registry prerelease consumer OK: ${example}`)
+		console.log(`registry release consumer OK: ${example}`)
 	}
 } finally {
 	rmSync(scratch, {recursive: true, force: true})

@@ -49,13 +49,41 @@ release change:
 3. public npm registry `publishConfig` on those packages, so the documented
    unauthenticated install commands work;
 4. a Changesets-generated `next` or `rc` version; and
-5. an `NPM_SCOPE_APPROVED` secret in the protected `npm-prerelease` GitHub
+5. an `NPM_SCOPE_APPROVED` secret in the protected `npm-release` GitHub
    environment.
 
 Publishing locally remains prohibited. Each public manifest records the exact
-GitHub repository URL required by npm trusted publishing. The workflow uses a
-GitHub-hosted OIDC runner and a compatible npm CLI, retains a protected token
-only as a first-publication fallback, publishes the exact archived tarballs
-with provenance, and then tests clean React and Vue applications installed
-from the registry at the exact prerelease version. Revoke the fallback token
-after configuring `prerelease.yml` as the trusted publisher for all packages.
+GitHub repository URL required by npm trusted publishing. Because npm permits
+one trusted publisher per package, `prerelease.yml` is the single guarded
+workflow for both the `next` and `latest` dist-tags. It uses a GitHub-hosted
+OIDC runner and a compatible npm CLI, retains a protected token only as a
+first-publication fallback, publishes the exact archived tarballs with
+provenance, and then tests clean React and Vue applications installed from the
+registry at the exact version. A stable run additionally requires the
+protected `STABLE_RELEASE_APPROVED` value to equal the fixed package version,
+which is set only after a prerelease feedback cycle. The workflow tags the
+verified commit only after both downstream registry consumers pass. Revoke the
+fallback token after configuring `prerelease.yml` as the trusted publisher for
+all packages.
+
+### Version preparation (no local publication)
+
+Prepare the first prerelease in a reviewed release change:
+
+```sh
+pnpm exec changeset pre enter next
+pnpm exec changeset version
+pnpm exec changeset status
+```
+
+The fixed group must give all five public packages one
+`X.Y.Z-next.N` version. After committing and pushing that generated version,
+dispatch `prerelease.yml` with channel `next` and confirmation
+`publish-next`. Fixes discovered during feedback receive normal Changesets and
+another `changeset version` pass while pre mode remains active.
+
+After feedback is accepted, run `pnpm exec changeset pre exit` followed by
+`pnpm exec changeset version` in a reviewed stable release change. Set the
+protected `STABLE_RELEASE_APPROVED` value to that exact `X.Y.Z`, then dispatch
+the same workflow with channel `latest` and confirmation `publish-latest`.
+These commands only edit versions/changelogs; neither command publishes.

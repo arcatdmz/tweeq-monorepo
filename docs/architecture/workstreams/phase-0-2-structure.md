@@ -248,12 +248,16 @@ contain renderer markup only and no copied state transition.
   packed downstream-consumer evidence.
 - Docs now use Sass's modern compiler API; the legacy API warning is closed.
 - CI enforces that all public packages remain private before npm ownership is
-  approved. The manual `npm-prerelease` environment additionally requires an
-  explicit confirmation, approved-scope secret, non-private next/rc versions,
-  public npm publish configuration, all reproducibility gates, provenance,
-  browser parity, an uploaded release-runner baseline, exact uploaded tarballs,
-  and registry-installed React/Vue downstream builds. Public manifests carry
-  npm's required matching repository metadata; OIDC publishing supersedes the
+  approved. The manual `npm-release` environment additionally requires an
+  explicit channel-specific confirmation, approved-scope secret, non-private
+  channel-appropriate fixed versions, public npm publish configuration, all
+  reproducibility gates, provenance, browser parity, an uploaded release-runner
+  baseline, exact uploaded tarballs, and registry-installed React/Vue
+  downstream builds. The same trusted-publisher workflow serves `next` and
+  `latest`; a stable release additionally requires a protected approval value
+  equal to its version after a feedback cycle, and the verified commit is
+  tagged only after both registry consumers pass. Public manifests carry npm's
+  required matching repository metadata; OIDC publishing supersedes the
   protected first-publication token after trusted publishers are configured.
 - No local publish command is part of the workflow; publication is GitHub
   Actions-only, as required by repository policy.
