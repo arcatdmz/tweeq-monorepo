@@ -14,6 +14,8 @@ import {classNames} from '../../classNames'
 
 export interface InputGroupProps extends HTMLAttributes<HTMLDivElement> {
 	direction?: 'horizontal' | 'vertical'
+	/** Stable component identity when the group is the root of a composition. */
+	component?: string
 	/**
 	 * Every element child must accept and forward `inlinePosition` and
 	 * `blockPosition` to its root DOM element.
@@ -42,7 +44,13 @@ function flattenChildren(children: ReactNode): ReactNode[] {
 
 export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
 	function InputGroupComponent(
-		{direction = 'horizontal', children, className, ...props},
+		{
+			direction = 'horizontal',
+			component = 'input-group',
+			children,
+			className,
+			...props
+		},
 		forwardedRef
 	) {
 		const flattened = flattenChildren(children)
@@ -76,7 +84,8 @@ export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
 				ref={forwardedRef}
 				className={classNames('TqInputGroup', className)}
 				data-direction={direction}
-				data-tq-component="input-group"
+				data-tq-component={component}
+				data-tq-layout="input-group"
 				data-tq-part="root"
 			>
 				{positioned}

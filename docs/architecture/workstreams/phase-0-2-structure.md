@@ -1,6 +1,8 @@
-# Workstream status: Phases 0–2 (baseline, workspace, relocation) + Phase 3 leaf tier
+# Monorepo migration workstream status
 
-Status: **Phases 0–5 complete; Phase 6 prerelease preparation and cleanup in progress** (2026-07-13)
+Status: **Phases 0–6 complete; migration closed** (2026-07-14). npm
+publication remains a separate, deliberately deferred release operation under
+MF-131.
 Owner: integration worker  
 Plan: [../monorepo-migration.md](../monorepo-migration.md)
 
@@ -34,11 +36,13 @@ and deliberately deferred follow-ups.
 ## Verification state
 
 `pnpm build`, `pnpm test`, `pnpm lint`, `pnpm check:boundaries`,
-`pnpm test:ssr`, `pnpm test:packed`, and the full 23-test Playwright suite are
+`pnpm test:ssr`, `pnpm test:packed`, and the full 26-test Playwright suite are
 CI gates. The browser suite includes representative light/dark/mobile visual
 baselines plus live exhaustive React/Vue gallery smokes with Monaco readiness,
-controlled edits, and console/page-error monitoring. The docs app compiles the React packages from source via Vite
-aliases; packed-artifact coverage is the examples' job.
+controlled edits, and console/page-error monitoring. Workspace libraries build
+in dependency order before any application, and the docs plus both playgrounds
+resolve their built package exports without Vite or TypeScript source aliases.
+Clean packed examples remain the external-consumer artifact gate.
 
 ## Phase 3 leaf tier (done 2026-07-13)
 
@@ -245,7 +249,7 @@ contain renderer markup only and no copied state transition.
   checking, Vue renderer tests, workspace lint, API/link validation, packed
   consumers, and all 21 Playwright tests pass.
 
-## Phase 6 prerelease and cleanup (in progress)
+## Phase 6 cleanup and release readiness (complete 2026-07-14)
 
 - pnpm 11's strict dependency-build policy now explicitly approves the reviewed
   `@parcel/watcher@2.5.6` source-build fallback. Clean push run 29272057405
@@ -264,6 +268,10 @@ contain renderer markup only and no copied state transition.
   libraries in dependency order before building the React docs and Vue
   playground applications. This keeps Vue's strict typecheck and SFC type
   analysis independent of stale local output or artifacts from the CI job.
+- All workspace applications now resolve built package exports, without Vite
+  or TypeScript package-source mappings. The root build has an explicit
+  packages-before-applications sequence and the boundary gate rejects a future
+  `/src` mapping that would make local and downstream builds diverge again.
 - A generated release baseline records emitted raw/gzip artifact sizes, core
   transition throughput, renderer contract counts, browser coverage, and the
   packed downstream-consumer evidence. Normal CI uploads this as a
@@ -298,6 +306,13 @@ contain renderer markup only and no copied state transition.
   disposal; provider-less legacy calls resolve a lazy compatibility runtime.
   The boundary gate rejects renderer imports of those compatibility stores,
   and DOM tests cover concurrent isolation plus bind/dispose behavior.
+- Home and both exhaustive galleries now expose explicit React/Vue navigation
+  and matching comparison framing. The reported color, list-style, pane,
+  modal, overlay, and TitleBar regressions have live browser coverage. The
+  exact combined Pages artifact was also exercised at `/tweeq/` and
+  `/tweeq/vue/`: links resolved across both renderers, renderer workers loaded
+  from their respective base paths, and no local request, console, or page
+  error occurred.
 - The initial baseline exposed MF-044: the canonical styles artifact was only
   a placeholder while renderer CSS was generated separately. The completed
   convergence covers these primitive/control families:
@@ -319,6 +334,11 @@ contain renderer markup only and no copied state transition.
   base CSS before Tweeq's editor overrides; baseline and packed gates require
   the three public CSS aliases to remain byte-identical and the packed gate
   rejects an artifact that drops Monaco's required rules.
+- Final migration evidence is 85 React renderer tests, 84 Vue renderer tests,
+  26 Playwright tests, clean SSR/CJS imports, clean packed React/Vue consumers,
+  and successful production builds. Actual npm publication and prerelease
+  feedback remain a future release activity gated by MF-131 rather than a
+  condition for closing the structural migration.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

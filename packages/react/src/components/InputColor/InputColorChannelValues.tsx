@@ -39,7 +39,7 @@ export function InputColorChannelValues({
 
 	return (
 		<InputGroup
-			data-tq-component="input-color-channel-values"
+			component="input-color-channel-values"
 			data-tq-part="root"
 		>
 			<InputDropdown

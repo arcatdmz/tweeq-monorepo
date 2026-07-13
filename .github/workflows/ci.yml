@@ -18,7 +18,7 @@ jobs:
         run: pnpm check:boundaries
       - name: Enforce pre-ownership publish guard
         run: pnpm check:release
-      - name: Build workspace packages
+      - name: Build workspace packages and applications
         run: pnpm build
       - name: Validate generated API reference
         run: pnpm docs:check

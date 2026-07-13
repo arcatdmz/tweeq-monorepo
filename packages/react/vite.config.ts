@@ -5,6 +5,9 @@ import glsl from 'vite-plugin-glsl'
 import {defineConfig} from 'vitest/config'
 
 export default defineConfig({
+	// Library-emitted workers must stay relative to the package entry so a
+	// consuming Vite app can rewrite/copy them under its own deployment base.
+	base: './',
 	plugins: [
 		glsl(),
 		react(),
@@ -24,7 +27,15 @@ export default defineConfig({
 		},
 		outDir: 'dist',
 		rollupOptions: {
-			external: ['react', 'react-dom', 'react/jsx-runtime'],
+			// Iconify's addIcon/loadIcon registry is part of its consumer-facing API.
+			// Keep one application-owned instance so icons registered by the host are
+			// visible inside Tweeq as well.
+			external: [
+				'@iconify/react',
+				'react',
+				'react-dom',
+				'react/jsx-runtime',
+			],
 		},
 	},
 	define: {

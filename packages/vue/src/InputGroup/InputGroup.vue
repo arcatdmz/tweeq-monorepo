@@ -7,6 +7,8 @@ const props = withDefaults(
 	defineProps<{
 		/** Axis the inputs are laid out along; picks inline- vs block-position. */
 		direction?: 'horizontal' | 'vertical'
+		/** Stable component identity when the group is the root of a composition. */
+		component?: string
 	}>(),
 	{direction: 'horizontal'}
 )
@@ -59,7 +61,13 @@ function PositionedChildren(): VNode[] {
 </script>
 
 <template>
-	<div class="TqInputGroup" :data-direction="direction" data-tq-component="input-group" data-tq-part="root">
+	<div
+		class="TqInputGroup"
+		:data-direction="direction"
+		:data-tq-component="component ?? 'input-group'"
+		data-tq-layout="input-group"
+		data-tq-part="root"
+	>
 		<PositionedChildren />
 	</div>
 </template>

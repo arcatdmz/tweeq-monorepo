@@ -57,9 +57,9 @@ export function InputColor({
 			{...props}
 			ref={root}
 			className={className}
+			component="input-color"
 			data-inline-position={inlinePosition}
 			data-block-position={blockPosition}
-			data-tq-component="input-color"
 			data-tq-part="root"
 		>
 			<InputColorPad

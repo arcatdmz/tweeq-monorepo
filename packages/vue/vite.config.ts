@@ -7,6 +7,9 @@ import {defineConfig} from 'vitest/config'
 // Keep the upstream browser UMD artifact while also exposing code-split ES/CJS
 // package entries. The CJS entry is required for a truthful `require` export.
 export default defineConfig({
+	// Library-emitted workers must stay relative to the package entry so a
+	// consuming Vite app can rewrite/copy them under its own deployment base.
+	base: './',
 	plugins: [glsl(), vue(), dts({tsconfigPath: './tsconfig.build.json'})],
 	publicDir: false,
 	build: {

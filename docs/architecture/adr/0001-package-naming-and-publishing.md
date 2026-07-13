@@ -24,7 +24,7 @@ currently `"private": true` and unpublished) is under this fork's control.
    agreement is prohibited.
 3. Changesets is configured now, with the public-facing packages in one fixed
    version group, so that version intent accumulates during the migration and
-   the first prerelease (`next` tag, Phase 6) needs no versioning retrofit.
+   a future first prerelease (`next` tag) needs no versioning retrofit.
 4. If scope negotiation fails, the fallback is publishing under a scope this
    repository's owner controls (e.g. `@archinc/tweeq-*`); only `package.json`
    `name` fields and import docs change, because all internal references use
@@ -37,7 +37,7 @@ currently `"private": true` and unpublished) is under this fork's control.
   because the examples install packed tarballs from the workspace.
 - A `"publishConfig"`/CI guard, not human memory, enforces the no-publish rule.
 
-## Phase 6 implementation status
+## Release-readiness implementation status
 
 The pre-ownership CI guard is active. A manual GitHub Actions prerelease
 workflow is present but deliberately cannot publish the current `private`,
@@ -51,6 +51,10 @@ release change:
 4. a Changesets-generated `next` or `rc` version; and
 5. an `NPM_SCOPE_APPROVED` secret in the protected `npm-release` GitHub
    environment.
+
+These external publication steps are deliberately outside the completed
+monorepo migration gate. MF-131 keeps them blocked until the ownership and
+protected-environment requirements are actually satisfied.
 
 Publishing locally remains prohibited. Each public manifest records the exact
 GitHub repository URL required by npm trusted publishing. Because npm permits

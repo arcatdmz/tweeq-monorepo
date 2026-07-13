@@ -59,6 +59,10 @@ const COLOR_KEYS = [
 	'b',
 ] as const
 
+// The hue wheel shader is independent of the current color. Keeping one
+// identity prevents an expensive WebGL readback on every pointer move.
+const WHEEL_UNIFORMS = {}
+
 export interface InputColorPadProps
 	extends InputBoxProps,
 		InputEvents,
@@ -305,14 +309,12 @@ export function InputColorPad({
 	const offsetStyle = {left: drag.origin[0], top: drag.origin[1]}
 	const padUniforms = useMemo(
 		() => ({
-			hsva: [local.h, local.s, local.v, local.a],
+			// The S/V axes replace those channels in the shader. Only hue/alpha
+			// change the palette itself while an ordinary pad drag is in progress.
+			hsva: [local.h, 0, 0, local.a],
 			axes: [colorChannelToIndex('s'), colorChannelToIndex('v')],
 		}),
-		[local]
-	)
-	const wheelUniforms = useMemo(
-		() => ({hsva: [local.h, local.s, local.v, local.a]}),
-		[local]
+		[local.a, local.h]
 	)
 	const sliderUniforms = useMemo(
 		() => ({
@@ -424,7 +426,7 @@ export function InputColorPad({
 								<GlslCanvas
 									data-tq-part="wheel"
 									fragmentString={WheelFragmentString}
-									uniforms={wheelUniforms}
+									uniforms={WHEEL_UNIFORMS}
 									style={{
 										...offsetStyle,
 										opacity: tweakMode === 'h' || wheelTweaking ? 1 : 0.1,

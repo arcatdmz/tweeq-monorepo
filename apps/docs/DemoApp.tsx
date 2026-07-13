@@ -57,14 +57,25 @@ function pageFromHash(): Page {
 }
 
 function AllComponentsPage() {
+	const vueGalleryHref = import.meta.env.DEV
+		? 'http://127.0.0.1:5175/'
+		: assetPath('vue/')
 	return (
-		<div {...{'vp-content': ''}} data-testid="components-page">
+		<div
+			className="renderer-gallery-page"
+			{...{'vp-content': ''}}
+			data-testid="components-page"
+		>
 			<h1>All Components</h1>
 			<p>
 				This exhaustive gallery contains every component in the React port. For
 				the documented, selected set with usage notes, see the{' '}
 				<a href="#/components">Components page</a>.
 			</p>
+			<nav className="renderer-switcher" aria-label="Renderer comparison">
+				<a href="#/all-components" aria-current="page">React gallery</a>
+				<a href={vueGalleryHref}>Vue gallery</a>
+			</nav>
 			<ComponentGallery withProvider={false} />
 		</div>
 	)

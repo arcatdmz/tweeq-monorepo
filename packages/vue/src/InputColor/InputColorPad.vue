@@ -286,20 +286,26 @@ const padStyle = computed(() => {
 	}
 })
 
-const padUniforms = computed(() => {
-	const {h, s, v, a} = local.value
-	return {
-		hsva: [h, s, v, a],
-		axes: [colorChannelToIndex('s'), colorChannelToIndex('v')],
-	}
+const padUniforms = shallowRef({
+	hsva: [local.value.h, 0, 0, local.value.a],
+	axes: [colorChannelToIndex('s'), colorChannelToIndex('v')],
 })
+watch(
+	[() => local.value.h, () => local.value.a],
+	([h, a]) => {
+		// The S/V axes replace those channels in the shader. Keep this object
+		// stable while only saturation/value move so the drag does not perform
+		// two WebGL readbacks per pointer event.
+		padUniforms.value = {
+			hsva: [h, 0, 0, a],
+			axes: [colorChannelToIndex('s'), colorChannelToIndex('v')],
+		}
+	},
+	{immediate: true}
+)
 
-const wheelUniforms = computed(() => {
-	const {h, s, v, a} = local.value
-	return {
-		hsva: [h, s, v, a],
-	}
-})
+// The wheel shader does not read color uniforms.
+const wheelUniforms = {}
 
 const wheelStyle = computed(() => {
 	return {

@@ -120,6 +120,8 @@ export function createDragHandler(
 
 	let dragDelayTimer: ReturnType<typeof setTimeout> | undefined
 	let pointerdown = false
+	let activePointerId: number | null = null
+	const eventRoot: EventTarget = target.ownerDocument ?? target
 
 	function measure() {
 		const rect = target.getBoundingClientRect()
@@ -177,6 +179,7 @@ export function createDragHandler(
 		if (shouldDrag && !shouldDrag(event)) return
 
 		pointerdown = true
+		activePointerId = event.pointerId
 
 		// Initialize pointer position
 		state.xy = state.previous = state.initial = [event.clientX, event.clientY]
@@ -200,7 +203,7 @@ export function createDragHandler(
 	}
 
 	function onPointerMove(event: PointerEvent) {
-		if (!pointerdown) return
+		if (!pointerdown || event.pointerId !== activePointerId) return
 
 		if (event.movementX !== undefined && event.movementY !== undefined) {
 			// movement properties ignore the zoom level of the browser,
@@ -243,6 +246,7 @@ export function createDragHandler(
 	}
 
 	function onPointerUp(event: PointerEvent) {
+		if (!pointerdown || event.pointerId !== activePointerId) return
 		if (state.pointerLocked) {
 			unlock()
 		}
@@ -259,16 +263,25 @@ export function createDragHandler(
 		// Reset
 		clearTimeout(dragDelayTimer)
 		pointerdown = false
+		activePointerId = null
 		state.dragging = false
 		state.xy = state.initial = state.delta = vec2.zero
-		target.releasePointerCapture(event.pointerId)
+		try {
+			if (
+				!('hasPointerCapture' in target) ||
+				target.hasPointerCapture(event.pointerId)
+			) {
+				target.releasePointerCapture(event.pointerId)
+			}
+		} catch {
+			// Pointer lock may already have released capture.
+		}
 	}
 
 	target.addEventListener('pointerdown', onPointerDown as EventListener)
-	target.addEventListener('pointermove', onPointerMove as EventListener)
-	target.addEventListener('pointerup', onPointerUp as EventListener)
-	target.addEventListener('pointercancel', onPointerUp as EventListener)
-	target.addEventListener('pointerleave', onPointerUp as EventListener)
+	eventRoot.addEventListener('pointermove', onPointerMove as EventListener)
+	eventRoot.addEventListener('pointerup', onPointerUp as EventListener)
+	eventRoot.addEventListener('pointercancel', onPointerUp as EventListener)
 
 	measure()
 
@@ -278,10 +291,9 @@ export function createDragHandler(
 		dispose() {
 			clearTimeout(dragDelayTimer)
 			target.removeEventListener('pointerdown', onPointerDown as EventListener)
-			target.removeEventListener('pointermove', onPointerMove as EventListener)
-			target.removeEventListener('pointerup', onPointerUp as EventListener)
-			target.removeEventListener('pointercancel', onPointerUp as EventListener)
-			target.removeEventListener('pointerleave', onPointerUp as EventListener)
+			eventRoot.removeEventListener('pointermove', onPointerMove as EventListener)
+			eventRoot.removeEventListener('pointerup', onPointerUp as EventListener)
+			eventRoot.removeEventListener('pointercancel', onPointerUp as EventListener)
 		},
 	}
 }

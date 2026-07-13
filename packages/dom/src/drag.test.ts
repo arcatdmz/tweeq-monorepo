@@ -179,6 +179,41 @@ describe('createDragHandler', () => {
 		expect(el.released).toEqual([7])
 	})
 
+	it('keeps an active drag alive when the pointer leaves the target', () => {
+		const {el, handler, onDragEnd} = setup({dragDelaySeconds: 0})
+
+		el.dispatchEvent(pointerEvent('pointerdown', {pointerId: 7}))
+		el.dispatchEvent(pointerEvent('pointerleave', {pointerId: 7}))
+
+		expect(handler.state.dragging).toBe(true)
+		expect(onDragEnd).not.toHaveBeenCalled()
+
+		el.dispatchEvent(pointerEvent('pointerup', {pointerId: 7}))
+		expect(handler.state.dragging).toBe(false)
+		expect(onDragEnd).toHaveBeenCalledTimes(1)
+	})
+
+	it('ignores move and release events from another pointer', () => {
+		const {el, handler, onDrag, onDragEnd} = setup({dragDelaySeconds: 0})
+
+		el.dispatchEvent(
+			pointerEvent('pointerdown', {pointerId: 7, clientX: 10, clientY: 10})
+		)
+		el.dispatchEvent(
+			pointerEvent('pointermove', {pointerId: 8, clientX: 40, clientY: 10})
+		)
+		el.dispatchEvent(pointerEvent('pointerup', {pointerId: 8}))
+
+		expect(handler.state.dragging).toBe(true)
+		expect(handler.state.xy).toEqual([10, 10])
+		expect(onDrag).not.toHaveBeenCalled()
+		expect(onDragEnd).not.toHaveBeenCalled()
+
+		el.dispatchEvent(pointerEvent('pointerup', {pointerId: 7}))
+		expect(handler.state.dragging).toBe(false)
+		expect(onDragEnd).toHaveBeenCalledTimes(1)
+	})
+
 	it('ignores presses while disabled (dynamic getter)', () => {
 		let disabled = true
 		const {el, onClick, onDragStart} = setup({disabled: () => disabled})

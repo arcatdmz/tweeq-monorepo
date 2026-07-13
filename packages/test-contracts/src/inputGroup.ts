@@ -26,6 +26,12 @@ export function runInputGroupContract(
 			})
 
 			expect(harness.part('root')?.getAttribute('data-direction')).toBe('horizontal')
+			expect(harness.part('root')?.getAttribute('data-tq-component')).toBe(
+				'input-group'
+			)
+			expect(harness.part('root')?.getAttribute('data-tq-layout')).toBe(
+				'input-group'
+			)
 			expect(position(harness, 0, 'inline')).toBe('start')
 			expect(position(harness, 1, 'inline')).toBe('middle')
 			expect(position(harness, 2, 'inline')).toBe('end')

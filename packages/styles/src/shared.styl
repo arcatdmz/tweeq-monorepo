@@ -350,7 +350,7 @@ reset-viewport('[data-tq-component="pane-modal"]')
 	padding-left 3px
 	align-items start
 
-[data-tq-component='input-group']
+[data-tq-layout='input-group']
 	display flex
 	flex-grow 1
 	gap var(--tq-gap-group)
@@ -1138,6 +1138,8 @@ reset-viewport('[data-tq-component="pane-modal"]')
 	display flex
 	flex-direction column
 	popup-style()
+	margin 0
+	list-style none
 	display grid
 	grid-template-columns min-content 1fr
 
@@ -1145,11 +1147,14 @@ reset-viewport('[data-tq-component="pane-modal"]')
 		grid-column 1 / 3
 		height 1px
 		margin 3px 6px
+		list-style none
 		background var(--tq-color-border)
 
 	[data-tq-part='item']
 		grid-column 1 / 3
 		display grid
+		margin 0
+		list-style none
 		grid-template-columns subgrid
 		padding 2px 6px
 		height calc(var(--tq-input-height) + 4px)
@@ -1504,6 +1509,7 @@ reset-viewport('[data-tq-component="pane-modal"]')
 	> [data-tq-part='listbox']
 		margin 1px
 		padding 0
+		list-style none
 		overflow-y auto
 		overscroll-behavior contain
 		overflow-anchor none
@@ -1519,6 +1525,8 @@ reset-viewport('[data-tq-component="pane-modal"]')
 			display none
 
 		> [data-tq-option]
+			margin 0
+			list-style none
 			padding 0 var(--tq-dropdown-chevron-width) 0 .5em
 			height var(--tq-input-height)
 			line-height var(--tq-input-height)
@@ -1649,6 +1657,8 @@ reset-viewport('[data-tq-component="pane-modal"]')
 [data-tq-component='input-radio']
 	position relative
 	display flex
+	margin 0
+	list-style none
 	overflow hidden
 	background var(--tq-color-input)
 	height var(--tq-input-height)

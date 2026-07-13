@@ -1,7 +1,9 @@
 # Shared-core React/Vue monorepo migration
 
-Status: in execution — Phases 0–5 complete; Phase 6 release preparation and
-cleanup in progress (see [workstreams/](./workstreams/) for current state)
+Status: **migration complete** — Phases 0–6 implementation, cleanup, and
+verification complete (2026-07-14). npm publication is a deferred release
+operation and does not block this migration closure; see MF-131 in the
+[findings log](./migration-findings.md).
 Audience: worker agents and human maintainers  
 Scope: the next major structural change after the first React port  
 Upstream reference: [baku89/tweeq](https://github.com/baku89/tweeq)
@@ -406,19 +408,24 @@ Deliverables:
 Gate: all documented snippets run in tests and all links target the correct
 renderer/package.
 
-### Phase 6 — prerelease and cleanup
+### Phase 6 — cleanup and release readiness (complete)
 
 Deliverables:
 
-- publish a `next` prerelease from packed, provenance-enabled artifacts;
-- test downstream Vue and React applications against the prerelease;
+- test packed artifacts in clean downstream Vue and React applications;
 - remove temporary aliases, source mirrors, and compatibility stores that have
   met their removal criteria;
 - record bundle size, runtime performance, and interaction parity baselines;
-- cut stable only after at least one prerelease feedback cycle.
+- prepare a CI-only, provenance-enabled publication path without publishing
+  before npm ownership and the protected approval boundary are configured.
 
-Gate: clean dependency graph, no obsolete compatibility TODOs, and reproducible
-release from CI.
+Migration gate: clean dependency graph, no obsolete compatibility TODOs,
+artifact-first package/application builds, clean packed consumers, comparable
+React/Vue Pages galleries, and reproducible release readiness from CI.
+
+Publishing a `next` prerelease and the later stable feedback cycle are follow-up
+release operations, not migration-completion requirements. They remain blocked
+by the explicit external configuration in MF-131.
 
 ## 9. Per-component worker checklist
 

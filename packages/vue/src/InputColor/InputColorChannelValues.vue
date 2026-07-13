@@ -37,7 +37,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 <template>
 	<InputGroup
 		class="InputColorChannelValues"
-		data-tq-component="input-color-channel-values"
+		component="input-color-channel-values"
 		data-tq-part="root"
 	>
 		<InputDropdown

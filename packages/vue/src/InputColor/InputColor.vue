@@ -56,9 +56,9 @@ function onUpdateAlpha(value: number) {
 <InputGroup
 		ref="$root"
 		class="TqInputColor"
+		component="input-color"
 		:inline-position="props.inlinePosition"
 		:block-position="props.blockPosition"
-		data-tq-component="input-color"
 		data-tq-part="root"
 	>
 		<InputColorPad
@@ -95,7 +95,6 @@ function onUpdateAlpha(value: number) {
 			class="alpha"
 			data-tq-part="alpha"
 			:modelValue="alpha"
-			:validator="V.colorCode"
 			suffix="%"
 			:min="0"
 			:max="100"

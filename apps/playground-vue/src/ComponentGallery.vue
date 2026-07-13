@@ -46,6 +46,8 @@ import {
 	TitleBar,
 	Tooltip,
 	TweakOverlay,
+	type Scheme,
+	useTweeqRuntime,
 } from '@tweeq/vue'
 import {ref, useTemplateRef} from 'vue'
 
@@ -79,6 +81,58 @@ const overlayOpen = ref(false)
 const floatingOpen = ref(false)
 const frameWidth = ref(24)
 const popoverReference = useTemplateRef<HTMLElement>('popoverReference')
+const modal = useTweeqRuntime().modalStore.getState()
+const modalComplexResult = ref('not opened')
+const modalTabsResult = ref('not opened')
+const modalTabSpeed = ref(3)
+
+type ModalValue = {name: string; count: number}
+const modalComplexScheme: Scheme<ModalValue> = {
+	name: {type: 'string'},
+	count: {type: 'number', min: 0},
+}
+const modalTabsScheme: Scheme<{speed: number}> = {
+	speed: {type: 'number', min: 0},
+}
+
+function openComplexModal() {
+	void modal
+		.prompt(
+			{name: 'Initial', count: 2},
+			modalComplexScheme,
+			{title: 'Edit values'},
+		)
+		.then(value => {
+			modalComplexResult.value = value ? value.name : 'cancelled'
+		})
+}
+
+function openTabbedModal() {
+	void modal
+		.promptTabs(
+			[
+				{
+					id: 'motion',
+					title: 'Motion',
+					value: {speed: modalTabSpeed.value},
+					scheme: modalTabsScheme,
+					onInput(value) {
+						modalTabSpeed.value = value.speed
+					},
+				},
+			],
+			{title: 'Tabbed settings'},
+		)
+		.then(() => {
+			modalTabsResult.value = `closed at ${modalTabSpeed.value}`
+		})
+}
+
+const docsBase = import.meta.env.DEV
+	? 'http://127.0.0.1:5174/'
+	: import.meta.env.BASE_URL.replace(/vue\/$/, '')
+const homeHref = docsBase
+const reactGalleryHref = `${docsBase}#/all-components`
 
 const colorMask =
 	'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Ccircle cx="12" cy="12" r="10" fill="black"/%3E%3C/svg%3E'
@@ -86,16 +140,23 @@ const colorMask =
 
 <template>
 	<main class="gallery" data-testid="vue-component-gallery">
-		<h1>Tweeq Vue component gallery</h1>
-		<p>
-			Every public component module is represented here. Provider-managed roots
-			can be exercised through their normal keyboard or component triggers.
-		</p>
+		<header class="playground-header">
+			<a :href="homeHref">← Tweeq home</a>
+			<h1>Tweeq Vue component gallery</h1>
+			<p>
+				Every public component module is represented here. Use the matching
+				React gallery to compare the same controls and behaviors.
+			</p>
+			<nav class="renderer-switcher" aria-label="Renderer comparison">
+				<a :href="reactGalleryHref">React gallery</a>
+				<a href="./" aria-current="page">Vue gallery</a>
+			</nav>
+		</header>
 
 		<section data-gallery-component="App">
 			<h2>App</h2>
 			<App app-id="vue-gallery-embedded" :with-provider="false" embedded>
-				<template #title><TitleBar name="Embedded App" icon="★" /></template>
+				<template #title><TitleBar name="Embedded App" icon="★" style="position: absolute" /></template>
 				Embedded application content
 			</App>
 		</section>
@@ -252,13 +313,22 @@ const colorMask =
 
 		<section data-gallery-component="PaneExpandable">
 			<h2>PaneExpandable</h2>
-			<PaneExpandable icon="★" persistent>Expandable pane content</PaneExpandable>
+			<PaneExpandable icon="char:⚙" open-icon="char:×" persistent>
+				<div data-testid="expandable-content">Expandable content</div>
+			</PaneExpandable>
 		</section>
 
 		<section data-gallery-component="PaneFloating">
 			<h2>PaneFloating</h2>
 			<InputButton label="Toggle floating pane" @click="floatingOpen = !floatingOpen" />
-			<PaneFloating v-if="floatingOpen" name="vue-gallery-floating">Floating pane</PaneFloating>
+			<PaneFloating
+				v-if="floatingOpen"
+				name="vue-gallery-floating-relative"
+				:position="{anchor: 'right-top', width: 280, height: 120}"
+				style="position: relative; inset: auto; margin-top: 0.75rem"
+			>
+				Floating pane
+			</PaneFloating>
 		</section>
 
 		<section data-gallery-component="PaneModal">
@@ -269,12 +339,14 @@ const colorMask =
 
 		<section data-gallery-component="PaneModalComplex">
 			<h2>PaneModalComplex</h2>
-			<p>The provider-managed complex prompt root is mounted.</p>
+			<InputButton label="Open generated modal" @click="openComplexModal" />
+			<output data-testid="modal-complex-value">{{ modalComplexResult }}</output>
 		</section>
 
 		<section data-gallery-component="PaneModalTabs">
 			<h2>PaneModalTabs</h2>
-			<p>The provider-managed tabbed prompt root is mounted.</p>
+			<InputButton label="Open tabbed modal" @click="openTabbedModal" />
+			<output data-testid="modal-tabs-value">{{ modalTabsResult }}</output>
 		</section>
 
 		<section data-gallery-component="PaneSplit">
@@ -322,7 +394,7 @@ const colorMask =
 
 		<section data-gallery-component="TitleBar">
 			<h2>TitleBar</h2>
-			<TitleBar name="Vue gallery" icon="★" />
+			<TitleBar name="Vue gallery" icon="★" style="position: relative" />
 		</section>
 
 		<section data-gallery-component="Tooltip">
@@ -332,8 +404,19 @@ const colorMask =
 
 		<section data-gallery-component="TweakOverlay">
 			<h2>TweakOverlay</h2>
-			<InputButton label="Toggle overlay" @click="overlayOpen = !overlayOpen" />
-			<TweakOverlay v-if="overlayOpen"><InputButton label="Close overlay" @click="overlayOpen = false" /></TweakOverlay>
+			<button
+				type="button"
+				data-testid="tweak-overlay-trigger"
+				@pointerdown="overlayOpen = true"
+				@pointerup="overlayOpen = false"
+				@pointercancel="overlayOpen = false"
+				@pointerleave="overlayOpen = false"
+			>
+				Hold to show overlay
+			</button>
+			<TweakOverlay v-if="overlayOpen" data-testid="tweak-overlay">
+				<div data-testid="tweak-overlay-content">Intentional tweak gesture overlay</div>
+			</TweakOverlay>
 		</section>
 
 		<section data-gallery-component="TweeqProvider">
@@ -346,8 +429,14 @@ const colorMask =
 </template>
 
 <style scoped>
-.gallery { box-sizing: border-box; max-width: 64rem; min-height: 100vh; margin: auto; padding: 2rem 2rem 12rem; }
-.gallery > section { display: grid; gap: 0.75rem; margin-block: 2rem; padding-block: 1rem; border-top: 1px solid var(--tq-color-border); }
-.gallery h2 { margin: 0; }
+.gallery { box-sizing: border-box; max-width: 960px; min-height: 100vh; margin: auto; padding: 24px 16px 120px; }
+.playground-header { padding-bottom: 16px; }
+.playground-header h1 { margin: 12px 0 8px; font-family: var(--tq-font-heading, sans-serif); font-size: 28px; font-weight: 700; line-height: 1.2; }
+.playground-header p { margin: 0; line-height: 1.5; }
+.renderer-switcher { display: inline-flex; gap: 0.25rem; margin-top: 0.5rem; padding: 0.25rem; border: 1px solid var(--tq-color-border); border-radius: 8px; background: var(--tq-color-neutral); }
+.renderer-switcher a { padding: 0.45rem 0.8rem; border-radius: 6px; color: var(--tq-color-text); text-decoration: none; }
+.renderer-switcher a[aria-current='page'] { background: var(--tq-color-accent); color: var(--tq-color-on-accent); }
+.gallery > section { display: grid; gap: 0.75rem; margin-bottom: 16px; }
+.gallery h2 { margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--tq-color-border); font-family: var(--tq-font-heading, sans-serif); font-size: 18px; font-weight: 600; line-height: 1.2; }
 .gallery :deep(.TqPaneZUI) { border: 1px solid var(--tq-color-border); }
 </style>

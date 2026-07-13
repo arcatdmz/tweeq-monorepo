@@ -21,8 +21,7 @@ export default function PaneModalTabsSection() {
 								value: {speed: 3},
 								scheme,
 							},
-							]
-						)
+						])
 						.then(() => setDone(true))
 				}}
 			/>

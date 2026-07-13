@@ -3,20 +3,11 @@
 	"compilerOptions": {
 		"jsx": "react-jsx",
 		"noEmit": true,
-		"baseUrl": ".",
-		"paths": {
-			"@tweeq/react": ["../../packages/react/src/index.ts"],
-			"@tweeq/core": ["../../packages/core/src/index.ts"],
-			"@tweeq/dom": ["../../packages/dom/src/index.ts"],
-			"@tweeq/dom/shaders/*": ["../../packages/dom/src/shaders/*"]
-		},
 		"types": ["vite/client"]
 	},
 	"include": [
 		"src/**/*.ts",
 		"src/**/*.tsx",
-		"vite.config.ts",
-		"../../packages/core/src/vendor.d.ts",
-		"../../packages/react/src/vendor.d.ts"
+		"vite.config.ts"
 	]
 }

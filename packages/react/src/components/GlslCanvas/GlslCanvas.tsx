@@ -19,6 +19,8 @@ export interface GlslCanvasProps
 	extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> {
 	fragmentString?: string
 	uniforms?: GlslUniforms
+	'data-tq-component'?: string
+	'data-tq-part'?: string
 }
 
 export const GlslCanvas = forwardRef<HTMLImageElement, GlslCanvasProps>(
@@ -28,6 +30,8 @@ export const GlslCanvas = forwardRef<HTMLImageElement, GlslCanvasProps>(
 			uniforms = {},
 			className,
 			alt = '',
+			'data-tq-component': dataTqComponent = 'glsl-canvas',
+			'data-tq-part': dataTqPart = 'image',
 			...props
 		},
 		forwardedRef
@@ -51,8 +55,8 @@ export const GlslCanvas = forwardRef<HTMLImageElement, GlslCanvasProps>(
 				ref={image}
 				alt={alt}
 				className={className}
-				data-tq-component="glsl-canvas"
-				data-tq-part="image"
+				data-tq-component={dataTqComponent}
+				data-tq-part={dataTqPart}
 			/>
 		)
 	}

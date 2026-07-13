@@ -3,13 +3,6 @@
 		"target": "ESNext",
 		"module": "ESNext",
 		"moduleResolution": "Bundler",
-		"baseUrl": ".",
-		"paths": {
-			"@tweeq/vue": ["../../packages/vue/src/index.ts"],
-			"@tweeq/core": ["../../packages/core/src/index.ts"],
-			"@tweeq/dom": ["../../packages/dom/src/index.ts"],
-			"@tweeq/dom/shaders/*": ["../../packages/dom/src/shaders/*"]
-		},
 		"strict": true,
 		"skipLibCheck": true,
 		"noEmit": true,
@@ -18,8 +11,6 @@
 	"include": [
 		"src/**/*.ts",
 		"src/**/*.vue",
-		"vite.config.ts",
-		"../../packages/core/src/vendor.d.ts",
-		"../../packages/vue/src/glsl.d.ts"
+		"vite.config.ts"
 	]
 }

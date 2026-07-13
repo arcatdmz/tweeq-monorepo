@@ -5,6 +5,9 @@ import {Heading} from './docs'
 
 const reactInstall = 'pnpm add @tweeq/react react react-dom'
 const vueInstall = 'pnpm add @tweeq/vue vue'
+const vueGalleryHref = import.meta.env.DEV
+	? 'http://127.0.0.1:5175/'
+	: assetPath('vue/')
 
 export function HomePage() {
 	const [framework, setFramework] = useState<'react' | 'vue'>('react')
@@ -16,6 +19,8 @@ export function HomePage() {
 			<h1 id="main-title">Tweeq</h1>
 			<p className="vp-hero-description" />
 			<p className="vp-hero-actions">
+				<a className="vp-hero-action-button primary" href="#/all-components">Try React gallery</a>
+				<a className="vp-hero-action-button primary" href={vueGalleryHref}>Try Vue gallery</a>
 				<a className="vp-hero-action-button primary" href="#/components">Components</a>
 				<a className="vp-hero-action-button secondary" href="#/features">Features</a>
 				<a className="vp-hero-action-button secondary" href="#/example">Example</a>
@@ -33,6 +38,16 @@ export function HomePage() {
 			<div className="badges"><p><a href="https://spdx.org/licenses/MIT.html"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT license" /></a></p></div>
 			<p>This repository maintains <a href="https://react.dev">React</a> and <a href="https://vuejs.org">Vue 3</a> renderers over the shared behavior of <a href="https://github.com/baku89/tweeq">baku89/tweeq</a>, created by visual artist <a href="https://baku89.com">Baku Hashimoto</a>.</p>
 			<p>Tweeq provides components for creative professionals, ranging from numeric sliders and color pickers to advanced controls like a cubic-bezier editor, with micro-interactions designed for professional use. Choose a renderer below; each example uses that renderer's public API.</p>
+			<nav className="renderer-gallery-links" aria-label="Renderer galleries">
+				<a className="renderer-gallery-link" href="#/all-components">
+					<strong>React gallery</strong>
+					<span>Try every React component</span>
+				</a>
+				<a className="renderer-gallery-link" href={vueGalleryHref}>
+					<strong>Vue gallery</strong>
+					<span>Try the matching Vue components</span>
+				</a>
+			</nav>
 			<Heading level={2} id="how-to-use">How to Use</Heading>
 			<div className="framework-switcher" role="group" aria-label="Framework example">
 				<button type="button" aria-pressed={react} onClick={() => setFramework('react')}>React</button>

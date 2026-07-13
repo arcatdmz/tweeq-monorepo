@@ -126,9 +126,9 @@
 	display: inline-flex;
 	margin: 0.5rem 0 1rem;
 	padding: 2px;
-	border: 1px solid var(--c-border);
+	border: 1px solid var(--vp-c-border);
 	border-radius: 8px;
-	background: var(--c-bg-light);
+	background: var(--vp-c-bg-alt);
 }
 
 .framework-switcher button {
@@ -137,13 +137,65 @@
 	border: 0;
 	border-radius: 6px;
 	background: transparent;
-	color: var(--c-text);
+	color: var(--vp-c-text);
 	cursor: pointer;
 }
 
 .framework-switcher button[aria-pressed='true'] {
-	background: var(--c-brand);
-	color: #fff;
+	background: var(--vp-c-accent-bg);
+	color: var(--vp-c-accent-text);
+}
+
+.renderer-gallery-links {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+	margin: 1.5rem 0 2rem;
+}
+
+.renderer-gallery-link {
+	display: grid;
+	gap: 0.25rem;
+	padding: 1rem;
+	border: 1px solid var(--vp-c-border);
+	border-radius: 10px;
+	background: var(--vp-c-bg-alt);
+	text-decoration: none !important;
+}
+
+.renderer-gallery-link:hover {
+	border-color: var(--vp-c-accent);
+}
+
+.renderer-gallery-link span {
+	color: var(--vp-c-text-mute);
+}
+
+.renderer-switcher {
+	display: inline-flex;
+	gap: 0.25rem;
+	margin: 0.5rem 0 1.5rem;
+	padding: 0.25rem;
+	border: 1px solid var(--vp-c-border);
+	border-radius: 8px;
+	background: var(--vp-c-bg-alt);
+}
+
+.renderer-switcher a {
+	padding: 0.45rem 0.8rem;
+	border-radius: 6px;
+	text-decoration: none !important;
+}
+
+.renderer-switcher a[aria-current='page'] {
+	background: var(--vp-c-accent-bg);
+	color: var(--vp-c-accent-text);
+}
+
+/* Match the Vue gallery's 64rem outer canvas (2rem gutters around a 60rem
+   component area), so the two pages can be placed side-by-side at like scale. */
+.renderer-gallery-page {
+	--content-width: 64rem;
 }
 
 .ColorPaletteDemo {
@@ -306,6 +358,9 @@
 }
 
 @media (max-width: 719px) {
+	.renderer-gallery-links {
+		grid-template-columns: 1fr;
+	}
 	/* VPNavbar normally relies on a VuePress utility class that is not part of
 	   the source-extracted SFC styles. Preserve the color toggle, but move the
 	   full desktop nav into the slide-out sidebar. */

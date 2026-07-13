@@ -23,13 +23,29 @@ for (const [directory, sourcePath, renderer] of consumers) {
 	if (!/<(?:App|Viewport)(?:\s|>)/.test(source)) {
 		failures.push(`${directory} does not render an App or Viewport style root`)
 	}
+	for (const configName of ['vite.config.ts', 'tsconfig.json']) {
+		const configPath = join(root, directory, configName)
+		let config
+		try {
+			config = readFileSync(configPath, 'utf8')
+		} catch {
+			continue
+		}
+		if (/packages\/(?:core|dom|react|styles|vue)\/src/.test(config)) {
+			failures.push(
+				`${directory}/${configName} bypasses built package exports with a source mapping`,
+			)
+		}
+	}
 }
 
 if (failures.length > 0) {
 	throw new Error(`Invalid renderer consumer setup:\n${failures.join('\n')}`)
 }
 
-console.log(`✓ ${consumers.length} renderer consumers import CSS and render a viewport root`)
+console.log(
+	`✓ ${consumers.length} renderer consumers use built exports, import CSS, and render a viewport root`,
+)
 
 function sourceFiles(directory) {
 	return readdirSync(directory, {withFileTypes: true}).flatMap(entry => {

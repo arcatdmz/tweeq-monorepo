@@ -78,7 +78,8 @@ Recorded: ${recordedDate} (${recordedTimeZone})
 Runtime: Node ${process.versions.node}, ${process.platform}/${process.arch}
 Command: \`pnpm build && pnpm baseline:record\`
 
-This is the first shared-core prerelease baseline. Artifact sizes sum the
+This is the completed shared-core migration baseline and can seed a future
+prerelease. Artifact sizes sum the
 actual emitted JavaScript/CSS files; gzip compresses each file independently,
 matching per-asset HTTP transfer behavior. Source maps and declarations are
 excluded from runtime size totals.
