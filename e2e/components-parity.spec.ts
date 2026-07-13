@@ -5,7 +5,7 @@ test('Components page keeps short controls visually faithful to Vue', async ({
 }) => {
 	await page.goto('/#/components')
 
-	const checkbox = page.locator('[class*="tqInputCheckbox"]').first()
+	const checkbox = page.locator('[data-tq-component="input-checkbox"]').first()
 	await checkbox.click()
 	await expect(checkbox.locator('svg')).toBeVisible()
 

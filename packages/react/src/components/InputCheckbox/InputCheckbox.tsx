@@ -1,10 +1,8 @@
 import type {InputBoxProps, InputEvents} from '@tweeq/core'
 import {type HTMLAttributes, useId, useRef} from 'react'
 
-import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
 import {InputSwitchOverlay, useInputSwitch} from '../InputSwitch'
-import styles from './InputCheckbox.module.styl'
 
 export interface InputCheckboxProps
 	extends InputBoxProps,
@@ -48,22 +46,17 @@ export function InputCheckbox({
 	return (
 		<div
 			{...props}
-			className={classNames(
-				styles.tqInputCheckbox,
-				disabled && styles.disabled,
-				className
-			)}
+			className={className}
 			aria-invalid={invalid || undefined}
+			data-tq-component="input-checkbox"
+			data-disabled={disabled || undefined}
 			data-tq-part="root"
 		>
 			<div
 				ref={track}
-				className={classNames(
-					styles.checkbox,
-					controls.subfocus && styles.subfocus
-				)}
 				block-position={blockPosition}
 				inline-position={inlinePosition}
+				data-subfocus={controls.subfocus || undefined}
 				data-tq-part="track"
 			>
 				<input
@@ -71,7 +64,6 @@ export function InputCheckbox({
 					ref={input}
 					checked={value}
 					disabled={disabled}
-					className={styles.input}
 					data-tq-part="input"
 					type="checkbox"
 					onChange={controls.onChangeInput}
@@ -79,7 +71,7 @@ export function InputCheckbox({
 					onFocus={controls.onFocusInput}
 					onBlur={controls.onBlurInput}
 				/>
-				<span className={styles.mark} data-tq-part="mark">
+				<span data-tq-part="mark">
 					<Icon icon={icon || 'mdi:check-bold'} />
 				</span>
 				<InputSwitchOverlay value={controls.tweakingValue} />

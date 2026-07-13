@@ -135,3 +135,63 @@
 	50%
 		box-shadow 0 0 0 2px var(--tq-color-accent), 0 0 10px 1px var(--tq-color-accent)
 		transform scale(1.06)
+
+[data-tq-component='input-checkbox']
+	display flex
+	align-items center
+	gap 1em
+
+	&[data-disabled='true']
+		cursor not-allowed
+
+		[data-tq-part='track']
+			pointer-events none
+			background transparent
+			box-shadow inset 0 0 0 1px var(--tq-color-border)
+
+		[data-tq-part='track']:has(:checked)
+			background var(--tq-color-text-subtle)
+
+		[data-tq-part='label']
+			pointer-events none
+			color var(--tq-color-text-mute)
+
+	[data-tq-part='track']
+		position relative
+		background var(--tq-color-input)
+		border-radius var(--tq-radius-input)
+		width var(--tq-input-height)
+		active-transition(background)
+		use-input-position()
+
+		&:has([data-tq-part='input']:focus-visible),
+		&[data-subfocus='true']
+			fill-focus-style()
+
+		&:hover
+			background var(--tq-color-input-hover)
+
+		&:has(:checked)
+			background var(--tq-color-accent)
+			--focus-ring inset 0 0 0 1px var(--tq-color-input), 0 0 0 1px var(--tq-color-accent)
+
+			&:hover
+				background var(--tq-color-accent-hover)
+
+	[data-tq-part='input']
+		display block
+		width var(--tq-input-height)
+		height var(--tq-input-height)
+		margin 0 !important
+		opacity 0
+		pointer-events none
+
+	[data-tq-part='mark']
+		position absolute
+		top calc((var(--tq-input-height) - var(--tq-icon-size)) / 2)
+		left calc((var(--tq-input-height) - var(--tq-icon-size)) / 2)
+		color set-alpha(--tq-color-text-subtle, .3)
+		pointer-events none
+
+	[data-tq-part='input']:checked + [data-tq-part='mark']
+		color var(--tq-color-background)
