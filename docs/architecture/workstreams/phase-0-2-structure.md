@@ -250,10 +250,11 @@ contain renderer markup only and no copied state transition.
 - pnpm 11's strict dependency-build policy now explicitly approves the reviewed
   `@parcel/watcher@2.5.6` source-build fallback. Clean push run 29272057405
   completed every CI gate after earlier incremental local installs had masked
-  the missing approval. CI, Pages, and release workflows also use the current
-  Node 24-native v6 majors of checkout, setup-node, upload-artifact, and
-  pnpm/action-setup instead of relying on GitHub's Node 20 compatibility
-  override.
+  the missing approval. CI, Pages, and release workflows also use Node
+  24-native action runtimes instead of relying on GitHub's Node 20
+  compatibility override: v6 for checkout, setup-node, and upload-artifact,
+  plus the exact `pnpm/action-setup@v4.4.0` release that directly installs the
+  repository-pinned pnpm version.
 - A generated release baseline records emitted raw/gzip artifact sizes, core
   transition throughput, renderer contract counts, browser coverage, and the
   packed downstream-consumer evidence. Normal CI uploads this as a
