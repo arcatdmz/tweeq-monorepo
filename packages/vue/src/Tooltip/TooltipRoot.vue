@@ -33,12 +33,14 @@ function onUpdateOpen(open: boolean) {
 		<div
 			v-if="tooltipState.title || tooltipState.description"
 			class="TqTooltipContent structured"
+			data-tq-component="tooltip-content"
 			data-tq-part="tooltip-content"
+			data-tq-variant="structured"
 		>
-			<div v-if="tooltipState.title" class="title">
+			<div v-if="tooltipState.title" class="title" data-tq-part="title">
 				{{ tooltipState.title }}
 			</div>
-			<div v-if="tooltipState.description" class="description">
+			<div v-if="tooltipState.description" class="description" data-tq-part="description">
 				{{ tooltipState.description }}
 			</div>
 		</div>
@@ -46,43 +48,19 @@ function onUpdateOpen(open: boolean) {
 		<div
 			v-else-if="tooltipState.html"
 			class="TqTooltipContent html"
+			data-tq-component="tooltip-content"
 			data-tq-part="tooltip-content"
+			data-tq-variant="html"
 			v-html="tooltipState.content"
 		/>
-		<div v-else class="TqTooltipContent plain" data-tq-part="tooltip-content">
+		<div
+			v-else
+			class="TqTooltipContent plain"
+			data-tq-component="tooltip-content"
+			data-tq-part="tooltip-content"
+			data-tq-variant="plain"
+		>
 			{{ tooltipState.content }}
 		</div>
 	</Popover>
 </template>
-
-<style lang="stylus" scoped>
-.TqTooltipContent
-	font-size 0.9em
-	line-height 1.4
-
-// Plain string tooltips read as a centred caption.
-.plain
-	max-width 18em
-	text-align center
-	white-space pre-line
-
-// Rich (html) tooltips carry their own structured layout (e.g. a grid), so
-// keep them left-aligned and give them room.
-.html
-	max-width 26em
-	text-align left
-
-// Title + description: a bold caption with a muted explanatory line beneath.
-.structured
-	max-width 20em
-	text-align center
-	white-space pre-line
-
-	.title
-		font-weight bold
-
-	.description
-		color var(--tq-color-text-mute)
-		// Slightly tighter so the description reads as secondary.
-		font-size 0.95em
-</style>

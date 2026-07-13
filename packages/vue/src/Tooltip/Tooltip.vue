@@ -5,23 +5,7 @@ defineSlots<{
 </script>
 
 <template>
-	<div class="TqTooltip">
+	<div class="TqTooltip" data-tq-component="tooltip">
 		<slot />
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqTooltip
-	padding .2em .5em
-	border-radius 9999px
-	border 1px solid var(--tq-color-border)
-	background var(--tq-color-surface)
-	color var(--tq-color-text)
-	backdrop-filter blur(var(--tq-popup-blur))
-	font-size .9em
-	font-numeric()
-
-	:deep(label)
-		color var(--tq-color-text-mute)
-</style>

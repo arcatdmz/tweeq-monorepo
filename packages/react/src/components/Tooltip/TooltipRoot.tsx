@@ -6,9 +6,7 @@ import {
 } from '@tweeq/dom'
 import {useSyncExternalStore} from 'react'
 
-import {classNames} from '../../classNames'
 import {Popover} from '../Popover'
-import styles from './TooltipRoot.module.styl'
 
 export function TooltipRoot() {
 	const tooltip = useSyncExternalStore(
@@ -32,24 +30,27 @@ export function TooltipRoot() {
 		>
 			{tooltip.title || tooltip.description ? (
 				<div
-					className={classNames(styles.content, styles.structured)}
+					data-tq-component="tooltip-content"
 					data-tq-part="tooltip-content"
+					data-tq-variant="structured"
 				>
-					{tooltip.title && <div className={styles.title}>{tooltip.title}</div>}
+					{tooltip.title && <div data-tq-part="title">{tooltip.title}</div>}
 					{tooltip.description && (
-						<div className={styles.description}>{tooltip.description}</div>
+						<div data-tq-part="description">{tooltip.description}</div>
 					)}
 				</div>
 			) : tooltip.html ? (
 				<div
-					className={classNames(styles.content, styles.html)}
+					data-tq-component="tooltip-content"
 					data-tq-part="tooltip-content"
+					data-tq-variant="html"
 					dangerouslySetInnerHTML={{__html: tooltip.content}}
 				/>
 			) : (
 				<div
-					className={classNames(styles.content, styles.plain)}
+					data-tq-component="tooltip-content"
 					data-tq-part="tooltip-content"
+					data-tq-variant="plain"
 				>
 					{tooltip.content}
 				</div>
