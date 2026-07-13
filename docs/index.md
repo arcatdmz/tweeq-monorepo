@@ -30,8 +30,8 @@ features:
 
 <div class="badges">
 	<p>
-		<a href="http://spdx.org/licenses/MIT">
-			<img src="https://img.shields.io/npm/l/tweeq.svg?style=flat-square" alt="npm license">
+		<a href="https://spdx.org/licenses/MIT.html">
+			<img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT license">
 		</a>
 	</p>
 </div>

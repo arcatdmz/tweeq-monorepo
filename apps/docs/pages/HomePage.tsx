@@ -30,7 +30,7 @@ export function HomePage() {
 			['Peer-Reviewed Research', "Accepted at UIST 2025, demonstrating the academic rigor and practical value of Tweeq's design principles."],
 		].map(([title, details]) => <div className="vp-feature" key={title}><h2>{title}</h2><p>{details}</p></div>)}</div>
 		<div {...{'vp-content': ''}} data-testid="home-page">
-			<div className="badges"><p><a href="http://spdx.org/licenses/MIT"><img src="https://img.shields.io/npm/l/tweeq.svg?style=flat-square" alt="npm license" /></a></p></div>
+			<div className="badges"><p><a href="https://spdx.org/licenses/MIT.html"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT license" /></a></p></div>
 			<p>This repository maintains <a href="https://react.dev">React</a> and <a href="https://vuejs.org">Vue 3</a> renderers over the shared behavior of <a href="https://github.com/baku89/tweeq">baku89/tweeq</a>, created by visual artist <a href="https://baku89.com">Baku Hashimoto</a>.</p>
 			<p>Tweeq provides components for creative professionals, ranging from numeric sliders and color pickers to advanced controls like a cubic-bezier editor, with micro-interactions designed for professional use. Choose a renderer below; each example uses that renderer's public API.</p>
 			<Heading level={2} id="how-to-use">How to Use</Heading>
