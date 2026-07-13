@@ -6,9 +6,7 @@ import {
 } from '@tweeq/core'
 import {type ButtonHTMLAttributes, type CSSProperties, useState} from 'react'
 
-import {classNames} from '../../classNames'
 import {Popover} from '../Popover'
-import styles from './InputCubicBezier.module.styl'
 import {InputCubicBezierPicker} from './InputCubicBezierPicker'
 
 export interface InputCubicBezierProps
@@ -44,18 +42,16 @@ export function InputCubicBezier({
 				type={props.type ?? 'button'}
 				disabled={disabled}
 				aria-invalid={invalid || undefined}
-				className={classNames(
-					styles.inputCubicBezier,
-					open && styles.open,
-					className
-				)}
+				aria-expanded={open}
+				className={className}
 				data-inline-position={inlinePosition}
 				data-block-position={blockPosition}
+				data-tq-component="input-cubic-bezier"
+				data-tq-open={open ? '' : undefined}
 				data-tq-part="root"
 				onClick={() => setOpen(true)}
 			>
 				<svg
-					className={styles.icon}
 					viewBox="0 0 1 1"
 					aria-hidden="true"
 					data-tq-part="icon"
@@ -64,7 +60,10 @@ export function InputCubicBezier({
 				</svg>
 			</button>
 			<Popover open={open} reference={button} onChangeOpen={setOpen}>
-				<div className={styles.floating}>
+				<div
+					data-tq-component="input-cubic-bezier-floating"
+					data-tq-part="floating"
+				>
 					<InputCubicBezierPicker
 						value={value}
 						onChange={onChange}

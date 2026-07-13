@@ -5,9 +5,7 @@ import {
 } from '@tweeq/core'
 import {type HTMLAttributes, useMemo, useRef} from 'react'
 
-import {classNames} from '../../classNames'
 import {useDrag} from '../../hooks'
-import styles from './InputCubicBezierPicker.module.styl'
 
 export interface InputCubicBezierPickerProps
 	extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
@@ -67,13 +65,13 @@ export function InputCubicBezierPicker({
 	return (
 		<div
 			{...props}
-			className={classNames(styles.picker, className)}
+			className={className}
+			data-tq-component="input-cubic-bezier-picker"
 			data-tq-part="picker"
 		>
 			<svg
 				ref={editor}
 				viewBox="0 0 1 1"
-				className={styles.pad}
 				data-tq-part="pad"
 			>
 				<g>

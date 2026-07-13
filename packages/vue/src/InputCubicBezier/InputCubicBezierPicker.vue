@@ -55,7 +55,11 @@ const draggingPoint = ref<number | null>(null)
 </script>
 
 <template>
-	<div class="InputCubicBezierPicker" data-tq-part="picker">
+	<div
+		class="InputCubicBezierPicker"
+		data-tq-component="input-cubic-bezier-picker"
+		data-tq-part="picker"
+	>
 		<svg ref="$editor" viewBox="0 0 1 1" class="pad" data-tq-part="pad">
 			<g>
 				<line :x1="0" :y1="0" :x2="x1" :y2="y1" />
@@ -79,37 +83,3 @@ const draggingPoint = ref<number | null>(null)
 		</svg>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-.pad
-	overflow visible
-	width 100%
-
-	*
-		vector-effect non-scaling-stroke
-
-	g
-		transform scaleY(-1)
-		transform-origin 50% 50%
-
-	path, line, circle
-		fill none
-		stroke-linecap round
-
-	path, circle
-		stroke-width 2
-		stroke var(--tq-color-accent)
-
-	line
-		stroke-width 1
-		stroke var(--tq-color-accent)
-
-	circle
-		fill var(--tq-color-background)
-		hover-transition(fill, stroke)
-
-		&:hover
-			fill var(--tq-color-accent)
-			stroke var(--tq-color-accent)
-</style>
