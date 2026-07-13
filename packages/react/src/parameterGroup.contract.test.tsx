@@ -28,7 +28,12 @@ runParameterGroupContract(async (_component, initialProps) => {
 	})
 
 	const harness: RendererHarness<ParameterGroupContractProps> = {
-		async update() {},
+		async update() {
+			// Iconify schedules one async state pass; keep it inside React's act.
+			await act(async () => {
+				await new Promise(resolve => setTimeout(resolve, 20))
+			})
+		},
 		part: part => container.querySelector(`[data-tq-part="${part}"]`),
 		async pointer() {},
 		async key() {},

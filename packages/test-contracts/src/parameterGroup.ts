@@ -30,8 +30,8 @@ export function runParameterGroupContract(
 			expect(harness.value()).toBe(false)
 			await harness.activate('trigger')
 			expect(harness.value()).toBe(true)
-			// Iconify schedules one async state pass; let it settle before teardown.
-			await new Promise(resolve => setTimeout(resolve, 20))
+			// The renderer harness owns any framework-specific async settle work.
+			await harness.update({})
 		})
 	})
 }

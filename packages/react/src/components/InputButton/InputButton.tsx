@@ -7,11 +7,9 @@ import {
 	useState,
 } from 'react'
 
-import {classNames} from '../../classNames'
 import {useFlash, useResizeObserver} from '../../hooks'
 import {Icon} from '../Icon'
 import {useTooltip} from '../Tooltip'
-import styles from './InputButton.module.styl'
 
 export interface InputButtonProps
 	extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
@@ -75,31 +73,29 @@ export const InputButton = forwardRef<InputButtonHandle, InputButtonProps>(
 			<button
 				{...props}
 				ref={button}
-				className={classNames(
-					styles.tqInputButton,
-					blink && styles.blink,
-					subtle && styles.subtle,
-					narrow && styles.narrow,
-					flashing && styles.flashing,
-					className
-				)}
+				className={className}
 				inline-position={inlinePosition}
 				block-position={blockPosition}
 				aria-invalid={invalid || undefined}
+				data-tq-component="input-button"
+				data-blink={blink || undefined}
+				data-subtle={subtle || undefined}
+				data-narrow={narrow || undefined}
+				data-flashing={flashing || undefined}
 				data-tq-part="root"
 				onMouseDown={event => {
 					onMouseDown?.(event)
 					if (!event.defaultPrevented) event.preventDefault()
 				}}
 			>
-				{icon && <Icon className={styles.icon} icon={icon} data-tq-part="icon" />}
+				{icon && <Icon icon={icon} data-tq-part="icon" />}
 				{label && (
-					<span ref={labelElement} className={styles.label} data-tq-part="label">
+					<span ref={labelElement} data-tq-part="label">
 						{label}
 					</span>
 				)}
 				{chevron && (
-					<span className={styles.chevron} data-tq-part="chevron">
+					<span data-tq-part="chevron">
 						<Icon icon="mdi:chevron-down" />
 					</span>
 				)}

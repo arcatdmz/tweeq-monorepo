@@ -102,7 +102,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | Composables/hooks: useBndr, useFlash, useDrag, useCursorStyle, … | `src/use` | `src/react/hooks` | thin adapters over `@tweeq/dom` controllers |
 | Gesture engine | Vue ref adapter over `createDragHandler` | React hook over `createDragHandler` | **done 2026-07-13**: pointer state transitions and thresholds live in `@tweeq/dom`; renderer adapters only publish reactive snapshots and lifecycle disposal |
 | Validators/formatting | ~~local copies~~ → shared | `core/validator`, `core/util` | **done 2026-07-13**: Vue's `util.ts`/`validator.ts` are re-export shims over `@tweeq/core`/`@tweeq/dom` |
-| Styling | scoped Stylus per SFC + shared stable parts | CSS Modules per component + shared stable parts | **in progress**: `@tweeq/styles/shared.styl` owns InputButtonToggle through `data-tq-component`/`data-tq-part`; remaining renderer-local rules are tracked by MF-044 |
+| Styling | scoped Stylus per SFC + shared stable parts | CSS Modules per component + shared stable parts | **in progress**: `@tweeq/styles/shared.styl` owns InputButton and InputButtonToggle through `data-tq-component`/`data-tq-part`; remaining renderer-local rules are tracked by MF-044 |
 
 ## Known intentional differences
 
