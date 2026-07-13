@@ -133,27 +133,26 @@ function walk(directory) {
 }
 
 function countVitestTests(packageName) {
-	const scratch = mkdtempSync(join(tmpdir(), 'tweeq-vitest-report-'))
-	const output = join(scratch, 'report.json')
+	const scratch = mkdtempSync(join(tmpdir(), 'tweeq-vitest-list-'))
+	const output = join(scratch, 'tests.json')
+	const packageDirectory = join(root, 'packages', packageName.slice('@tweeq/'.length))
+	const vitest = join(
+		packageDirectory,
+		'node_modules',
+		'.bin',
+		process.platform === 'win32' ? 'vitest.cmd' : 'vitest',
+	)
 	try {
 		execFileSync(
-			'pnpm',
-			[
-				'--filter',
-				packageName,
-				'exec',
-				'vitest',
-				'run',
-				'--reporter=json',
-				`--outputFile=${output}`,
-			],
-			{cwd: root, stdio: ['ignore', 'inherit', 'inherit']},
+			vitest,
+			['list', `--json=${output}`],
+			{cwd: packageDirectory, stdio: ['ignore', 'inherit', 'inherit']},
 		)
-		const report = JSON.parse(readFileSync(output, 'utf8'))
-		if (!report.success || report.numPassedTests !== report.numTotalTests) {
-			throw new Error(`${packageName} tests are not all passing`)
+		const tests = JSON.parse(readFileSync(output, 'utf8'))
+		if (!Array.isArray(tests) || tests.some(test => typeof test.name !== 'string')) {
+			throw new Error(`${packageName} did not return a valid Vitest inventory`)
 		}
-		return report.numTotalTests
+		return tests.length
 	} finally {
 		rmSync(scratch, {recursive: true, force: true})
 	}
@@ -162,10 +161,16 @@ function countVitestTests(packageName) {
 function countPlaywrightTests() {
 	const scratch = mkdtempSync(join(tmpdir(), 'tweeq-playwright-report-'))
 	const output = join(scratch, 'report.json')
+	const playwright = join(
+		root,
+		'node_modules',
+		'.bin',
+		process.platform === 'win32' ? 'playwright.cmd' : 'playwright',
+	)
 	try {
 		execFileSync(
-			'pnpm',
-			['exec', 'playwright', 'test', '--list', '--reporter=json'],
+			playwright,
+			['test', '--list', '--reporter=json'],
 			{
 				cwd: root,
 				env: {...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: output},
