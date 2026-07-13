@@ -266,7 +266,7 @@ contain renderer markup only and no copied state transition.
   InputCubicBezier, InputCubicBezierPicker, App, Viewport, Popover, and
   InputSize, TitleBar, ParameterGroup, Balloon, Menu, PaneSplit, Tabs, and
   InputTextBase, InputDropdown, InputTranslate, InputRadio, and
-  InputSwitchOverlay, and InputDrum. Both renderers emit the same stable
+  InputSwitchOverlay, InputDrum, and InputRotary. Both renderers emit the same stable
   component/part/state
   attributes, consume one shared rule set, and deleted their scoped/CSS-module
   copies. The styles package now emits real component CSS rather than only the

@@ -141,6 +141,7 @@ useCursorStyle(() => (tweaking.value ? 'none' : null))
 const rotaryStyles = computed(() => {
 	const rotation = model.value + props.angleOffset
 	return {
+		transformOrigin: '16px 16px',
 		transform: `rotate(${rotation}deg)`,
 	}
 })
@@ -290,14 +291,17 @@ const markerId = `tq-rotary-${useId().replaceAll(':', '')}`
 		:aria-invalid="props.invalid || undefined"
 		:inline-position="props.inlinePosition"
 		:block-position="props.blockPosition"
+		data-tq-component="input-rotary"
+		:data-tq-tweaking="tweaking ? '' : undefined"
+		:data-tq-subfocus="multi.subfocus ? '' : undefined"
+		:data-tq-tweak-mode="tweakMode"
 		data-tq-part="root"
 		@focus="emit('focus')"
 		@blur="emit('blur')"
 	>
 		<SvgIcon mode="block" class="rotary" data-tq-part="rotary">
-			<circle class="circle" cx="16" cy="16" r="16" />
+			<circle class="circle" data-tq-part="circle" cx="16" cy="16" r="16" />
 			<g
-				transform-origin="16 16"
 				:style="rotaryStyles"
 				data-tq-part="indicator"
 				@pointerenter="tweakModeByPointer = 'absolute'"
@@ -305,15 +309,27 @@ const markerId = `tq-rotary-${useId().replaceAll(':', '')}`
 			>
 				<path
 					class="absolute-mode-area"
+					data-tq-part="absolute-mode-area"
 					d="M 16 16 L 16 32 A 16 16 0 0 0 16 0 Z"
 				/>
-				<path class="tip" d="M20 16 L30 16" />
+				<path class="tip" data-tq-part="tip" d="M20 16 L30 16" />
 			</g>
-			<circle cx="16" cy="16" r="7" fill="transparent" stroke="none" />
+			<circle
+				cx="16"
+				cy="16"
+				r="7"
+				fill="transparent"
+				stroke="none"
+				data-tq-part="relative-mode-area"
+			/>
 		</SvgIcon>
 	</button>
 	<TweakOverlay v-if="tweaking">
-		<div class="overlay">
+		<div
+			class="overlay"
+			data-tq-component="input-rotary-overlay"
+			data-tq-part="overlay"
+		>
 			<svg>
 				<defs>
 					<marker
@@ -328,116 +344,41 @@ const markerId = `tq-rotary-${useId().replaceAll(':', '')}`
 						<path d="M 0 0 L 6 3 L 0 6 Z" />
 					</marker>
 				</defs>
-				<path class="thin gray" :class="{snap: doSnap}" :d="metersPath" />
+				<path
+					class="thin gray"
+					:class="{snap: doSnap}"
+					:data-tq-snap="doSnap ? '' : undefined"
+					data-tq-part="meter-path"
+					:d="metersPath"
+				/>
 				<path
 					class="bold"
+					data-tq-part="drag-path"
 					:d="overlayPath"
 					:marker-end="tweakMode === 'relative' ? `url(#${markerId})` : ''"
 				/>
-				<path class="bold" :d="activeMeterPath" />
+				<path
+					class="bold"
+					data-tq-part="active-meter-path"
+					:d="activeMeterPath"
+				/>
 			</svg>
 			<Tooltip
 				ref="overlayLabel"
 				class="overlay-label"
+				data-tq-part="overlay-label"
 				:style="{
 					top: overlayLabelPos[1] + 'px',
 					left: overlayLabelPos[0] + 'px',
 				}"
 			>
 				{{ display }}
-				<span class="arrows" :style="overlayArrowStyles" />
+				<span
+					class="arrows"
+					data-tq-part="arrows"
+					:style="overlayArrowStyles"
+				/>
 			</Tooltip>
 		</div>
 	</TweakOverlay>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqInputRotary
-	position relative
-	display block
-	width var(--tq-input-height)
-	height var(--tq-input-height)
-	z-index 1
-
-	&:hover, &.tweaking
-		z-index 2
-
-		.rotary
-			transform scale(1.8)
-
-	&:focus,
-	&.subfocus
-		&:before
-			content ''
-			position absolute
-			inset -3px
-			border-radius 50%
-			border 1px solid var(--tq-color-accent-hover)
-
-
-.rotary
-	width var(--tq-input-height)
-	height var(--tq-input-height)
-	hover-transition(transform)
-
-.circle
-	fill var(--tq-color-accent)
-	stroke none
-
-	&:hover,
-	.TqInputRotary:focus-visible &,
-	.TqInputRotary:hover[tweak-mode=relative] &
-		fill var(--tq-color-accent-hover)
-
-	.TqInputRotary:hover[tweak-mode=absolute] &
-		fill var(--tq-color-accent-soft)
-
-.absolute-mode-area
-	fill transparent
-	stroke none
-
-.tip
-	transform-origin 16px 16px
-	stroke var(--tq-color-input)
-	stroke-width 3
-	stroke-linecap round
-
-	[tweak-mode=absolute]:hover &
-		stroke var(--tq-color-accent-hover)
-
-.overlay
-	input-overlay()
-
-	.snap
-		stroke-width 2
-		stroke var(--tq-color-accent-soft-hover) !important
-
-.overlay-label
-	z-index 1001
-	position fixed
-	transform translate(-50%, -50%)
-
-	.arrows
-		position absolute
-		inset 0
-		color var(--tq-color-accent)
-
-		&:before, &:after
-			position absolute
-			top 50%
-			display block
-			width 1em
-			font-size 14px
-			text-align center
-			font-weight normal
-			transform translateY(-50%)
-
-		&:before
-			right 100%
-			content '<'
-
-		&:after
-			left 100%
-			content '>'
-</style>

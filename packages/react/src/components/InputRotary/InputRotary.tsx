@@ -24,7 +24,6 @@ import {
 } from 'react'
 import {useStore} from 'zustand'
 
-import {classNames} from '../../classNames'
 import {
 	useCopyPaste,
 	useCursorStyle,
@@ -38,7 +37,6 @@ import {
 import {SvgIcon} from '../SvgIcon'
 import {Tooltip} from '../Tooltip'
 import {TweakOverlay} from '../TweakOverlay'
-import styles from './InputRotary.module.styl'
 
 const ROTARY_KEYS = ['Shift', 'q', 'a', 'r'] as const
 
@@ -271,18 +269,16 @@ export function InputRotary({
 			<button
 				{...props}
 				ref={root}
-				className={classNames(
-					styles.tqInputRotary,
-					drag.dragging && styles.tweaking,
-					multi.subfocus && styles.subfocus,
-					className
-				)}
+				className={className}
 				type="button"
 				disabled={disabled}
 				aria-invalid={invalid || undefined}
 				inline-position={inlinePosition}
 				block-position={blockPosition}
-				{...{'tweak-mode': mode}}
+				data-tq-component="input-rotary"
+				data-tq-tweaking={drag.dragging ? '' : undefined}
+				data-tq-subfocus={multi.subfocus ? '' : undefined}
+				data-tq-tweak-mode={mode}
 				data-tq-part="root"
 				onFocus={() => {
 					multi.setFocusing(true)
@@ -295,10 +291,9 @@ export function InputRotary({
 			>
 				<SvgIcon
 					mode="block"
-					className={styles.rotary}
 					data-tq-part="rotary"
 				>
-					<circle className={styles.circle} cx="16" cy="16" r="16" />
+					<circle data-tq-part="circle" cx="16" cy="16" r="16" />
 					<g
 						style={{
 							transformOrigin: '16px 16px',
@@ -309,16 +304,27 @@ export function InputRotary({
 						onPointerLeave={() => !drag.dragging && setPointerMode('relative')}
 					>
 						<path
-							className={styles.absoluteModeArea}
+							data-tq-part="absolute-mode-area"
 							d="M 16 16 L 16 32 A 16 16 0 0 0 16 0 Z"
 						/>
-						<path className={styles.tip} d="M20 16 L30 16" />
+						<path data-tq-part="tip" d="M20 16 L30 16" />
 					</g>
+					<circle
+						cx="16"
+						cy="16"
+						r="7"
+						fill="transparent"
+						stroke="none"
+						data-tq-part="relative-mode-area"
+					/>
 				</SvgIcon>
 			</button>
 			{drag.dragging && (
 				<TweakOverlay>
-					<div className={styles.overlay}>
+					<div
+						data-tq-component="input-rotary-overlay"
+						data-tq-part="overlay"
+					>
 						<svg>
 							<defs>
 								<marker
@@ -334,29 +340,29 @@ export function InputRotary({
 								</marker>
 							</defs>
 							<path
-								className={classNames(
-									styles.thin,
-									styles.gray,
-									shouldSnap && styles.snap
-								)}
+								data-tq-part="meter-path"
+								data-tq-snap={shouldSnap ? '' : undefined}
 								d={metersPath}
 							/>
 							<path
-								className={styles.bold}
+								data-tq-part="drag-path"
 								d={overlayPath}
 								markerEnd={
 									mode === 'relative' ? `url(#${markerId})` : undefined
 								}
 							/>
-							<path className={styles.bold} d={activeMeterPath} />
+							<path
+								data-tq-part="active-meter-path"
+								d={activeMeterPath}
+							/>
 						</svg>
 						<Tooltip
-							className={styles.overlayLabel}
+							data-tq-part="overlay-label"
 							style={{left: labelPosition[0], top: labelPosition[1]}}
 						>
 							{display}
 							<span
-								className={styles.arrows}
+								data-tq-part="arrows"
 								style={{transform: `rotate(${overlayArrowRotation}deg)`}}
 							/>
 						</Tooltip>

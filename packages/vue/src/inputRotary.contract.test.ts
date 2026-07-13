@@ -19,11 +19,13 @@ runInputRotaryContract(async (component, initialProps) => {
 	const captured: HarnessEvent[] = []
 	const app = createApp(
 		defineComponent(() => () =>
-			h(InputRotary, {
-				snap: props.snap,
-				angleOffset: props.angleOffset,
-				disabled: props.disabled,
-				invalid: props.invalid,
+				h(InputRotary, {
+					snap: props.snap,
+					angleOffset: props.angleOffset,
+					disabled: props.disabled,
+					invalid: props.invalid,
+					inlinePosition: props.inlinePosition,
+					blockPosition: props.blockPosition,
 				modelValue: value.value,
 				'onUpdate:modelValue'(next: number) {
 					value.value = next

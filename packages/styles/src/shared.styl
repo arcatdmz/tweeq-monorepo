@@ -1872,3 +1872,110 @@ reset-viewport('[data-tq-component="viewport"]')
 [data-color-mode='light'] [data-tq-component='input-drum']
 	> [data-tq-part='center-mark']
 		background var(--tq-color-accent-soft)
+
+[data-tq-component='input-rotary']
+	position relative
+	display block
+	width var(--tq-input-height)
+	height var(--tq-input-height)
+	z-index 1
+	use-input-position()
+
+	&:hover,
+	&[data-tq-tweaking]
+		z-index 2
+
+		> [data-tq-part='rotary']
+			transform scale(1.8)
+
+	&:focus,
+	&[data-tq-subfocus]
+		&:before
+			content ''
+			position absolute
+			inset -3px
+			border-radius 50%
+			border 1px solid var(--tq-color-accent-hover)
+
+	> [data-tq-part='rotary']
+		width var(--tq-input-height)
+		height var(--tq-input-height)
+		hover-transition(transform)
+
+		[data-tq-part='circle']
+			fill var(--tq-color-accent)
+			stroke none
+
+			&:hover
+				fill var(--tq-color-accent-hover)
+
+		[data-tq-part='absolute-mode-area']
+			fill transparent
+			stroke none
+
+		[data-tq-part='tip']
+			transform-origin 16px 16px
+			stroke var(--tq-color-input)
+			stroke-width 3
+			stroke-linecap round
+
+	&:focus-visible > [data-tq-part='rotary'] [data-tq-part='circle'],
+	&:hover[data-tq-tweak-mode='relative'] > [data-tq-part='rotary'] [data-tq-part='circle']
+		fill var(--tq-color-accent-hover)
+
+	&:hover[data-tq-tweak-mode='absolute']
+		> [data-tq-part='rotary'] [data-tq-part='circle']
+			fill var(--tq-color-accent-soft)
+
+		> [data-tq-part='rotary'] [data-tq-part='tip']
+			stroke var(--tq-color-accent-hover)
+
+[data-tq-component='input-rotary-overlay']
+	input-overlay()
+
+	[data-tq-part='meter-path'],
+	[data-tq-part='drag-path'],
+	[data-tq-part='active-meter-path']
+		fill none
+		stroke var(--tq-color-accent)
+
+	[data-tq-part='meter-path']
+		stroke-width 1
+		stroke var(--tq-color-border)
+
+		&[data-tq-snap]
+			stroke-width 2
+			stroke var(--tq-color-accent-soft-hover) !important
+
+	[data-tq-part='drag-path'],
+	[data-tq-part='active-meter-path']
+		stroke-width 2
+
+	> [data-tq-part='overlay-label']
+		z-index 1001
+		position fixed
+		transform translate(-50%, -50%)
+
+		> [data-tq-part='arrows']
+			position absolute
+			inset 0
+			color var(--tq-color-accent)
+
+			&:before,
+			&:after
+				position absolute
+				top 50%
+				display block
+				width 1em
+				font-size 14px
+				text-align center
+				font-weight normal
+				transform translateY(-50%)
+
+			&:before
+				right 100%
+				content '<'
+
+			&:after
+				left 100%
+				content '>'
