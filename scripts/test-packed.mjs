@@ -73,6 +73,14 @@ try {
 				'package/dist/index.es.js.map',
 				'package/dist/index.cjs.map',
 			)
+			const workers = packedFiles.filter(file =>
+				/^package\/dist\/assets\/editor\.worker-[^/]+\.js$/.test(file),
+			)
+			if (workers.length !== 1) {
+				throw new Error(
+					`@tweeq/${name} must pack exactly one default Monaco editor worker`,
+				)
+			}
 		}
 		if (name === 'core' || name === 'dom') {
 			requiredFiles.push(

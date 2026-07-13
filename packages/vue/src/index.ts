@@ -19,4 +19,9 @@ export {
 	toPercent,
 	unsignedMod,
 } from '@tweeq/core'
-export {addAnchorName, isDecendantElementOf, nodeContains} from '@tweeq/dom'
+export {
+	addAnchorName,
+	ensureMonacoEnvironment,
+	isDecendantElementOf,
+	nodeContains,
+} from '@tweeq/dom'

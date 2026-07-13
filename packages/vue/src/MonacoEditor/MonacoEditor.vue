@@ -13,6 +13,7 @@ import {
 
 import type {MonacoEditorProps} from './types'
 import {useThemeStore} from '../stores/theme'
+import {ensureMonacoWorker} from './monacoWorker'
 
 const props = defineProps<MonacoEditorProps>()
 
@@ -67,6 +68,7 @@ watchEffect(() => {
 })
 
 onMounted(async () => {
+	ensureMonacoWorker()
 	const [wrapper, monaco] = await Promise.all([
 		import('monaco-editor-vue3'),
 		import('monaco-editor'),

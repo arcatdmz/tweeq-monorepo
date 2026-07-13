@@ -6,11 +6,13 @@ import {type HTMLAttributes, useEffect, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
 import {useTweeqRuntime} from '../../runtime'
+import {ensureMonacoWorker} from './monacoWorker'
 
 type MonacoApi = typeof Monaco
 let monacoPromise: Promise<MonacoApi> | undefined
 
 function loadMonaco(): Promise<MonacoApi> {
+	ensureMonacoWorker()
 	monacoPromise ??= import('monaco-editor').then(monaco => {
 		loader.config({monaco})
 		return monaco
