@@ -10,6 +10,7 @@ export default defineConfig({
 	plugins: [glsl(), vue(), dts({tsconfigPath: './tsconfig.build.json'})],
 	publicDir: false,
 	build: {
+		sourcemap: true,
 		lib: {
 			name: 'Tweeq',
 			entry: resolve(__dirname, 'src/index.ts'),

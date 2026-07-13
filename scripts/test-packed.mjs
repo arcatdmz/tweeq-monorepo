@@ -53,6 +53,17 @@ try {
 				`@tweeq/${name} packed test files:\n${packedTests.join('\n')}`,
 			)
 		}
+		if (name === 'react' || name === 'vue') {
+			for (const required of [
+				'package/README.md',
+				'package/dist/index.es.js.map',
+				'package/dist/index.cjs.map',
+			]) {
+				if (!packedFiles.includes(required)) {
+					throw new Error(`@tweeq/${name} packed artifact is missing ${required}`)
+				}
+			}
+		}
 		console.log(`packed @tweeq/${name} -> ${tarball}`)
 	}
 	for (const renderer of ['react', 'vue']) {

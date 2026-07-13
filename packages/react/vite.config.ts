@@ -15,6 +15,7 @@ export default defineConfig({
 	],
 	publicDir: false,
 	build: {
+		sourcemap: true,
 		lib: {
 			name: 'Tweeq',
 			entry: resolve(__dirname, 'src/index.ts'),
