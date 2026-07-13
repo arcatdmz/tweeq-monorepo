@@ -139,6 +139,10 @@ function onKeydown(e: KeyboardEvent) {
 		:align="align"
 		:inline-position="inlinePosition"
 		:block-position="blockPosition"
+		data-tq-component="input-text-base"
+		:data-tq-active="active ? '' : undefined"
+		:data-tq-hover="hover ? '' : undefined"
+		:data-tq-invalid="invalid ? '' : undefined"
 		@contextmenu="onContextMenu"
 		data-tq-part="root"
 	>
@@ -152,6 +156,10 @@ function onKeydown(e: KeyboardEvent) {
 			:disabled="disabled || undefined"
 			:aria-invalid="invalid || undefined"
 			data-tq-part="input"
+			:data-tq-ignore="ignoreInput ? '' : undefined"
+			:data-tq-has-inactive-content="
+				hasInactiveContent ? '' : undefined
+			"
 			@focus="onFocus"
 			@blur="onBlur"
 			@input="onInput"
@@ -159,7 +167,11 @@ function onKeydown(e: KeyboardEvent) {
 			@keydown.enter="emit('confirm')"
 		/>
 
-		<div v-if="hasInactiveContent" class="inactive-content">
+		<div
+			v-if="hasInactiveContent"
+			class="inactive-content"
+			data-tq-part="inactive-content"
+		>
 			<slot name="inactiveContent" />
 		</div>
 
@@ -182,94 +194,3 @@ function onKeydown(e: KeyboardEvent) {
 		</Popover>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqInputTextBase
-	position relative
-	height var(--tq-input-height)
-	border-radius var(--tq-radius-input)
-	background var(--tq-color-input)
-	color var(--tq-color-text)
-	hover-transition(background, box-shadow)
-	flex-grow 1
-	overflow hidden
-	container-type inline-size
-
-	use-input-font()
-	use-input-align()
-	use-input-position()
-	use-input-theme()
-
-	// Hover
-	&:hover, &.hover
-		background var(--tq-color-input-hover)
-
-	// Focused
-	&:focus-within, &.active
-		z-index 1
-		box-shadow 0 0 0 1px var(--tq-color-accent)
-
-	// Disabled
-	&:has(.input:disabled)
-		background transparent
-		--tq-color-accent var(--tq-color-text-border)
-		--tq-color-accent-soft var(--tq-color-border-subtle)
-		--tq-color-text var(--tq-color-text-mute)
-		box-shadow inset 0 0 0 1px var(--tq-color-border)
-
-	// Invalid
-	&.invalid
-		--tq-color-text var(--tq-color-error)
-
-.input, .inactive-content
-	position absolute
-	inset 0 .5em
-	overflow-x visible
-
-	.TqInputTextBase:has(.icon.left) &
-		left calc(var(--tq-icon-size))
-
-	.TqInputTextBase:has(.icon.right) &
-		right calc(var(--tq-icon-size))
-
-.input
-	height var(--tq-input-height)
-
-	@container (max-width: 100px)
-		&
-			padding-inline 0
-
-	&.has-inactive-content:not(:focus)
-		opacity 0
-
-	&.ignore
-		pointer-events none
-
-.inactive-content
-	pointer-events none
-
-	& > *
-		pointer-events auto
-
-
-	:focus + &
-		display none
-
-
-.icon
-	margin calc((var(--tq-input-height) - var(--tq-icon-size)) / 2)
-	color var(--tq-color-text-mute)
-	transform scale(0.8)
-	opacity .7
-	position absolute
-	z-index 100
-	pointer-events none
-	top 0
-
-	&.left
-		left 2px
-
-	&.right
-		right 2px
-</style>

@@ -1344,3 +1344,86 @@ reset-viewport('[data-tq-component="viewport"]')
 			border-left 1px solid var(--tq-color-border)
 			padding-left var(--tq-rem)
 			scroll-fade-mask()
+
+[data-tq-component='input-text-base']
+	position relative
+	height var(--tq-input-height)
+	border-radius var(--tq-radius-input)
+	background var(--tq-color-input)
+	color var(--tq-color-text)
+	hover-transition(background, box-shadow)
+	flex-grow 1
+	overflow hidden
+	container-type inline-size
+	use-input-font()
+	use-input-align()
+	use-input-position()
+	use-input-theme()
+
+	&:hover, &[data-tq-hover]
+		background var(--tq-color-input-hover)
+
+	&:focus-within, &[data-tq-active]
+		z-index 1
+		box-shadow 0 0 0 1px var(--tq-color-accent)
+
+	&:has(> [data-tq-part='input']:disabled)
+		background transparent
+		--tq-color-accent var(--tq-color-text-border)
+		--tq-color-accent-soft var(--tq-color-border-subtle)
+		--tq-color-text var(--tq-color-text-mute)
+		box-shadow inset 0 0 0 1px var(--tq-color-border)
+
+	&[data-tq-invalid]
+		--tq-color-text var(--tq-color-error)
+
+	> [data-tq-part='input'], > [data-tq-part='inactive-content']
+		position absolute
+		inset 0 .5em
+		overflow-x visible
+
+	&:has(> [data-tq-part='left-icon']) > [data-tq-part='input'],
+	&:has(> [data-tq-part='left-icon']) > [data-tq-part='inactive-content']
+		left var(--tq-icon-size)
+
+	&:has(> [data-tq-part='right-icon']) > [data-tq-part='input'],
+	&:has(> [data-tq-part='right-icon']) > [data-tq-part='inactive-content']
+		right var(--tq-icon-size)
+
+	> [data-tq-part='input']
+		height var(--tq-input-height)
+
+		@container (max-width: 100px)
+			&
+				padding-inline 0
+
+		&[data-tq-has-inactive-content]:not(:focus)
+			opacity 0
+
+		&[data-tq-ignore]
+			pointer-events none
+
+	> [data-tq-part='inactive-content']
+		pointer-events none
+
+		> *
+			pointer-events auto
+
+	> [data-tq-part='input']:focus + [data-tq-part='inactive-content']
+		display none
+
+	> [data-tq-part='left-icon'], > [data-tq-part='right-icon']
+		margin calc((var(--tq-input-height) - var(--tq-icon-size)) / 2)
+		color var(--tq-color-text-mute)
+		transform scale(.8)
+		opacity .7
+		position absolute
+		z-index 100
+		pointer-events none
+		top 0
+
+	> [data-tq-part='left-icon']
+		left 2px
+
+	> [data-tq-part='right-icon']
+		right 2px

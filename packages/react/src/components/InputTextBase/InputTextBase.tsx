@@ -18,11 +18,9 @@ import {
 	useState,
 } from 'react'
 
-import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
 import {Menu} from '../Menu'
 import {Popover} from '../Popover'
-import styles from './InputTextBase.module.styl'
 
 export interface InputTextBaseProps
 	extends InputBoxProps,
@@ -150,29 +148,26 @@ export const InputTextBase = forwardRef<
 				'block-position': blockPosition,
 			}}
 			ref={root}
-			className={classNames(
-				styles.tqInputTextBase,
-				active && styles.active,
-				invalid && styles.invalid,
-				hover && styles.hover,
-				className
-			)}
+			className={className}
+			data-tq-component="input-text-base"
+			data-tq-active={active ? '' : undefined}
+			data-tq-hover={hover ? '' : undefined}
+			data-tq-invalid={invalid ? '' : undefined}
 			onContextMenu={handleContextMenu}
 			data-tq-part="root"
 		>
 			{renderBack?.()}
 			<input
 				ref={input}
-				className={classNames(
-					styles.input,
-					ignoreInput && styles.ignore,
-					hasInactiveContent && styles.hasInactiveContent
-				)}
 				type="text"
 				value={value}
 				disabled={disabled || undefined}
 				aria-invalid={invalid || undefined}
 				data-tq-part="input"
+				data-tq-ignore={ignoreInput ? '' : undefined}
+				data-tq-has-inactive-content={
+					hasInactiveContent ? '' : undefined
+				}
 				onFocus={event => {
 					onChangeFocused?.(true)
 					onFocus?.(event)
@@ -197,20 +192,18 @@ export const InputTextBase = forwardRef<
 				}}
 			/>
 			{hasInactiveContent && (
-				<div className={styles.inactiveContent}>
+				<div data-tq-part="inactive-content">
 					{renderInactiveContent?.()}
 				</div>
 			)}
 			{leftIcon && (
 				<Icon
-					className={classNames(styles.icon, styles.left)}
 					data-tq-part="left-icon"
 					icon={leftIcon}
 				/>
 			)}
 			{rightIcon && (
 				<Icon
-					className={classNames(styles.icon, styles.right)}
 					data-tq-part="right-icon"
 					icon={rightIcon}
 				/>
