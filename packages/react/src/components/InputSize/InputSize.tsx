@@ -6,10 +6,8 @@ import {
 import {type vec2} from 'linearly'
 import {useRef, useState} from 'react'
 
-import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
 import {InputVec} from '../InputVec'
-import styles from './InputSize.module.styl'
 
 export interface InputSizeProps extends InputProps, InputEvents {
 	value: vec2
@@ -29,7 +27,7 @@ export function InputSize({
 	const valueOnEdit = useRef(value)
 
 	return (
-		<div className={styles.tqInputSize}>
+		<div data-tq-component="input-size" data-tq-part="root">
 			<InputVec
 				value={value}
 				icon={['mdi:arrow-left-right', 'mdi:arrow-up-down']}
@@ -53,14 +51,14 @@ export function InputSize({
 				onConfirm={onConfirm}
 			/>
 			<button
-				className={classNames(styles.chain, keepRatio && styles.active)}
 				type="button"
 				disabled={disabled}
 				aria-pressed={keepRatio}
+				data-tq-part="ratio"
 				onClick={() => setKeepRatio(current => !current)}
 			>
 				<Icon
-					className={styles.chainIcon}
+					data-tq-part="ratio-icon"
 					icon={keepRatio ? 'radix-icons:link-1' : 'radix-icons:link-none-1'}
 				/>
 			</button>

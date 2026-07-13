@@ -263,8 +263,8 @@ contain renderer markup only and no copied state transition.
   InputColorChannelValues, InputColorChannelPad, InputColorChannelSlider, and
   InputColor, PaneZUI, PaneExpandable, Parameter, InputComplex, Tooltip, and
   TooltipRoot, PaneModal, PaneModalTabs, PaneModalComplex, Timeline,
-  InputCubicBezier, InputCubicBezierPicker, App, Viewport, and Popover. Both
-  renderers emit the same stable component/part/state
+  InputCubicBezier, InputCubicBezierPicker, App, Viewport, Popover, and
+  InputSize. Both renderers emit the same stable component/part/state
   attributes, consume one shared rule set, and deleted their scoped/CSS-module
   copies. The styles package now emits real component CSS rather than only the
   initial placeholder.

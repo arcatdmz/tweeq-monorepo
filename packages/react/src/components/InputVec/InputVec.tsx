@@ -61,11 +61,15 @@ export function InputVec<T extends readonly number[]>({
 			{value.map((entry, index) => (
 				<InputNumber
 					key={index}
+					data-tq-vector-index={index}
 					value={entry}
 					min={valueAt(min, index)}
 					max={valueAt(max, index)}
 					step={valueAt(step, index)}
 					leftIcon={Array.isArray(icon) ? icon[index] : icon}
+					inlinePosition={
+						index === 0 ? 'start' : index === value.length - 1 ? 'end' : 'middle'
+					}
 					disabled={disabled}
 					invalid={invalid}
 					onChange={next => commitChange(index, next)}

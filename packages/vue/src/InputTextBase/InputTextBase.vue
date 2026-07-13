@@ -163,8 +163,8 @@ function onKeydown(e: KeyboardEvent) {
 			<slot name="inactiveContent" />
 		</div>
 
-		<Icon v-if="leftIcon" class="icon left" :icon="leftIcon" />
-		<Icon v-if="rightIcon" class="icon right" :icon="rightIcon" />
+		<Icon v-if="leftIcon" class="icon left" :icon="leftIcon" data-tq-part="left-icon" />
+		<Icon v-if="rightIcon" class="icon right" :icon="rightIcon" data-tq-part="right-icon" />
 
 		<slot name="front" />
 

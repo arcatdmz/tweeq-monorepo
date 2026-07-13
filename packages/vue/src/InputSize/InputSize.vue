@@ -34,7 +34,7 @@ function recordValueOnEdit() {
 </script>
 
 <template>
-	<div class="TqInputSize">
+	<div class="TqInputSize" data-tq-component="input-size" data-tq-part="root">
 		<InputVec
 			:modelValue="model"
 			:icon="['mdi:arrow-left-right', 'mdi:arrow-up-down']"
@@ -51,54 +51,14 @@ function recordValueOnEdit() {
 			type="button"
 			:disabled="props.disabled"
 			:aria-pressed="keepRatio"
+			data-tq-part="ratio"
 			@click="keepRatio = !keepRatio"
 		>
 			<Icon
 				class="chainIcon"
+				data-tq-part="ratio-icon"
 				:icon="keepRatio ? 'radix-icons:link-1' : 'radix-icons:link-none-1'"
 			/>
 		</button>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqInputSize
-	position relative
-
-.chain
-	position absolute
-	top 0
-	left 50%
-	transform translateX(-50%)
-	width var(--tq-input-height)
-	height var(--tq-input-height)
-	color var(--tq-color-text-subtle)
-	z-index 1
-	padding 0
-	border 0
-	background transparent
-	box-sizing border-box
-
-	&:disabled
-		pointer-events none
-		color var(--tq-color-text-mute)
-
-	&:hover
-		color 'color-mix(in srgb, var(--tq-color-text-mute), transparent 50%)' % ''
-
-	&.active
-		color var(--tq-color-accent)
-
-		&:hover
-			color var(--tq-color-accent-hover)
-
-.chainIcon
-	width 100%
-	height 100%
-	transform scale(.8)
-
-:deep(.TqInputNumber:not(:first-child))
-	.icon.left
-		left calc(var(--tq-input-height) * .3)
-</style>

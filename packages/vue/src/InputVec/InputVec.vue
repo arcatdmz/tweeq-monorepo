@@ -66,6 +66,7 @@ function commitConfirm() {
 		<InputNumber
 			v-for="(v, i) in model"
 			:key="i"
+			:data-tq-vector-index="i"
 			:min="minAt(i)"
 			:max="maxAt(i)"
 			:step="stepAt(i)"

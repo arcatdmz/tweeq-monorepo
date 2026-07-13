@@ -204,12 +204,14 @@ export const InputTextBase = forwardRef<
 			{leftIcon && (
 				<Icon
 					className={classNames(styles.icon, styles.left)}
+					data-tq-part="left-icon"
 					icon={leftIcon}
 				/>
 			)}
 			{rightIcon && (
 				<Icon
 					className={classNames(styles.icon, styles.right)}
+					data-tq-part="right-icon"
 					icon={rightIcon}
 				/>
 			)}

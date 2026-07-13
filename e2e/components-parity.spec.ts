@@ -17,7 +17,10 @@ test('Components page keeps short controls visually faithful to Vue', async ({
 		list.locator('xpath=..').locator('[class*="scrollArrow"]')
 	).toHaveCount(0)
 
-	const chain = page.locator('[class*="tqInputSize"]').first().getByRole('button')
+	const chain = page
+		.locator('[data-tq-component="input-size"]')
+		.first()
+		.getByRole('button')
 	await chain.scrollIntoViewIfNeeded()
 	await expect(chain.locator('svg')).toHaveCSS('width', '24px')
 	await expect(chain.locator('svg')).toHaveCSS('height', '24px')
