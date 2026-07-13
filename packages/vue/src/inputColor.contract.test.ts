@@ -8,7 +8,7 @@ import {
 } from '@tweeq/test-contracts'
 import {createApp, defineComponent, h, nextTick, reactive, ref} from 'vue'
 
-import {InputColor, InputColorPicker} from './InputColor'
+import {InputColor, InputColorPad, InputColorPicker} from './InputColor'
 
 runInputColorContract(async (component, initialProps) => {
 	Object.assign(window, {
@@ -26,14 +26,19 @@ runInputColorContract(async (component, initialProps) => {
 	const Component =
 		component === 'InputColor'
 			? InputColor
-			: component === 'InputColorPicker'
-				? InputColorPicker
-				: throwUnsupported(component)
+			: component === 'InputColorPad'
+				? InputColorPad
+				: component === 'InputColorPicker'
+					? InputColorPicker
+					: throwUnsupported(component)
 	const app = createApp(
 		defineComponent(() => () =>
 			h(Component, {
 				...props,
 				modelValue: value.value,
+				...(component === 'InputColorPad'
+					? {'data-tq-part': 'root'}
+					: {}),
 				pickers: [],
 				presets: [],
 				'onUpdate:modelValue'(next: string) {

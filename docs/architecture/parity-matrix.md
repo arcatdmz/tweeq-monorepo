@@ -51,7 +51,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputButtonToggle | SFC | ✅ | — | shared contract | controlled activation, native disabled state, `aria-pressed`, and stable parts aligned in Phase 4 |
 | InputCheckbox | SFC | ✅ | — | components-parity, text-toggles | |
 | InputCode | SFC | ✅ | `codeEditor` | core diagnostic transform + dropdown-code | wrapper libraries differ; controlled value/cursor, cursor events, diagnostics, theme updates, key isolation, and async unmount guard aligned in Phase 4 |
-| InputColor | SFC | ✅ | `color` | shared contract + core picker/tweak controllers + color-curves | controlled color synchronization, preset/EyeDropper confirm, SSR-safe capability detection, disabled propagation, and multi-selection channel transforms aligned in Phase 4 |
+| InputColor | SFC | ✅ | `color` | shared contract + core picker/tweak controllers + color-curves | controlled color synchronization, preset/EyeDropper confirm, SSR-safe capability detection, native disabled pad behavior, multi-selection channel transforms, stable overlay parts, and canonical pad styling aligned |
 | InputComplex | SFC | ✅ | — | layout-modals | |
 | InputCubicBezier | SFC | ✅ | `cubicBezier` | shared contract + core geometry + color-curves | controlled path, touch/pen/mouse handle drag, clamped point updates, disabled/invalid state, confirm lifecycle, and stable picker parts aligned in Phase 4 |
 | InputDropdown | SFC | ✅ | `dropdown` | shared contract + components-parity, dropdown-code | shared empty/wrap navigation; click confirm, Escape rollback, and listbox ARIA aligned in Phase 4 |

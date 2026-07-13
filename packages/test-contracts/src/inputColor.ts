@@ -28,6 +28,22 @@ export function runInputColorContract(
 			expect(harness.part('root')).not.toBeNull()
 		})
 
+		it('uses native disabled semantics and stable pad styling hooks', async () => {
+			harness = await createHarness('InputColorPad', {
+				value: '#ff0000',
+				disabled: true,
+				invalid: true,
+			})
+			const root = harness.part('root') as HTMLButtonElement
+			expect(root.getAttribute('data-tq-component')).toBe('input-color-pad')
+			expect(root.type).toBe('button')
+			expect(root.disabled).toBe(true)
+			expect(root.getAttribute('aria-invalid')).toBe('true')
+			expect(harness.part('swatch')).not.toBeNull()
+			await harness.activate('root')
+			expect(harness.events()).toEqual([])
+		})
+
 		it('synchronizes EyeDropper changes and confirms', async () => {
 			harness = await createHarness('InputColorPicker', {value: '#ff0000'})
 			await harness.activate('eye-dropper')

@@ -8,6 +8,9 @@ tq-background-checkerboard(color = currentColor)
 	background-position 0 0, 0 0, size 0, size (-1 * size), 0 size
 	background-size 2 * size 2 * size
 
+tq-color-wheel-dot(angle)
+	'radial-gradient(closest-side, black 80%, transparent 100%) calc(50% + sin(%s) * (50% - 6px)) calc(50% - cos(%s) * (50% - 6px)) / 4px 4px' % (angle angle)
+
 reset-viewport('[data-tq-component="viewport"]')
 
 [data-tq-component='input-button-toggle']
@@ -2144,3 +2147,109 @@ reset-viewport('[data-tq-component="viewport"]')
 			position relative
 			height 100%
 			hover-transition(opacity)
+
+[data-tq-component='input-color-pad']
+	width fit-content
+	position relative
+	display flex
+	padding 0
+
+	> [data-tq-part='swatch']
+		position relative
+		overflow hidden
+		border-radius var(--tq-radius-input)
+		width var(--tq-input-height)
+		height var(--tq-input-height)
+		hover-transition(box-shadow)
+		tq-background-checkerboard()
+		use-input-position()
+		box-shadow inset 0 0 0 1px var(--outline)
+
+	&:focus > [data-tq-part='swatch'],
+	&[data-tq-focus] > [data-tq-part='swatch'],
+	&[data-tq-tweaking] > [data-tq-part='swatch'],
+	&:not(:disabled):hover > [data-tq-part='swatch']
+		--outline var(--tq-color-accent) !important
+		box-shadow 0 0 0 1px var(--outline)
+
+[data-tq-component='input-color-pad-popover']
+	width var(--tq-popup-width)
+	max-height calc(100dvh - 16px)
+	overflow-y auto
+	position relative
+	popup-style()
+
+[data-tq-component='input-color-pad-overlay']
+	input-overlay()
+	active-transition(opacity, scale)
+	opacity 1
+	scale 1
+
+	&.tq-input-color-pad-overlay-hidden
+		opacity 0
+		scale .5
+
+	> [data-tq-part='overlay-pad'],
+	> [data-tq-part='wheel'],
+	> [data-tq-part='slider']
+		position fixed
+		border-radius var(--tq-radius-input)
+		width var(--tq-popup-width)
+		overflow hidden
+		active-transition(opacity)
+
+	> [data-tq-part='overlay-pad']
+		position absolute
+		aspect-ratio 1
+		mask linear-gradient(to right, black 4px, transparent 4px, transparent calc(100% - 4px), black calc(100% - 4px)) 0 0, linear-gradient(to bottom, black 4px, transparent 4px, transparent calc(100% - 4px), black calc(100% - 4px)) 0 0
+
+	> [data-tq-part='wheel']
+		aspect-ratio 1
+		border-radius 50%
+		margin-left calc(var(--tq-popup-width) / -2)
+		margin-top -4px
+		mask unquote(tq-color-wheel-dot(0deg) + ',' + tq-color-wheel-dot(60deg) + ',' + tq-color-wheel-dot(120deg) + ',' + tq-color-wheel-dot(180deg) + ',' + tq-color-wheel-dot(240deg) + ',' + tq-color-wheel-dot(300deg) + ', radial-gradient(closest-side, transparent calc(100% - 4.5px), black calc(100% - 4px))')
+		mask-repeat no-repeat
+
+	> [data-tq-part='slider']
+		height calc(.5 * var(--tq-input-height))
+		transform translate(-50%, -50%)
+		color transparent
+		tq-background-checkerboard()
+
+		&[data-tq-vertical]
+			transform translate(-50%, -50%) rotate(-90deg)
+
+	> [data-tq-part='tweak-preview']
+		position absolute
+		overflow hidden
+		width var(--tq-input-height)
+		height var(--tq-input-height)
+		margin calc(var(--tq-input-height) / -2) 0 0 calc(var(--tq-input-height) / -2)
+		pointer-events none
+		active-transition(transform, border-radius)
+		transform scale(1.8)
+		border-radius calc(var(--tq-input-height) / 2)
+		tq-background-checkerboard()
+		box-shadow 0 0 1px 0 var(--tq-color-shadow)
+
+	> [data-tq-part='overlay-label']
+		position absolute
+		transform translate(-50%, calc(-100% - var(--tq-input-height) * 1.7))
+		display flex
+		gap 1em
+		white-space nowrap
+
+		> [data-tq-part='label-pair'] > [data-tq-part='label-value']
+			display inline-block
+			width 3.7em
+			text-align right
+			color var(--tq-color-text)
+
+			&[data-tq-rgb]
+				width 2.2em
+
+@starting-style
+	[data-tq-component='input-color-pad-overlay']
+		opacity 0
+		scale .5

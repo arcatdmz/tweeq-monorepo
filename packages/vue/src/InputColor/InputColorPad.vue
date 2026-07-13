@@ -9,7 +9,14 @@ import {
 import chroma from 'chroma-js'
 import Color from 'colorjs.io'
 import {vec2} from 'linearly'
-import {computed, ref, shallowRef, useTemplateRef, watch} from 'vue'
+import {
+	computed,
+	onBeforeUnmount,
+	ref,
+	shallowRef,
+	useTemplateRef,
+	watch,
+} from 'vue'
 
 import {GlslCanvas} from '../GlslCanvas'
 import {Popover} from '../Popover'
@@ -97,6 +104,7 @@ const tweakWidth = theme.popupWidth
 let localOnTweak: HSVA | null = null
 
 const {origin, dragging: tweaking} = useDrag($button, {
+	disabled: computed(() => props.disabled ?? false),
 	lockPointer: true,
 	onClick() {
 		if (multi.multiSelected) return
@@ -136,6 +144,32 @@ const {origin, dragging: tweaking} = useDrag($button, {
  */
 const wheelTweaking = ref(false)
 let wheelTweakingTimeout: ReturnType<typeof setTimeout> | undefined
+const overlayMounted = ref(false)
+const overlayLeaving = ref(false)
+let overlayLeavingTimeout: ReturnType<typeof setTimeout> | undefined
+
+function finishOverlayLeave() {
+	overlayMounted.value = false
+	overlayLeaving.value = false
+}
+
+watch(tweaking, active => {
+	if (active) {
+		clearTimeout(overlayLeavingTimeout)
+		overlayMounted.value = true
+		overlayLeaving.value = false
+		return
+	}
+	if (!overlayMounted.value) return
+
+	overlayLeaving.value = true
+	overlayLeavingTimeout = setTimeout(finishOverlayLeave, 200)
+})
+
+onBeforeUnmount(() => {
+	clearTimeout(wheelTweakingTimeout)
+	clearTimeout(overlayLeavingTimeout)
+})
 
 useEventListener(
 	$button,
@@ -151,11 +185,13 @@ useEventListener(
 				getHSVAChannel(local.value, 'h') - getHSVAChannel(localOnTweak!, 'h')
 			multi.update(hsva => tweakHSVAChannel(hsva, 'h', delta))
 		}
-		wheelTweaking.value = true
-		clearTimeout(wheelTweakingTimeout)
-		wheelTweakingTimeout = setTimeout(() => {
-			wheelTweaking.value = false
-		}, 500)
+		if (tweaking.value) {
+			wheelTweaking.value = true
+			clearTimeout(wheelTweakingTimeout)
+			wheelTweakingTimeout = setTimeout(() => {
+				wheelTweaking.value = false
+			}, 500)
+		}
 	},
 	{passive: false}
 )
@@ -368,15 +404,23 @@ defineOptions({
 		ref="$button"
 		v-bind="$attrs"
 		class="TqInputColorPad"
-		:class="{focus: (open && temporarilyHidePopup) || multi.subfocus}"
+		type="button"
+		:disabled="disabled"
+		:aria-invalid="invalid || undefined"
+		data-tq-component="input-color-pad"
+		:data-tq-focus="
+			(open && temporarilyHidePopup) || multi.subfocus ? '' : undefined
+		"
+		:data-tq-tweaking="tweaking ? '' : undefined"
+		@focus="emit('focus')"
+		@blur="emit('blur')"
 	>
 		<slot>
 			<div
-				class="default-button"
-				:class="{open, tweaking}"
 				:style="defaultButtonStyle"
 				:inline-position="inlinePosition"
 				:block-position="blockPosition"
+				data-tq-part="swatch"
 			/>
 		</slot>
 	</button>
@@ -386,7 +430,11 @@ defineOptions({
 		placement="bottom-start"
 		@update:open="open = $event"
 	>
-		<div ref="$floating" class="floating">
+		<div
+			ref="$floating"
+			data-tq-component="input-color-pad-popover"
+			data-tq-part="floating"
+		>
 			<InputColorPicker
 				v-model="model"
 				:alpha="alpha"
@@ -396,8 +444,17 @@ defineOptions({
 			/>
 		</div>
 	</Popover>
-	<TweakOverlay v-if="tweaking">
-		<div class="overlay" :style="overlayStyle">
+	<TweakOverlay v-if="tweaking || overlayMounted">
+		<div
+			:class="{
+				'tq-input-color-pad-overlay-hidden': overlayLeaving,
+			}"
+			:style="overlayStyle"
+			data-tq-component="input-color-pad-overlay"
+			:data-tq-tweak-mode="tweakMode"
+			data-tq-part="overlay"
+			@transitionend.self="overlayLeaving && finishOverlayLeave()"
+		>
 			<template
 				v-if="
 					tweakMode === 'pad' ||
@@ -407,13 +464,13 @@ defineOptions({
 				"
 			>
 				<GlslCanvas
-					class="pad"
+					data-tq-part="overlay-pad"
 					:fragmentString="PadFragmentString"
 					:uniforms="padUniforms"
 					:style="padStyle"
 				/>
 				<GlslCanvas
-					class="wheel"
+					data-tq-part="wheel"
 					:fragmentString="WheelFragmentString"
 					:uniforms="wheelUniforms"
 					:style="wheelStyle"
@@ -428,126 +485,25 @@ defineOptions({
 					tweakMode === 'b' ||
 					tweakMode === 'a'
 				"
-				class="slider"
-				:class="{[tweakMode]: true}"
 				:fragmentString="SliderFragmentString"
 				:uniforms="sliderUniforms"
 				:style="sliderStyle"
+				data-tq-part="slider"
+				:data-tq-vertical="tweakMode === 'v' ? '' : undefined"
 			/>
-			<div class="tweak-preview" :style="tweakPreviewStyle" />
-			<Tooltip class="overlay-label" :style="tweakUIOffset">
-				<template v-for="([label, value, rgb], i) in overlayLabel" :key="i">
-					<label>{{ label }}</label>
-					<span class="value" :rgb="rgb">{{ value }}</span>
-				</template>
+			<div data-tq-part="tweak-preview" :style="tweakPreviewStyle" />
+			<Tooltip data-tq-part="overlay-label" :style="tweakUIOffset">
+				<span
+					v-for="([label, value, rgb], i) in overlayLabel"
+					:key="i"
+					data-tq-part="label-pair"
+				>
+					<label>{{ label }}</label>{{ ' ' }}
+					<span data-tq-part="label-value" :data-tq-rgb="rgb ? '' : undefined">
+						{{ value }}
+					</span>
+				</span>
 			</Tooltip>
 		</div>
 	</TweakOverlay>
 </template>
-
-<style lang="stylus" scoped>
-@import './common.styl'
-
-.TqInputColorPad
-	width fit-content
-	position relative
-	display flex
-
-.default-button
-	position relative
-	overflow hidden
-	border-radius var(--tq-radius-input)
-	width var(--tq-input-height)
-	height var(--tq-input-height)
-	hover-transition(box-shadow)
-	background-checkerboard()
-	use-input-position()
-	box-shadow inset 0 0 0 1px var(--outline)
-
-	.TqInputColorPad:focus &,
-	.TqInputColorPad.focus &,
-	&:hover, &.tweaking
-		--outline var(--tq-color-accent) !important
-		box-shadow 0 0 0 1px var(--outline)
-
-.floating
-	width var(--tq-popup-width)
-	position relative
-	popup-style()
-
-.overlay
-	input-overlay()
-	active-transition(opacity, scale)
-	opacity 1
-
-	&.v-enter-from,
-	&.v-leave-to
-		opacity 0
-		scale .5
-
-:is(.pad, .wheel, .slider)
-	position fixed
-	border-radius var(--tq-radius-input)
-	width var(--tq-popup-width)
-	overflow hidden
-	active-transition(opacity)
-
-.pad
-	position absolute
-	aspect-ratio 1
-	mask linear-gradient(to right, black 4px, transparent 4px, transparent calc(100% - 4px), black calc(100% - 4px)) 0 0,
-		linear-gradient(to bottom, black 4px, transparent 4px, transparent calc(100% - 4px), black calc(100% - 4px)) 0 0
-
-.wheel
-	aspect-ratio 1
-	border-radius 50%
-	margin-left calc(var(--tq-popup-width) / -2)
-	margin-top -4px
-
-	dot(angle)
-		'radial-gradient(closest-side, black 80%, transparent 100%) calc(50% + sin(%s) * (50% - 6px)) calc(50% - cos(%s) * (50% - 6px)) / 4px 4px' % (angle angle)
-
-	mask \
-		radial-gradient(closest-side, transparent calc(100% - 4.5px), black calc(100% - 4px)),
-		dot(0deg), dot(60deg), dot(120deg), dot(180deg), dot(240deg), dot(300deg)
-	mask-repeat no-repeat
-
-.slider
-	height calc(0.5 * var(--tq-input-height))
-	transform translate(-50%, -50%)
-	color transparent
-	background-checkerboard()
-
-	&.v
-		transform translate(-50%, -50%) rotate(-90deg)
-
-.tweak-preview
-	position absolute
-	overflow hidden
-	width var(--tq-input-height)
-	height var(--tq-input-height)
-	margin calc(var(--tq-input-height) / -2) 0 0 calc(var(--tq-input-height) / -2)
-	pointer-events none
-	active-transition(transform, border-radius)
-	transform scale(1.8)
-	border-radius calc(var(--tq-input-height) / 2)
-	background-checkerboard()
-	box-shadow 0 0 1px 0px var(--tq-color-shadow)
-
-.overlay-label
-	position absolute
-	transform translate(-50%, calc(-100% - var(--tq-input-height) * 1.7))
-	display flex
-	gap .2em
-
-	.value
-		width 3.7em
-		text-align right
-		color var(--tq-color-text)
-
-		&:not(:last-child)
-			margin-right 1em
-
-		&[rgb]
-			width 2.2em
-</style>

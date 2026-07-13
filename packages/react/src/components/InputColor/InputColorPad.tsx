@@ -30,7 +30,6 @@ import {
 } from 'react'
 import {useStore} from 'zustand'
 
-import {classNames} from '../../classNames'
 import {
 	useCopyPaste,
 	useDrag,
@@ -42,7 +41,6 @@ import {GlslCanvas} from '../GlslCanvas'
 import {Popover} from '../Popover'
 import {Tooltip} from '../Tooltip'
 import {TweakOverlay} from '../TweakOverlay'
-import styles from './InputColorPad.module.styl'
 import {InputColorPicker} from './InputColorPicker'
 
 const COLOR_KEYS = [
@@ -100,6 +98,9 @@ export function InputColorPad({
 	const [floatingFocused, setFloatingFocused] = useState(false)
 	const [local, setLocal] = useState<HSVA>(() => css2hsva(value))
 	const [wheelTweaking, setWheelTweaking] = useState(false)
+	const [overlayMounted, setOverlayMounted] = useState(false)
+	const [overlayLeaving, setOverlayLeaving] = useState(false)
+	const wheelTimeout = useRef<number | undefined>(undefined)
 	const theme = useStore(themeStore)
 	const keys = useKeys(COLOR_KEYS)
 	const tweakMode: ColorChannel | 'pad' =
@@ -203,6 +204,27 @@ export function InputColorPad({
 		if (drag.dragging) setOpen(false)
 	}, [drag.dragging])
 	useEffect(() => {
+		if (drag.dragging) {
+			setOverlayMounted(true)
+			setOverlayLeaving(false)
+			return
+		}
+		if (!overlayMounted) return
+
+		setOverlayLeaving(true)
+		const timeout = window.setTimeout(() => {
+			setOverlayMounted(false)
+			setOverlayLeaving(false)
+		}, 200)
+		return () => window.clearTimeout(timeout)
+	}, [drag.dragging, overlayMounted])
+	useEffect(
+		() => () => {
+			window.clearTimeout(wheelTimeout.current)
+		},
+		[]
+	)
+	useEffect(() => {
 		if (!drag.dragging || !localOnTweak.current) return
 		localOnTweak.current = localRef.current
 		multi.capture()
@@ -228,8 +250,14 @@ export function InputColorPad({
 				const amount = next.h - localOnTweak.current.h
 				multi.update((hsva: HSVA) => tweakHSVAChannel(hsva, 'h', amount))
 			}
-			setWheelTweaking(true)
-			window.setTimeout(() => setWheelTweaking(false), 500)
+			if (drag.dragging) {
+				setWheelTweaking(true)
+				window.clearTimeout(wheelTimeout.current)
+				wheelTimeout.current = window.setTimeout(
+					() => setWheelTweaking(false),
+					500
+				)
+			}
 		},
 		{passive: false}
 	)
@@ -307,13 +335,12 @@ export function InputColorPad({
 				type={props.type ?? 'button'}
 				disabled={disabled}
 				aria-invalid={invalid || undefined}
-				className={classNames(
-					styles.padButton,
-					(open && temporarilyHidePopup) || multi.subfocus
-						? styles.focus
-						: undefined,
-					className
-				)}
+				className={className}
+				data-tq-component="input-color-pad"
+				data-tq-focus={
+					(open && temporarilyHidePopup) || multi.subfocus ? '' : undefined
+				}
+				data-tq-tweaking={drag.dragging ? '' : undefined}
 				onFocus={() => {
 					multi.setFocusing(true)
 					onFocus?.()
@@ -325,14 +352,10 @@ export function InputColorPad({
 			>
 				{children ?? (
 					<div
-						className={classNames(
-							styles.defaultButton,
-							open && styles.open,
-							drag.dragging && styles.tweaking
-						)}
 						style={swatchStyle}
-						data-inline-position={inlinePosition}
-						data-block-position={blockPosition}
+						inline-position={inlinePosition}
+						block-position={blockPosition}
+						data-tq-part="swatch"
 					/>
 				)}
 			</button>
@@ -344,7 +367,8 @@ export function InputColorPad({
 			>
 				<div
 					ref={floating}
-					className={styles.floating}
+					data-tq-component="input-color-pad-popover"
+					data-tq-part="floating"
 					onFocusCapture={() => setFloatingFocused(true)}
 					onBlurCapture={event => {
 						if (!event.currentTarget.contains(event.relatedTarget))
@@ -361,11 +385,24 @@ export function InputColorPad({
 					/>
 				</div>
 			</Popover>
-			{drag.dragging && (
+			{(drag.dragging || overlayMounted) && (
 				<TweakOverlay>
 					<div
-						className={styles.overlay}
+						className={
+							overlayLeaving
+								? 'tq-input-color-pad-overlay-hidden'
+								: undefined
+						}
 						style={{transformOrigin: `${drag.origin[0]}px ${drag.origin[1]}px`}}
+						data-tq-component="input-color-pad-overlay"
+						data-tq-tweak-mode={tweakMode}
+						data-tq-part="overlay"
+						onTransitionEnd={event => {
+							if (overlayLeaving && event.target === event.currentTarget) {
+								setOverlayMounted(false)
+								setOverlayLeaving(false)
+							}
+						}}
 					>
 						{(tweakMode === 'pad' ||
 							tweakMode === 'h' ||
@@ -373,7 +410,7 @@ export function InputColorPad({
 							tweakMode === 'v') && (
 							<>
 								<GlslCanvas
-									className={styles.overlayPad}
+									data-tq-part="overlay-pad"
 									fragmentString={PadFragmentString}
 									uniforms={padUniforms}
 									style={{
@@ -383,7 +420,7 @@ export function InputColorPad({
 									}}
 								/>
 								<GlslCanvas
-									className={styles.wheel}
+									data-tq-part="wheel"
 									fragmentString={WheelFragmentString}
 									uniforms={wheelUniforms}
 									style={{
@@ -396,10 +433,8 @@ export function InputColorPad({
 						)}
 						{tweakMode !== 'pad' && tweakMode !== 'h' && (
 							<GlslCanvas
-								className={classNames(
-									styles.overlaySlider,
-									tweakMode === 'v' && styles.verticalSlider
-								)}
+								data-tq-part="slider"
+								data-tq-vertical={tweakMode === 'v' ? '' : undefined}
 								fragmentString={SliderFragmentString}
 								uniforms={sliderUniforms}
 								style={{
@@ -409,7 +444,7 @@ export function InputColorPad({
 							/>
 						)}
 						<div
-							className={styles.tweakPreview}
+							data-tq-part="tweak-preview"
 							style={{
 								...offsetStyle,
 								color:
@@ -418,13 +453,13 @@ export function InputColorPad({
 										: chroma(displayColor).alpha(1).css(),
 							}}
 						/>
-						<Tooltip className={styles.overlayLabel} style={offsetStyle}>
+						<Tooltip data-tq-part="overlay-label" style={offsetStyle}>
 							{overlayLabel.map(([label, display, isRgb]) => (
-								<span key={label}>
+								<span key={label} data-tq-part="label-pair">
 									<label>{label}</label>{' '}
 									<span
-										className={styles.labelValue}
-										data-rgb={isRgb || undefined}
+										data-tq-part="label-value"
+										data-tq-rgb={isRgb ? '' : undefined}
 									>
 										{display}
 									</span>

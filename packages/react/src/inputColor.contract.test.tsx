@@ -9,7 +9,11 @@ import {
 import {act} from 'react'
 import {createRoot} from 'react-dom/client'
 
-import {InputColor, InputColorPicker} from './components/InputColor'
+import {
+	InputColor,
+	InputColorPad,
+	InputColorPicker,
+} from './components/InputColor'
 
 ;(globalThis as typeof globalThis & {IS_REACT_ACT_ENVIRONMENT: boolean})
 	.IS_REACT_ACT_ENVIRONMENT = true
@@ -34,6 +38,9 @@ runInputColorContract(async (component, initialProps) => {
 			const shared = {
 				...props,
 				value,
+				...(component === 'InputColorPad'
+					? {'data-tq-part': 'root'}
+					: {}),
 				pickers: [],
 				presets: [],
 				onChange(next: string) {
@@ -45,6 +52,8 @@ runInputColorContract(async (component, initialProps) => {
 			root.render(
 				component === 'InputColor' ? (
 					<InputColor {...shared} />
+				) : component === 'InputColorPad' ? (
+					<InputColorPad {...shared} />
 				) : component === 'InputColorPicker' ? (
 					<InputColorPicker {...shared} />
 				) : (
