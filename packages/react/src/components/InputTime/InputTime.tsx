@@ -21,7 +21,6 @@ import {
 	useState,
 } from 'react'
 
-import {classNames} from '../../classNames'
 import {
 	useConfigRef,
 	useDrag,
@@ -32,7 +31,6 @@ import {
 import {InputTextBase, type InputTextBaseHandle} from '../InputTextBase'
 import {Tooltip} from '../Tooltip'
 import {TweakOverlay} from '../TweakOverlay'
-import styles from './InputTime.module.styl'
 
 const TIME_KEYS = ['q', 'Shift', 'Alt', 'h', 'm', 's', 't'] as const
 
@@ -82,9 +80,13 @@ export function InputTime({
 	const [display, setDisplay] = useState(() =>
 		printTime(value, format, frameRate)
 	)
+	const displayRef = useRef(display)
+	displayRef.current = display
 	const [focused, setFocused] = useState(false)
 	const [tweakScaleByHover, setTweakScaleByHover] = useState(0)
 	const [parseErrors, setParseErrors] = useState<string[]>([])
+	const [overlayMounted, setOverlayMounted] = useState(false)
+	const [overlayLeaving, setOverlayLeaving] = useState(false)
 	const keys = useKeys(TIME_KEYS)
 	const keysRef = useRef(keys)
 	keysRef.current = keys
@@ -152,8 +154,21 @@ export function InputTime({
 		() => ({
 			disabled: () => Boolean(propsRef.current.disabled),
 			lockPointer: true,
-			onClick() {
-				base.current?.select()
+			onClick(_state: DragState, event: PointerEvent) {
+				const digit = (event.target as Element | null)?.closest<HTMLElement>(
+					'[data-tq-time-digit]'
+				)
+				const reverseIndex = Number(digit?.dataset.tqDigitIndex)
+				const groups = displayRef.current.split(':')
+				const index = groups.length - reverseIndex - 1
+				if (!digit || !Number.isInteger(reverseIndex) || index < 0) {
+					base.current?.select()
+					return
+				}
+				const start = groups
+					.slice(0, index)
+					.reduce((length, group) => length + group.length + 1, 0)
+				base.current?.select(start, start + groups[index].length)
 			},
 			onDragStart() {
 				tweakLocal.current = valueRef.current
@@ -183,6 +198,21 @@ export function InputTime({
 		[]
 	)
 	const drag = useDrag(target, dragOptions)
+	useEffect(() => {
+		if (drag.dragging) {
+			setOverlayMounted(true)
+			setOverlayLeaving(false)
+			return
+		}
+		if (!overlayMounted) return
+
+		setOverlayLeaving(true)
+		const timeout = window.setTimeout(() => {
+			setOverlayMounted(false)
+			setOverlayLeaving(false)
+		}, 200)
+		return () => window.clearTimeout(timeout)
+	}, [drag.dragging, overlayMounted])
 	const scale = getScale()
 	const radialLine = (turn: number, inner: number, outer: number) => {
 		const degrees = turn * 360 - 90
@@ -235,7 +265,8 @@ export function InputTime({
 		<InputTextBase
 			{...props}
 			ref={base}
-			className={`${styles.tqInputTime} ${className ?? ''}`}
+			className={className}
+			data-tq-input-time=""
 			value={display}
 			inlinePosition={inlinePosition}
 			blockPosition={blockPosition}
@@ -303,18 +334,20 @@ export function InputTime({
 				}
 			}}
 			renderInactiveContent={() => (
-				<div className={styles.digits}>
+				<div data-tq-part="time-digits">
 					{digits ? (
 						digits.map((digit, index) => (
-							<div key={`${digit}-${index}`} className={styles.digitGroup}>
+							<div key={`${digit}-${index}`} data-tq-part="digit-group">
 								<div
-									className={index === scale ? styles.tweak : styles.digit}
-									data-time-digit=""
+									data-tq-time-digit=""
+									data-tq-digit-index={index}
+									data-tq-active={index === scale ? '' : undefined}
+									data-tq-part="digit"
 									onPointerEnter={() => setTweakScaleByHover(index)}
 								>
 									{digit}
 									{index === scale && (
-										<Tooltip className={styles.digitLabel}>
+										<Tooltip data-tq-part="digit-label">
 											<label>
 												{['F', 'Secs', 'Mins', 'Hrs'][index] ?? 'Hrs'}
 											</label>
@@ -322,54 +355,54 @@ export function InputTime({
 									)}
 								</div>
 								{index !== digits.length - 1 && (
-									<div className={styles.separator}>:</div>
+									<div data-tq-part="separator">:</div>
 								)}
 							</div>
 						))
 					) : (
-						<div>{display}</div>
+						<div data-tq-part="frame-display">{display}</div>
 					)}
 				</div>
 			)}
 			renderFront={() =>
-				drag.dragging ? (
+				drag.dragging || overlayMounted ? (
 					<TweakOverlay>
 						<div
-							className={styles.overlay}
 							style={{
 								left: bounds.x + bounds.width / 2,
 								top: bounds.y + bounds.height / 2,
 							}}
+							data-tq-component="input-time-overlay"
+							data-tq-leaving={overlayLeaving ? '' : undefined}
+							data-tq-part="overlay"
+							onTransitionEnd={event => {
+								if (overlayLeaving && event.target === event.currentTarget) {
+									setOverlayMounted(false)
+									setOverlayLeaving(false)
+								}
+							}}
 						>
-							<svg className={styles.overlaySvg} viewBox="0 0 100 100">
-								<path d={meters} className={styles.meters} />
+							<svg viewBox="0 0 100 100" data-tq-part="overlay-svg">
+								<path d={meters} data-tq-tick="meters" />
 								<path
 									d={frameTick}
-									className={classNames(
-										styles.frame,
-										scale === 0 && styles.activeTick
-									)}
+									data-tq-tick="frame"
+									data-tq-active={scale === 0 ? '' : undefined}
 								/>
 								<path
 									d={secondTick}
-									className={classNames(
-										styles.second,
-										scale === 1 && styles.activeTick
-									)}
+									data-tq-tick="second"
+									data-tq-active={scale === 1 ? '' : undefined}
 								/>
 								<path
 									d={minuteTick}
-									className={classNames(
-										styles.minute,
-										scale === 2 && styles.activeTick
-									)}
+									data-tq-tick="minute"
+									data-tq-active={scale === 2 ? '' : undefined}
 								/>
 								<path
 									d={hourTick}
-									className={classNames(
-										styles.hour,
-										scale === 3 && styles.activeTick
-									)}
+									data-tq-tick="hour"
+									data-tq-active={scale === 3 ? '' : undefined}
 								/>
 							</svg>
 						</div>

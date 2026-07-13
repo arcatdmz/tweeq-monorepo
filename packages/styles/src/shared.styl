@@ -2385,3 +2385,95 @@ reset-viewport('[data-tq-component="command-palette"]')
 		> [data-tq-part='action-bind-icon']
 			opacity .5
 			font-size 1.1em
+
+[data-tq-input-time]
+	position relative
+	overflow visible
+
+	[data-tq-part='time-digits']
+		z-index 100
+		position absolute
+		inset 0
+		display flex
+		align-items center
+		justify-content center
+		flex-direction row-reverse
+
+	[data-tq-part='digit-group']
+		display contents
+
+	[data-tq-time-digit]
+		position relative
+		padding .1em .2em
+		border-radius var(--tq-radius-input)
+
+		> [data-tq-part='digit-label']
+			position absolute
+			z-index 1
+			bottom calc(100% + .6em)
+			left 50%
+			transform translate(-50%, 0)
+			display none
+
+	&:hover
+		[data-tq-time-digit][data-tq-active]
+			background set-alpha(--tq-color-text-subtle, .3)
+
+		[data-tq-time-digit] > [data-tq-part='digit-label']
+			display block
+
+	[data-tq-part='separator']
+		padding .1em 0
+		font-weight bold
+		color var(--tq-color-text-mute)
+
+[data-tq-component='input-time-overlay']
+	input-overlay()
+	z-index 0
+	position absolute
+	inset auto
+	pointer-events none
+	active-transition(scale, opacity)
+	width 360px
+	height 360px
+	translate -50% -50%
+	mask radial-gradient(closest-side, transparent 0%, black 50%)
+	opacity 1
+	scale 1
+
+	&[data-tq-leaving]
+		opacity 0
+		scale .5
+
+	> [data-tq-part='overlay-svg']
+		position absolute
+		inset 0
+		overflow visible
+		width 360px
+		height 360px
+
+		> path
+			stroke var(--tq-color-text-subtle)
+			vector-effect non-scaling-stroke
+			fill none
+
+		> [data-tq-tick='frame']
+			stroke-width 10
+			stroke var(--tq-color-border)
+
+		> [data-tq-tick='second']
+			stroke-width 1
+
+		> [data-tq-tick='minute']
+			stroke-width 3
+
+		> [data-tq-tick='hour']
+			stroke-width 5
+
+		> [data-tq-tick][data-tq-active]
+			stroke var(--tq-color-accent)
+
+@starting-style
+	[data-tq-component='input-time-overlay']
+		opacity 0
+		scale .5

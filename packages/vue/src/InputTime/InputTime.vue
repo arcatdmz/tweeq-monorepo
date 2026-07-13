@@ -12,6 +12,7 @@ import {range} from 'lodash-es'
 import {
 	computed,
 	nextTick,
+	onBeforeUnmount,
 	ref,
 	useTemplateRef,
 	watch,
@@ -98,13 +99,16 @@ const {dragging: tweaking} = useDrag($input, {
 	disabled: computed(() => props.disabled),
 	lockPointer: true,
 	onClick(_, e) {
-		const target = e.target as HTMLElement
-		if (!target.classList.contains('digit')) {
+		const digit = (e.target as Element | null)?.closest<HTMLElement>(
+			'[data-tq-time-digit]'
+		)
+		if (!digit) {
 			$input.value!.select()
 		} else {
 			const digitsInOrder = digits.value!.toReversed()
 			const len = digitsInOrder.length
-			const i = len - tweakScale.value - 1
+			const reverseIndex = Number(digit.dataset.tqDigitIndex)
+			const i = len - reverseIndex - 1
 			const str = digitsInOrder.slice(0, i).join(':')
 
 			const start = str.length === 0 ? 0 : str.length + 1
@@ -178,6 +182,31 @@ const multi = useMultiSelectStore().register({
 		emit('confirm')
 	},
 })
+
+const overlayMounted = ref(false)
+const overlayLeaving = ref(false)
+let overlayLeavingTimeout: ReturnType<typeof setTimeout> | undefined
+
+function finishOverlayLeave() {
+	overlayLeavingTimeout = undefined
+	overlayMounted.value = false
+	overlayLeaving.value = false
+}
+
+watch(tweaking, active => {
+	if (active) {
+		clearTimeout(overlayLeavingTimeout)
+		overlayMounted.value = true
+		overlayLeaving.value = false
+		return
+	}
+	if (!overlayMounted.value) return
+
+	overlayLeaving.value = true
+	overlayLeavingTimeout = setTimeout(finishOverlayLeave, 200)
+})
+
+onBeforeUnmount(() => clearTimeout(overlayLeavingTimeout))
 
 //------------------------------------------------------------------------------
 // State management
@@ -356,6 +385,7 @@ const hourTick = computed(() => {
 		v-model:focused="focused"
 		v-model="display"
 		class="TqInputTime"
+		data-tq-input-time=""
 		:inline-position="inlinePosition"
 		:block-position="blockPosition"
 		:ignoreInput="!focused"
@@ -380,138 +410,63 @@ const hourTick = computed(() => {
 		@keydown.exact.shift.down.prevent="increment(-60 * frameRate)"
 	>
 		<template #inactiveContent>
-			<div class="digits">
+			<div data-tq-part="time-digits">
 				<template v-if="digits">
 					<template v-for="(digit, i) in digits" :key="i">
 						<div
-							class="digit"
-							:class="{tweak: tweakScale === i}"
+							data-tq-time-digit=""
+							:data-tq-digit-index="i"
+							:data-tq-active="tweakScale === i ? '' : undefined"
+							data-tq-part="digit"
 							@pointerenter="tweakScaleByHover = i"
 						>
 							{{ digit }}
-							<Tooltip v-if="tweakScale === i" class="digit-label">
+							<Tooltip v-if="tweakScale === i" data-tq-part="digit-label">
 								<label>{{ getDigitLabel(i) }}</label>
 							</Tooltip>
 						</div>
-						<div v-if="i !== digits.length - 1" class="separator">:</div>
+						<div v-if="i !== digits.length - 1" data-tq-part="separator">:</div>
 					</template>
 				</template>
-				<div v-else>
+				<div v-else data-tq-part="frame-display">
 					{{ display }}
 				</div>
 			</div>
 		</template>
 		<template #front>
-			<TweakOverlay v-if="tweaking">
-				<Transition appear>
-					<div class="overlay" :style="overlayStyle">
-						<svg class="overlay-svg" viewBox="0 0 100 100">
-							<!-- <circle cx="50" cy="50" r="50" class="bold gray" /> -->
-							<path :d="meters" class="meters" />
-							<path :d="frameTick" class="frame" :tweaking="tweakScale === 0" />
-							<path
-								:d="secondTick"
-								class="second"
-								:tweaking="tweakScale === 1"
-							/>
-							<path
-								:d="minuteTick"
-								class="minute"
-								:tweaking="tweakScale === 2"
-							/>
-							<path :d="hourTick" class="hour" :tweaking="tweakScale === 3" />
-						</svg>
-					</div>
-				</Transition>
+			<TweakOverlay v-if="tweaking || overlayMounted">
+				<div
+					:style="overlayStyle"
+					data-tq-component="input-time-overlay"
+					:data-tq-leaving="overlayLeaving ? '' : undefined"
+					data-tq-part="overlay"
+					@transitionend.self="overlayLeaving && finishOverlayLeave()"
+				>
+					<svg viewBox="0 0 100 100" data-tq-part="overlay-svg">
+						<path :d="meters" data-tq-tick="meters" />
+						<path
+							:d="frameTick"
+							data-tq-tick="frame"
+							:data-tq-active="tweakScale === 0 ? '' : undefined"
+						/>
+						<path
+							:d="secondTick"
+							data-tq-tick="second"
+							:data-tq-active="tweakScale === 1 ? '' : undefined"
+						/>
+						<path
+							:d="minuteTick"
+							data-tq-tick="minute"
+							:data-tq-active="tweakScale === 2 ? '' : undefined"
+						/>
+						<path
+							:d="hourTick"
+							data-tq-tick="hour"
+							:data-tq-active="tweakScale === 3 ? '' : undefined"
+						/>
+					</svg>
+				</div>
 			</TweakOverlay>
 		</template>
 	</InputTextBase>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqInputTime
-	position relative
-	overflow visible
-
-.digits
-	z-index 100
-	position absolute
-	inset 0
-	display flex
-	align-items center
-	justify-content center
-	flex-direction row-reverse
-
-.digit
-	position relative
-	padding .1em .2em
-	border-radius var(--tq-radius-input)
-
-	.TqInputTime:hover &.tweak
-		background set-alpha(--tq-color-text-subtle, .3)
-
-.digit-label
-	position absolute
-	z-index 1
-	bottom calc(100% + .6em)
-	left 50%
-	transform translate(-50%, 0)
-	display none
-
-	.TqInputTime:hover &
-		display block
-
-.separator
-	padding .1em 0
-	font-weight bold
-	color var(--tq-color-text-mute)
-
-$size = 360px
-
-.overlay
-	input-overlay()
-	z-index 0
-	// top/left come from :style (the input's viewport-space centre); translate
-	// re-centres the box on that point.
-	position absolute
-	inset auto
-	pointer-events none
-	hover-transition(scale, opacity)
-	width $size
-	height $size
-	translate -50% -50%
-	mask radial-gradient(closest-side, transparent 0%, black 50%)
-
-
-	&.v-enter-from,
-	&.v-leave-to
-		opacity 0
-		scale .5
-
-
-.overlay-svg
-	overflow visible
-	width $size !important
-	height $size !important
-
-	path, circle
-		stroke var(--tq-color-text-subtle)
-		vector-effect non-scaling-stroke
-
-	.frame
-		stroke-width 10
-		stroke var(--tq-color-border)
-
-	.second
-		stroke-width 1
-
-	.minute
-		stroke-width 3
-
-	.hour
-		stroke-width 5
-
-	[tweaking=true]
-		stroke var(--tq-color-accent)
-</style>

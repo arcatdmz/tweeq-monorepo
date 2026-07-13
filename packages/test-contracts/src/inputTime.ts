@@ -56,7 +56,9 @@ export function runInputTimeContract(
 				invalid: true,
 			})
 			const input = harness.part('input') as HTMLInputElement
-			expect(harness.part('root')).not.toBeNull()
+			const root = harness.part('root') as HTMLElement
+			expect(root.hasAttribute('data-tq-input-time')).toBe(true)
+			expect(harness.part('frame-display')).not.toBeNull()
 			expect(input.disabled).toBe(true)
 			expect(input.getAttribute('aria-invalid')).toBe('true')
 		})
