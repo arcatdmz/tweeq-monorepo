@@ -56,11 +56,13 @@ function onIconKeydown(event: KeyboardEvent) {
 	<div
 		class="TqTitleBar"
 		:class="{noDrag}"
+		data-tq-component="title-bar"
+		:data-tq-no-drag="noDrag ? '' : undefined"
 		data-tq-part="root"
 		@focusin="hasFocusWithin = true"
 		@focusout="onFocusOut"
 	>
-		<div class="left">
+		<div class="left" data-tq-part="left">
 			<ColorIcon
 				ref="appIcon"
 				class="app-icon"
@@ -69,6 +71,7 @@ function onIconKeydown(event: KeyboardEvent) {
 				role="button"
 				tabindex="0"
 				:aria-label="`${name} menu`"
+				:aria-expanded="isMenuShown"
 				data-tq-part="menu-trigger"
 				@click="toggleMenu"
 				@keydown="onIconKeydown"
@@ -85,73 +88,14 @@ function onIconKeydown(event: KeyboardEvent) {
 					@close="isMenuShown = false"
 				/>
 			</Popover>
-			<span class="app-name">{{ name }}</span>
+			<span class="app-name" data-tq-part="app-name">{{ name }}</span>
 			<slot name="left" />
 		</div>
-		<div class="center">
+		<div class="center" data-tq-part="center">
 			<slot name="center" />
 		</div>
-		<div class="right">
+		<div class="right" data-tq-part="right">
 			<slot name="right" />
 		</div>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-.TqTitleBar
-	--titlebar-area-height: env(titlebar-area-height, 38px)
-
-	position fixed
-	display grid
-	grid-template-columns 1fr min-content 1fr
-	left env(titlebar-area-x, 0)
-	top env(titlebar-area-y, 0)
-	width env(titlebar-area-width, 100%)
-	height var(--titlebar-area-height)
-
-	z-index 100
-	user-select none
-	background linear-gradient(to bottom, var(--tq-color-background), transparent)
-	backdrop-filter blur(2px)
-	gap var(--tq-gap-control)
-	padding calc((var(--titlebar-area-height) - var(--tq-input-height)) / 2) 9px
-	-webkit-app-region: drag
-	app-region: drag
-
-	&.noDrag
-		-webkit-app-region: no-drag
-		app-region: no-drag
-
-	@media (display-mode: window-controls-overlay)
-		background \
-			linear-gradient(to bottom, var(--tq-color-background) 20%, transparent), \
-			linear-gradient(to right, var(--tq-color-background) 0, transparent 15%, transparent 85%, var(--tq-color-background) 100%)
-
-.left, .center, .right
-	display flex
-	align-items center
-	gap var(--tq-gap-control)
-
-	& > *
-		flex-grow 0
-
-	& > :deep(*)
-		-webkit-app-region no-drag
-		app-region no-drag
-
-.right
-	justify-content flex-end
-
-.app-icon
-	height var(--tq-input-height)
-
-	&.shown
-		color var(--tq-color-accent)
-
-.app-name
-	font-family 500
-	font-family var(--tq-font-heading)
-	font-size calc(var(--titlebar-area-height) * .4)
-	margin-right .2em
-	line-height var(--tq-input-height)
-</style>

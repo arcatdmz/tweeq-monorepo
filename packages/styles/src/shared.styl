@@ -949,3 +949,56 @@ reset-viewport('[data-tq-component="viewport"]')
 		width 100%
 		height 100%
 		transform scale(.8)
+
+[data-tq-component='title-bar']
+	--titlebar-area-height env(titlebar-area-height, 38px)
+	position fixed
+	display grid
+	grid-template-columns 1fr min-content 1fr
+	left env(titlebar-area-x, 0)
+	top env(titlebar-area-y, 0)
+	width env(titlebar-area-width, 100%)
+	height var(--titlebar-area-height)
+	z-index 100
+	user-select none
+	background linear-gradient(to bottom, var(--tq-color-background), transparent)
+	backdrop-filter blur(2px)
+	gap var(--tq-gap-control)
+	padding calc((var(--titlebar-area-height) - var(--tq-input-height)) / 2) 9px
+	-webkit-app-region drag
+	app-region drag
+
+	&[data-tq-no-drag]
+		-webkit-app-region no-drag
+		app-region no-drag
+
+	@media (display-mode: window-controls-overlay)
+		background linear-gradient(to bottom, var(--tq-color-background) 20%, transparent), linear-gradient(to right, var(--tq-color-background) 0, transparent 15%, transparent 85%, var(--tq-color-background) 100%)
+
+	[data-tq-part='left'], [data-tq-part='center'], [data-tq-part='right']
+		display flex
+		align-items center
+		gap var(--tq-gap-control)
+
+		> *
+			flex-grow 0
+			-webkit-app-region no-drag
+			app-region no-drag
+
+	[data-tq-part='right']
+		justify-content flex-end
+
+	[data-tq-part='menu-trigger']
+		height var(--tq-input-height)
+		width var(--tq-input-height)
+		cursor pointer
+
+		&[aria-expanded='true']
+			color var(--tq-color-accent)
+
+	[data-tq-part='app-name']
+		font-family var(--tq-font-heading)
+		font-weight 500
+		font-size calc(var(--titlebar-area-height) * .4)
+		margin-right .2em
+		line-height var(--tq-input-height)

@@ -2,11 +2,9 @@ import {actionsStore, decorateActionMenuItems} from '@tweeq/dom'
 import {type HTMLAttributes, type ReactNode, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
-import {classNames} from '../../classNames'
 import {ColorIcon} from '../ColorIcon'
 import {Menu} from '../Menu'
 import {Popover} from '../Popover'
-import styles from './TitleBar.module.styl'
 
 export interface TitleBarProps extends HTMLAttributes<HTMLDivElement> {
 	name: string
@@ -33,11 +31,9 @@ export function TitleBar({
 	return (
 		<div
 			{...props}
-			className={classNames(
-				styles.titleBar,
-				(menuShown || focusWithin) && styles.noDrag,
-				className
-			)}
+			className={className}
+			data-tq-component="title-bar"
+			data-tq-no-drag={menuShown || focusWithin ? '' : undefined}
 			onFocus={() => setFocusWithin(true)}
 			data-tq-part="root"
 			onBlur={event => {
@@ -45,14 +41,14 @@ export function TitleBar({
 					setFocusWithin(false)
 			}}
 		>
-			<div className={styles.left}>
+			<div data-tq-part="left">
 				<ColorIcon
 					ref={appIcon}
-					className={classNames(styles.appIcon, menuShown && styles.shown)}
 					src={icon}
 					role="button"
 					tabIndex={0}
 					aria-label={`${name} menu`}
+					aria-expanded={menuShown}
 					data-tq-part="menu-trigger"
 					onClick={() => setMenuShown(current => !current)}
 					onKeyDown={event => {
@@ -71,11 +67,11 @@ export function TitleBar({
 						onClose={() => setMenuShown(false)}
 					/>
 				</Popover>
-				<span className={styles.appName}>{name}</span>
+				<span data-tq-part="app-name">{name}</span>
 				{left}
 			</div>
-			<div className={styles.center}>{center}</div>
-			<div className={styles.right}>{right}</div>
+			<div data-tq-part="center">{center}</div>
+			<div data-tq-part="right">{right}</div>
 		</div>
 	)
 }
