@@ -79,7 +79,11 @@ function onPopoverUpdateOpen(value: boolean) {
 </script>
 
 <template>
-	<div class="TqPaneExpandable" data-tq-part="root">
+	<div
+		class="TqPaneExpandable"
+		data-tq-component="pane-expandable"
+		data-tq-part="root"
+	>
 		<button
 			ref="$button"
 			class="button"
@@ -91,7 +95,7 @@ function onPopoverUpdateOpen(value: boolean) {
 			@pointerleave="onPointerLeave"
 			@click="onClick"
 		>
-			<Icon class="icon" :icon="displayIcon" />
+			<Icon class="icon" :icon="displayIcon" data-tq-part="icon" />
 		</button>
 		<Popover
 			:reference="$button ?? null"
@@ -102,49 +106,9 @@ function onPopoverUpdateOpen(value: boolean) {
 			exit-transition
 			@update:open="onPopoverUpdateOpen"
 		>
-			<div class="content">
+			<div class="content" data-tq-part="content">
 				<slot />
 			</div>
 		</Popover>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-// Single root so a class / positioning from the consumer falls through cleanly
-// (the Popover is position:fixed, so it doesn't affect this box's size).
-.TqPaneExpandable
-	display inline-flex
-
-// A subtle, frosted, round button. Background is the semi-transparent surface
-// colour; backdrop-filter blurs whatever sits behind it (e.g. the preview).
-.button
-	display grid
-	place-items center
-	width 2rem
-	height 2rem
-	border-radius 9999px
-	background var(--tq-color-surface)
-	backdrop-filter blur(var(--tq-popup-blur))
-	border 1px solid var(--tq-color-border)
-	color var(--tq-color-text-mute)
-	cursor pointer
-	hover-transition(color, background, border-color)
-
-	&:hover, &.open
-		color var(--tq-color-text)
-
-// An integer icon size (--tq-icon-size = 18px) so it centres on a whole-pixel
-// grid inside the 2rem button; a fractional size (e.g. 1.1rem → 17.6px) rounds
-// its left/right gutters unevenly and the glyph drifts a pixel off-centre.
-.icon
-	width var(--tq-icon-size)
-	height var(--tq-icon-size)
-
-// A ParameterGrid dropped straight into the pane sizes to its content rather
-// than a hard-coded width: the label/icon column takes its intrinsic width (it
-// never wraps, see TqParameter) while the value column keeps a usable minimum
-// and grows to fit wider controls. Consumers no longer set a panel width.
-.content :deep(.TqParameterGrid)
-	grid-template-columns max-content minmax(var(--tq-input-comfortable-width), 1fr)
-</style>

@@ -1,10 +1,8 @@
 import {type PopoverPlacement} from '@tweeq/core'
 import {type HTMLAttributes, useEffect, useRef, useState} from 'react'
 
-import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
 import {Popover} from '../Popover'
-import styles from './PaneExpandable.module.styl'
 
 export interface PaneExpandableProps extends HTMLAttributes<HTMLDivElement> {
 	icon: string
@@ -50,14 +48,14 @@ export function PaneExpandable({
 	return (
 		<div
 			{...props}
-			className={classNames(styles.expandable, className)}
+			className={className}
+			data-tq-component="pane-expandable"
 			data-tq-part="root"
 		>
 			<button
 				ref={button}
 				type="button"
 				aria-expanded={internalOpen}
-				className={classNames(styles.button, internalOpen && styles.open)}
 				data-tq-part="trigger"
 				onPointerEnter={() => {
 					if (!persistent || internalOpen) setHovering(true)
@@ -72,7 +70,7 @@ export function PaneExpandable({
 				}}
 			>
 				<Icon
-					className={styles.icon}
+					data-tq-part="icon"
 					icon={internalOpen && hovering ? openIcon : icon}
 				/>
 			</button>
@@ -88,7 +86,7 @@ export function PaneExpandable({
 					setOpen(next)
 				}}
 			>
-				<div className={styles.content}>{children}</div>
+				<div data-tq-part="content">{children}</div>
 			</Popover>
 		</div>
 	)

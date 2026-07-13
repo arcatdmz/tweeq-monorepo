@@ -9,9 +9,7 @@ import {
 	useState,
 } from 'react'
 
-import {classNames} from '../../classNames'
 import {useBndr, useElementBounding} from '../../hooks'
-import styles from './PaneZUI.module.styl'
 
 export type VisibleRect = readonly [vec2, vec2]
 
@@ -67,12 +65,13 @@ export function PaneZUI({
 		<div
 			{...props}
 			ref={root}
-			className={classNames(styles.zui, className)}
+			className={className}
+			data-tq-component="pane-zui"
 			data-tq-part="root"
 		>
 			{background === 'dots' && (
 				<div
-					className={styles.dots}
+					data-tq-part="dots"
 					style={{
 						opacity: dots.opacity,
 						backgroundPosition: `${dots.position[0]}px ${dots.position[1]}px`,
@@ -81,7 +80,6 @@ export function PaneZUI({
 				/>
 			)}
 			<div
-				className={styles.transform}
 				data-tq-part="transform"
 				style={{transform: `matrix(${local.join(',')})`} as CSSProperties}
 			>

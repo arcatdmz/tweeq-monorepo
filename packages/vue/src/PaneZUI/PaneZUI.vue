@@ -78,36 +78,17 @@ const transformStyles = computed(() => {
 		ref="$root"
 		class="TqPaneZUI"
 		:class="{dots: background === 'dots'}"
+		data-tq-component="pane-zui"
 		data-tq-part="root"
 	>
-		<div v-if="background === 'dots'" class="dots" :style="dotStyles" />
+		<div
+			v-if="background === 'dots'"
+			class="dots"
+			data-tq-part="dots"
+			:style="dotStyles"
+		/>
 		<div class="transform" :style="transformStyles" data-tq-part="transform">
 			<slot />
 		</div>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqPaneZUI
-	position relative
-	overflow hidden
-	width 100%
-	height 100%
-
-.dots
-	position absolute
-	inset 0
-	background-image radial-gradient(
-		circle at top left,
-		var(--tq-color-text-mute) 1px,
-		transparent 1px)
-
-.transform
-	position absolute
-	transform-origin 0 0
-	pointer-events none
-
-	& > *
-		pointer-events auto
-</style>
