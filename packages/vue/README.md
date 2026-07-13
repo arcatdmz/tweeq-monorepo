@@ -36,9 +36,9 @@ best effort; consumers own any polyfills. Importing the package and rendering
 its static component output is SSR-safe, while pointer, popover, WebGL, and
 editor interactions activate only in a browser.
 
-`InputCode` and `MonacoEditor` lazily install the renderer's bundled editor
-worker. If the host already defines Monaco's `getWorker` or `getWorkerUrl`
-hook, Tweeq preserves that configuration.
+`InputCode` and `MonacoEditor` lazily install the renderer's bundled editor and
+JSON/CSS/HTML/TypeScript language workers. If the host already defines Monaco's
+`getWorker` or `getWorkerUrl` hook, Tweeq preserves that configuration.
 
 See the repository Vue migration guide and packed `examples/vue-vite`
 application for complete setup.

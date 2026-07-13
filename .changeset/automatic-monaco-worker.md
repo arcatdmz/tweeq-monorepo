@@ -5,5 +5,5 @@
 ---
 
 Provide a renderer-neutral Monaco environment adapter and automatically bundle
-the default editor worker in both renderers, while preserving consumer-supplied
-worker hooks.
+the editor, JSON, CSS, HTML, and TypeScript workers in both renderers, routing
+language labels while preserving consumer-supplied worker hooks.
