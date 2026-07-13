@@ -1,4 +1,4 @@
-import Case from 'case'
+import {getLabelizer} from '@tweeq/core'
 import {computed} from 'vue'
 
 export type Labelizer<T> = (v: T) => string
@@ -36,27 +36,5 @@ export interface LabelizerProps<T> {
 }
 
 export function useLabelizer<T>(props: LabelizerProps<T>) {
-	return computed(() => {
-		if (props.labelizer) return props.labelizer
-
-		const prefix = props.prefix || ''
-		const suffix = props.suffix || ''
-
-		if (!props.labels) {
-			return (v: T) => prefix + Case.capital(String(v)) + suffix
-		}
-
-		const labels = props.labels
-
-		if (labels.length !== props.options.length) {
-			throw new Error(
-				'the length of labels must be the same as the length of options'
-			)
-		}
-
-		return (v: T) => {
-			const index = props.options.indexOf(v)
-			return prefix + labels[index] + suffix
-		}
-	})
+	return computed(() => getLabelizer(props))
 }

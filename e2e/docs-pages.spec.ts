@@ -77,7 +77,11 @@ test('Colors page renders the generated swatches', async ({page}) => {
 	await expect(page.getByTestId('color-swatch')).toHaveCount(24)
 	await expect(page.getByText('error / alert / rec')).toBeVisible()
 	const appearance = page.locator('.color-controls label').first()
-	await expect(appearance.locator('[data-radio-label]').getByText('Light')).toBeVisible()
-	await expect(appearance.locator('[data-radio-label]').getByText('Dark')).toBeVisible()
-	await expect(appearance.locator('[data-radio-label] svg')).toHaveCount(2)
+	await expect(
+		appearance.locator('[data-tq-radio-label]').getByText('Light')
+	).toBeVisible()
+	await expect(
+		appearance.locator('[data-tq-radio-label]').getByText('Dark')
+	).toBeVisible()
+	await expect(appearance.locator('[data-tq-radio-label] svg')).toHaveCount(2)
 })

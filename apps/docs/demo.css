@@ -206,7 +206,7 @@
 	width: 9rem;
 }
 
-.color-controls [data-radio-label] {
+.color-controls [data-tq-radio-label] {
 	gap: 0.35em;
 }
 

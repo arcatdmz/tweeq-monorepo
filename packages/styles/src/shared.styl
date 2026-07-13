@@ -1633,3 +1633,101 @@ reset-viewport('[data-tq-component="viewport"]')
 		> [data-tq-part='overlay-label']
 			opacity 0
 			transform translate(-50%, -100%) scale(.5)
+
+[data-tq-component='input-radio']
+	position relative
+	display flex
+	overflow hidden
+	background var(--tq-color-input)
+	height var(--tq-input-height)
+	border-radius var(--tq-radius-input)
+	padding 0
+	gap 1px
+	hover-transition(background, box-shadow)
+	user-select none
+	touch-action none
+	cursor pointer
+
+	&:focus-within
+		box-shadow 0 0 0 1px var(--tq-color-accent)
+
+	&[data-tq-vertical]
+		flex-direction column
+		height auto
+
+	&[data-tq-icon-only] > [data-tq-part^='option-'] > [data-tq-radio-label]
+		padding 0
+
+	> [data-tq-part='indicator']
+		position absolute
+		top 0
+		left 0
+		border-radius var(--tq-radius-input)
+		background var(--tq-color-accent)
+		pointer-events none
+		z-index 0
+
+		&[data-tq-animating]
+			transition transform var(--tq-hover-transition-duration) ease, width var(--tq-hover-transition-duration) ease, height var(--tq-hover-transition-duration) ease
+
+		&[data-tq-dragging]
+			background var(--tq-color-accent-hover)
+
+	&:has(> [data-tq-part^='option-'] > [data-tq-active]:hover)
+		> [data-tq-part='indicator']
+			background var(--tq-color-accent-hover)
+
+	> [data-tq-part^='option-']
+		position relative
+		z-index 1
+		flex-grow 1
+
+		> input[type='radio']
+			position absolute
+			opacity 0
+
+		> [data-tq-radio-label]
+			display flex
+			line-height var(--tq-input-height)
+			height var(--tq-input-height)
+			border-radius var(--tq-radius-input)
+			overflow hidden
+			text-align center
+			justify-content center
+			align-items center
+			gap .4em
+			white-space nowrap
+			hover-transition(background, color)
+			padding 0 .75em
+
+			&:not([data-tq-active]):hover
+				background var(--tq-color-input-hover)
+
+			&[data-tq-active]
+				color var(--tq-color-on-accent)
+
+			[data-tq-part='option-icon']
+				display block
+				flex none
+
+	> [data-tq-part='ruler']
+		position absolute
+		visibility hidden
+		pointer-events none
+		top 0
+		left 0
+		display flex
+
+		> [data-tq-ruler-item]
+			flex none
+			display flex
+			align-items center
+			gap .4em
+			height var(--tq-input-height)
+			line-height var(--tq-input-height)
+			padding 0 .75em
+			white-space nowrap
+
+			> [data-tq-part='option-icon']
+				display block
+				flex none

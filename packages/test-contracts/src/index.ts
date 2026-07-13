@@ -34,6 +34,7 @@ export {
 	type InputDropdownContractProps,
 	runInputDropdownContract,
 } from './inputDropdown'
+export {type InputRadioContractProps, runInputRadioContract} from './inputRadio'
 export {
 	type InputGroupContractProps,
 	runInputGroupContract,

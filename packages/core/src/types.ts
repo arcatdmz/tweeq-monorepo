@@ -63,7 +63,7 @@ export function getLabelizer<T>(props: LabelizerProps<T>): Labelizer<T> {
 	}
 
 	return (v: T) => {
-		const index = props.options.indexOf(v)
+		const index = props.options.findIndex(option => Object.is(option, v))
 		return prefix + labels[index] + suffix
 	}
 }

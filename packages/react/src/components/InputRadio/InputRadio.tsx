@@ -17,11 +17,9 @@ import {
 	useState,
 } from 'react'
 
-import {classNames} from '../../classNames'
 import {useEventListener, useResizeObserver} from '../../hooks'
 import {Icon} from '../Icon'
 import {useTooltip} from '../Tooltip'
-import styles from './InputRadio.module.styl'
 
 type RadioMode = 'rowFull' | 'rowIcon' | 'colFull' | 'colIcon'
 
@@ -82,8 +80,8 @@ export function InputRadio<T>({
 		() => options.map(option => ({value: option, label: makeLabel(option)})),
 		[makeLabel, options]
 	)
-	const activeIndex = completeOptions.findIndex(
-		option => option.value === value
+	const activeIndex = completeOptions.findIndex(option =>
+		Object.is(option.value, value)
 	)
 	const hasIcons = Boolean(icons?.length)
 	const vertical = mode === 'colFull' || mode === 'colIcon'
@@ -94,8 +92,9 @@ export function InputRadio<T>({
 	const updateIndicator = useCallback(() => {
 		const element = root.current
 		if (!element) return
-		const optionLabels =
-			element.querySelectorAll<HTMLElement>('[data-radio-label]')
+		const optionLabels = element.querySelectorAll<HTMLElement>(
+			'[data-tq-radio-label]'
+		)
 		const active = optionLabels[stateRef.current.activeIndex]
 		if (!active) {
 			setIndicator(null)
@@ -118,7 +117,7 @@ export function InputRadio<T>({
 		const unit = parseFloat(computed.getPropertyValue('--tq-input-height')) || 0
 		const gap = parseFloat(computed.gap) || 0
 		const rulers = element.querySelectorAll<HTMLElement>(
-			'[data-radio-ruler-item]'
+			'[data-tq-ruler-item]'
 		)
 		let sumFull = 0
 		let maxFull = 0
@@ -161,8 +160,9 @@ export function InputRadio<T>({
 	const optionIndexAt = (clientX: number, clientY: number): number => {
 		const element = root.current
 		if (!element) return stateRef.current.activeIndex
-		const optionLabels =
-			element.querySelectorAll<HTMLElement>('[data-radio-label]')
+		const optionLabels = element.querySelectorAll<HTMLElement>(
+			'[data-tq-radio-label]'
+		)
 		for (let i = 0; i < optionLabels.length; i++) {
 			const rect = optionLabels[i].getBoundingClientRect()
 			if (
@@ -206,13 +206,13 @@ export function InputRadio<T>({
 		<ul
 			{...props}
 			ref={root}
-			className={classNames(
-				styles.tqInputRadio,
-				styles[mode],
-				vertical && styles.vertical,
-				!showLabel && styles.iconOnly,
-				className
-			)}
+			className={className}
+			role="radiogroup"
+			data-tq-component="input-radio"
+			data-tq-part="root"
+			data-tq-layout={mode}
+			data-tq-vertical={vertical ? '' : undefined}
+			data-tq-icon-only={!showLabel ? '' : undefined}
 			onPointerDown={(event: PointerEvent<HTMLUListElement>) => {
 				if (event.button !== 0) return
 				event.preventDefault()
@@ -222,12 +222,11 @@ export function InputRadio<T>({
 			}}
 		>
 			{indicator && (
-				<div
-					className={classNames(
-						styles.indicator,
-						animating && styles.animating,
-						dragging && styles.dragging
-					)}
+				<li
+					aria-hidden="true"
+					data-tq-part="indicator"
+					data-tq-animating={animating ? '' : undefined}
+					data-tq-dragging={dragging ? '' : undefined}
 					style={{
 						transform: `translate(${indicator.left}px, ${indicator.top}px)`,
 						width: indicator.width,
@@ -241,12 +240,16 @@ export function InputRadio<T>({
 					tooltips?.[index] ??
 					(!showLabel && icons?.[index] ? option.label : undefined)
 				return (
-					<li key={`${option.label}-${index}`} className={styles.list}>
+					<li
+						key={`${option.label}-${index}`}
+						data-tq-part={`option-${index}`}
+					>
 						<input
 							id={`${id}-${index}`}
 							type="radio"
 							name={id}
 							checked={active}
+							data-tq-part={`radio-${index}`}
 							onChange={() => commit(option.value)}
 							onFocus={onFocus}
 							onBlur={onBlur}
@@ -255,6 +258,7 @@ export function InputRadio<T>({
 							htmlFor={`${id}-${index}`}
 							active={active}
 							tooltip={tooltip}
+							part={`label-${index}`}
 						>
 							{renderOption?.({
 								label: option.label,
@@ -263,10 +267,10 @@ export function InputRadio<T>({
 							}) ?? (
 								<>
 									{icons?.[index] && (
-										<Icon className={styles.icon} icon={icons[index]} />
+										<Icon data-tq-part="option-icon" icon={icons[index]} />
 									)}
 									{(showLabel || !icons?.[index]) && (
-										<span className={styles.text}>{option.label}</span>
+										<span data-tq-part="option-label">{option.label}</span>
 									)}
 								</>
 							)}
@@ -274,17 +278,16 @@ export function InputRadio<T>({
 					</li>
 				)
 			})}
-			<li className={styles.ruler} aria-hidden="true">
+			<li data-tq-part="ruler" aria-hidden="true">
 				{completeOptions.map((option, index) => (
 					<div
 						key={`${option.label}-${index}`}
-						className={styles.rulerItem}
-						data-radio-ruler-item=""
+						data-tq-ruler-item=""
 					>
 						{icons?.[index] && (
-							<Icon className={styles.icon} icon={icons[index]} />
+							<Icon data-tq-part="option-icon" icon={icons[index]} />
 						)}
-						<span className={styles.text}>{option.label}</span>
+						<span data-tq-part="option-label">{option.label}</span>
 					</div>
 				))}
 			</li>
@@ -296,11 +299,13 @@ function RadioLabel({
 	htmlFor,
 	active,
 	tooltip,
+	part,
 	children,
 }: {
 	htmlFor: string
 	active: boolean
 	tooltip?: string
+	part: string
 	children: ReactNode
 }) {
 	const label = useRef<HTMLLabelElement>(null)
@@ -310,8 +315,9 @@ function RadioLabel({
 		<label
 			ref={label}
 			htmlFor={htmlFor}
-			className={active ? styles.active : undefined}
-			data-radio-label=""
+			data-tq-radio-label=""
+			data-tq-part={part}
+			data-tq-active={active ? '' : undefined}
 		>
 			{children}
 		</label>

@@ -59,7 +59,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputGroup | SFC | ✅ | — | shared contract + primitives | fragment/whitespace flattening and horizontal/vertical child positions aligned in Phase 4 |
 | InputNumber | SFC | ✅ | `inputNumber` | shared contract + docs-pages, number-vectors | controlled edits, expressions, configured steps, disabled state, stable parts, decimal precision, and drag-scale protected |
 | InputPosition | SFC | ✅ | `inputTranslate` | shared child contracts + number-vectors | forwards controlled bounds, disabled/invalid state, and lifecycle events to aligned InputTranslate/InputVec adapters |
-| InputRadio | SFC | ✅ | — | text-toggles | |
+| InputRadio | SFC | ✅ | `inputRadio` | text-toggles | **done 2026-07-13**: SameValue selection, controlled updates, object label associations, and focus/blur/confirm lifecycle run against both renderers; stable responsive-layout parts consume one shared rule set |
 | InputRotary | SFC | ✅ | `inputRotary` | shared contract + core controller + rotary-snap + temporal | continuous snap transition, shortest-angle and overlay geometry, native disabled/invalid state, controlled indicator, and stable parts aligned in Phase 4 |
 | InputShuffle | SFC | ✅ | `inputShuffle` | text-toggles | |
 | InputSize | SFC | ✅ | `inputSize` | components-parity, number-vectors | shared aspect-lock controller; native disabled ratio button and `aria-pressed` aligned in Phase 4 |
