@@ -9,12 +9,10 @@ import chroma from 'chroma-js'
 import {type HTMLAttributes, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
-import {classNames} from '../../classNames'
 import {useElementBounding} from '../../hooks'
 import {InputGroup} from '../InputGroup'
 import {InputNumber} from '../InputNumber'
 import {InputString} from '../InputString'
-import styles from './InputColor.module.styl'
 import {InputColorPad} from './InputColorPad'
 
 export interface InputColorProps
@@ -57,13 +55,15 @@ export function InputColor({
 		<InputGroup
 			{...props}
 			ref={root}
-			className={classNames(styles.inputColor, className)}
+			className={className}
 			data-inline-position={inlinePosition}
 			data-block-position={blockPosition}
+			data-tq-component="input-color"
 			data-tq-part="root"
 		>
 			<InputColorPad
-				className={classNames(!showColorCode && styles.onlyPad)}
+				data-tq-layout={!showColorCode ? 'only-pad' : undefined}
+				data-tq-part="pad"
 				value={value}
 				onChange={onChange}
 				alpha={alphaEnabled}
@@ -78,10 +78,8 @@ export function InputColor({
 			/>
 			{showColorCode && (
 				<InputString
-					className={classNames(
-						styles.colorCode,
-						padTweaking && styles.padTweaking
-					)}
+					data-tq-pad-tweaking={padTweaking ? '' : undefined}
+					data-tq-part="color-code"
 					font="monospace"
 					value={opaqueColor}
 					validator={validator.colorCode}
@@ -102,7 +100,7 @@ export function InputColor({
 			)}
 			{alphaEnabled && showColorCode && (
 				<InputNumber
-					className={styles.alpha}
+					data-tq-part="alpha"
 					value={alpha}
 					min={0}
 					max={100}

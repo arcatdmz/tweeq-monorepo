@@ -260,8 +260,8 @@ contain renderer markup only and no copied state transition.
   ParameterGrid, Markdown, InputPosition, BindIcon, TweakOverlay,
   InputNumberScales, Tab, ParameterHeading, InputCode, MonacoEditor, Icon,
   SvgIcon, Ruler, InputColorPicker, InputColorPresets, and
-  InputColorChannelValues, InputColorChannelPad, and InputColorChannelSlider.
-  Both renderers emit the same stable
+  InputColorChannelValues, InputColorChannelPad, InputColorChannelSlider, and
+  InputColor. Both renderers emit the same stable
   component/part/state
   attributes, consume one shared rule set, and deleted their scoped/CSS-module
   copies. The styles package now emits real component CSS rather than only the

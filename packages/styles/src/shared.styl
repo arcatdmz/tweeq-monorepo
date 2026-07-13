@@ -541,3 +541,23 @@ tq-background-checkerboard(color = currentColor)
 
 	[data-tq-part='canvas']
 		tq-background-checkerboard(transparent)
+
+[data-tq-component='input-color']
+	width 100%
+
+	[data-tq-part='pad'][data-tq-layout='only-pad']
+		flex-grow 1
+		width 100%
+
+		> div
+			width 100%
+
+	[data-tq-part='color-code'] input
+		active-transition(text-indent)
+
+	[data-tq-part='color-code'][data-tq-pad-tweaking] input
+		text-indent var(--tq-input-height)
+
+	[data-tq-part='alpha']
+		flex-grow 0
+		width calc(var(--tq-input-height) * 2)

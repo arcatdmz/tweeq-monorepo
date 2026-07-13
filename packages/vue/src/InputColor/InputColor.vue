@@ -58,6 +58,7 @@ function onUpdateAlpha(value: number) {
 		class="TqInputColor"
 		:inline-position="props.inlinePosition"
 		:block-position="props.blockPosition"
+		data-tq-component="input-color"
 		data-tq-part="root"
 	>
 		<InputColorPad
@@ -65,6 +66,8 @@ function onUpdateAlpha(value: number) {
 			v-model="model"
 			v-model:tweaking="padTweaking"
 			:class="{'only-pad': !showColorCode}"
+			:data-tq-layout="!showColorCode ? 'only-pad' : undefined"
+			data-tq-part="pad"
 			:inlinePosition="showColorCode ? 'start' : undefined"
 			@focus="emit('focus')"
 			@blur="emit('blur')"
@@ -74,6 +77,8 @@ function onUpdateAlpha(value: number) {
 			v-if="showColorCode"
 			class="color-code"
 			:class="{'pad-tweaking': padTweaking}"
+			:data-tq-pad-tweaking="padTweaking ? '' : undefined"
+			data-tq-part="color-code"
 			font="monospace"
 			:modelValue="opaqueColor"
 			:validator="V.colorCode"
@@ -88,6 +93,7 @@ function onUpdateAlpha(value: number) {
 		<InputNumber
 			v-if="props.alpha && showColorCode"
 			class="alpha"
+			data-tq-part="alpha"
 			:modelValue="alpha"
 			:validator="V.colorCode"
 			suffix="%"
@@ -103,26 +109,3 @@ function onUpdateAlpha(value: number) {
 		/>
 	</InputGroup>
 </template>
-
-<style lang="stylus" scoped>
-@import './common.styl'
-
-:deep(.only-pad)
-	flex-grow 1
-	width 100%
-
-	.default-button
-		width 100%
-
-.color-code
-	&:deep(input.input)
-		active-transition(text-indent)
-
-	&.pad-tweaking
-		&:deep(input.input)
-			text-indent var(--tq-input-height)
-
-.alpha
-	flex-grow 0
-	width calc(var(--tq-input-height) * 2)
-</style>
