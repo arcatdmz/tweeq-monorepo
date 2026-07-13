@@ -2,7 +2,6 @@ import {normalizeTabId} from '@tweeq/core'
 import {type HTMLAttributes, useContext, useEffect, useMemo} from 'react'
 
 import {classNames} from '../../classNames'
-import styles from './Tab.module.styl'
 import {TabsContext} from './TabsContext'
 
 export interface TabProps extends HTMLAttributes<HTMLElement> {
@@ -35,13 +34,10 @@ export function Tab({
 		<section
 			{...props}
 			id={registration.paneId}
-			className={classNames(
-				'TqTab',
-				styles.tab,
-				active && styles.active,
-				className
-			)}
+			className={classNames('TqTab', active && 'active', className)}
 			data-tab-id={id}
+			data-tq-active={active ? '' : undefined}
+			data-tq-component="tab"
 			data-tq-part={`panel-${id}`}
 			aria-hidden={!active}
 			role="tabpanel"

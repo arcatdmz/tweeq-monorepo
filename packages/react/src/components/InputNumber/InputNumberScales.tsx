@@ -1,7 +1,6 @@
 import {useMemo, useRef} from 'react'
 
 import {useElementBounding} from '../../hooks'
-import styles from './InputNumberScales.module.styl'
 
 export interface InputNumberScalesProps {
 	min?: number
@@ -21,5 +20,12 @@ export function InputNumberScales({min, max, step}: InputNumberScalesProps) {
 		[gap]
 	)
 
-	return <div ref={element} className={styles.scales} style={style} />
+	return (
+		<div
+			ref={element}
+			data-tq-component="input-number-scales"
+			data-tq-part="root"
+			style={style}
+		/>
+	)
 }

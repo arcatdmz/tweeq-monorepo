@@ -39,14 +39,11 @@ const style = computed(() => {
 </script>
 
 <template>
-	<div ref="$el" class="TqInputNumberScales" :style="style" />
+	<div
+		ref="$el"
+		class="TqInputNumberScales"
+		data-tq-component="input-number-scales"
+		data-tq-part="root"
+		:style="style"
+	/>
 </template>
-
-<style lang="stylus" scoped>
-.TqInputNumberScales
-	background-image: linear-gradient(to right, var(--tq-color-border-subtle) 1px, transparent 1px)
-	position absolute
-	inset 0
-	mask linear-gradient(to right, transparent 1px, black 1px, transparent calc(100% - 1px), black calc(100% - 1px))
-	pointer-events none
-</style>

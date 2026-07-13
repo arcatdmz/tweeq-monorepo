@@ -62,6 +62,8 @@ onBeforeUnmount(() => {
 		class="TqTab"
 		:class="{active: isActive}"
 		:data-tab-id="id"
+		:data-tq-active="isActive ? '' : undefined"
+		data-tq-component="tab"
 		:data-tq-part="`panel-${id}`"
 		:aria-hidden="!isActive"
 		role="tabpanel"
@@ -70,19 +72,3 @@ onBeforeUnmount(() => {
 		<slot />
 	</section>
 </template>
-
-<style lang="stylus" scoped>
-
-// Panels stack in one grid cell (parent sizes to the tallest tab, so the modal
-// never jumps on switch); the inactive ones stay laid out but hidden.
-.TqTab
-	height 100%
-
-	// opacity (not visibility) because Monaco sets `visibility: visible` on its
-	// own layers, which would override an inherited `visibility: hidden` and show
-	// through. opacity can't be overridden by a descendant, and keeps the panel
-	// laid out so the wrapper still sizes to the tallest tab.
-	&:not(.active)
-		opacity 0
-		pointer-events none
-</style>

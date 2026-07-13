@@ -5,28 +5,12 @@ defineSlots<{
 }>()
 </script>
 <template>
-	<li class="TqParameterHeading">
-		<div class="heading">
+	<li class="TqParameterHeading" data-tq-component="parameter-heading" data-tq-part="root">
+		<div class="heading" data-tq-part="heading">
 			<slot />
 		</div>
-		<div class="right">
+		<div class="right" data-tq-part="right">
 			<slot name="right" />
 		</div>
 	</li>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqParameterHeading
-	display flex
-	height var(--tq-input-height)
-	line-height var(--tq-input-height)
-	grid-column 1 / 3
-
-.heading
-	font-family var(--tq-font-heading)
-	font-size 14px
-	font-weight bold
-	flex-grow 1
-	white-space nowrap
-</style>

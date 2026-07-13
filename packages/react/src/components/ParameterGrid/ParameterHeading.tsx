@@ -1,7 +1,6 @@
 import {type HTMLAttributes, type ReactNode} from 'react'
 
 import {classNames} from '../../classNames'
-import styles from './ParameterHeading.module.styl'
 
 export interface ParameterHeadingProps extends HTMLAttributes<HTMLLIElement> {
 	right?: ReactNode
@@ -16,10 +15,12 @@ export function ParameterHeading({
 	return (
 		<li
 			{...props}
-			className={classNames('TqParameterHeading', styles.headingRow, className)}
+			className={classNames('TqParameterHeading', className)}
+			data-tq-component="parameter-heading"
+			data-tq-part="root"
 		>
-			<div className={styles.heading}>{children}</div>
-			<div>{right}</div>
+			<div data-tq-part="heading">{children}</div>
+			<div data-tq-part="right">{right}</div>
 		</li>
 	)
 }

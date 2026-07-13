@@ -1,8 +1,6 @@
 import {type HTMLAttributes} from 'react'
 
-import {classNames} from '../../classNames'
 import {MonacoEditor, type MonacoEditorProps} from '../MonacoEditor'
-import styles from './InputCode.module.styl'
 
 export interface InputCodeProps
 	extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'>,
@@ -21,9 +19,14 @@ export function InputCode({
 	...props
 }: InputCodeProps) {
 	return (
-		<div {...props} className={classNames(styles.tqInputCode, className)}>
+		<div
+			{...props}
+			className={className}
+			data-tq-component="input-code"
+			data-tq-part="root"
+		>
 			<MonacoEditor
-				className={styles.monacoEditor}
+				data-tq-part="editor"
 				value={value}
 				onChange={onChange}
 				lang={lang}

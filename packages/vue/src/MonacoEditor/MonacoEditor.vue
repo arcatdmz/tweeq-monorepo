@@ -133,20 +133,14 @@ onBeforeUnmount(() => {
 		v-if="codeEditor"
 		ref="$editor"
 		class="TqMonacoEditor"
+		data-tq-component="monaco-editor"
+		data-tq-part="root"
 		:value="modelValue"
 		:theme="THEME_NAME"
 		:language="lang"
 		:options="editorOptions"
 		@update:value="$emit('update:modelValue', $event)"
 		@editorDidMount="onEditorDidMount"
-		height="100%"
+	height="100%"
 	/>
 </template>
-
-<style lang="stylus" scoped>
-.TqMonacoEditor
-	background transparent !important
-
-:deep(.monaco-editor)
-	--vscode-editor-background transparent !important
-</style>

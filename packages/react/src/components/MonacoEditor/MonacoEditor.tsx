@@ -6,8 +6,6 @@ import type * as Monaco from 'monaco-editor'
 import {type HTMLAttributes, useEffect, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
-import {classNames} from '../../classNames'
-import styles from './MonacoEditor.module.styl'
 
 type MonacoApi = typeof Monaco
 let monacoPromise: Promise<MonacoApi> | undefined
@@ -100,7 +98,9 @@ export function MonacoEditor({
 	return (
 		<div
 			{...props}
-			className={classNames(styles.tqMonacoEditor, className)}
+			className={className}
+			data-tq-component="monaco-editor"
+			data-tq-part="root"
 			onKeyDown={event => event.stopPropagation()}
 			onKeyUp={event => event.stopPropagation()}
 		>
