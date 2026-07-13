@@ -23,9 +23,7 @@ import {
 	type WheelEvent,
 } from 'react'
 
-import {classNames} from '../../classNames'
 import {useDrag, useElementBounding, useResizeObserver} from '../../hooks'
-import styles from './InputDrum.module.styl'
 
 export interface InputDrumProps<T>
 	extends LabelizerProps<T>,
@@ -80,7 +78,7 @@ export function InputDrum<T>({
 		() => options.map(option => ({value: option, label: makeLabel(option)})),
 		[makeLabel, options]
 	)
-	const activeIndex = options.indexOf(value)
+	const activeIndex = options.findIndex(option => Object.is(option, value))
 	const cellWidth = getDrumCellWidth({
 		cellWidth: cellWidthProp,
 		measuredLabelWidth: measuredWidth,
@@ -138,9 +136,10 @@ export function InputDrum<T>({
 	}
 	const setIndex = (index: number) => {
 		const current = stateRef.current
+		if (current.options.length === 0) return
 		const clamped = clampDrumIndex(index, current.options.length)
 		const next = current.options[clamped]
-		if (next !== undefined && !Object.is(next, current.value)) {
+		if (!Object.is(next, current.value)) {
 			current.onChange?.(next)
 		}
 	}
@@ -236,11 +235,7 @@ export function InputDrum<T>({
 		<div
 			{...props}
 			ref={root}
-			className={classNames(
-				styles.tqInputDrum,
-				disabled && styles.disabled,
-				className
-			)}
+			className={className}
 			style={
 				{
 					'--cell-width': `${cellWidth}px`,
@@ -251,16 +246,17 @@ export function InputDrum<T>({
 			block-position={blockPosition}
 			aria-invalid={invalid || undefined}
 			tabIndex={disabled ? -1 : 0}
+			data-tq-component="input-drum"
+			data-tq-disabled={disabled ? '' : undefined}
 			data-tq-part="root"
 			onKeyDown={handleKeyDown}
 			onWheel={handleWheel}
 			onFocus={onFocus}
 			onBlur={onBlur}
 		>
-			<span className={styles.centerMark} data-tq-part="center-mark" />
-			<div className={styles.viewport} data-tq-part="viewport">
+			<span data-tq-part="center-mark" />
+			<div data-tq-part="viewport">
 				<div
-					className={styles.track}
 					data-tq-part="track"
 					style={{
 						transform: `translateX(${transform}px)`,
@@ -270,24 +266,23 @@ export function InputDrum<T>({
 					{completeOptions.map((option, index) => (
 						<div
 							key={`${option.label}-${index}`}
-							className={classNames(
-								styles.cell,
-								index === activeIndex && styles.active,
-								font === 'numeric' && styles.numeric
-							)}
+							data-tq-cell=""
+							data-tq-active={index === activeIndex ? '' : undefined}
+							data-tq-numeric={font === 'numeric' ? '' : undefined}
 							data-tq-part={index === activeIndex ? 'active-cell' : 'cell'}
 						>
 							{option.label}
-							<span className={styles.tick} />
+							<span data-tq-part="tick" />
 						</div>
 					))}
 				</div>
 			</div>
-			<div ref={measureRoot} className={styles.measure} aria-hidden="true">
+			<div ref={measureRoot} data-tq-part="measure" aria-hidden="true">
 				{completeOptions.map((option, index) => (
 					<span
 						key={`${option.label}-${index}`}
-						className={font === 'numeric' ? styles.numeric : undefined}
+						data-tq-measure-item=""
+						data-tq-numeric={font === 'numeric' ? '' : undefined}
 					>
 						{option.label}
 					</span>

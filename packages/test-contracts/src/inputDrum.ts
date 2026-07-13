@@ -3,8 +3,9 @@ import {afterEach, describe, expect, it} from 'vitest'
 import type {RendererHarness, RendererHarnessFactory} from './harness'
 
 export interface InputDrumContractProps {
-	value: string
-	options: string[]
+	value: unknown
+	options: unknown[]
+	labels?: string[]
 	disabled?: boolean
 	invalid?: boolean
 }
@@ -54,6 +55,22 @@ export function runInputDrumContract(
 			})
 			await harness.key({type: 'down', key: '2'}, 'root')
 			expect(harness.value()).toBe('200')
+		})
+
+		it('uses SameValue identity and permits undefined options', async () => {
+			harness = await createHarness('InputDrum', {
+				value: NaN,
+				options: [NaN, undefined, 'Ready'],
+				labels: ['Not a number', 'Unset', 'Ready'],
+			})
+			expect(harness.part('active-cell')?.textContent).toContain(
+				'Not a number'
+			)
+
+			await harness.key({type: 'down', key: 'ArrowRight'}, 'root')
+			expect(harness.value()).toBeUndefined()
+			await harness.key({type: 'down', key: 'ArrowRight'}, 'root')
+			expect(harness.value()).toBe('Ready')
 		})
 
 		it('consumes multiple wheel steps in one event', async () => {

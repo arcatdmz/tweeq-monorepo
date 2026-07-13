@@ -45,7 +45,7 @@ runInputDrumContract(async (component, initialProps) => {
 	const harness: RendererHarness<InputDrumContractProps> = {
 		async update(next) {
 			props = {...props, ...next}
-			if (next.value !== undefined) value = next.value
+			if ('value' in next) value = next.value
 			await render()
 		},
 		part: name => container.querySelector(`[data-tq-part="${name}"]`),

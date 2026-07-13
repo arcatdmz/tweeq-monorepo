@@ -55,7 +55,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputComplex | SFC | ✅ | — | layout-modals | |
 | InputCubicBezier | SFC | ✅ | `cubicBezier` | shared contract + core geometry + color-curves | controlled path, touch/pen/mouse handle drag, clamped point updates, disabled/invalid state, confirm lifecycle, and stable picker parts aligned in Phase 4 |
 | InputDropdown | SFC | ✅ | `dropdown` | shared contract + components-parity, dropdown-code | shared empty/wrap navigation; click confirm, Escape rollback, and listbox ARIA aligned in Phase 4 |
-| InputDrum | SFC | ✅ | `inputDrum` | shared contract + core controller + temporal | controlled selection, keyboard/type-ahead, multi-step wheel input, disabled/invalid state, layout, drag math, and stable parts aligned in Phase 4 |
+| InputDrum | SFC | ✅ | `inputDrum` | shared contract + core controller + temporal | **done 2026-07-13**: controlled selection including SameValue/undefined options, keyboard/type-ahead, multi-step wheel input, disabled/invalid state, layout, drag math, stable parts, and canonical cross-browser masking/feedback are aligned |
 | InputGroup | SFC | ✅ | — | shared contract + primitives | fragment/whitespace flattening and horizontal/vertical child positions aligned in Phase 4 |
 | InputNumber | SFC | ✅ | `inputNumber` | shared contract + docs-pages, number-vectors | controlled edits, expressions, configured steps, disabled state, stable parts, decimal precision, and drag-scale protected |
 | InputPosition | SFC | ✅ | `inputTranslate` | shared child contracts + number-vectors | forwards controlled bounds, disabled/invalid state, and lifecycle events to aligned InputTranslate/InputVec adapters |

@@ -9,7 +9,7 @@ import {
 	getDrumClickOffset,
 } from '@tweeq/core'
 import {useElementBounding, useResizeObserver} from '@vueuse/core'
-import {computed, onMounted, ref, shallowRef, watch} from 'vue'
+import {computed, onBeforeUnmount, onMounted, ref, shallowRef, watch} from 'vue'
 
 import {type InputEmits, useLabelizer} from '../types'
 import {useDrag} from '../use/useDrag'
@@ -27,7 +27,9 @@ const completeOptions = computed(() =>
 	props.options.map(value => ({value, label: labelizer.value(value)}))
 )
 
-const activeIndex = computed(() => props.options.indexOf(model.value))
+const activeIndex = computed(() =>
+	props.options.findIndex(option => Object.is(option, model.value))
+)
 
 const disabled = computed(() => props.disabled ?? false)
 
@@ -82,8 +84,9 @@ function clampIndex(i: number) {
 }
 
 function setIndex(i: number) {
+	if (props.options.length === 0) return
 	const next = props.options[clampIndex(i)]
-	if (next !== undefined && !Object.is(next, model.value)) {
+	if (!Object.is(next, model.value)) {
 		model.value = next
 	}
 }
@@ -163,6 +166,7 @@ const trackStyle = computed(() => ({
 let wheelAccum = 0
 function onWheel(e: WheelEvent) {
 	if (disabled.value) return
+	e.preventDefault()
 	const consumed = consumeDrumWheel(wheelAccum, e.deltaX || e.deltaY)
 	wheelAccum = consumed.remainder
 	if (consumed.steps) setIndex(activeIndex.value + consumed.steps)
@@ -212,6 +216,11 @@ function onKeyDown(e: KeyboardEvent) {
 		}
 	}
 }
+
+onBeforeUnmount(() => {
+	clearTimeout(animTimer)
+	clearTimeout(typeTimer)
+})
 </script>
 
 <template>
@@ -227,9 +236,11 @@ function onKeyDown(e: KeyboardEvent) {
 		:block-position="blockPosition"
 		:aria-invalid="invalid || undefined"
 		:tabindex="disabled ? -1 : 0"
+		data-tq-component="input-drum"
+		:data-tq-disabled="disabled ? '' : undefined"
 		data-tq-part="root"
 		@keydown="onKeyDown"
-		@wheel.prevent="onWheel"
+		@wheel="onWheel"
 		@focus="emit('focus')"
 		@blur="emit('blur')"
 	>
@@ -240,160 +251,31 @@ function onKeyDown(e: KeyboardEvent) {
 			<div class="track" :style="trackStyle" data-tq-part="track">
 				<div
 					v-for="(op, i) in completeOptions"
-					:key="op.label"
+					:key="`${op.label}-${i}`"
 					class="cell"
 					:class="{active: i === activeIndex, numeric: font === 'numeric'}"
+					data-tq-cell=""
+					:data-tq-active="i === activeIndex ? '' : undefined"
+					:data-tq-numeric="font === 'numeric' ? '' : undefined"
 					:data-tq-part="i === activeIndex ? 'active-cell' : 'cell'"
 				>
 					{{ op.label }}
-					<span class="tick" />
+					<span class="tick" data-tq-part="tick" />
 				</div>
 			</div>
 		</div>
 		<!-- Off-screen ruler: same font/padding as the cells, intrinsic width, so
 			measuring the widest label drives the (uniform) cell width. -->
-		<div ref="$measure" class="measure" aria-hidden="true">
+		<div ref="$measure" class="measure" data-tq-part="measure" aria-hidden="true">
 			<span
-				v-for="op in completeOptions"
-				:key="op.label"
+				v-for="(op, i) in completeOptions"
+				:key="`${op.label}-${i}`"
 				:class="{numeric: font === 'numeric'}"
+				data-tq-measure-item=""
+				:data-tq-numeric="font === 'numeric' ? '' : undefined"
 			>
 				{{ op.label }}
 			</span>
 		</div>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqInputDrum
-	position relative
-	// Fill the slot inside an InputGroup like the other fields; the track is
-	// absolutely positioned, so keep a min-width (≈two labels: the centre value
-	// plus a half-label peeking on each side) so it never collapses.
-	flex-grow 1
-	min-width calc(var(--label-width) * 2)
-	height var(--tq-input-height)
-	border-radius var(--tq-radius-input)
-	background var(--tq-color-input)
-	overflow hidden
-	cursor ew-resize
-	user-select none
-	touch-action none
-	hover-transition(background, box-shadow)
-	use-input-position()
-
-	&:hover
-		background var(--tq-color-input-hover)
-
-	// Keyboard focus only (a click/drag shouldn't flash the ring), matching the
-	// other inputs' accent outline.
-	&:focus-visible
-		box-shadow 0 0 0 1px var(--tq-color-accent)
-		outline none
-
-	&.disabled
-		opacity 0.5
-		pointer-events none
-
-// Clips + fades the strip here (not on the root) so the focus ring stays crisp.
-// The fade band is a fixed width (≈one cell), not a percentage, so a wider drum
-// keeps more crisp candidates in the middle and just fades the edges — several
-// options peek past the centre instead of only one.
-.viewport
-	position absolute
-	inset 0
-	overflow hidden
-	--fade calc(var(--cell-width) * 0.6)
-	mask-image linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent)
-	-webkit-mask-image linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent)
-
-.track
-	position absolute
-	top 0
-	left 0
-	height 100%
-	display flex
-	align-items center
-	will-change transform
-	transition transform 0.2s cubic-bezier(0.22, 1, 0.36, 1)
-
-.cell
-	position relative
-	flex 0 0 auto
-	width var(--cell-width)
-	height 100%
-	display flex
-	align-items center
-	justify-content center
-	text-align center
-	white-space nowrap
-	border-radius var(--tq-radius-input)
-	color var(--tq-color-text-subtle)
-	hover-transition(color, background)
-
-	&.numeric
-		font-numeric()
-
-	&.active
-		color var(--tq-color-text)
-
-	// Non-active values highlight on hover and show a pointer cursor: a click
-	// jumps straight to that value (handled in onClick).
-	&:not(.active)
-		cursor pointer
-
-		&:hover
-			color var(--tq-color-text)
-			background var(--tq-color-input-hover)
-
-// Per-value ruler tick: faint, sits under each value and rides the track.
-.tick
-	position absolute
-	bottom 2px
-	left 50%
-	transform translateX(-50%)
-	width 1px
-	height 3px
-	border-radius 1px
-	background var(--tq-color-text-subtle)
-	opacity 0.5
-	pointer-events none
-
-// Fixed centre line at the selection point: spans the full height and runs
-// behind the labels (it's before .viewport in the DOM). Outside .viewport so the
-// mask never fades it.
-.center-mark
-	position absolute
-	top 0
-	bottom 0
-	left 50%
-	transform translateX(-50%)
-	width 1px
-	// The line runs behind the labels. Full accent reads fine on light text
-	// (dark mode), but in light mode it shows through the dark centre label and
-	// hurts legibility — soften it to the pale accent there only.
-	background var(--tq-color-accent)
-	pointer-events none
-
-	[data-color-mode='light'] &
-		background var(--tq-color-accent-soft)
-
-// Hidden measuring row: never constrained, so each span is its natural width.
-.measure
-	position absolute
-	top 0
-	left 0
-	visibility hidden
-	pointer-events none
-	display flex
-	white-space nowrap
-
-	span
-		flex 0 0 auto
-		// Breathing room added around the widest label to form the cell width.
-		padding 0 0.6em
-
-		&.numeric
-			font-numeric()
-</style>

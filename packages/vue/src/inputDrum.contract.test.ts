@@ -24,7 +24,7 @@ runInputDrumContract(async (component, initialProps) => {
 			h(InputDrum, {
 				...props,
 				modelValue: value.value,
-				'onUpdate:modelValue'(next: string) {
+				'onUpdate:modelValue'(next: unknown) {
 					value.value = next
 					captured.push({name: 'change', payload: [next]})
 				},
@@ -37,7 +37,7 @@ runInputDrumContract(async (component, initialProps) => {
 	const harness: RendererHarness<InputDrumContractProps> = {
 		async update(next) {
 			Object.assign(props, next)
-			if (next.value !== undefined) value.value = next.value
+			if ('value' in next) value.value = next.value
 			await nextTick()
 		},
 		part: name => container.querySelector(`[data-tq-part="${name}"]`),
