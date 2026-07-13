@@ -1,7 +1,5 @@
 import {type SVGProps} from 'react'
 
-import {classNames} from '../../classNames'
-import styles from './SvgIcon.module.styl'
 
 export interface SvgIconProps
 	extends Omit<SVGProps<SVGSVGElement>, 'strokeWidth'> {
@@ -21,13 +19,10 @@ export function SvgIcon({
 }: SvgIconProps) {
 	return (
 		<svg
-			className={classNames(
-				styles.tqSvgIcon,
-				mode === 'inline' && styles.inline,
-				mode === 'block' && styles.block,
-				nonStrokeScaling && styles.nonStrokeScaling,
-				className
-			)}
+			className={className}
+			data-tq-component="svg-icon"
+			data-tq-mode={mode}
+			data-tq-non-stroke-scaling={nonStrokeScaling ? '' : undefined}
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 32 32"
 			width="32"

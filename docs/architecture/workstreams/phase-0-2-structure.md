@@ -258,8 +258,8 @@ contain renderer markup only and no copied state transition.
 - Style convergence has started with the first primitive/control families:
   buttons, switches, indicators, ColorIcon/GlslCanvas, InputAngle, InputGroup,
   ParameterGrid, Markdown, InputPosition, BindIcon, TweakOverlay,
-  InputNumberScales, Tab, ParameterHeading, InputCode, and MonacoEditor. Both
-  renderers emit the same stable
+  InputNumberScales, Tab, ParameterHeading, InputCode, MonacoEditor, Icon,
+  SvgIcon, and Ruler. Both renderers emit the same stable
   component/part/state
   attributes, consume one shared rule set, and deleted their scoped/CSS-module
   copies. The styles package now emits real component CSS rather than only the

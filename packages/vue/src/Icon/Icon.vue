@@ -28,8 +28,16 @@ defineOptions({
 		class="TqIcon iconify"
 		:icon="icon.value"
 		v-bind="$attrs"
+		data-tq-component="icon"
+		data-tq-variant="iconify"
 	/>
-	<div v-else-if="icon.type === 'char'" class="TqIcon char" v-bind="$attrs">
+	<div
+		v-else-if="icon.type === 'char'"
+		class="TqIcon char"
+		v-bind="$attrs"
+		data-tq-component="icon"
+		data-tq-variant="char"
+	>
 		{{ icon.value }}
 	</div>
 	<svg
@@ -40,22 +48,9 @@ defineOptions({
 		viewBox="0 0 24 24"
 		class="TqIcon fill"
 		v-bind="$attrs"
+		data-tq-component="icon"
+		data-tq-variant="fill"
 	>
 		<path fill="currentColor" :d="icon.value" />
 	</svg>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqIcon
-	width var(--tq-icon-size)
-	height var(--tq-icon-size)
-
-.char
-	line-height 100%
-	font-size 1.2em
-	text-align center
-	display flex
-	align-items center
-	justify-content center
-</style>

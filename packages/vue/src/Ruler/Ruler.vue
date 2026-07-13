@@ -61,7 +61,13 @@ useBndr($root, el => {
 })
 </script>
 <template>
-	<div ref="$root" class="TqRuler" :style="rootStyle" data-tq-part="root">
+	<div
+		ref="$root"
+		class="TqRuler"
+		:style="rootStyle"
+		data-tq-component="ruler"
+		data-tq-part="root"
+	>
 		<div class="content" data-tq-part="content">
 			<slot />
 		</div>
@@ -76,20 +82,3 @@ useBndr($root, el => {
 		</div>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-.TqRuler
-	position relative
-	background-image linear-gradient(to right, var(--tq-color-border) 1px, transparent 1px)
-
-.content, .scale
-	position absolute
-	inset 0
-
-.scale
-	pointer-events none
-	border-left 1px solid var(--tq-color-text-mute)
-	font-size 9px
-	color var(--tq-color-text-mute)
-	text-indent 0.4em
-</style>

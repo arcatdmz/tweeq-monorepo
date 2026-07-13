@@ -2,8 +2,6 @@ import {Icon as Iconify, type IconProps as IconifyProps} from '@iconify/react'
 import {parseIcon} from '@tweeq/core'
 import {type HTMLAttributes, useEffect} from 'react'
 
-import {classNames} from '../../classNames'
-import styles from './Icon.module.styl'
 import {rememberIcon} from './iconCache'
 
 export interface IconProps extends Omit<IconifyProps, 'icon'> {
@@ -17,19 +15,13 @@ export function Icon({icon: source, className, ...props}: IconProps) {
 		if (icon.type === 'iconify') rememberIcon(icon.value)
 	}, [icon.type, icon.value])
 
-	const rootClassName = classNames(
-		styles.tqIcon,
-		icon.type === 'iconify' && styles.iconify,
-		icon.type === 'char' && styles.char,
-		icon.type === 'fill' && styles.fill,
-		className
-	)
-
 	if (icon.type === 'char') {
 		return (
 			<div
 				{...(props as unknown as HTMLAttributes<HTMLDivElement>)}
-				className={rootClassName}
+				className={className}
+				data-tq-component="icon"
+				data-tq-variant="char"
 			>
 				{icon.value}
 			</div>
@@ -44,12 +36,22 @@ export function Icon({icon: source, className, ...props}: IconProps) {
 				height="24"
 				viewBox="0 0 24 24"
 				{...props}
-				className={rootClassName}
+				className={className}
+				data-tq-component="icon"
+				data-tq-variant="fill"
 			>
 				<path fill="currentColor" d={icon.value} />
 			</svg>
 		)
 	}
 
-	return <Iconify icon={icon.value} {...props} className={rootClassName} />
+	return (
+		<Iconify
+			icon={icon.value}
+			{...props}
+			className={className}
+			data-tq-component="icon"
+			data-tq-variant="iconify"
+		/>
+	)
 }

@@ -1,6 +1,9 @@
 <template>
 	<svg
 		class="TqSvgIcon"
+		data-tq-component="svg-icon"
+		:data-tq-mode="mode"
+		:data-tq-non-stroke-scaling="nonStrokeScaling ? '' : undefined"
 		xmlns="http://www.w3.org/2000/svg"
 		:class="{
 			inline: mode === 'inline',
@@ -35,25 +38,3 @@ export default defineComponent({
 	},
 })
 </script>
-
-<style lang="stylus" scoped>
-.TqSvgIcon
-	fill none
-	stroke currentColor
-	stroke-linecap butt
-	stroke-linejoin miter
-	stroke-width 2
-
-	&.inline
-		display inline-block
-		width 1em
-		height 1em
-		vertical-align middle
-
-	&.block
-		display block
-
-	&.non-stroke-scaling
-		*
-			vector-effect non-scaling-stroke
-</style>

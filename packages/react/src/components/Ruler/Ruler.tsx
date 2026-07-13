@@ -11,7 +11,6 @@ import {type HTMLAttributes, type ReactNode, useRef} from 'react'
 
 import {classNames} from '../../classNames'
 import {useBndr, useElementBounding} from '../../hooks'
-import styles from './Ruler.module.styl'
 
 export interface RulerProps
 	extends Omit<HTMLAttributes<HTMLDivElement>, 'onDrag'> {
@@ -50,18 +49,18 @@ export function Ruler({
 		<div
 			{...props}
 			ref={root}
-			className={classNames(styles.tqRuler, className)}
+			className={classNames('TqRuler', className)}
 			style={{
 				backgroundSize: `${pixelsPerUnit}px 100%`,
 				backgroundPosition: `${-range[0] * pixelsPerUnit}px 0`,
 			}}
+			data-tq-component="ruler"
 			data-tq-part="root"
 		>
-			<div className={styles.content} data-tq-part="content">{children}</div>
+			<div data-tq-part="content">{children}</div>
 			{renderedScales.map(scale => (
 				<div
 					key={scale.value}
-					className={styles.scale}
 					style={{
 						transform: `translateX(${getRulerScaleOffset(scale.value, range, pixelsPerUnit)}px)`,
 						opacity: scale.opacity ?? 1,
