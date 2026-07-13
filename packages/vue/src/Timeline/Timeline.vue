@@ -183,8 +183,8 @@ function offsetStyle(offset: number) {
 </script>
 
 <template>
-	<div class="TqTimeline" data-tq-part="root">
-		<div class="container">
+	<div class="TqTimeline" data-tq-component="timeline" data-tq-part="root">
+		<div class="container" data-tq-part="container">
 			<div
 				ref="$root"
 				class="fixed"
@@ -205,33 +205,3 @@ function offsetStyle(offset: number) {
 		</div>
 	</div>
 </template>
-
-<style scoped lang="stylus">
-
-.TqTimeline
-	position relative
-	display grid
-	grid-template-rows 1fr var(--tq-scrollbar-width) 2px
-	overflow hidden
-
-.container
-	position relative
-	overflow hidden
-	width 100%
-	height 100%
-
-
-.fixed
-	position absolute
-	inset 0
-
-
-.scrollbar
-	position relative
-
-.knob
-	position absolute
-	height 100%
-	border-radius 9999px
-	background 'color-mix(in srgb, var(--tq-color-text) 20%, transparent)' % ''
-</style>

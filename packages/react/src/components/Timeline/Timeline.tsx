@@ -22,7 +22,6 @@ import {
 
 import {classNames} from '../../classNames'
 import {useElementBounding} from '../../hooks'
-import styles from './Timeline.module.styl'
 
 export interface TimelineRenderProps {
 	range: vec2
@@ -184,21 +183,21 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(
 		return (
 			<div
 				{...props}
-				className={classNames(styles.tqTimeline, className)}
+				className={classNames('TqTimeline', className)}
+				data-tq-component="timeline"
 				data-tq-part="root"
 			>
-				<div className={styles.container}>
+				<div data-tq-part="container">
 					<div
 						ref={fixed}
-						className={styles.fixed}
 						onWheel={onWheel}
 						data-tq-part="fixed"
 					>
 						{children?.({range, visibleFrameRange, rangeStyle, offsetStyle})}
 					</div>
 				</div>
-				<div className={styles.scrollbar} data-tq-part="scrollbar">
-					<div className={styles.knob} style={barStyle} data-tq-part="knob" />
+				<div data-tq-part="scrollbar">
+					<div style={barStyle} data-tq-part="knob" />
 					{renderScrollbarRight?.()}
 				</div>
 			</div>

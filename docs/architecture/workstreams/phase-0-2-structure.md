@@ -262,8 +262,8 @@ contain renderer markup only and no copied state transition.
   SvgIcon, Ruler, InputColorPicker, InputColorPresets, and
   InputColorChannelValues, InputColorChannelPad, InputColorChannelSlider, and
   InputColor, PaneZUI, PaneExpandable, Parameter, InputComplex, Tooltip, and
-  TooltipRoot, PaneModal, PaneModalTabs, and PaneModalComplex. Both renderers
-  emit the same stable component/part/state
+  TooltipRoot, PaneModal, PaneModalTabs, PaneModalComplex, and Timeline. Both
+  renderers emit the same stable component/part/state
   attributes, consume one shared rule set, and deleted their scoped/CSS-module
   copies. The styles package now emits real component CSS rather than only the
   initial placeholder.
