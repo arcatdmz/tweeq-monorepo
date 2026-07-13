@@ -13,11 +13,9 @@ import {
 } from 'react'
 import {useStore} from 'zustand'
 
-import {classNames} from '../../classNames'
 import {BindIcon} from '../BindIcon'
 import {Icon} from '../Icon'
 import {Popover} from '../Popover'
-import styles from './Menu.module.styl'
 
 export interface MenuProps {
 	items: MenuItem[]
@@ -92,7 +90,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 		<>
 			<ul
 				ref={root}
-				className={styles.tqMenu}
+				data-tq-component="menu"
 				onPointerMove={onPointerMove}
 				onPointerLeave={() => setCandidateIndex(-1)}
 				data-tq-part="root"
@@ -104,7 +102,6 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 							ref={element => {
 								itemElements.current[index] = element
 							}}
-							className={styles.separator}
 							data-tq-part="separator"
 						/>
 					) : (
@@ -113,16 +110,18 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 							ref={element => {
 								itemElements.current[index] = element
 							}}
-							className={classNames(
-								styles.menu,
+							data-tq-active={
+								index === hoverIndex && candidateIndex === index
+									? ''
+									: undefined
+							}
+							data-tq-submenu-open={
 								index === hoverIndex &&
-									candidateIndex === index &&
-									styles.active,
-								index === hoverIndex &&
-									candidateIndex !== index &&
-									'children' in item &&
-									styles.submenuOpen
-							)}
+								candidateIndex !== index &&
+								'children' in item
+									? ''
+									: undefined
+							}
 							onClick={() => {
 								if ('perform' in item && item.perform) {
 									item.perform()
@@ -133,20 +132,20 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 							data-tq-part="item"
 						>
 							{item.icon ? (
-								<Icon className={styles.icon} icon={item.icon} />
+								<Icon data-tq-part="icon" icon={item.icon} />
 							) : (
 								<span />
 							)}
-							<div className={styles.labelContainer}>
-								<span className={styles.label} data-tq-part="label">
+							<div data-tq-part="label-container">
+								<span data-tq-part="label">
 									{item.shortLabel ?? item.label}
 								</span>
 								{'bindIcon' in item && item.bindIcon && (
-									<BindIcon className={styles.bindIcon} icon={item.bindIcon} />
+									<BindIcon data-tq-part="bind-icon" icon={item.bindIcon} />
 								)}
 								{'children' in item && (
 									<Icon
-										className={styles.groupChevron}
+										data-tq-part="group-chevron"
 										icon="mdi:chevron-right"
 									/>
 								)}

@@ -122,6 +122,7 @@ function onPointerLeave() {
 	<ul
 		ref="$menuRoot"
 		class="TqMenu"
+		data-tq-component="menu"
 		@pointermove="onPointerMove"
 		@pointerleave="onPointerLeave"
 		data-tq-part="root"
@@ -144,24 +145,41 @@ function onPointerLeave() {
 						candidateIndex !== index &&
 						'children' in menu,
 				}"
+				:data-tq-active="
+					index === hoverIndex && candidateIndex === index ? '' : undefined
+				"
+				:data-tq-submenu-open="
+					index === hoverIndex &&
+					candidateIndex !== index &&
+					'children' in menu
+						? ''
+						: undefined
+				"
 				@click="onClick(menu)"
 				@pointerenter="onItemEnter(index, $event)"
 				data-tq-part="item"
 			>
-				<Icon v-if="menu.icon" class="icon" :icon="menu.icon" />
+				<Icon
+					v-if="menu.icon"
+					class="icon"
+					data-tq-part="icon"
+					:icon="menu.icon"
+				/>
 				<span v-else />
-				<div class="label-container">
+				<div class="label-container" data-tq-part="label-container">
 					<span class="label" data-tq-part="label">
 						{{ menu.shortLabel ?? menu.label }}
 					</span>
 					<BindIcon
 						v-if="'bindIcon' in menu && menu.bindIcon"
 						class="bind-icon"
+						data-tq-part="bind-icon"
 						:icon="menu.bindIcon"
 					/>
 					<Icon
 						v-if="'children' in menu"
 						class="group-chevron"
+						data-tq-part="group-chevron"
 						icon="mdi:chevron-right"
 					/>
 				</div>
@@ -179,57 +197,3 @@ function onPointerLeave() {
 		<Menu ref="$childMenu" :items="childItems" @close="emit('close')" />
 	</Popover>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqMenu
-	display flex
-	flex-direction column
-	popup-style()
-	display grid
-	grid-template-columns min-content 1fr
-
-.separator
-	grid-column 1 / 3
-	height 1px
-	margin 3px 6px
-	background var(--tq-color-border)
-
-.menu
-	grid-column 1 / 3
-	display grid
-	grid-template-columns subgrid
-	padding 2px 6px
-	height calc(var(--tq-input-height) + 4px)
-	line-height var(--tq-input-height)
-	align-items center
-	border-radius var(--tq-radius-input)
-
-	// Highlight is driven by hoverIndex (not :hover) so the safe-triangle can keep
-	// the open item lit while the cursor cuts across siblings toward the submenu.
-	// Open-submenu parent: neutral; a plain focused command: accent.
-	&.submenu-open
-		background var(--tq-color-neutral)
-
-	&.active
-		background var(--tq-color-accent)
-		color var(--tq-color-on-accent)
-
-.icon
-	margin-right 8px
-
-.label-container
-	display flex
-	justify-content center
-	align-items center
-
-.label
-	flex-grow 1
-	margin-right 1em
-
-.bind-icon
-	opacity .5
-
-.group-chevron
-	margin-right -6px
-</style>
