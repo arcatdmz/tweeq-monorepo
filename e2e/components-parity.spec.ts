@@ -9,12 +9,12 @@ test('Components page keeps short controls visually faithful to Vue', async ({
 	await checkbox.click()
 	await expect(checkbox.locator('svg')).toBeVisible()
 
-	const dropdown = page.locator('[class*="tqInputDropdown"]').first()
+	const dropdown = page.locator('[data-tq-component="input-dropdown"]').first()
 	await dropdown.locator('input').click()
 	const list = page.getByRole('listbox')
 	await expect(list).toBeVisible()
 	await expect(
-		list.locator('xpath=..').locator('[class*="scrollArrow"]')
+		list.locator('xpath=..').locator('[data-tq-part="scroll-arrow"]')
 	).toHaveCount(0)
 
 	const chain = page

@@ -1427,3 +1427,127 @@ reset-viewport('[data-tq-component="viewport"]')
 
 	> [data-tq-part='right-icon']
 		right 2px
+
+[data-tq-component='input-dropdown']
+	--tq-dropdown-chevron-width calc(.7 * var(--tq-input-height))
+	position relative
+	display flex
+	flex-grow 1
+	height var(--tq-input-height)
+
+	> [data-tq-dropdown-field]
+		flex-grow 1
+		cursor default
+		padding-right var(--tq-dropdown-chevron-width)
+
+		&[data-tq-hide-text] > [data-tq-part='input']
+			opacity 0
+
+	> [data-tq-part='value-display']
+		position absolute
+		inset 0
+		padding 0 var(--tq-dropdown-chevron-width)
+		display flex
+		align-items center
+		justify-content center
+		gap var(--tq-gap-related)
+		pointer-events none
+		color var(--tq-color-text)
+		z-index 5
+
+		&[data-tq-numeric]
+			font-numeric()
+
+	> [data-tq-part='value-display'] > [data-tq-part='value-icon']
+		flex-shrink 0
+		width calc(var(--tq-input-height) - 4px)
+		height calc(var(--tq-input-height) - 4px)
+
+	> [data-tq-part='value-display'] > [data-tq-part='value-label']
+		white-space nowrap
+		overflow hidden
+		text-overflow ellipsis
+
+	> [data-tq-part='chevron']
+		position absolute
+		top 0
+		z-index 10
+		right 2px
+		width var(--tq-dropdown-chevron-width)
+		height 100%
+		pointer-events none
+		color var(--tq-color-text-subtle)
+		opacity .4
+		hover-transition(opacity)
+
+	&:hover > [data-tq-part='chevron'],
+	&:focus-within > [data-tq-part='chevron']
+		opacity 1
+
+[data-tq-component='input-dropdown-list']
+	--tq-dropdown-chevron-width calc(.7 * var(--tq-input-height))
+	position relative
+	display flow-root
+
+	> [data-tq-part='listbox']
+		margin 1px
+		padding 0
+		overflow-y auto
+		overscroll-behavior contain
+		overflow-anchor none
+		scrollbar-width none
+		background set-alpha(--tq-color-input, .8)
+		backdrop-filter blur(var(--tq-popup-blur))
+		border 1px solid var(--tq-color-border)
+		border-radius var(--tq-radius-input)
+		use-input-align()
+		use-input-font()
+
+		&::-webkit-scrollbar
+			display none
+
+		> [data-tq-option]
+			padding 0 var(--tq-dropdown-chevron-width) 0 .5em
+			height var(--tq-input-height)
+			line-height var(--tq-input-height)
+			display flex
+			gap var(--tq-gap-related)
+			align-items center
+			align-content center
+			justify-content center
+			color var(--tq-color-text)
+			border-radius var(--tq-radius-input)
+
+			&[data-tq-current]
+				background var(--tq-color-accent-soft)
+
+			&[data-tq-active]
+				background var(--tq-color-accent)
+				color var(--tq-color-on-accent)
+
+			> [data-tq-part='option-icon']
+				width calc(var(--tq-input-height) - 4px)
+				height calc(var(--tq-input-height) - 4px)
+
+	> [data-tq-part='scroll-arrow']
+		position absolute
+		left 2px
+		right 2px
+		height calc(var(--tq-input-height) * .7)
+		display flex
+		align-items center
+		justify-content center
+		color var(--tq-color-text)
+		pointer-events auto
+		cursor default
+		z-index 20
+
+		&[data-tq-direction='top']
+			top 1px
+			border-radius var(--tq-radius-input) var(--tq-radius-input) 0 0
+			background linear-gradient(to bottom, var(--tq-color-input) 45%, transparent)
+
+		&[data-tq-direction='bottom']
+			bottom 1px
+			border-radius 0 0 var(--tq-radius-input) var(--tq-radius-input)
+			background linear-gradient(to top, var(--tq-color-input) 45%, transparent)

@@ -204,7 +204,7 @@ function alignCurrentToTrigger() {
 	const select = $select.value
 	if (!select) return
 	select.scrollTop = 0
-	const current = select.querySelector<HTMLElement>('.option.current')
+	const current = select.querySelector<HTMLElement>('[data-tq-current]')
 	if (current) {
 		const delta = current.getBoundingClientRect().top - (rootBound.top.value - 2)
 		select.scrollTop = Math.max(0, delta)
@@ -228,7 +228,7 @@ function updateScrollArrows() {
 // Keep the highlighted option visible during keyboard navigation.
 function scrollActiveIntoView() {
 	$select.value
-		?.querySelector<HTMLElement>('.option.active')
+		?.querySelector<HTMLElement>('[data-tq-active]')
 		?.scrollIntoView({block: 'nearest'})
 	updateScrollArrows()
 }
@@ -412,6 +412,8 @@ onBeforeUnmount(() => {
 		v-bind="$attrs"
 		:align="align"
 		:aria-disabled="disabled || undefined"
+		data-tq-component="input-dropdown"
+		:data-tq-open="open ? '' : undefined"
 		data-tq-part="root"
 	>
 		<InputString
@@ -419,6 +421,8 @@ onBeforeUnmount(() => {
 			:modelValue="display"
 			class="field"
 			:class="{'hide-text': showValueIcon}"
+			data-tq-dropdown-field=""
+			:data-tq-hide-text="showValueIcon ? '' : undefined"
 			:theme="props.theme"
 			:font="font"
 			:align="align"
@@ -442,11 +446,13 @@ onBeforeUnmount(() => {
 			v-if="showValueIcon"
 			class="value-display"
 			:class="{numeric: font === 'numeric'}"
+			data-tq-part="value-display"
+			:data-tq-numeric="font === 'numeric' ? '' : undefined"
 		>
-			<Icon class="value-icon" :icon="currentIcon!" />
-			<span class="value-label">{{ valueLabel }}</span>
+			<Icon class="value-icon" data-tq-part="value-icon" :icon="currentIcon!" />
+			<span class="value-label" data-tq-part="value-label">{{ valueLabel }}</span>
 		</div>
-		<Icon class="chevron" icon="mdi:unfold-more-horizontal" />
+		<Icon class="chevron" data-tq-part="chevron" icon="mdi:unfold-more-horizontal" />
 		<Popover
 			:open="open"
 			:reference="$root"
@@ -456,6 +462,8 @@ onBeforeUnmount(() => {
 		>
 			<div
 				class="select-wrapper"
+				data-tq-component="input-dropdown-list"
+				data-tq-part="select-wrapper"
 				:style="{width: rootBound.width.value + 2 + 'px'}"
 				@wheel="onWheel"
 			>
@@ -476,18 +484,24 @@ onBeforeUnmount(() => {
 						role="option"
 						:aria-selected="Object.is(item, modelValue)"
 						:data-tq-part="`option-${index}`"
+						data-tq-option=""
+						:data-tq-active="Object.is(item, modelValue) ? '' : undefined"
+						:data-tq-current="
+							Object.is(item, valueAtStart) ? '' : undefined
+						"
 						:class="{
-							active: item === modelValue,
-							current: item === valueAtStart,
+							active: Object.is(item, modelValue),
+							current: Object.is(item, valueAtStart),
 						}"
 						@pointerenter="onSelect(item)"
 						@click="onClickOption(item)"
 					>
 						<slot name="option" :item="item">
 							<Icon
-								v-if="icons && icons[index]"
+								v-if="icons && icons[options.indexOf(item)]"
 								class="option-icon"
-								:icon="icons[index]"
+								data-tq-part="option-icon"
+								:icon="icons[options.indexOf(item)]"
 							/>
 							{{ labelizer(item) }}
 						</slot>
@@ -496,6 +510,8 @@ onBeforeUnmount(() => {
 				<div
 					v-if="canScrollUp"
 					class="scroll-arrow top"
+					data-tq-part="scroll-arrow"
+					data-tq-direction="top"
 					@pointerenter="startAutoScroll(-1)"
 					@pointerleave="stopAutoScroll"
 					@pointerup.stop
@@ -505,6 +521,8 @@ onBeforeUnmount(() => {
 				<div
 					v-if="canScrollDown"
 					class="scroll-arrow bottom"
+					data-tq-part="scroll-arrow"
+					data-tq-direction="bottom"
 					@pointerenter="startAutoScroll(1)"
 					@pointerleave="stopAutoScroll"
 					@pointerup.stop
@@ -515,149 +533,3 @@ onBeforeUnmount(() => {
 		</Popover>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-$right-arrow-width = 1em
-$chevron-width = calc(.7 * var(--tq-input-height))
-
-.TqInputDropdown
-	position relative
-	// flex-grow: fill the slot inside an InputGroup (like InputTextBase).
-	// display:flex: let the field (InputString) stretch via its own flex-grow,
-	// matching how InputNumber's box fills the group.
-	display flex
-	flex-grow 1
-	height var(--tq-input-height)
-
-// IMPORTANT: this class must NOT be `input`. InputTextBase has its own
-// `.input { position: absolute; inset: 0 .5em }` for its internal text element;
-// since InputString's root carries that same scope, naming the wrapper child
-// `input` made the whole box absolutely positioned and shrink to content,
-// leaving a ~.5em gap on each side instead of filling the width.
-.field
-	flex-grow 1
-	cursor default
-	padding-right $chevron-width
-
-	// While the resting icon overlay is shown, hide the field's own text so the
-	// overlay's label (next to the icon) is the only one visible.
-	&.hide-text :deep(.input)
-		opacity 0
-
-// Resting overlay: selected option's icon + label, centred over the field.
-.value-display
-	position absolute
-	inset 0
-	padding 0 $chevron-width
-	display flex
-	align-items center
-	justify-content center
-	gap var(--tq-gap-related)
-	pointer-events none
-	color var(--tq-color-text)
-	z-index 5
-
-	&.numeric
-		font-numeric()
-
-.value-icon
-	flex-shrink 0
-	width calc(var(--tq-input-height) - 4px)
-	height calc(var(--tq-input-height) - 4px)
-
-.value-label
-	white-space nowrap
-	overflow hidden
-	text-overflow ellipsis
-
-.chevron
-	position absolute
-	top 0
-	z-index 10
-	right 2px
-	width $chevron-width
-	height 100%
-	pointer-events none
-	color var(--tq-color-text-subtle)
-	opacity .4
-	hover-transition(opacity)
-
-	.TqInputDropdown:hover &,
-	.TqInputDropdown:focus-within &
-		opacity 1
-
-.select-wrapper
-	position relative
-
-.select
-	margin 1px
-	padding 0
-	// max-height is set inline (selectMaxHeight) so it tracks the popover's top
-	// edge and the box never spills past the bottom of the viewport. The list
-	// scrolls inside and the arrows reveal the cropped parts.
-	overflow-y auto
-	overscroll-behavior contain
-	// Growing the menu changes max-height; without this, scroll anchoring nudges
-	// scrollTop to "keep content stable" and fights the grow (visible jitter).
-	overflow-anchor none
-	scrollbar-width none
-	background set-alpha(--tq-color-input, .8)
-	backdrop-filter blur(var(--tq-popup-blur))
-	border 1px solid var(--tq-color-border)
-	border-radius var(--tq-radius-input)
-
-	use-input-align()
-	use-input-font()
-
-	&::-webkit-scrollbar
-		display none
-
-// macOS-style crop indicators: a thin strip over each cropped edge; hovering it
-// scrolls the list that way (see startAutoScroll).
-.scroll-arrow
-	position absolute
-	left 2px
-	right 2px
-	height calc(var(--tq-input-height) * .7)
-	display flex
-	align-items center
-	justify-content center
-	color var(--tq-color-text)
-	pointer-events auto
-	cursor default
-	z-index 20
-
-	&.top
-		top 1px
-		border-radius var(--tq-radius-input) var(--tq-radius-input) 0 0
-		background linear-gradient(to bottom, var(--tq-color-input) 45%, transparent)
-
-	&.bottom
-		bottom 1px
-		border-radius 0 0 var(--tq-radius-input) var(--tq-radius-input)
-		background linear-gradient(to top, var(--tq-color-input) 45%, transparent)
-
-.option
-	padding 0 $chevron-width 0 .5em
-	height var(--tq-input-height)
-	line-height var(--tq-input-height)
-	display flex
-	gap var(--tq-gap-related)
-	align-items center
-	align-content center
-	justify-content center
-	color var(--tq-color-text)
-	border-radius var(--tq-radius-input)
-
-	&.current
-		background var(--tq-color-accent-soft)
-
-	&.active
-		background var(--tq-color-accent)
-		color var(--tq-color-on-accent)
-
-.option-icon
-	width calc(var(--tq-input-height) - 4px)
-	height calc(var(--tq-input-height) - 4px)
-</style>

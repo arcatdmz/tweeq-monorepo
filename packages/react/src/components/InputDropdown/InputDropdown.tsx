@@ -21,12 +21,10 @@ import {
 } from 'react'
 import {useStore} from 'zustand'
 
-import {classNames} from '../../classNames'
 import {useElementBounding, useWindowSize} from '../../hooks'
 import {Icon} from '../Icon'
 import {InputString, type InputStringHandle} from '../InputString'
 import {Popover} from '../Popover'
-import styles from './InputDropdown.module.styl'
 
 export interface InputDropdownProps<T>
 	extends LabelizerProps<T>,
@@ -215,22 +213,18 @@ export function InputDropdown<T>({
 		<div
 			{...props}
 			ref={root}
-			className={classNames(
-				styles.tqInputDropdown,
-				open && styles.open,
-				className
-			)}
+			className={className}
 			{...{align}}
 			aria-disabled={disabled || undefined}
+			data-tq-component="input-dropdown"
+			data-tq-open={open ? '' : undefined}
 			data-tq-part="root"
 		>
 			<InputString
 				ref={input}
 				value={display}
-				className={classNames(
-					styles.field,
-					currentIcon && !edited && styles.hideText
-				)}
+				data-tq-dropdown-field=""
+				data-tq-hide-text={currentIcon && !edited ? '' : undefined}
 				theme={theme}
 				font={font}
 				align={align}
@@ -272,16 +266,14 @@ export function InputDropdown<T>({
 			/>
 			{currentIcon && !edited && (
 				<div
-					className={classNames(
-						styles.valueDisplay,
-						font === 'numeric' && styles.numeric
-					)}
+					data-tq-part="value-display"
+					data-tq-numeric={font === 'numeric' ? '' : undefined}
 				>
-					<Icon className={styles.valueIcon} icon={currentIcon} />
-					<span className={styles.valueLabel}>{makeLabel(value)}</span>
+					<Icon data-tq-part="value-icon" icon={currentIcon} />
+					<span data-tq-part="value-label">{makeLabel(value)}</span>
 				</div>
 			)}
-			<Icon className={styles.chevron} icon="mdi:unfold-more-horizontal" />
+			<Icon data-tq-part="chevron" icon="mdi:unfold-more-horizontal" />
 			<Popover
 				open={open}
 				reference={root.current}
@@ -294,10 +286,13 @@ export function InputDropdown<T>({
 					}
 				}}
 			>
-				<div className={styles.selectWrapper} style={{width: bounds.width + 2}}>
+				<div
+					data-tq-component="input-dropdown-list"
+					data-tq-part="select-wrapper"
+					style={{width: bounds.width + 2}}
+				>
 					<ul
 						ref={select}
-						className={styles.select}
 						role="listbox"
 						data-tq-part="listbox"
 						style={{maxHeight}}
@@ -309,13 +304,13 @@ export function InputDropdown<T>({
 								key={index}
 								role="option"
 								aria-selected={Object.is(item, value)}
-								className={classNames(
-									styles.option,
-									Object.is(item, value) && styles.active,
-									Object.is(item, valueAtStart) && styles.current
-								)}
 								data-active={Object.is(item, value) || undefined}
 								data-current={Object.is(item, valueAtStart) || undefined}
+								data-tq-option=""
+								data-tq-active={Object.is(item, value) ? '' : undefined}
+								data-tq-current={
+									Object.is(item, valueAtStart) ? '' : undefined
+								}
 								data-tq-part={`option-${index}`}
 								onPointerEnter={() => onChange?.(item)}
 								onClick={() => {
@@ -337,7 +332,8 @@ export function InputDropdown<T>({
 					</ul>
 					{scrollState.up && (
 						<div
-							className={`${styles.scrollArrow} ${styles.top}`}
+							data-tq-part="scroll-arrow"
+							data-tq-direction="top"
 							onPointerEnter={() => startAutoScroll(-1)}
 							onPointerLeave={stopAutoScroll}
 						>
@@ -346,7 +342,8 @@ export function InputDropdown<T>({
 					)}
 					{scrollState.down && (
 						<div
-							className={`${styles.scrollArrow} ${styles.bottom}`}
+							data-tq-part="scroll-arrow"
+							data-tq-direction="bottom"
 							onPointerEnter={() => startAutoScroll(1)}
 							onPointerLeave={stopAutoScroll}
 						>
