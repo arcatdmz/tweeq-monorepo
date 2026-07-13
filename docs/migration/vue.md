@@ -2,8 +2,8 @@
 
 This guide moves an application from the original `baku89/tweeq` package to
 the maintained Vue 3 renderer. The renderer keeps Vue conventions: components
-use `v-model`, named slots remain slots, and application setup uses
-`initTweeq`.
+use `v-model`, named slots remain slots, and `App` or `TweeqProvider` owns one
+isolated application runtime.
 
 The complete [`examples/vue-vite`](../../examples/vue-vite) consumer is the
 executable form of these snippets. CI installs packed package artifacts,
@@ -29,18 +29,32 @@ import '@tweeq/vue/style.css'
 The renderer no longer needs a Tweeq-specific Pinia installation. Its stores
 are adapters over the shared DOM package.
 
-## 2. Keep initialization, change its import
+## 2. Move initialization to the application owner
 
-```ts
-import {initTweeq} from '@tweeq/vue'
+Pass the old initialization values to `App`, which owns both the runtime and
+the required viewport style scope:
 
-initTweeq('com.example.app', {
-  colorMode: 'dark',
-  accentColor: '#ff0000',
-})
+```vue
+<script setup lang="ts">
+import {App} from '@tweeq/vue'
+</script>
+
+<template>
+  <App
+    app-id="com.example.app"
+    color-mode="dark"
+    accent-color="#ff0000"
+  >
+    <!-- application controls -->
+  </App>
+</template>
 ```
 
-Call initialization before mounting the application, as before.
+For a custom shell, use `TweeqProvider` with a nested `Viewport` instead.
+`initTweeq()` remains available only for provider-less legacy roots that
+already supply a `.TqViewport` style root. Do not call it alongside `App` or
+`TweeqProvider`: it configures the separate provider-less compatibility
+runtime, not the runtime injected by those components.
 
 ## 3. Replace the component namespace
 
@@ -53,27 +67,34 @@ const Tq = useTweeq()
 ```
 
 The component properties returned by this compatibility facade are deprecated.
-They emit one warning per runtime and will be removed in `@tweeq/vue` 2.0.0.
+The facade emits one warning per JavaScript session and will be removed in
+`@tweeq/vue` 2.0.0.
+Under an `App`/`TweeqProvider`, use this facade only as a temporary component
+namespace: its store properties belong to the separate provider-less runtime.
 Move components to direct imports:
 
 ```vue
 <script setup lang="ts">
-import {InputNumber, Parameter, ParameterGrid} from '@tweeq/vue'
+import {App, InputNumber, Parameter, ParameterGrid} from '@tweeq/vue'
 import {ref} from 'vue'
 
 const opacity = ref(1)
 </script>
 
 <template>
-  <ParameterGrid>
-    <Parameter label="Opacity">
-      <InputNumber v-model="opacity" :min="0" :max="1" />
-    </Parameter>
-  </ParameterGrid>
+  <App app-id="com.example.app">
+    <ParameterGrid>
+      <Parameter label="Opacity">
+        <InputNumber v-model="opacity" :min="0" :max="1" />
+      </Parameter>
+    </ParameterGrid>
+  </App>
 </template>
 ```
 
-Store access remains available from the named Vue store composables. Do not
+Store access remains available from the named Vue store composables. Call
+those composables from a descendant component rendered inside `App` or
+`TweeqProvider` so they resolve the injected application runtime. Do not
 introduce new `Tq.Component` call sites while completing this migration.
 
 ## 4. Verify behavior
