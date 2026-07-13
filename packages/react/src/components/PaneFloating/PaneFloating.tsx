@@ -8,10 +8,8 @@ import {
 	useRef,
 } from 'react'
 
-import {classNames} from '../../classNames'
 import {useConfigRef, useDrag, useWindowSize} from '../../hooks'
 import {Icon} from '../Icon'
-import styles from './PaneFloating.module.styl'
 
 const DEFAULT_POSITION: FloatingPanePosition = {
 	anchor: 'right-top',
@@ -113,6 +111,13 @@ export function PaneFloating({
 
 	useEffect(() => {
 		let next = positionRef.current
+		const titlebarHeight =
+			Number.parseFloat(
+				getComputedStyle(document.documentElement).getPropertyValue(
+					'--titlebar-area-height'
+				)
+			) || 0
+		const maxHeight = windowSize.height - titlebarHeight
 		if (
 			'width' in next &&
 			typeof next.width === 'number' &&
@@ -123,9 +128,9 @@ export function PaneFloating({
 		if (
 			'height' in next &&
 			typeof next.height === 'number' &&
-			next.height > windowSize.height
+			next.height > maxHeight
 		) {
-			next = {...next, height: windowSize.height}
+			next = {...next, height: maxHeight}
 		}
 		if (next !== positionRef.current) setPosition(next)
 	}, [windowSize.height, windowSize.width])
@@ -149,23 +154,30 @@ export function PaneFloating({
 		<div
 			{...props}
 			ref={root}
-			className={classNames(
-				styles.pane,
-				styles[`anchor-${anchor}`],
-				hasWidth && position.width === 'minimized' && styles.widthMinimized,
-				hasHeight && position.height === 'minimized' && styles.heightMinimized,
-				className
-			)}
+			className={className}
 			style={rootStyle}
+			data-tq-component="pane-floating"
+			data-tq-anchor={anchor}
+			data-tq-anchor-maximized={anchor === 'maximized' ? '' : undefined}
+			data-tq-anchor-top={anchor.includes('top') ? '' : undefined}
+			data-tq-anchor-right={anchor.includes('right') ? '' : undefined}
+			data-tq-anchor-bottom={anchor.includes('bottom') ? '' : undefined}
+			data-tq-anchor-left={anchor.includes('left') ? '' : undefined}
+			data-tq-width-minimized={
+				hasWidth && position.width === 'minimized' ? '' : undefined
+			}
+			data-tq-height-minimized={
+				hasHeight && position.height === 'minimized' ? '' : undefined
+			}
 			data-tq-part="root"
 		>
-			<div ref={top} className={classNames(styles.resize, styles.top)} data-tq-part="top" />
-			<div ref={right} className={classNames(styles.resize, styles.right)} data-tq-part="right" />
-			<div ref={bottom} className={classNames(styles.resize, styles.bottom)} data-tq-part="bottom" />
-			<div ref={left} className={classNames(styles.resize, styles.left)} data-tq-part="left" />
-			{icon && <Icon className={styles.minimizedTitle} icon={icon} />}
-			<div className={styles.wrapper}>
-				<div className={styles.content}>{children}</div>
+			<div ref={top} data-tq-resize-edge="top" data-tq-part="top" />
+			<div ref={right} data-tq-resize-edge="right" data-tq-part="right" />
+			<div ref={bottom} data-tq-resize-edge="bottom" data-tq-part="bottom" />
+			<div ref={left} data-tq-resize-edge="left" data-tq-part="left" />
+			{icon && <Icon data-tq-part="minimized-title" icon={icon} />}
+			<div data-tq-part="wrapper">
+				<div data-tq-part="content">{children}</div>
 			</div>
 		</div>
 	)

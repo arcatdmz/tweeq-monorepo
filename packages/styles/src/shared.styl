@@ -1979,3 +1979,168 @@ reset-viewport('[data-tq-component="viewport"]')
 			&:after
 				left 100%
 				content '>'
+
+[data-tq-component='pane-floating']
+	pane-style()
+	--resize-width var(--tq-rem)
+	--resize-border 5px
+	--br-top-left var(--tq-radius-pane)
+	--br-top-right var(--tq-radius-pane)
+	--br-bottom-right var(--tq-radius-pane)
+	--br-bottom-left var(--tq-radius-pane)
+	position fixed
+	border-width 1px
+	border-radius var(--br-top-left) var(--br-top-right) var(--br-bottom-right) var(--br-bottom-left)
+	display grid
+	grid-template-columns 1fr
+	grid-template-rows 1fr
+	hover-transition(border-radius, border-color)
+	z-index 101
+	top var(--app-margin-top)
+	right 0
+	bottom 0
+	left 0
+
+	&:has(> [data-tq-resize-edge]:hover)
+		border-color var(--tq-color-accent)
+
+	&[data-tq-anchor-maximized]
+		--br-bottom-right 0px
+		--br-bottom-left 0px
+
+	&[data-tq-anchor-left]
+		--br-top-left 0px
+		--br-bottom-left 0px
+		border-left-color transparent !important
+		right unset
+
+		> [data-tq-resize-edge='left']
+			display none
+
+	&[data-tq-anchor-right]
+		--br-top-right 0px
+		--br-bottom-right 0px
+		border-right-color transparent !important
+		left unset
+
+		> [data-tq-resize-edge='right']
+			display none
+
+	&[data-tq-anchor-bottom]
+		--br-bottom-left 0px
+		--br-bottom-right 0px
+		border-bottom-color transparent !important
+		top unset
+
+		> [data-tq-resize-edge='bottom']
+			display none
+
+	&[data-tq-anchor-top]
+		bottom unset
+
+		> [data-tq-resize-edge='top']
+			display none
+
+	&[data-tq-width-minimized],
+	&[data-tq-height-minimized]
+		background var(--tq-color-accent-hover)
+		hover-transition(width, height, background)
+
+		> [data-tq-part='minimized-title']
+			opacity 1
+
+		> [data-tq-part='wrapper'] > [data-tq-part='content']
+			opacity 0
+
+	&[data-tq-width-minimized]
+		width var(--tq-rem) !important
+
+	&[data-tq-height-minimized]
+		height var(--tq-rem) !important
+
+	> [data-tq-resize-edge]
+		position absolute
+		z-index 10
+		hover-transition()
+
+		&:before
+			content ''
+			position absolute
+			width 100%
+			height 100%
+			background var(--tq-color-accent)
+			opacity 0
+			hover-transition(opacity)
+
+		&:hover:before
+			opacity 1
+
+	> [data-tq-resize-edge='top'],
+	> [data-tq-resize-edge='bottom']
+		cursor row-resize
+		height var(--resize-width)
+
+		&:before
+			height var(--resize-border)
+
+	> [data-tq-resize-edge='top']
+		left var(--br-top-left)
+		right var(--br-top-right)
+		top calc(-0.5 * var(--resize-width))
+
+		&:before
+			top 50%
+
+	> [data-tq-resize-edge='bottom']
+		left var(--br-bottom-left)
+		right var(--br-bottom-right)
+		bottom calc(-0.5 * var(--resize-width))
+
+		&:before
+			bottom 50%
+
+	> [data-tq-resize-edge='left'],
+	> [data-tq-resize-edge='right']
+		width var(--resize-width)
+		cursor col-resize
+
+		&:before
+			width var(--resize-border)
+
+	> [data-tq-resize-edge='left']
+		top var(--br-top-left)
+		bottom var(--br-bottom-left)
+		left calc(-0.5 * var(--resize-width))
+
+		&:before
+			left 50%
+
+	> [data-tq-resize-edge='right']
+		top var(--br-top-right)
+		bottom var(--br-bottom-right)
+		right calc(-0.5 * var(--resize-width))
+
+		&:before
+			right 50%
+
+	> [data-tq-part='minimized-title']
+		position absolute
+		top 50%
+		left 50%
+		transform translate(-50%, -50%)
+		pointer-events none
+		opacity 0
+		color var(--tq-color-on-accent)
+		hover-transition(opacity)
+
+	> [data-tq-part='wrapper']
+		position relative
+		height 100%
+		overflow-y scroll
+		scroll-fade-mask()
+
+		> [data-tq-part='content']
+			padding var(--tq-pane-padding) calc(var(--tq-pane-padding) - var(--tq-scrollbar-width)) var(--tq-pane-padding) var(--tq-pane-padding)
+			position relative
+			height 100%
+			hover-transition(opacity)

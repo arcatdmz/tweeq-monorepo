@@ -28,19 +28,6 @@ const position = appConfig.ref(`${props.name}.position`, props.position)
 
 const windowSize = useWindowSize()
 
-const classes = computed(() => {
-	const p = position.value
-	return {
-		'anchor-maximized': p.anchor === 'maximized',
-		'anchor-top': p.anchor.includes('top'),
-		'anchor-right': p.anchor.includes('right'),
-		'anchor-bottom': p.anchor.includes('bottom'),
-		'anchor-left': p.anchor.includes('left'),
-		'w-minimized': 'width' in p && p.width === 'minimized',
-		'h-minimized': 'height' in p && p.height === 'minimized',
-	}
-})
-
 const style = computed(() => {
 	const w = 'width' in position.value ? position.value.width : null
 	const h = 'height' in position.value ? position.value.height : null
@@ -117,188 +104,31 @@ watch(position, position => emit('update:position', position))
 	<div
 		ref="$root"
 		class="TqPaneFloating"
-		:class="classes"
 		:style="style"
+		data-tq-component="pane-floating"
+		:data-tq-anchor="position.anchor"
+		:data-tq-anchor-maximized="position.anchor === 'maximized' ? '' : undefined"
+		:data-tq-anchor-top="position.anchor.includes('top') ? '' : undefined"
+		:data-tq-anchor-right="position.anchor.includes('right') ? '' : undefined"
+		:data-tq-anchor-bottom="position.anchor.includes('bottom') ? '' : undefined"
+		:data-tq-anchor-left="position.anchor.includes('left') ? '' : undefined"
+		:data-tq-width-minimized="
+			'width' in position && position.width === 'minimized' ? '' : undefined
+		"
+		:data-tq-height-minimized="
+			'height' in position && position.height === 'minimized' ? '' : undefined
+		"
 		data-tq-part="root"
 	>
-		<div ref="$top" class="resize top" data-tq-part="top" />
-		<div ref="$right" class="resize right" data-tq-part="right" />
-		<div ref="$left" class="resize left" data-tq-part="left" />
-		<div ref="$bottom" class="resize bottom" data-tq-part="bottom" />
-		<Icon v-if="icon" class="minimized-title" :icon="icon" />
-		<div class="wrapper">
-			<div class="content">
+		<div ref="$top" data-tq-resize-edge="top" data-tq-part="top" />
+		<div ref="$right" data-tq-resize-edge="right" data-tq-part="right" />
+		<div ref="$left" data-tq-resize-edge="left" data-tq-part="left" />
+		<div ref="$bottom" data-tq-resize-edge="bottom" data-tq-part="bottom" />
+		<Icon v-if="icon" data-tq-part="minimized-title" :icon="icon" />
+		<div data-tq-part="wrapper">
+			<div data-tq-part="content">
 				<slot />
 			</div>
 		</div>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqPaneFloating
-	pane-style()
-	--resize-width var(--tq-rem)
-	--border 5px
-
-	--br-top-left var(--tq-radius-pane)
-	--br-top-right var(--tq-radius-pane)
-	--br-bottom-right var(--tq-radius-pane)
-	--br-bottom-left var(--tq-radius-pane)
-
-	position fixed
-	border-width 1px
-	border-radius var(--br-top-left) var(--br-top-right) var(--br-bottom-right) var(--br-bottom-left)
-	display grid
-	grid-template-columns 1fr
-	grid-template-rows 1fr
-	hover-transition(border-radius, border-color)
-	z-index 101
-	top var(--app-margin-top)
-	right 0
-	bottom 0
-	left 0
-
-	&:has(.resize:hover)
-		border-color var(--tq-color-accent)
-
-	&.anchor-maximized
-		--br-bottom-right 0px
-		--br-bottom-left 0px
-
-	&.anchor-left
-		--br-top-left 0px
-		--br-bottom-left 0px
-		border-left-color transparent !important
-
-	&.anchor-right
-		--br-top-right 0px
-		--br-bottom-right 0px
-		border-right-color transparent !important
-
-	&.anchor-bottom
-		--br-bottom-left 0px
-		--br-bottom-right 0px
-		border-bottom-color transparent !important
-
-	&.w-minimized, &.h-minimized
-		background var(--tq-color-accent-hover)
-		hover-transition(width, height, background)
-
-		.minimized-title
-			opacity 1
-		.content
-			opacity 0
-
-	&.w-minimized
-		width var(--tq-rem)
-
-	&.h-minimized
-		height var(--tq-rem)
-
-	&.anchor-top
-		bottom unset
-
-		.top
-			display none
-
-	&.anchor-right
-		left unset
-
-		.right
-			display none
-
-	&.anchor-bottom
-		top unset
-
-		.bottom
-			display none
-
-	&.anchor-left
-		right unset
-
-		.left
-			display none
-
-.resize
-	position absolute
-	z-index 10
-	hover-transition()
-
-	&:before
-		content ''
-		position absolute
-		width 100%
-		height 100%
-		background var(--tq-color-accent)
-		hover-transition()
-		opacity 0
-
-	&:hover:before
-			opacity 1
-			transition opacity var(-tq-transition-duration) ease
-
-
-.top, .bottom
-	cursor row-resize
-	height var(--resize-width)
-
-	&:before
-		height var(--border)
-
-.top
-	left var(--br-top-left)
-	right var(--br-top-right)
-	top calc(-0.5 * var(--resize-width))
-	&:before
-		top calc(50%)
-.bottom
-	left var(--br-bottom-left)
-	right var(--br-bottom-right)
-	bottom calc(-0.5 * var(--resize-width))
-	&:before
-		bottom calc(50%)
-
-.left, .right
-	width var(--resize-width)
-	cursor col-resize
-
-	&:before
-		width var(--border)
-
-.left
-	top var(--br-top-left)
-	bottom var(--br-bottom-left)
-	left calc(-0.5 * var(--resize-width))
-	&:before
-		left calc(50%)
-
-.right
-	top var(--br-top-right)
-	bottom var(--br-bottom-right)
-	right calc(-0.5 * var(--resize-width))
-	&:before
-		right calc(50%)
-
-.minimized-title
-	position absolute
-	top 50%
-	left 50%
-	transform translate(-50%, -50%)
-	pointer-events none
-	opacity 0
-	color var(--tq-color-on-accent)
-	hover-transition(opacity)
-
-.wrapper
-	position relative
-	height 100%
-	overflow-y scroll
-	scroll-fade-mask()
-
-.content
-	padding var(--tq-pane-padding) calc(var(--tq-pane-padding) - var(--tq-scrollbar-width)) var(--tq-pane-padding) var(--tq-pane-padding)
-	position relative
-	height 100%
-	hover-transition(opacity)
-</style>
