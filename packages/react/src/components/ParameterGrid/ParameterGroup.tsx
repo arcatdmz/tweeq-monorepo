@@ -1,10 +1,8 @@
 import {appConfigStore} from '@tweeq/dom'
 import {type HTMLAttributes, type ReactNode, useMemo, useState} from 'react'
 
-import {classNames} from '../../classNames'
 import {useConfigRef} from '../../hooks'
 import {Icon} from '../Icon'
-import styles from './ParameterGroup.module.styl'
 import {ParameterHeading} from './ParameterHeading'
 
 export interface ParameterGroupProps extends HTMLAttributes<HTMLDivElement> {
@@ -30,11 +28,9 @@ export function ParameterGroup({
 	return (
 		<div
 			{...props}
-			className={classNames(
-				styles.group,
-				!expanded && styles.collapsed,
-				className
-			)}
+			className={className}
+			data-tq-component="parameter-group"
+			data-tq-collapsed={!expanded ? '' : undefined}
 			data-tq-part="root"
 			onTransitionEnd={event => {
 				if (event.propertyName === 'grid-template-rows') setClipped(!expanded)
@@ -43,7 +39,6 @@ export function ParameterGroup({
 			<ParameterHeading right={expanded ? headingRight : undefined}>
 				<button
 					type="button"
-					className={styles.heading}
 					aria-expanded={expanded}
 					data-tq-part="trigger"
 					onClick={() => {
@@ -51,12 +46,15 @@ export function ParameterGroup({
 						setExpanded(!expanded)
 					}}
 				>
-					<Icon className={styles.chevron} icon="mdi:chevron-down" />
-					{icon && <Icon className={styles.groupIcon} icon={icon} />}
+					<Icon data-tq-part="chevron" icon="mdi:chevron-down" />
+					{icon && <Icon data-tq-part="group-icon" icon={icon} />}
 					<span>{label}</span>
 				</button>
 			</ParameterHeading>
-			<div className={classNames(styles.content, clipped && styles.clipped)}>
+			<div
+				data-tq-part="content"
+				data-tq-clipped={clipped ? '' : undefined}
+			>
 				{children}
 			</div>
 		</div>
