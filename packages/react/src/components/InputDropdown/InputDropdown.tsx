@@ -313,7 +313,9 @@ export function InputDropdown<T>({
 									Object.is(item, valueAtStart) ? '' : undefined
 								}
 								data-tq-part={`option-${index}`}
-								onPointerEnter={() => onChange?.(item)}
+								// A popup can appear underneath a stationary pointer. Select
+								// only after an actual movement so opening cannot change value.
+								onPointerMove={() => onChange?.(item)}
 								onClick={() => {
 									onChange?.(item)
 									setOpen(false)

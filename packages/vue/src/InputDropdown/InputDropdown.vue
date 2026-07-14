@@ -150,7 +150,7 @@ const popoverPlacement = computed<vec2 | 'bottom'>(() => {
 const selectMaxHeight = computed(() => {
 	const top = displayEdited.value ? rootBound.bottom.value : dropdownTop.value
 	return Math.min(
-		listHeightPx.value || Infinity,
+		(listHeightPx.value || Infinity) + SELECT_CHROME,
 		windowHeight.value - top - VIEWPORT_MARGIN
 	)
 })
@@ -477,6 +477,8 @@ onBeforeUnmount(() => {
 					data-tq-part="listbox"
 					@scroll="updateScrollArrows"
 				>
+					<!-- A popup may appear under a stationary pointer; require a
+					     real movement before hover-selection changes the value. -->
 					<li
 						v-for="(item, index) in filteredOptions"
 						:key="index"
@@ -493,7 +495,7 @@ onBeforeUnmount(() => {
 							active: Object.is(item, modelValue),
 							current: Object.is(item, valueAtStart),
 						}"
-						@pointerenter="onSelect(item)"
+						@pointermove="onSelect(item)"
 						@click="onClickOption(item)"
 					>
 						<slot name="option" :item="item">

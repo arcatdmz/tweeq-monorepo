@@ -258,10 +258,7 @@ onBeforeUnmount(() => {
 					:data-tq-active="i === activeIndex ? '' : undefined"
 					:data-tq-numeric="font === 'numeric' ? '' : undefined"
 					:data-tq-part="i === activeIndex ? 'active-cell' : 'cell'"
-				>
-					{{ op.label }}
-					<span class="tick" data-tq-part="tick" />
-				</div>
+				>{{ op.label }}<span class="tick" data-tq-part="tick" /></div>
 			</div>
 		</div>
 		<!-- Off-screen ruler: same font/padding as the cells, intrinsic width, so

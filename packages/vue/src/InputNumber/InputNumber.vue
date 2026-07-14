@@ -551,11 +551,7 @@ const barStyle = computed<StyleValue>(() => {
 		@reset="onReset"
 	>
 		<template #inactiveContent>
-			<div data-tq-part="number-display">
-				<span v-if="prefix" data-tq-part="prefix">{{ prefix }}</span>
-				{{ display }}
-				<span v-if="suffix" data-tq-part="suffix">{{ suffix }}</span>
-			</div>
+			<div data-tq-part="number-display"><span v-if="prefix" data-tq-part="prefix">{{ prefix }}</span>{{ display }}<span v-if="suffix" data-tq-part="suffix">{{ suffix }}</span></div>
 		</template>
 		<template #back>
 			<div data-tq-part="number-bar" :style="barStyle" />

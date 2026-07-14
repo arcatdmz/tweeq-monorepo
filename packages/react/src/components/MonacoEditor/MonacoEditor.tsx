@@ -24,6 +24,7 @@ export type MonacoEditorErrorInfo = CodeEditorErrorInfo
 
 export interface MonacoEditorProps
 	extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
+	'data-tq-part'?: string
 	value: string
 	onChange?: (value: string) => void
 	lang: string
@@ -44,6 +45,7 @@ export function MonacoEditor({
 	onChangeCursorPosition,
 	errors,
 	className,
+	'data-tq-part': part = 'root',
 	...props
 }: MonacoEditorProps) {
 	const {themeStore} = useTweeqRuntime()
@@ -103,7 +105,7 @@ export function MonacoEditor({
 			{...props}
 			className={className}
 			data-tq-component="monaco-editor"
-			data-tq-part="root"
+			data-tq-part={part}
 			onKeyDown={event => event.stopPropagation()}
 			onKeyUp={event => event.stopPropagation()}
 		>

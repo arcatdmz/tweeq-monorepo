@@ -26,6 +26,7 @@ export function Ruler({
 	onDrag,
 	children,
 	className,
+	style,
 	...props
 }: RulerProps) {
 	const root = useRef<HTMLDivElement>(null)
@@ -51,6 +52,7 @@ export function Ruler({
 			ref={root}
 			className={classNames('TqRuler', className)}
 			style={{
+				...style,
 				backgroundSize: `${pixelsPerUnit}px 100%`,
 				backgroundPosition: `${-range[0] * pixelsPerUnit}px 0`,
 			}}

@@ -25,6 +25,7 @@ import {Popover} from '../Popover'
 export interface InputTextBaseProps
 	extends InputBoxProps,
 		Omit<HTMLAttributes<HTMLDivElement>, 'default' | 'onChange'> {
+	'data-tq-part'?: string
 	value: string
 	onChange?: (value: string) => void
 	ignoreInput?: boolean
@@ -87,6 +88,7 @@ export const InputTextBase = forwardRef<
 		renderInactiveContent,
 		onContextMenu,
 		className,
+		'data-tq-part': part = 'root',
 		...props
 	},
 	forwardedRef
@@ -154,7 +156,7 @@ export const InputTextBase = forwardRef<
 			data-tq-hover={hover ? '' : undefined}
 			data-tq-invalid={invalid ? '' : undefined}
 			onContextMenu={handleContextMenu}
-			data-tq-part="root"
+			data-tq-part={part}
 		>
 			{renderBack?.()}
 			<input
