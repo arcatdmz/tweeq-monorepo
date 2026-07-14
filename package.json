@@ -12,7 +12,7 @@
 		"build:apps": "pnpm -r --filter './apps/**' --if-present build",
 		"build:demo": "pnpm --filter @tweeq/docs build",
 		"build:demo:vue": "pnpm --filter @tweeq/playground-vue build",
-		"e2e": "LD_LIBRARY_PATH=$HOME/.cache/ms-playwright/local-libs playwright test",
+		"e2e": "playwright test",
 		"lint": "eslint packages apps e2e",
 		"test": "pnpm -r --if-present test",
 		"test:ssr": "node scripts/test-ssr-imports.mjs",

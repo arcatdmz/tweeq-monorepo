@@ -1,9 +1,6 @@
 import {defineConfig} from '@playwright/test'
 
-/**
- * Run via `npm run e2e` — it sets LD_LIBRARY_PATH for the locally-extracted
- * chromium system libs (see docs/react-port/PLAN.md, "E2E" row).
- */
+/** Run via `pnpm e2e` after installing Chromium with Playwright's OS dependencies. */
 export default defineConfig({
 	testDir: './e2e',
 	fullyParallel: true,
