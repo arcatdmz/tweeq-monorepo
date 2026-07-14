@@ -194,19 +194,21 @@ playgrounds with their current public component-module barrels.
 ## Visual fidelity completion note (2026-07-14)
 
 The two exhaustive galleries now use equivalent props, values, labels, host
-flow, and live interaction fixtures. Playwright isolates 43 renderer-owned
+flow, and live interaction fixtures. Playwright isolates 48 renderer-owned
 component roots and compares React with Vue at light desktop, dark desktop,
 and 320px mobile widths; it separately compares 13 activated states and the
 real host-owned Markdown typography. Meaningful geometry or color drift fails,
-while only microscopic raster antialias rounding is accepted. The curated
-React Components page is additionally checked against the 240×24px geometry
-measured from the published Vue reference, with its broken InputString and
-blank Dropdown output recorded as reference defects rather than copied.
+while only microscopic raster antialias rounding is accepted. A second gate
+owns the complete 53-section order, React-correct shared header/switcher,
+section rectangles, PaneExpandable icon path, and whole-page pixels. The
+curated React Components page can also be compared live with the published Vue
+reference's full heading/demo geometry; its broken InputString is recorded as
+a reference defect rather than copied.
 
 ## Stage V1 completion note (2026-07-13)
 
 The Vue renderer builds again as `@tweeq/vue` (ES + CJS + browser UMD + `style.css` +
-declarations). Its playground now renders all 48 public component modules and
+declarations). Its playground now renders all 53 public component modules and
 is browser-smoked for live DOM coverage, controlled input, Monaco readiness,
 and console/page errors. The original relocation baseline was verified with shared-asset
 seams for InputColor shaders and Stylus; later stages replaced those temporary

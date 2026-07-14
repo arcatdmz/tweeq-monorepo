@@ -17,9 +17,9 @@ excluded from runtime size totals.
 | @tweeq/core JavaScript | 35 | 77.64 KiB | 26.76 KiB |
 | @tweeq/dom JavaScript | 17 | 54.69 KiB | 17.07 KiB |
 | @tweeq/styles CSS | 1 | 365.79 KiB | 98.34 KiB |
-| @tweeq/react JavaScript | 179 | 19872.39 KiB | 4942.87 KiB |
+| @tweeq/react JavaScript | 179 | 19872.45 KiB | 4942.88 KiB |
 | @tweeq/react CSS | 1 | 365.79 KiB | 98.34 KiB |
-| @tweeq/vue JavaScript | 182 | 25008.09 KiB | 6309.65 KiB |
+| @tweeq/vue JavaScript | 182 | 25008.56 KiB | 6309.85 KiB |
 | @tweeq/vue CSS | 1 | 365.79 KiB | 98.34 KiB |
 
 The renderer totals include Monaco and its language workers. They establish
@@ -36,8 +36,8 @@ renderer source no longer emits independent owned CSS.
 The benchmark runs `unsignedMod`, ruler coordinate conversion, and enabled-tab
 resolution once per iteration (100,000 iterations, seven samples).
 
-- Median: 1.56 ms
-- Aggregate operations: 192,187,575 operations/second
+- Median: 2.60 ms
+- Aggregate operations: 115,172,698 operations/second
 
 This is a comparison baseline, not a CI timing threshold. Functional runtime
 parity remains enforced by the renderer-neutral contracts and browser suite.
@@ -46,7 +46,7 @@ parity remains enforced by the renderer-neutral contracts and browser suite.
 
 - React renderer contracts: 90 tests
 - Vue renderer contracts and compatibility warning: 89 tests
-- Cross-page Playwright interaction/visual suite: 33 tests
+- Cross-page Playwright interaction/visual suite: 35 tests
 - Packed downstream consumers: React Vite and Vue Vite, each typechecked and built
 
 Regenerate this document on the release runner immediately before each
