@@ -5,6 +5,7 @@ import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import {
 	createMultiSelectStore,
 	getMultiSelectActions,
+	moveMultiSelectAction,
 	type MultiSelectStore,
 } from './multiSelect'
 
@@ -69,5 +70,56 @@ describe('multi-select controller', () => {
 		const input = (type: 'number' | 'boolean') => ({type}) as any
 		expect(getMultiSelectActions([input('number'), input('number')])).toHaveLength(4)
 		expect(getMultiSelectActions([input('boolean'), input('boolean')])).toEqual([])
+	})
+
+	it('maps scalar keyboard moves with standard bounds and modifiers', () => {
+		expect(
+			moveMultiSelectAction({type: 'slider', value: 0, key: 'ArrowRight'})
+		).toBe(1)
+		expect(
+			moveMultiSelectAction({
+				type: 'slider',
+				value: 1,
+				key: 'ArrowUp',
+				shiftKey: true,
+			})
+		).toBe(11)
+		expect(
+			moveMultiSelectAction({
+				type: 'slider',
+				value: 1,
+				key: 'ArrowLeft',
+				altKey: true,
+			})
+		).toBeCloseTo(0.9)
+		expect(
+			moveMultiSelectAction({type: 'slider', value: 42, key: 'Home'})
+		).toBe(-100)
+		expect(
+			moveMultiSelectAction({type: 'slider', value: 42, key: 'End'})
+		).toBe(100)
+		expect(
+			moveMultiSelectAction({type: 'slider', value: 100, key: 'ArrowRight'})
+		).toBe(100)
+	})
+
+	it('maps pad arrows to the selected value axes', () => {
+		expect(
+			moveMultiSelectAction({type: 'pad', value: [0, 0], key: 'ArrowRight'})
+		).toEqual([1, 0])
+		expect(
+			moveMultiSelectAction({type: 'pad', value: [1, 0], key: 'ArrowUp'})
+		).toEqual([1, -1])
+		expect(
+			moveMultiSelectAction({
+				type: 'pad',
+				value: [1, -1],
+				key: 'ArrowDown',
+				shiftKey: true,
+			})
+		).toEqual([1, 9])
+		expect(
+			moveMultiSelectAction({type: 'pad', value: [0, 0], key: 'Home'})
+		).toBeUndefined()
 	})
 })

@@ -64,6 +64,7 @@ export function MultiSelectPopup() {
 						<MultiSelectButton
 							key={action.icon}
 							icon={action.icon}
+							label={action.label}
 							update={action.update}
 						/>
 					) : (
@@ -71,6 +72,7 @@ export function MultiSelectPopup() {
 							key={action.icon}
 							type={action.type}
 							icon={action.icon}
+							label={action.label}
 							update={action.update}
 						/>
 					)

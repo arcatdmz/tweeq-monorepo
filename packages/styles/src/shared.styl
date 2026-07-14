@@ -2325,7 +2325,7 @@ reset-viewport('[data-tq-component="multi-select-popup"]')
 	box-sizing border-box
 	hover-transition(width, height, border-radius)
 
-	&:not(:hover)
+	&:not(:hover):not(:focus-within)
 		width var(--tq-icon-size)
 		height var(--tq-icon-size)
 		border-radius 99px
@@ -2353,7 +2353,8 @@ reset-viewport('[data-tq-component="multi-select-popup"]')
 		opacity 0
 		hover-transition(opacity)
 
-	&:hover
+	&:hover,
+	&:focus-within
 		> [data-tq-part='tune-icon']
 			opacity 0
 
@@ -2362,9 +2363,14 @@ reset-viewport('[data-tq-component="multi-select-popup"]')
 
 	[data-tq-multi-select-action]
 		border-radius var(--tq-radius-input)
+		outline none
 
-		&:hover
+		&:hover,
+		&:focus-visible
 			background var(--tq-color-input-hover)
+
+		&:focus-visible
+			box-shadow inset 0 0 0 1px var(--tq-color-accent)
 
 	[data-tq-multi-select-action='slider']
 		cursor ew-resize

@@ -4,6 +4,7 @@ import {useMultiSelectStore} from '../stores/multiSelect'
 
 const props = defineProps<{
 	icon: string
+	label: string
 	updator: (values: number[]) => number[]
 }>()
 
@@ -19,6 +20,7 @@ function edit() {
 	<IconIndicator
 		class="TqMultiSelectButton"
 		:icon="icon"
+		:aria-label="label"
 		data-tq-multi-select-action="button"
 		data-tq-part="button"
 		@update:active="edit"

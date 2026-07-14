@@ -8,6 +8,8 @@ export interface IconIndicatorProps
 	icon: string
 	/** Shrink to `--tq-icon-size` for inline placement. */
 	inline?: boolean
+	/** Disable this indicator's own button behavior when nested in another widget. */
+	interactive?: boolean
 	onChangeActive?: (active: boolean) => void
 }
 
@@ -15,6 +17,7 @@ export function IconIndicator({
 	active,
 	icon,
 	inline = false,
+	interactive = true,
 	onChangeActive,
 	onClick,
 	onKeyDown,
@@ -23,7 +26,7 @@ export function IconIndicator({
 }: IconIndicatorProps) {
 	const handleClick = (event: MouseEvent<HTMLDivElement>) => {
 		onClick?.(event)
-		if (!event.defaultPrevented) onChangeActive?.(!active)
+		if (interactive && !event.defaultPrevented) onChangeActive?.(!active)
 	}
 
 	return (
@@ -34,6 +37,7 @@ export function IconIndicator({
 			onKeyDown={event => {
 				onKeyDown?.(event)
 				if (
+					interactive &&
 					!event.defaultPrevented &&
 					(event.key === 'Enter' || event.key === ' ')
 				) {
@@ -41,9 +45,10 @@ export function IconIndicator({
 					onChangeActive?.(!active)
 				}
 			}}
-			role="button"
-			tabIndex={0}
-			aria-pressed={active}
+			role={interactive ? 'button' : 'presentation'}
+			tabIndex={interactive ? 0 : -1}
+			aria-pressed={interactive ? active : undefined}
+			aria-hidden={interactive ? undefined : true}
 			data-tq-component="icon-indicator"
 			data-inline={inline || undefined}
 			data-tq-part="root"

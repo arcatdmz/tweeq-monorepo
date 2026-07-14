@@ -14,6 +14,69 @@ export type MultiSelectType = 'number' | 'color' | 'string' | 'boolean'
 
 export type MultiSelectValue = number | string | boolean | HSVA
 
+export const MULTI_SELECT_KEYBOARD_MIN = -100
+export const MULTI_SELECT_KEYBOARD_MAX = 100
+
+export type MultiSelectKeyboardValue = number | readonly [number, number]
+
+export interface MultiSelectKeyboardMove {
+	type: 'slider' | 'pad'
+	value: MultiSelectKeyboardValue
+	key: string
+	shiftKey?: boolean
+	altKey?: boolean
+}
+
+/**
+ * Resolve one keyboard move for a relative multi-select action. Scalar actions
+ * follow the ARIA slider key model; the pad maps horizontal arrows to the
+ * first selected value and vertical arrows to the second. Shift accelerates
+ * to ten units and Alt provides a tenth-unit fine adjustment.
+ */
+export function moveMultiSelectAction({
+	type,
+	value,
+	key,
+	shiftKey = false,
+	altKey = false,
+}: MultiSelectKeyboardMove): MultiSelectKeyboardValue | undefined {
+	const step = altKey ? 0.1 : shiftKey ? 10 : 1
+	const clamp = (next: number) =>
+		Math.min(MULTI_SELECT_KEYBOARD_MAX, Math.max(MULTI_SELECT_KEYBOARD_MIN, next))
+
+	if (type === 'slider') {
+		if (typeof value !== 'number') return undefined
+		if (key === 'Home') return MULTI_SELECT_KEYBOARD_MIN
+		if (key === 'End') return MULTI_SELECT_KEYBOARD_MAX
+
+		const direction =
+			key === 'ArrowLeft' || key === 'ArrowDown' || key === 'PageDown'
+				? -1
+				: key === 'ArrowRight' || key === 'ArrowUp' || key === 'PageUp'
+					? 1
+					: 0
+		if (direction === 0) return undefined
+
+		const amount = key === 'PageDown' || key === 'PageUp' ? 10 : step
+		return clamp(value + direction * amount)
+	}
+
+	if (typeof value === 'number') return undefined
+	const [x, y] = value
+	switch (key) {
+		case 'ArrowLeft':
+			return [clamp(x - step), y]
+		case 'ArrowRight':
+			return [clamp(x + step), y]
+		case 'ArrowUp':
+			return [x, clamp(y - step)]
+		case 'ArrowDown':
+			return [x, clamp(y + step)]
+		default:
+			return undefined
+	}
+}
+
 /**
  * What an input component registers with the store. The legacy Vue version
  * took refs (`el`, `focusing`, `speed`); the framework-neutral port takes
@@ -47,11 +110,13 @@ export type MultiSelectAction =
 	| {
 			type: 'slider'
 			icon: string
+			label: string
 			update: (pixels: number) => (values: number[]) => number[]
 	  }
 	| {
 			type: 'pad'
 			icon: string
+			label: string
 			update: (
 				delta: readonly [number, number]
 			) => (values: number[]) => number[]
@@ -59,6 +124,7 @@ export type MultiSelectAction =
 	| {
 			type: 'button'
 			icon: string
+			label: string
 			update: (values: any[]) => any[]
 	  }
 
@@ -76,6 +142,7 @@ export function getMultiSelectActions(
 					(value, index) => value + pixels * (selected[index]?.speed ?? 1)
 				),
 			icon: 'material-symbols:add',
+			label: 'Add to selected values',
 		},
 		{
 			type: 'slider',
@@ -83,6 +150,7 @@ export function getMultiSelectActions(
 			update: pixels => values =>
 				values.map(value => value * (pixels / 100 + 1)),
 			icon: 'mdi:multiply',
+			label: 'Scale selected values',
 		},
 		{
 			type: 'pad',
@@ -92,6 +160,7 @@ export function getMultiSelectActions(
 				values[1] - delta[1] * (selected[1]?.speed ?? 1),
 			],
 			icon: 'mdi:dots-grid',
+			label: 'Adjust selected pair',
 		},
 		{
 			type: 'button',
@@ -101,6 +170,7 @@ export function getMultiSelectActions(
 				types[0] === types[1],
 			update: values => [...values].reverse(),
 			icon: 'material-symbols:swap-vert',
+			label: 'Swap selected values',
 		},
 	]
 	return actions.flatMap(({enabled, ...action}) => (enabled ? [action] : []))

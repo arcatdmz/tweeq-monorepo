@@ -94,11 +94,13 @@ watchEffect(() => {
 					:type="action.type"
 					:updator="action.update"
 					:icon="action.icon"
+					:label="action.label"
 				/>
 				<MultiSelectButton
 					v-else-if="action.type === 'button'"
 					:updator="action.update"
 					:icon="action.icon"
+					:label="action.label"
 				/>
 			</template>
 		</div>

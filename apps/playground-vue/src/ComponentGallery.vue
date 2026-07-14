@@ -52,6 +52,8 @@ import {
 import {ref, useTemplateRef} from 'vue'
 
 const numberValue = ref(24)
+const multiFirst = ref(10)
+const multiSecond = ref(20)
 const stringValue = ref('tweeq')
 const booleanValue = ref(true)
 const checkboxValue = ref(false)
@@ -308,7 +310,10 @@ const colorMask =
 
 		<section data-gallery-component="MultiSelectPopup">
 			<h2>MultiSelectPopup</h2>
-			<p>The provider-managed multi-selection popup is mounted.</p>
+			<p>Hold Command/Ctrl while focusing both inputs to edit them together.</p>
+			<InputNumber v-model="multiFirst" />
+			<InputNumber v-model="multiSecond" />
+			<output data-testid="vue-multi-select-value">{{ multiFirst }},{{ multiSecond }}</output>
 		</section>
 
 		<section data-gallery-component="PaneExpandable">
