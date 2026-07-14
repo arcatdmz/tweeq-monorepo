@@ -19,8 +19,6 @@ export function HomePage() {
 			<h1 id="main-title">Tweeq</h1>
 			<p className="vp-hero-description" />
 			<p className="vp-hero-actions">
-				<a className="vp-hero-action-button primary" href="#/all-components">Try React gallery</a>
-				<a className="vp-hero-action-button primary" href={vueGalleryHref}>Try Vue gallery</a>
 				<a className="vp-hero-action-button primary" href="#/components">Components</a>
 				<a className="vp-hero-action-button secondary" href="#/features">Features</a>
 				<a className="vp-hero-action-button secondary" href="#/example">Example</a>
