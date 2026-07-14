@@ -3,11 +3,11 @@ import type {IconSequence} from 'bndr-js'
 
 import {Icon} from '../Icon'
 
-interface Props {
+export interface BindIconProps {
 	icon: IconSequence
 }
 
-defineProps<Props>()
+defineProps<BindIconProps>()
 </script>
 
 <template>

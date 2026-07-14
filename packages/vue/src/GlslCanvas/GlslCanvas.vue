@@ -3,12 +3,12 @@ import {drawGlslToImage, type GlslUniforms} from '@tweeq/dom'
 import {useResizeObserver} from '@vueuse/core'
 import {onUnmounted, useTemplateRef, watch} from 'vue'
 
-interface Props {
-	fragmentString: string
-	uniforms: GlslUniforms
+export interface GlslCanvasProps {
+	fragmentString?: string
+	uniforms?: GlslUniforms
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<GlslCanvasProps>(), {
 	fragmentString: `
 		precision mediump float;
 		varying vec2 uv;

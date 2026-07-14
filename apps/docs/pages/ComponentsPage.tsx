@@ -20,11 +20,6 @@ export function ComponentsPage() {
 			<Heading level={1} id="components">
 				Components
 			</Heading>
-			<p>
-				This page presents a selected set of components with their options and
-				interaction notes. To browse every component included in the React port,
-				open the <a href="#/all-components">All Components gallery</a>.
-			</p>
 
 			<Heading level={2} id="input-components">
 				Input Components

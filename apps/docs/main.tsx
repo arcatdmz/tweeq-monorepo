@@ -6,7 +6,7 @@ import '@vuepress/helper/colors.css'
 import '@vuepress/helper/normalize.css'
 import '@tweeq/react/style.css'
 import './styles/index.scss'
-import '../playground-react/src/gallery.css'
+import '../shared/gallery.css'
 import './demo.css'
 
 import {TweeqProvider} from '@tweeq/react'

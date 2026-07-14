@@ -1,4 +1,5 @@
 import '@tweeq/vue/style.css'
+import '../../shared/gallery.css'
 
 import {createApp} from 'vue'
 

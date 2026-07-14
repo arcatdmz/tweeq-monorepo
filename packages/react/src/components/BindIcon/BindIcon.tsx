@@ -9,7 +9,12 @@ export interface BindIconProps extends HTMLAttributes<HTMLDivElement> {
 
 export function BindIcon({icon, className, ...props}: BindIconProps) {
 	return (
-		<div {...props} className={className} data-tq-component="bind-icon" data-tq-part="root">
+		<div
+			className={className}
+			data-tq-part="root"
+			{...props}
+			data-tq-component="bind-icon"
+		>
 			{icon.map((entry, index) =>
 				typeof entry === 'string' ? (
 					<span key={index}>{entry}</span>

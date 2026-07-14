@@ -2,7 +2,9 @@
 import {
 	App,
 	Balloon,
+	BindIcon,
 	ColorIcon,
+	GlslCanvas,
 	Icon,
 	IconIndicator,
 	InputAngle,
@@ -24,10 +26,13 @@ import {
 	InputSize,
 	InputString,
 	InputSwitch,
+	InputTextBase,
 	InputTime,
 	InputTranslate,
 	InputVec,
 	Markdown,
+	Menu,
+	type MenuItem,
 	MonacoEditor,
 	PaneExpandable,
 	PaneFloating,
@@ -40,6 +45,7 @@ import {
 	ParameterHeading,
 	Popover,
 	Ruler,
+	SvgIcon,
 	Tab,
 	Tabs,
 	Timeline,
@@ -49,13 +55,23 @@ import {
 	Viewport,
 	type Scheme,
 	useTweeqRuntime,
+	vTooltip,
 } from '@tweeq/vue'
 import {onBeforeUnmount, onMounted, ref, useTemplateRef} from 'vue'
+
+import {
+	colorMask,
+	paneExpandableIcon,
+} from '../../shared/galleryFixtures'
+
+const STAR_PATH =
+	'M12 2.5l2.92 5.92 6.53.95-4.72 4.6 1.11 6.5L12 17.67l-5.84 3.08 1.11-6.5-4.72-4.6 6.53-.95L12 2.5z'
 
 const numberValue = ref(25)
 const multiFirst = ref(10)
 const multiSecond = ref(20)
 const stringValue = ref('hello')
+const textBaseValue = ref('base text')
 const buttonToggleValue = ref(false)
 const switchValue = ref(false)
 const checkboxValue = ref(false)
@@ -90,6 +106,22 @@ const popoverReference = useTemplateRef<HTMLElement>('popoverReference')
 const runtime = useTweeqRuntime()
 const modal = runtime.modalStore.getState()
 const titleMenuResult = ref('none')
+const menuResult = ref('none')
+const menuItems: MenuItem[] = [
+	{
+		label: 'Run command',
+		icon: 'char:▶',
+		bindIcon: ['⌘', 'R'],
+		perform: () => (menuResult.value = 'run'),
+	},
+	{separator: true},
+	{
+		label: 'More',
+		children: [
+			{label: 'Nested command', perform: () => (menuResult.value = 'nested')},
+		],
+	},
+]
 let disposeTitleMenu: (() => void) | undefined
 
 onMounted(() => {
@@ -163,27 +195,29 @@ function openTabbedModal() {
 const docsBase = import.meta.env.DEV
 	? 'http://127.0.0.1:5174/'
 	: import.meta.env.BASE_URL.replace(/vue\/$/, '')
-const homeHref = docsBase
 const reactGalleryHref = `${docsBase}#/all-components`
-
-const colorMask =
-	'data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%3E%3Ccircle%20cx=%2212%22%20cy=%2212%22%20r=%2210%22%20fill=%22black%22/%3E%3C/svg%3E'
+const componentsHref = `${docsBase}#/components`
 </script>
 
 <template>
-	<main class="gallery" data-testid="vue-component-gallery">
-		<header class="playground-header">
-			<a :href="homeHref">← Tweeq home</a>
-			<h1>Tweeq Vue component gallery</h1>
+	<main
+		class="renderer-gallery-page standalone-gallery-page"
+		data-testid="vue-component-gallery"
+	>
+		<header class="gallery-header">
+			<h1>All Components</h1>
 			<p>
-				Every public component module is represented here. Use the matching
-				React gallery to compare the same controls and behaviors.
+				This exhaustive gallery contains every component in this renderer. For
+				the documented, selected set with usage notes, see the
+				<a :href="componentsHref">Components page</a>.
 			</p>
 			<nav class="renderer-switcher" aria-label="Renderer comparison">
 				<a :href="reactGalleryHref">React gallery</a>
 				<a href="./" aria-current="page">Vue gallery</a>
 			</nav>
 		</header>
+
+		<div class="all-components">
 
 		<section data-gallery-component="App">
 			<h2>App</h2>
@@ -198,19 +232,27 @@ const colorMask =
 			<Balloon arrow-side="top" :arrow-offset="36">Balloon content</Balloon>
 		</section>
 
+		<section data-gallery-component="BindIcon">
+			<h2>BindIcon</h2>
+			<BindIcon :icon="['⌘', '+', 'K']" />
+		</section>
+
 		<section data-gallery-component="ColorIcon">
 			<h2>ColorIcon</h2>
 			<ColorIcon :src="colorMask" style="width: 24px" />
 		</section>
 
-		<section data-gallery-component="CommandPalette">
-			<h2>CommandPalette</h2>
-			<p>The provider-managed palette is mounted; press Ctrl/Cmd+P to open it.</p>
+		<section data-gallery-component="GlslCanvas">
+			<h2>GlslCanvas</h2>
+			<GlslCanvas style="width: 160px; height: 48px" />
 		</section>
 
 		<section data-gallery-component="Icon">
 			<h2>Icon</h2>
 			<Icon icon="char:★" />
+			<Icon data-testid="iconify-icon" icon="material-symbols:diamond" />
+			<Icon data-testid="fill-icon" :icon="`fill:${STAR_PATH}`" />
+			<Icon data-testid="char-icon" icon="char:⌘" />
 		</section>
 
 		<section data-gallery-component="IconIndicator">
@@ -342,6 +384,17 @@ const colorMask =
 			<InputSwitch v-model="switchValue" label="Switch" />
 		</section>
 
+		<section data-gallery-component="InputTextBase">
+			<h2>InputTextBase</h2>
+			<InputTextBase
+				v-model="textBaseValue"
+				default="base text"
+				left-icon="char:T"
+				@reset="textBaseValue = 'base text'"
+			/>
+			<output>{{ textBaseValue }}</output>
+		</section>
+
 		<section data-gallery-component="InputTime">
 			<h2>InputTime</h2>
 			<InputTime v-model="timeValue" :frame-rate="24" />
@@ -362,6 +415,12 @@ const colorMask =
 			<Markdown :source="'# Rendered heading\n\nA [Tweeq](https://example.com) link.'" />
 		</section>
 
+		<section data-gallery-component="Menu">
+			<h2>Menu</h2>
+			<Menu :items="menuItems" />
+			<output data-testid="menu-result">{{ menuResult }}</output>
+		</section>
+
 		<section data-gallery-component="MonacoEditor">
 			<h2>MonacoEditor</h2>
 			<MonacoEditor v-model="monacoValue" lang="typescript" style="height: 180px" />
@@ -377,7 +436,7 @@ const colorMask =
 
 		<section data-gallery-component="PaneExpandable">
 			<h2>PaneExpandable</h2>
-			<PaneExpandable icon="material-symbols:tune" persistent>
+			<PaneExpandable :icon="paneExpandableIcon" persistent>
 				<div data-testid="expandable-content">Expandable content</div>
 			</PaneExpandable>
 		</section>
@@ -399,7 +458,7 @@ const colorMask =
 			<h2>PaneModal</h2>
 			<InputButton label="Open plain modal" @click="modalOpen = true" />
 			<PaneModal :open="modalOpen">
-				<p>Plain modal content</p>
+				<div>Plain modal content</div>
 				<InputButton label="Close plain modal" @click="modalOpen = false" />
 			</PaneModal>
 		</section>
@@ -435,15 +494,14 @@ const colorMask =
 		<section data-gallery-component="ParameterGrid">
 			<h2>ParameterGrid family</h2>
 			<ParameterGrid>
-				<ParameterHeading data-gallery-component="ParameterHeading">
+				<ParameterHeading>
 					Parameters<template #right>Ready</template>
 				</ParameterHeading>
 				<Parameter
 					label="Name"
 					hint="A controlled name"
-					data-gallery-component="Parameter"
 				><InputString model-value="Tweeq" /></Parameter>
-				<ParameterGroup name="demo-advanced" label="Advanced" data-gallery-component="ParameterGroup">
+				<ParameterGroup name="demo-advanced" label="Advanced">
 					<Parameter label="Mode"><InputString model-value="Detailed" /></Parameter>
 				</ParameterGroup>
 			</ParameterGrid>
@@ -462,9 +520,16 @@ const colorMask =
 			<Ruler :range="[0, 10]" style="height: 32px" />
 		</section>
 
+		<section data-gallery-component="SvgIcon">
+			<h2>SvgIcon</h2>
+			<SvgIcon :non-stroke-scaling="true" :stroke-width="3">
+				<circle cx="16" cy="16" r="10" />
+			</SvgIcon>
+		</section>
+
 		<section data-gallery-component="Tabs">
-			<h2>Tabs</h2>
-			<Tabs name="vue-gallery-tabs"><Tab name="First" data-gallery-component="Tab">First panel</Tab><Tab name="Second">Second panel</Tab></Tabs>
+			<h2>Tabs / Tab</h2>
+			<Tabs name="vue-gallery-tabs"><Tab name="First">First panel</Tab><Tab name="Second">Second panel</Tab></Tabs>
 		</section>
 
 		<section data-gallery-component="Timeline">
@@ -485,6 +550,10 @@ const colorMask =
 		<section data-gallery-component="Tooltip">
 			<h2>Tooltip</h2>
 			<Tooltip>Tooltip presentation surface</Tooltip>
+			<button
+				type="button"
+				v-tooltip="{title: 'Hover help', description: 'Shared tooltip root'}"
+			>Hover for tooltip</button>
 		</section>
 
 		<section data-gallery-component="TweakOverlay">
@@ -504,29 +573,19 @@ const colorMask =
 			</TweakOverlay>
 		</section>
 
-		<section data-gallery-component="TweeqProvider">
-			<h2>TweeqProvider</h2><p>The gallery's outer runtime owner.</p>
-		</section>
 		<section data-gallery-component="Viewport">
 			<h2>Viewport</h2><Viewport>Viewport content</Viewport>
 		</section>
+
+		<section data-gallery-component="CommandPalette">
+			<h2>CommandPalette</h2>
+			<p>Press Command/Ctrl+P and run “Increment demo counter”.</p>
+			<output data-testid="palette-value">0</output>
+		</section>
+
+		<section data-gallery-component="TweeqProvider">
+			<h2>TweeqProvider</h2><p>The gallery's outer runtime owner.</p>
+		</section>
+		</div>
 	</main>
 </template>
-
-<style scoped>
-.gallery { box-sizing: border-box; max-width: 960px; min-height: 100vh; margin: auto; padding: 24px 16px 120px; text-rendering: optimizelegibility; -webkit-font-smoothing: antialiased; }
-.playground-header { padding-bottom: 16px; }
-.playground-header h1 { margin: 12px 0 8px; font-family: var(--tq-font-heading, sans-serif); font-size: 28px; font-weight: 700; line-height: 1.2; }
-.playground-header p { margin: 0; line-height: 1.5; }
-.renderer-switcher { display: inline-flex; gap: 0.25rem; margin-top: 0.5rem; padding: 0.25rem; border: 1px solid var(--tq-color-border); border-radius: 8px; background: var(--tq-color-neutral); }
-.renderer-switcher a { padding: 0.45rem 0.8rem; border-radius: 6px; color: var(--tq-color-text); text-decoration: none; }
-.renderer-switcher a[aria-current='page'] { background: var(--tq-color-accent); color: var(--tq-color-on-accent); }
-.gallery > section { margin-bottom: 16px; }
-.gallery > section > h2 { margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--tq-color-border); font-family: var(--tq-font-heading, sans-serif); font-size: 18px; font-weight: 600; line-height: 1.2; }
-.gallery > section :deep(p) { line-height: 1.6; }
-.gallery :deep([data-tq-component='parameter-grid']) { line-height: 1.6; }
-.gallery :deep([data-tq-component='markdown'] h1) { margin-top: calc(0.5rem - 3.6rem); margin-bottom: 1rem; padding-top: calc(1rem + 3.6rem); font-size: 2rem; font-weight: 600; line-height: 1.25; }
-.gallery :deep([data-tq-component='markdown'] h1:first-child + p) { margin-top: 2rem; }
-.gallery :deep([data-tq-component='markdown'] p) { line-height: 1.6; }
-.gallery :deep([data-tq-component='markdown'] a) { color: #00f; font-weight: 500; line-height: 1.6; text-decoration: underline; }
-</style>

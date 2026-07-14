@@ -8,7 +8,7 @@ export default function PaneModalSection() {
 			<h2>PaneModal</h2>
 			<InputButton label="Open plain modal" onClick={() => setOpen(true)} />
 			<PaneModal open={open}>
-				<p>Plain modal content</p>
+				<div>Plain modal content</div>
 				<InputButton label="Close plain modal" onClick={() => setOpen(false)} />
 			</PaneModal>
 		</section>

@@ -1,0 +1,207 @@
+body:has(.standalone-gallery-page) {
+	margin: 8px 0 0;
+}
+
+.renderer-gallery-page {
+	--gallery-border: var(--vp-c-border, #000);
+	--gallery-background-alt: var(--vp-c-bg-alt, #f6f6f7);
+	--gallery-accent: var(--vp-c-accent, #00f);
+	--gallery-accent-text: var(
+		--vp-c-accent-text,
+		color(srgb 0.9 0.9 1)
+	);
+	--gallery-font: var(
+		--font-family,
+		aktiv-grotesk,
+		游ゴシック体,
+		'Yu Gothic',
+		YuGothic,
+		'Hiragino Kaku Gothic ProN',
+		Osaka,
+		'ＭＳ Ｐゴシック',
+		sans-serif
+	);
+	font-variant: proportional-width;
+}
+
+.standalone-gallery-page {
+	display: flow-root;
+	box-sizing: border-box;
+	max-width: calc(64rem + 5rem);
+	min-height: 100vh;
+	margin: 0 auto;
+	padding: 0 40px 32px;
+	text-rendering: optimizelegibility;
+	-webkit-font-smoothing: antialiased;
+}
+
+.standalone-gallery-page .gallery-header {
+	margin-inline: 0;
+}
+
+.standalone-gallery-page .gallery-header h1 {
+	/* VuePress collapses the first heading's negative anchor offset through its
+	   content wrapper. A standalone host has no fixed navbar to compensate for. */
+	margin-top: 0;
+}
+
+.gallery-header {
+	font-family: var(--gallery-font);
+	font-size: 16px;
+	color: var(--vp-c-text, #000);
+}
+
+.gallery-header h1 {
+	margin-top: calc(0.5rem - 3.6rem);
+	margin-bottom: 1rem;
+	padding-top: calc(1rem + 3.6rem);
+	font-family: inherit;
+	font-size: 2rem;
+	font-weight: 600;
+	line-height: 1.25;
+}
+
+.gallery-header h1 + p {
+	margin-top: 2rem;
+	margin-bottom: 1rem;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.6;
+}
+
+.gallery-header a {
+	color: var(--gallery-accent);
+	font-size: 1rem;
+	font-weight: 500;
+	line-height: normal;
+	text-decoration: underline;
+}
+
+.renderer-switcher {
+	display: inline-flex;
+	gap: 0.25rem;
+	margin: 0.5rem 0 1.5rem;
+	padding: 0.25rem;
+	border: 1px solid var(--gallery-border);
+	border-radius: 8px;
+	background: var(--gallery-background-alt);
+}
+
+.renderer-switcher a {
+	padding: 0.45rem 0.8rem;
+	border-radius: 6px;
+	color: var(--gallery-accent);
+	text-decoration: none !important;
+}
+
+.renderer-switcher a[aria-current='page'] {
+	background: var(--gallery-accent);
+	color: var(--gallery-accent-text);
+}
+
+.renderer-switcher a:not([aria-current])::after {
+	display: inline-block;
+	width: 11px;
+	height: 11px;
+	margin: -1px 0 0 4px;
+	background: currentcolor;
+	content: '';
+	vertical-align: middle;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M9 5v2h6.59L4 18.59 5.41 20 17 8.41V15h2V5H9z'/%3E%3C/svg%3E");
+}
+
+.all-components {
+	box-sizing: border-box;
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 1px 16px 120px;
+}
+
+.all-components > section[data-gallery-component] > h2,
+.all-components > [data-gallery-component] > section > h2 {
+	margin: 32px 0 12px;
+	padding-top: 0;
+	padding-bottom: 8px;
+	border-bottom: 1px solid var(--tq-color-border, #ddd);
+	font-family: var(--tq-font-heading, sans-serif);
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+.all-components > section[data-gallery-component],
+.all-components > [data-gallery-component] > section {
+	margin-bottom: 16px;
+}
+
+.all-components > section[data-gallery-component] > p,
+.all-components > [data-gallery-component] > section > p,
+.all-components [data-tq-component='parameter-grid'] {
+	line-height: 1.6;
+}
+
+.all-components > section[data-gallery-component] > p,
+.all-components > [data-gallery-component] > section > p {
+	margin: 0;
+}
+
+/* State probes keep the behavioral E2E fixtures observable without becoming
+   renderer-specific gallery decoration. */
+.all-components > section[data-gallery-component] > output,
+.all-components > [data-gallery-component] > section > output {
+	display: none;
+}
+
+.all-components [data-tq-component='markdown'] h1 {
+	margin-top: calc(0.5rem - 3.6rem);
+	margin-bottom: 1rem;
+	padding-top: calc(1rem + 3.6rem);
+	font-size: 2rem;
+	font-weight: 600;
+	line-height: 1.25;
+}
+
+.all-components [data-tq-component='markdown'] h1:first-child + p {
+	margin-top: 2rem;
+}
+
+.all-components [data-tq-component='markdown'] p {
+	line-height: 1.6;
+}
+
+.all-components [data-tq-component='markdown'] a {
+	color: #00f;
+	font-weight: 500;
+	line-height: 1.6;
+	text-decoration: underline;
+}
+
+.all-components [data-tq-component='markdown'] a[href^='http']::after {
+	display: inline-block;
+	width: 11px;
+	height: 11px;
+	margin-left: 4px;
+	background: var(--vp-c-text-mute, rgba(60, 60, 67, 0.78));
+	content: '';
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M9 5v2h6.59L4 18.59 5.41 20 17 8.41V15h2V5H9z'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 959px) {
+	.standalone-gallery-page {
+		padding-right: 32px;
+		padding-left: 32px;
+	}
+}
+
+@media (max-width: 719px) {
+	.standalone-gallery-page .all-components {
+		margin-inline: -24px;
+	}
+}
+
+@media (max-width: 419px) {
+	.standalone-gallery-page {
+		padding-right: 24px;
+		padding-left: 24px;
+	}
+}
