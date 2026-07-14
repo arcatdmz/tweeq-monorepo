@@ -171,7 +171,7 @@ test('Vue gallery matches the usable React demonstrations', async ({page}) => {
 	await page.keyboard.press('Escape')
 	const titleMenuTrigger = page.getByRole('button', {name: 'Gallery menu'})
 	await titleMenuTrigger.press('Enter')
-	const titleMenu = page.getByRole('menu')
+	const titleMenu = page.locator('[popover]:popover-open').getByRole('menu')
 	const runTitleCommand = titleMenu.getByRole('menuitem', {name: 'Run command'})
 	await expect(runTitleCommand).toBeFocused()
 	await runTitleCommand.press('End')

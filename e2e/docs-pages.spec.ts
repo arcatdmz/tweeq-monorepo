@@ -13,9 +13,13 @@ test('documentation navigation switches React pages', async ({page}) => {
 	await expect(page.getByRole('heading', {name: 'Expression Support'})).toBeVisible()
 })
 
-test('curated Components page links to the exhaustive gallery', async ({page}) => {
-	await page.goto('/#/components')
-	const galleryLink = page.getByRole('main').getByRole('link', {name: 'All Components gallery'})
+test('home links to the gallery without altering the published Components page', async ({
+	page,
+}) => {
+	await page.goto('/')
+	const galleryLink = page
+		.getByRole('main')
+		.getByRole('link', {name: /React gallery/})
 	await expect(galleryLink).toBeVisible()
 	await galleryLink.click()
 	await expect(page).toHaveURL(/#\/all-components$/)

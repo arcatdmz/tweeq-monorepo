@@ -2,10 +2,14 @@ import {writeFile} from 'node:fs/promises'
 
 import {expect, type Locator, type Page, test} from '@playwright/test'
 
+import {gallerySectionOrder} from '../apps/shared/galleryFixtures'
+
 const MATCHED_COMPONENTS = [
 	'App',
 	'Balloon',
+	'BindIcon',
 	'ColorIcon',
+	'GlslCanvas',
 	'Icon',
 	'IconIndicator',
 	'InputAngle',
@@ -27,9 +31,11 @@ const MATCHED_COMPONENTS = [
 	'InputSize',
 	'InputString',
 	'InputSwitch',
+	'InputTextBase',
 	'InputTime',
 	'InputTranslate',
 	'InputVec',
+	'Menu',
 	'MonacoEditor',
 	'MultiSelectPopup',
 	'PaneExpandable',
@@ -41,6 +47,7 @@ const MATCHED_COMPONENTS = [
 	'PaneZUI',
 	'ParameterGrid',
 	'Ruler',
+	'SvgIcon',
 	'Tabs',
 	'Timeline',
 	'TitleBar',
@@ -173,6 +180,248 @@ async function imagesArePixelEquivalent(
 		}
 	)
 }
+
+async function imageDifference(
+	page: Page,
+	reactImage: Buffer,
+	vueImage: Buffer,
+) {
+	return page.evaluate(
+		async ({reactBase64, vueBase64}) => {
+			const decode = async (base64: string) => {
+				const response = await fetch(`data:image/png;base64,${base64}`)
+				return createImageBitmap(await response.blob())
+			}
+			const [reactBitmap, vueBitmap] = await Promise.all([
+				decode(reactBase64),
+				decode(vueBase64),
+			])
+			if (
+				reactBitmap.width !== vueBitmap.width ||
+				reactBitmap.height !== vueBitmap.height
+			) {
+				return {
+					differentPixels: Number.POSITIVE_INFINITY,
+					height: vueBitmap.height,
+					maximumDelta: 255,
+					width: vueBitmap.width,
+				}
+			}
+
+			const pixels = (bitmap: ImageBitmap) => {
+				const canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
+				const context = canvas.getContext('2d')!
+				context.drawImage(bitmap, 0, 0)
+				return context.getImageData(0, 0, bitmap.width, bitmap.height).data
+			}
+			const reactPixels = pixels(reactBitmap)
+			const vuePixels = pixels(vueBitmap)
+			let differentPixels = 0
+			let maximumDelta = 0
+			for (let index = 0; index < reactPixels.length; index += 4) {
+				let pixelDelta = 0
+				for (let channel = 0; channel < 4; channel += 1) {
+					pixelDelta = Math.max(
+						pixelDelta,
+						Math.abs(
+							reactPixels[index + channel] - vuePixels[index + channel],
+						),
+					)
+				}
+				if (pixelDelta > 0) differentPixels += 1
+				maximumDelta = Math.max(maximumDelta, pixelDelta)
+			}
+			return {
+				differentPixels,
+				height: reactBitmap.height,
+				maximumDelta,
+				width: reactBitmap.width,
+			}
+		},
+		{
+			reactBase64: reactImage.toString('base64'),
+			vueBase64: vueImage.toString('base64'),
+		},
+	)
+}
+
+test('React and Vue galleries share their complete shell, order, and layout', async ({
+	browser,
+}, testInfo) => {
+	test.setTimeout(120_000)
+	const context = await browser.newContext({
+		viewport: {width: 715, height: 900},
+		deviceScaleFactor: 1,
+		colorScheme: 'light',
+		reducedMotion: 'reduce',
+	})
+	const react = await context.newPage()
+	const vue = await context.newPage()
+	await Promise.all([
+		preparePage(react, '/#/all-components', false),
+		preparePage(vue, 'http://127.0.0.1:5175/', false),
+	])
+	await Promise.all([
+		react
+			.locator('[data-gallery-component="Icon"] [data-testid="iconify-icon"] path')
+			.waitFor(),
+		vue
+			.locator('[data-gallery-component="Icon"] [data-testid="iconify-icon"] path')
+			.waitFor(),
+	])
+
+	const galleryContract = (page: Page, renderer: 'react' | 'vue') =>
+		page.evaluate(rendererName => {
+			const root = document.querySelector<HTMLElement>(
+				rendererName === 'react'
+					? '[data-testid="react-component-gallery"]'
+					: '[data-testid="vue-component-gallery"] .all-components',
+			)!
+			const entries = [...root.children]
+				.filter((element): element is HTMLElement =>
+					element.matches('[data-gallery-component]'),
+				)
+				.map(owner => {
+					const section = owner.matches('section')
+						? owner
+						: owner.querySelector<HTMLElement>(':scope > section')!
+					return {
+						heading: section.querySelector(':scope > h2')?.textContent?.trim(),
+						name: owner.dataset.galleryComponent,
+					}
+				})
+			const panePaths = [
+				...root.querySelectorAll<SVGPathElement>(
+					'[data-gallery-component="PaneExpandable"] [data-tq-component="pane-expandable"] path[d]',
+				),
+			].map(path => path.getAttribute('d'))
+			return {entries, panePaths}
+		}, renderer)
+
+	const [reactContract, vueContract] = await Promise.all([
+		galleryContract(react, 'react'),
+		galleryContract(vue, 'vue'),
+	])
+	expect(reactContract.entries.map(({name}) => name)).toEqual([
+		...gallerySectionOrder,
+	])
+	expect(vueContract.entries).toEqual(reactContract.entries)
+	expect(reactContract.panePaths.length).toBeGreaterThan(0)
+	expect(vueContract.panePaths).toEqual(reactContract.panePaths)
+
+	const normalizeShell = (page: Page) =>
+		page.evaluate(() => {
+			const links = document.querySelectorAll('.renderer-switcher a')
+			links[0].setAttribute('aria-current', 'page')
+			links[1].removeAttribute('aria-current')
+			for (const chrome of document.querySelectorAll(
+				'.vp-navbar, .vp-sidebar, .vp-sidebar-mask',
+			)) {
+				;(chrome as HTMLElement).style.setProperty('display', 'none', 'important')
+			}
+		})
+	await Promise.all([normalizeShell(react), normalizeShell(vue)])
+
+	const visualContract = (page: Page, renderer: 'react' | 'vue') =>
+		page.evaluate(rendererName => {
+			const root = document.querySelector<HTMLElement>(
+				rendererName === 'react'
+					? '[data-testid="react-component-gallery"]'
+					: '[data-testid="vue-component-gallery"] .all-components',
+			)!
+			const round = (value: number) => Math.round(value * 64) / 64
+			const box = (element: Element) => {
+				const rect = element.getBoundingClientRect()
+				return {
+					height: round(rect.height),
+					width: round(rect.width),
+					x: round(rect.x),
+					y: round(rect.y),
+				}
+			}
+			const styleProperties = [
+				'backgroundColor',
+				'border',
+				'borderRadius',
+				'color',
+				'display',
+				'fontFamily',
+				'fontSize',
+				'fontVariant',
+				'fontWeight',
+				'gap',
+				'lineHeight',
+				'padding',
+			] as const
+			const style = (selector: string) => {
+				const computed = getComputedStyle(document.querySelector(selector)!)
+				return Object.fromEntries(
+					styleProperties.map(property => [property, computed[property]]),
+				)
+			}
+			const sections = [...root.children]
+				.filter((element): element is HTMLElement =>
+					element.matches('[data-gallery-component]'),
+				)
+				.map(owner => {
+					const section = owner.matches('section')
+						? owner
+						: owner.querySelector<HTMLElement>(':scope > section')!
+					return {box: box(section), name: owner.dataset.galleryComponent}
+				})
+			return {
+				boxes: {
+					header: box(document.querySelector('.gallery-header')!),
+					heading: box(document.querySelector('.gallery-header h1')!),
+					page: box(document.querySelector('.renderer-gallery-page')!),
+					paragraph: box(document.querySelector('.gallery-header p')!),
+					root: box(root),
+					switcher: box(document.querySelector('.renderer-switcher')!),
+				},
+				sections,
+				styles: {
+					heading: style('.gallery-header h1'),
+					paragraph: style('.gallery-header p'),
+					switcher: style('.renderer-switcher'),
+					switcherActive: style('.renderer-switcher a[aria-current]'),
+					switcherInactive: style('.renderer-switcher a:not([aria-current])'),
+				},
+			}
+		}, renderer)
+
+	const [reactVisual, vueVisual] = await Promise.all([
+		visualContract(react, 'react'),
+		visualContract(vue, 'vue'),
+	])
+	expect(vueVisual).toEqual(reactVisual)
+
+	const [reactImage, vueImage] = await Promise.all([
+		react
+			.locator('.renderer-gallery-page')
+			.screenshot({animations: 'disabled', caret: 'hide'}),
+		vue
+			.locator('.renderer-gallery-page')
+			.screenshot({animations: 'disabled', caret: 'hide'}),
+	])
+	const difference = await imageDifference(react, reactImage, vueImage)
+	const pixelBudget = Math.ceil(difference.width * difference.height * 0.0001)
+	if (difference.differentPixels > pixelBudget) {
+		await Promise.all([
+			testInfo.attach('whole-gallery-react', {
+				body: reactImage,
+				contentType: 'image/png',
+			}),
+			testInfo.attach('whole-gallery-vue', {
+				body: vueImage,
+				contentType: 'image/png',
+			}),
+		])
+	}
+	expect(difference).toMatchObject({width: 715})
+	expect(difference.differentPixels).toBeLessThanOrEqual(pixelBudget)
+
+	await context.close()
+})
 
 const VIEWPORT_CASES = [
 	{name: 'light desktop', colorScheme: 'light', width: 928},
