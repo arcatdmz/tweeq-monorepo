@@ -71,6 +71,28 @@ test('React embedded gallery resists docs CSS and keeps drag/modal interactions 
 		expect(style).toEqual({listStyle: 'none', marginBlock: '0px 0px'})
 	}
 
+	for (const selector of [
+		'[data-testid="InputRadio"] [data-tq-component="input-radio"] > li[data-tq-part]',
+		'[data-testid="Menu"] [data-tq-component="menu"] > li[data-tq-part]',
+		'[data-tq-component="parameter-grid"] > li[data-tq-component]',
+		'[data-tq-component="tabs"] [data-tq-part="tablist"] > li[data-tq-part]',
+	]) {
+		const styles = await page.locator(selector).evaluateAll(elements =>
+			elements.map(element => {
+				const computed = getComputedStyle(element)
+				const before = getComputedStyle(element, '::before')
+				return {
+					marginBlock: `${computed.marginTop} ${computed.marginBottom}`,
+					marker: before.content,
+				}
+			}),
+		)
+		expect(styles.length, `${selector} should match owned list items`).toBeGreaterThan(0)
+		for (const style of styles) {
+			expect(style).toEqual({marginBlock: '0px 0px', marker: 'none'})
+		}
+	}
+
 	await page
 		.getByTestId('InputDropdown')
 		.locator('[data-tq-component="input-dropdown"]')
@@ -81,6 +103,17 @@ test('React embedded gallery resists docs CSS and keeps drag/modal interactions 
 			options.slice(0, 2).map(option => option.getBoundingClientRect().toJSON()),
 		)
 	expect(optionBoxes[1].top - optionBoxes[0].bottom).toBeLessThanOrEqual(0.5)
+	const dropdownOptionStyles = await page
+		.locator('[data-tq-component="input-dropdown-list"] [data-tq-option]')
+		.evaluateAll(options =>
+			options.map(option => ({
+				marginBottom: getComputedStyle(option).marginBottom,
+				marker: getComputedStyle(option, '::before').content,
+			})),
+		)
+	for (const style of dropdownOptionStyles) {
+		expect(style).toEqual({marginBottom: '0px', marker: 'none'})
+	}
 	await page.keyboard.press('Escape')
 
 	await expectColorDragPalette(

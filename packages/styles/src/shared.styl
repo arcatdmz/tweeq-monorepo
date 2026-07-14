@@ -22,6 +22,34 @@ scroll-fade-globals()
 reset-viewport('[data-tq-component="viewport"]')
 reset-viewport('[data-tq-component="pane-modal"]')
 
+// Documentation hosts commonly style semantic lists with selectors such as
+// `[vp-content] li::before`. Own both the list boxes and their direct list-item
+// boundaries explicitly so those markers and margins cannot change component
+// geometry. Keep these selectors tied to stable parts shared by both renderers.
+ul[data-tq-component='input-radio'],
+ul[data-tq-component='menu'],
+ul[data-tq-component='parameter-grid'],
+[data-tq-component='input-dropdown-list'] > ul[data-tq-part='listbox'],
+[data-tq-component='tabs'] ul[data-tq-part='tablist'],
+[data-tq-component='command-palette'] > ul[data-tq-part='action-list']
+	margin 0
+	padding 0
+	list-style none
+
+[data-tq-component='input-radio'] > li[data-tq-part],
+[data-tq-component='menu'] > li[data-tq-part],
+[data-tq-component='input-dropdown-list'] > [data-tq-part='listbox'] > li[data-tq-option],
+[data-tq-component='tabs'] [data-tq-part='tablist'] > li[data-tq-part],
+[data-tq-component='command-palette'] > [data-tq-part='action-list'] > li[data-tq-part],
+li[data-tq-component='parameter'][data-tq-part='root'],
+li[data-tq-component='parameter-heading'][data-tq-part='root']
+	margin 0
+	list-style none
+
+	&:before, &:after
+		content none
+		display none
+
 [data-tq-component='input-button-toggle']
 	border-radius var(--tq-radius-input)
 	background var(--tq-color-input)

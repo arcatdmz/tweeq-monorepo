@@ -7,4 +7,5 @@
 
 Make workspace applications consume built package exports, keep renderer worker
 assets relative to their deployed package, and repair the color-drag, composite
-layout, host-list-style, and Iconify-registry regressions exposed by that path.
+layout, host-list-marker/spacing, and Iconify-registry regressions exposed by
+that path.
