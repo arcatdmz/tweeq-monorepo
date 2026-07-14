@@ -162,7 +162,14 @@ test('Vue gallery matches the usable React demonstrations', async ({page}) => {
 		)
 	expect(titleIconMasks).toHaveLength(2)
 	for (const mask of titleIconMasks) expect(mask).toContain('data:image/svg+xml')
-	const titleMenuTrigger = page.getByRole('button', {name: 'Vue gallery menu'})
+	const dropdown = page.locator('[data-gallery-component="InputDropdown"]')
+	await dropdown.locator('input').click()
+	await expect(dropdown.getByRole('option', {name: 'Alpha'})).toHaveAttribute(
+		'aria-selected',
+		'true',
+	)
+	await page.keyboard.press('Escape')
+	const titleMenuTrigger = page.getByRole('button', {name: 'Gallery menu'})
 	await titleMenuTrigger.press('Enter')
 	const titleMenu = page.getByRole('menu')
 	const runTitleCommand = titleMenu.getByRole('menuitem', {name: 'Run command'})
@@ -220,7 +227,7 @@ test('Vue gallery matches the usable React demonstrations', async ({page}) => {
 	await firstTab.press('ArrowRight')
 	await expect(secondTab).toBeFocused()
 	await expect(secondTab).toHaveAttribute('aria-selected', 'true')
-	const secondPanel = tabs.getByRole('tabpanel').filter({hasText: 'Second tab'})
+	const secondPanel = tabs.getByRole('tabpanel').filter({hasText: 'Second panel'})
 	await expect(secondPanel).toHaveAttribute(
 		'aria-labelledby',
 		(await secondTab.getAttribute('id')) ?? '',

@@ -10,6 +10,7 @@ export default function InputDrumSection() {
 			<InputDrum
 				value={value}
 				options={['Auto', '100', '200', '400']}
+				cellWidth={52}
 				font="numeric"
 				onChange={setValue}
 			/>

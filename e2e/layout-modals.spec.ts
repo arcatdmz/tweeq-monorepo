@@ -79,13 +79,13 @@ test('tabs, generated forms, panes, and modal delegates work', async ({
 	await tabbedModal.getByRole('button', {name: 'Done'}).click()
 	await expect(page.getByTestId('modal-tabs-value')).toHaveText('true')
 
-	await expect(
-		page.getByTestId('PaneFloating').getByText('Floating pane')
-	).toBeVisible()
+	const floating = page.getByTestId('PaneFloating')
+	await floating.getByRole('button', {name: 'Toggle floating pane'}).click()
+	await expect(floating.getByText('Floating pane', {exact: true})).toBeVisible()
 	await expect(
 		page.getByTestId('PaneZUI').getByRole('button', {name: 'Canvas node'})
 	).toBeVisible()
 	await expect(
-		page.getByTestId('App').getByText('Embedded app content')
+		page.getByTestId('App').getByText('Embedded application content')
 	).toBeVisible()
 })

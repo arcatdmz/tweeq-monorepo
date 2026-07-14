@@ -46,42 +46,46 @@ import {
 	TitleBar,
 	Tooltip,
 	TweakOverlay,
+	Viewport,
 	type Scheme,
 	useTweeqRuntime,
 } from '@tweeq/vue'
 import {onBeforeUnmount, onMounted, ref, useTemplateRef} from 'vue'
 
-const numberValue = ref(24)
+const numberValue = ref(25)
 const multiFirst = ref(10)
 const multiSecond = ref(20)
-const stringValue = ref('tweeq')
-const booleanValue = ref(true)
+const stringValue = ref('hello')
+const buttonToggleValue = ref(false)
+const switchValue = ref(false)
 const checkboxValue = ref(false)
-const colorValue = ref('#ff6633')
-const angleValue = ref(45)
-const codeValue = ref('const value = 24')
+const colorValue = ref('#7c3aed')
+const angleValue = ref(30)
+const codeValue = ref('{\n  "enabled": true\n}')
+const monacoValue = ref('const answer = 42')
 const bezierValue = ref<[number, number, number, number]>([0.25, 0.1, 0.25, 1])
-const dropdownValue = ref('apple')
-const drumValue = ref('one')
-const positionValue = ref<[number, number]>([12, 24])
-const radioValue = ref('medium')
-const rotaryValue = ref(90)
+const dropdownValue = ref('alpha')
+const drumValue = ref('Auto')
+const positionValue = ref<[number, number]>([10, 20])
+const radioValue = ref('alpha')
+const rotaryValue = ref(45)
 const shuffledValue = ref(1)
-const sizeValue = ref<[number, number]>([1920, 1080])
-const timeValue = ref(72)
-const translateValue = ref<[number, number]>([8, 16])
+const sizeValue = ref<[number, number]>([100, 50])
+const timeValue = ref(24)
+const translateValue = ref<[number, number]>([0, 0])
 const vectorValue = ref<[number, number, number]>([1, 2, 3])
-const iconActive = ref(true)
-const complexValue = ref({opacity: 50, label: 'Layer'})
+const iconActive = ref(false)
+const complexValue = ref({amount: 12, enabled: true, label: 'Demo'})
 const complexScheme = {
-	opacity: {type: 'number', min: 0, max: 100, suffix: '%'},
+	amount: {type: 'number', min: 0, max: 100},
+	enabled: {type: 'boolean'},
 	label: {type: 'string'},
 } as const
 const modalOpen = ref(false)
 const popoverOpen = ref(false)
 const overlayOpen = ref(false)
 const floatingOpen = ref(false)
-const frameWidth = ref(24)
+const frameWidth = ref(20)
 const popoverReference = useTemplateRef<HTMLElement>('popoverReference')
 const runtime = useTweeqRuntime()
 const modal = runtime.modalStore.getState()
@@ -183,7 +187,7 @@ const colorMask =
 
 		<section data-gallery-component="App">
 			<h2>App</h2>
-			<App app-id="vue-gallery-embedded" :with-provider="false" embedded>
+			<App app-id="gallery-embedded" :with-provider="false" embedded>
 				<template #title><TitleBar name="Embedded App" :icon="colorMask" style="position: absolute" /></template>
 				Embedded application content
 			</App>
@@ -196,7 +200,7 @@ const colorMask =
 
 		<section data-gallery-component="ColorIcon">
 			<h2>ColorIcon</h2>
-			<ColorIcon :src="colorMask" style="width: 24px; height: 24px; background: #f06" />
+			<ColorIcon :src="colorMask" style="width: 24px" />
 		</section>
 
 		<section data-gallery-component="CommandPalette">
@@ -211,42 +215,52 @@ const colorMask =
 
 		<section data-gallery-component="IconIndicator">
 			<h2>IconIndicator</h2>
-			<IconIndicator v-model:active="iconActive" icon="char:★" />
+			<IconIndicator v-model:active="iconActive" icon="char:●" />
 		</section>
 
 		<section data-gallery-component="InputAngle">
 			<h2>InputAngle</h2>
-			<InputAngle v-model="angleValue" :snap="15" />
+			<InputAngle v-model="angleValue" />
 		</section>
 
 		<section data-gallery-component="InputButton">
 			<h2>InputButton</h2>
-			<InputButton label="Action" icon="char:★" />
+			<InputButton
+				label="Run action"
+				icon="char:+"
+				tooltip="Run the demo action"
+			/>
 		</section>
 
 		<section data-gallery-component="InputButtonToggle">
 			<h2>InputButtonToggle</h2>
-			<InputButtonToggle v-model="booleanValue" label="Toggle" />
+			<InputButtonToggle v-model="buttonToggleValue" label="Toggle button" />
 		</section>
 
 		<section data-gallery-component="InputCheckbox">
 			<h2>InputCheckbox</h2>
-			<InputCheckbox v-model="checkboxValue" label="Checked" />
+			<InputCheckbox v-model="checkboxValue" label="Checkbox" />
 		</section>
 
 		<section data-gallery-component="InputCode">
 			<h2>InputCode</h2>
-			<InputCode v-model="codeValue" lang="javascript" />
+			<InputCode v-model="codeValue" lang="json" />
 		</section>
 
 		<section data-gallery-component="InputColor">
 			<h2>InputColor</h2>
-			<InputColor v-model="colorValue" alpha />
+			<div style="width: min(360px, 100%)">
+				<InputColor v-model="colorValue" :presets="['#00ff88']" alpha />
+			</div>
 		</section>
 
 		<section data-gallery-component="InputComplex">
 			<h2>InputComplex</h2>
-			<InputComplex v-model="complexValue" :scheme="complexScheme" />
+			<InputComplex
+				v-model="complexValue"
+				:scheme="complexScheme"
+				title="Generated form"
+			/>
 		</section>
 
 		<section data-gallery-component="InputCubicBezier">
@@ -256,37 +270,56 @@ const colorMask =
 
 		<section data-gallery-component="InputDropdown">
 			<h2>InputDropdown</h2>
-			<InputDropdown v-model="dropdownValue" :options="['apple', 'banana', 'cherry']" />
+			<InputDropdown
+				v-model="dropdownValue"
+				:options="['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa']"
+				:labelizer="option => option.replace(/^./, letter => letter.toUpperCase())"
+			/>
 		</section>
 
 		<section data-gallery-component="InputDrum">
 			<h2>InputDrum</h2>
-			<InputDrum v-model="drumValue" :options="['one', 'two', 'three']" />
+			<InputDrum
+				v-model="drumValue"
+				:options="['Auto', '100', '200', '400']"
+				:cell-width="52"
+				font="numeric"
+			/>
 		</section>
 
 		<section data-gallery-component="InputGroup">
 			<h2>InputGroup</h2>
-			<InputGroup><InputButton label="One" /><InputButton label="Two" /></InputGroup>
+			<InputGroup>
+				<button data-inline-position="start">A</button>
+				<button data-inline-position="middle">B</button>
+				<button data-inline-position="end">C</button>
+			</InputGroup>
 		</section>
 
 		<section data-gallery-component="InputNumber">
 			<h2>InputNumber</h2>
-			<InputNumber v-model="numberValue" :min="0" :max="100" />
+			<InputNumber
+				v-model="numberValue"
+				:min="0"
+				:max="100"
+				:step="1"
+				prefix="$"
+			/>
 		</section>
 
 		<section data-gallery-component="InputPosition">
 			<h2>InputPosition</h2>
-			<InputPosition v-model="positionValue" :min="-100" :max="100" />
+			<InputPosition v-model="positionValue" />
 		</section>
 
 		<section data-gallery-component="InputRadio">
 			<h2>InputRadio</h2>
-			<InputRadio v-model="radioValue" :options="['small', 'medium', 'large']" />
+			<InputRadio v-model="radioValue" :options="['alpha', 'beta', 'gamma']" />
 		</section>
 
 		<section data-gallery-component="InputRotary">
 			<h2>InputRotary</h2>
-			<InputRotary v-model="rotaryValue" :snap="15" />
+			<InputRotary v-model="rotaryValue" />
 		</section>
 
 		<section data-gallery-component="InputShuffle">
@@ -301,12 +334,12 @@ const colorMask =
 
 		<section data-gallery-component="InputString">
 			<h2>InputString</h2>
-			<InputString v-model="stringValue" />
+			<InputString v-model="stringValue" default="hello" />
 		</section>
 
 		<section data-gallery-component="InputSwitch">
 			<h2>InputSwitch</h2>
-			<InputSwitch v-model="booleanValue" label="Enabled" />
+			<InputSwitch v-model="switchValue" label="Switch" />
 		</section>
 
 		<section data-gallery-component="InputTime">
@@ -321,17 +354,17 @@ const colorMask =
 
 		<section data-gallery-component="InputVec">
 			<h2>InputVec</h2>
-			<InputVec v-model="vectorValue" />
+			<InputVec v-model="vectorValue" :icon="['char:X', 'char:Y', 'char:Z']" />
 		</section>
 
 		<section data-gallery-component="Markdown">
 			<h2>Markdown</h2>
-			<Markdown source="**Shared** Markdown pipeline" />
+			<Markdown :source="'# Rendered heading\n\nA [Tweeq](https://example.com) link.'" />
 		</section>
 
 		<section data-gallery-component="MonacoEditor">
 			<h2>MonacoEditor</h2>
-			<MonacoEditor v-model="codeValue" lang="javascript" style="height: 10rem" />
+			<MonacoEditor v-model="monacoValue" lang="typescript" style="height: 180px" />
 		</section>
 
 		<section data-gallery-component="MultiSelectPopup">
@@ -344,7 +377,7 @@ const colorMask =
 
 		<section data-gallery-component="PaneExpandable">
 			<h2>PaneExpandable</h2>
-			<PaneExpandable icon="char:⚙" open-icon="char:×" persistent>
+			<PaneExpandable icon="material-symbols:tune" persistent>
 				<div data-testid="expandable-content">Expandable content</div>
 			</PaneExpandable>
 		</section>
@@ -354,7 +387,7 @@ const colorMask =
 			<InputButton label="Toggle floating pane" @click="floatingOpen = !floatingOpen" />
 			<PaneFloating
 				v-if="floatingOpen"
-				name="vue-gallery-floating-relative"
+				name="gallery-floating-relative"
 				:position="{anchor: 'right-top', width: 280, height: 120}"
 				style="position: relative; inset: auto; margin-top: 0.75rem"
 			>
@@ -364,8 +397,11 @@ const colorMask =
 
 		<section data-gallery-component="PaneModal">
 			<h2>PaneModal</h2>
-			<InputButton label="Toggle modal" @click="modalOpen = !modalOpen" />
-			<PaneModal :open="modalOpen"><InputButton label="Close" @click="modalOpen = false" /></PaneModal>
+			<InputButton label="Open plain modal" @click="modalOpen = true" />
+			<PaneModal :open="modalOpen">
+				<p>Plain modal content</p>
+				<InputButton label="Close plain modal" @click="modalOpen = false" />
+			</PaneModal>
 		</section>
 
 		<section data-gallery-component="PaneModalComplex">
@@ -382,22 +418,33 @@ const colorMask =
 
 		<section data-gallery-component="PaneSplit">
 			<h2>PaneSplit</h2>
-			<PaneSplit name="vue-gallery-split" direction="horizontal" style="height: 8rem">
-				<template #first>First pane</template><template #second>Second pane</template>
-			</PaneSplit>
+			<div style="width: min(360px, 100%); height: 140px">
+				<PaneSplit name="vue-gallery-split" direction="horizontal">
+					<template #first><div>First pane</div></template><template #second><div>Second pane</div></template>
+				</PaneSplit>
+			</div>
 		</section>
 
 		<section data-gallery-component="PaneZUI">
 			<h2>PaneZUI</h2>
-			<PaneZUI background="dots" style="height: 10rem"><div>Zoomable content</div></PaneZUI>
+			<div style="width: min(360px, 100%); height: 140px">
+				<PaneZUI background="dots"><button type="button">Canvas node</button></PaneZUI>
+			</div>
 		</section>
 
 		<section data-gallery-component="ParameterGrid">
 			<h2>ParameterGrid family</h2>
 			<ParameterGrid>
-				<ParameterHeading data-gallery-component="ParameterHeading">Parameters</ParameterHeading>
-				<ParameterGroup name="gallery" label="Group" data-gallery-component="ParameterGroup">
-					<Parameter label="Value" data-gallery-component="Parameter"><InputNumber v-model="numberValue" /></Parameter>
+				<ParameterHeading data-gallery-component="ParameterHeading">
+					Parameters<template #right>Ready</template>
+				</ParameterHeading>
+				<Parameter
+					label="Name"
+					hint="A controlled name"
+					data-gallery-component="Parameter"
+				><InputString model-value="Tweeq" /></Parameter>
+				<ParameterGroup name="demo-advanced" label="Advanced" data-gallery-component="ParameterGroup">
+					<Parameter label="Mode"><InputString model-value="Detailed" /></Parameter>
 				</ParameterGroup>
 			</ParameterGrid>
 		</section>
@@ -405,27 +452,33 @@ const colorMask =
 		<section data-gallery-component="Popover">
 			<h2>Popover</h2>
 			<button ref="popoverReference" type="button" @click="popoverOpen = !popoverOpen">Toggle popover</button>
-			<Popover v-model:open="popoverOpen" :reference="popoverReference">Popover content</Popover>
+			<Popover v-model:open="popoverOpen" :reference="popoverReference" arrow placement="bottom">
+				<div data-testid="popover-content">Popover content</div>
+			</Popover>
 		</section>
 
 		<section data-gallery-component="Ruler">
 			<h2>Ruler</h2>
-			<Ruler :range="[0, 100]" />
+			<Ruler :range="[0, 10]" style="height: 32px" />
 		</section>
 
 		<section data-gallery-component="Tabs">
 			<h2>Tabs</h2>
-			<Tabs name="vue-gallery-tabs"><Tab name="First" data-gallery-component="Tab">First tab</Tab><Tab name="Second">Second tab</Tab></Tabs>
+			<Tabs name="vue-gallery-tabs"><Tab name="First" data-gallery-component="Tab">First panel</Tab><Tab name="Second">Second panel</Tab></Tabs>
 		</section>
 
 		<section data-gallery-component="Timeline">
 			<h2>Timeline</h2>
-			<Timeline v-model:frame-width="frameWidth" :frame-range="[0, 240]" style="height: 8rem" />
+			<Timeline v-model:frame-width="frameWidth" :frame-range="[0, 120]" style="height: 80px">
+				<template #default="{visibleFrameRange}"><div>{{ JSON.stringify(visibleFrameRange) }}</div></template>
+			</Timeline>
 		</section>
 
 		<section data-gallery-component="TitleBar">
 			<h2>TitleBar</h2>
-			<TitleBar name="Vue gallery" :icon="colorMask" style="position: relative" />
+			<TitleBar name="Gallery" :icon="colorMask" style="position: relative">
+				<template #center>Center</template><template #right>Right</template>
+			</TitleBar>
 			<output data-testid="title-menu-result">{{ titleMenuResult }}</output>
 		</section>
 
@@ -455,20 +508,25 @@ const colorMask =
 			<h2>TweeqProvider</h2><p>The gallery's outer runtime owner.</p>
 		</section>
 		<section data-gallery-component="Viewport">
-			<h2>Viewport</h2><p>The gallery's outer canonical style root.</p>
+			<h2>Viewport</h2><Viewport>Viewport content</Viewport>
 		</section>
 	</main>
 </template>
 
 <style scoped>
-.gallery { box-sizing: border-box; max-width: 960px; min-height: 100vh; margin: auto; padding: 24px 16px 120px; }
+.gallery { box-sizing: border-box; max-width: 960px; min-height: 100vh; margin: auto; padding: 24px 16px 120px; text-rendering: optimizelegibility; -webkit-font-smoothing: antialiased; }
 .playground-header { padding-bottom: 16px; }
 .playground-header h1 { margin: 12px 0 8px; font-family: var(--tq-font-heading, sans-serif); font-size: 28px; font-weight: 700; line-height: 1.2; }
 .playground-header p { margin: 0; line-height: 1.5; }
 .renderer-switcher { display: inline-flex; gap: 0.25rem; margin-top: 0.5rem; padding: 0.25rem; border: 1px solid var(--tq-color-border); border-radius: 8px; background: var(--tq-color-neutral); }
 .renderer-switcher a { padding: 0.45rem 0.8rem; border-radius: 6px; color: var(--tq-color-text); text-decoration: none; }
 .renderer-switcher a[aria-current='page'] { background: var(--tq-color-accent); color: var(--tq-color-on-accent); }
-.gallery > section { display: grid; gap: 0.75rem; margin-bottom: 16px; }
-.gallery h2 { margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--tq-color-border); font-family: var(--tq-font-heading, sans-serif); font-size: 18px; font-weight: 600; line-height: 1.2; }
-.gallery :deep(.TqPaneZUI) { border: 1px solid var(--tq-color-border); }
+.gallery > section { margin-bottom: 16px; }
+.gallery > section > h2 { margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--tq-color-border); font-family: var(--tq-font-heading, sans-serif); font-size: 18px; font-weight: 600; line-height: 1.2; }
+.gallery > section :deep(p) { line-height: 1.6; }
+.gallery :deep([data-tq-component='parameter-grid']) { line-height: 1.6; }
+.gallery :deep([data-tq-component='markdown'] h1) { margin-top: calc(0.5rem - 3.6rem); margin-bottom: 1rem; padding-top: calc(1rem + 3.6rem); font-size: 2rem; font-weight: 600; line-height: 1.25; }
+.gallery :deep([data-tq-component='markdown'] h1:first-child + p) { margin-top: 2rem; }
+.gallery :deep([data-tq-component='markdown'] p) { line-height: 1.6; }
+.gallery :deep([data-tq-component='markdown'] a) { color: #00f; font-weight: 500; line-height: 1.6; text-decoration: underline; }
 </style>

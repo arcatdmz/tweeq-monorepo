@@ -14,6 +14,7 @@ export default function IconSection() {
 	return (
 		<section data-testid="Icon">
 			<h2>Icon</h2>
+			<Icon icon="char:★" />
 			<Icon data-testid="iconify-icon" icon="tq-demo:diamond" />
 			<Icon data-testid="fill-icon" icon={`fill:${STAR_PATH}`} />
 			<Icon data-testid="char-icon" icon="char:⌘" />

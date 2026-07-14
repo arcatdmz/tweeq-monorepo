@@ -1,24 +1,24 @@
 import {App, TitleBar} from '@tweeq/react'
 
-import {assetPath} from '../assetPath'
+import {colorMask} from '../galleryAssets'
 
 export default function AppSection() {
 	return (
 		<section data-testid="App">
 			<h2>App</h2>
 			<App
-				appId="react-demo"
+				appId="gallery-embedded"
 				withProvider={false}
 				embedded
 				title={
 					<TitleBar
-						name="Embedded"
-						icon={assetPath('logo.svg')}
+						name="Embedded App"
+						icon={colorMask}
 						style={{position: 'absolute'}}
 					/>
 				}
 			>
-				Embedded app content
+				Embedded application content
 			</App>
 		</section>
 	)
