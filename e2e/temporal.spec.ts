@@ -44,11 +44,12 @@ test('temporal and rotary controls render and update', async ({page}) => {
 	// movementX values under lock (observed ±700px jumps for 20px moves), so
 	// assert only that dragging scrubs the value — the drag math itself is
 	// unit-tested in core against the legacy formula, and direction should be
-	// verified manually in a real browser.
+	// verified manually in a real browser. Keep this to one CDP move: stepped
+	// moves under pointer lock can queue synthetic locked-pointer events and
+	// monopolize the page's main thread without adding browser-level coverage.
 	await page.mouse.move(
 		drumBox.x + drumBox.width / 2 - 150,
-		drumBox.y + drumBox.height / 2,
-		{steps: 6}
+		drumBox.y + drumBox.height / 2
 	)
 	await page.mouse.up()
 	await expect(page.getByTestId('drum-value')).not.toHaveText('200')
