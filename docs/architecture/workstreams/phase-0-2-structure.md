@@ -155,7 +155,9 @@ contain renderer markup only and no copied state transition.
   and Vue matches the cross-platform Ctrl/Cmd+P and arrow-key behavior.
 - Menu now consumes the shared item model and safe-submenu-corridor geometry in
   both renderers. Its shared contract covers commands, short labels,
-  separators, close propagation, controlled updates, and stable parts.
+  separators, disabled/menu semantics, roving focus, keyboard activation,
+  submenu enter/return, Escape/close propagation, controlled updates, and
+  stable parts.
 - Popover now has one native toggle lifecycle for light-dismiss and uses the
   same core anchor/shift/arrow geometry in both renderers. Its shared contract
   caught Vue's invalid `"close"` ToggleEvent state and protects controlled
@@ -167,7 +169,10 @@ contain renderer markup only and no copied state transition.
 - MultiSelect action availability and value transforms now live in DOM beside
   the existing selection store. DOM fixtures cover multi-selection, capture,
   speed-aware updates, confirm, and disposal; Vue also clears its popup element
-  registration during unmount.
+  registration during unmount. Relative scalar and two-axis keyboard movement
+  is DOM-owned as well: both renderers expose matching semantics, accelerated
+  and fine steps, Escape rollback, focus-visible expansion, and real-gallery
+  Chromium coverage.
 
 ## Phase 4 family 6 (complete)
 
@@ -201,10 +206,14 @@ contain renderer markup only and no copied state transition.
 
 - Tabs uses core enabled-tab resolution and a shared renderer contract. Custom
   persistence keys, native disabled buttons, initial/change/re-click events,
-  ARIA orientation, stable parts, and reactive id re-registration are aligned.
+  automatic orientation-aware Arrow/Home/End activation, roving focus, stable
+  tab/panel labelling, ARIA orientation, stable parts, and reactive id
+  re-registration are aligned.
 - PaneSplit uses one core resize controller and the shared pointer lifecycle.
-  Its renderer contract covers proportional and fixed-second movement, public
-  minimum clamping, persistence-facing styles, and stable pane/divider parts.
+  Its renderer contract covers proportional and fixed-second pointer/keyboard
+  movement, public minimum clamping, persistence-facing styles, focus-visible
+  separator semantics, orientation-aware ARIA values, and stable pane/divider
+  parts.
 - PaneFloating uses the core anchor/minimize transition and shared pointer
   lifecycle. The contract covers edge minimization; Vue now composes window
   clamps and excludes the titlebar from available height like React.
