@@ -391,6 +391,7 @@ test('React and Vue galleries share their complete shell, order, and layout', as
 				'border',
 				'borderRadius',
 				'color',
+				'cursor',
 				'display',
 				'fontFamily',
 				'fontSize',
