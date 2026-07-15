@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
 import {useEventListener, useUrlSearchParams} from '@vueuse/core'
-import {kebab} from 'case'
+import Case from 'case'
 import {Icon, InputComplex, Viewport} from '@tweeq/vue'
 import {computed, ref, shallowRef, watch} from 'vue'
 
@@ -27,11 +27,11 @@ const searchParams = useUrlSearchParams()
 const spectrum = computed(() => {
 	const value = searchParams.sp
 
-	if (value === kebab(props.title)) return true
+	if (value === Case.kebab(props.title)) return true
 
 	if (!value || typeof value !== 'object') return false
 
-	return value.includes(kebab(props.title))
+	return value.includes(Case.kebab(props.title))
 })
 
 const currentTask = ref<'introduction' | number | 'result'>('introduction')

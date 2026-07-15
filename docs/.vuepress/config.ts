@@ -75,9 +75,6 @@ export default defineUserConfig({
 	bundler: viteBundler({
 		viteOptions: {
 			plugins: [glsl() as any],
-			build: {
-				ssr: false,
-			},
 			ssr: {
 				noExternal: ['paper', 'paper-jsdom', '@baku89/pave'],
 				external: ['paper', 'paper-jsdom', '@baku89/pave'],
