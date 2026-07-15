@@ -5,9 +5,9 @@ import * as Tq from '@tweeq/vue'
 import {defineClientConfig} from '@vuepress/client'
 import type {App} from 'vue'
 
-import ComponentGallery from '../../apps/playground-vue/src/ComponentGallery.vue'
 import ColorPaletteDemo from './ColorPaletteDemo.vue'
 import DemoComponent from './DemoComponent.vue'
+import DocumentationComponentGallery from './DocumentationComponentGallery.vue'
 import ExampleContainer from './ExampleContainer.vue'
 import PresentationThreePointLighting from './PresentationThreePointLighting.vue'
 import RendererSwitch from './RendererSwitch.vue'
@@ -30,7 +30,7 @@ const registerComponents = (app: App) => {
 	app.component('UserTestDropShadow', UserTestDropShadow)
 	app.component('PresentationThreePointLighting', PresentationThreePointLighting)
 	app.component('ColorPaletteDemo', ColorPaletteDemo)
-	app.component('ComponentGallery', ComponentGallery)
+	app.component('ComponentGallery', DocumentationComponentGallery)
 }
 
 export default defineClientConfig({

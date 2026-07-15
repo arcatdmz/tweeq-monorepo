@@ -224,7 +224,7 @@ const componentsHref = props.embeddedDocs
 			</nav>
 		</header>
 
-		<div class="all-components">
+		<Viewport class="all-components">
 
 		<section data-gallery-component="App">
 			<h2>App</h2>
@@ -593,6 +593,6 @@ const componentsHref = props.embeddedDocs
 		<section data-gallery-component="TweeqProvider">
 			<h2>TweeqProvider</h2><p>The gallery's outer runtime owner.</p>
 		</section>
-		</div>
+		</Viewport>
 	</main>
 </template>

@@ -30,6 +30,12 @@ test('renderer switch preserves the documentation slug in both directions', asyn
 	await expect(gallery).toBeVisible()
 	await expect(gallery).not.toHaveClass(/standalone-gallery-page/)
 	expect((await gallery.boundingBox())?.width).toBeGreaterThan(800)
+	const viewport = gallery.locator(':scope > .all-components')
+	await expect(viewport).toHaveClass(/TqViewport/)
+	await expect(viewport).toHaveAttribute('data-tq-component', 'viewport')
+	await expect(
+		viewport.locator('[data-gallery-component="InputAngle"] [data-tq-component="input-angle"]'),
+	).toHaveCSS('font-size', '12px')
 	await expect(page.getByRole('link', {name: 'React'}).first()).toHaveAttribute(
 		'href',
 		'/all-components.html',

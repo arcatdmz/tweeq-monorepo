@@ -9,9 +9,7 @@ const research = window.location.hash === '#/research'
 
 <template>
 	<TweeqProvider app-id="com.tweeq.playground-vue">
-		<Viewport>
-			<ResearchApp v-if="research" />
-			<ComponentGallery v-else />
-		</Viewport>
+		<Viewport v-if="research"><ResearchApp /></Viewport>
+		<ComponentGallery v-else />
 	</TweeqProvider>
 </template>
