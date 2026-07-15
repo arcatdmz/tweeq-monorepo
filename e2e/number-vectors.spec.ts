@@ -1,7 +1,7 @@
 import {expect, test} from '@playwright/test'
 
 test('number and vector controls update controlled values', async ({page}) => {
-	await page.goto('/#/all-components')
+	await page.goto('/all-components.html')
 
 	const numberInput = page.getByTestId('InputNumber').locator('input')
 	await numberInput.fill('42')
@@ -9,8 +9,7 @@ test('number and vector controls update controlled values', async ({page}) => {
 	await numberInput.blur()
 	const numberBox = await page
 		.getByTestId('InputNumber')
-		.locator('div')
-		.first()
+		.locator('[data-tq-input-number]')
 		.boundingBox()
 	if (!numberBox) throw new Error('InputNumber did not produce a box')
 	await page.mouse.move(numberBox.x + numberBox.width * 0.25, numberBox.y + 10)

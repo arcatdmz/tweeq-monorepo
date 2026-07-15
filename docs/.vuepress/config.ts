@@ -1,12 +1,17 @@
 import {viteBundler} from '@vuepress/bundler-vite'
 import {defaultTheme} from '@vuepress/theme-default'
-import {fileURLToPath} from 'url'
 import glsl from 'vite-plugin-glsl'
 import {defineUserConfig} from 'vuepress'
 
 export default defineUserConfig({
 	title: 'Tweeq',
-	base: '/tweeq/',
+	base: process.env.TWEEQ_VUE_DOCS_BASE ?? '/vue/',
+	pagePatterns: [
+		'**/*.md',
+		'!README.md',
+		'!architecture/**',
+		'!migration.md',
+	],
 	head: [
 		['link', {rel: 'icon', href: './logo.svg'}],
 		['link', {rel: 'preconnect', href: 'https://fonts.googleapis.com'}],
@@ -52,6 +57,10 @@ export default defineUserConfig({
 				text: 'Example',
 				link: '/example',
 			},
+			{
+				text: 'All Components',
+				link: '/all-components',
+			},
 		],
 		logo: './logo.svg',
 		repo: 'baku89/tweeq',
@@ -60,7 +69,7 @@ export default defineUserConfig({
 		'/': {
 			lang: 'en-US',
 			description:
-				'A collection of Vue.js components for creative professionals',
+				'Tweeq documentation rendered with Vue',
 		},
 	},
 	bundler: viteBundler({
@@ -68,14 +77,6 @@ export default defineUserConfig({
 			plugins: [glsl() as any],
 			build: {
 				ssr: false,
-			},
-			resolve: {
-				alias: [
-					{
-						find: 'tweeq',
-						replacement: fileURLToPath(new URL('../../src', import.meta.url)),
-					},
-				],
 			},
 			ssr: {
 				noExternal: ['paper', 'paper-jsdom', '@baku89/pave'],

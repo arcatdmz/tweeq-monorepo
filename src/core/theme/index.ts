@@ -1,5 +1,0 @@
-export * from './applyThemeToDOM'
-export * from './computeTheme'
-export * from './palette'
-export * from './radix'
-export * from './types'

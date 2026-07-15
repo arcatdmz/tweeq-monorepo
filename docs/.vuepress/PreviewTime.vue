@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {formatTimecode} from '../../src/InputTime/utils'
+import {formatTimecode} from '@tweeq/core'
 
 const props = defineProps<{
 	modelValue: {

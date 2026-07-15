@@ -1,0 +1,41 @@
+/**
+ * Get the precision of a step
+ * @param step - The step to get the precision of
+ * @returns The precision of the step. If the step is 0, it returns 0
+ */
+export function precisionOf(step: number) {
+	if (step === 0) return 0
+
+	return Math.max(0, Math.ceil(-Math.log10(step)))
+}
+
+/**
+ * Converts a number to a string with a fixed number of decimal places, while removing trailing zeros
+ */
+export function toFixed(value: number, precision: number) {
+	if (typeof value !== 'number') {
+		throw new TypeError(`Expected a number, received ${typeof value}`)
+	}
+
+	return value
+		.toFixed(precision)
+		.replace(/\.(.*?)[0]+$/, '.$1')
+		.replace(/\.$/, '')
+}
+
+/**
+ * Get the number of digits after the decimal point
+ * @example getNumberPresigion('1.234') // 3
+ * @example getNumberPresigion('1.234000') // 6
+ * @example getNumberPresigion('1') // 0
+ */
+export function getNumberPresition(value: string) {
+	const floats = /\.[0-9]*$/.exec(value)
+	return floats ? floats[0].length - 1 : 0
+}
+
+export const unsignedMod = (x: number, y: number) => ((x % y) + y) % y
+
+export function toPercent(value: number): string {
+	return `${value * 100}%`
+}

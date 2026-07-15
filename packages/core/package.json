@@ -1,0 +1,59 @@
+{
+	"name": "@tweeq/core",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Framework-neutral value semantics, validation, formatting, and state transitions for Tweeq",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/arcatdmz/tweeq.git",
+		"directory": "packages/core"
+	},
+	"homepage": "https://arcatdmz.github.io/tweeq/",
+	"bugs": "https://github.com/arcatdmz/tweeq/issues",
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./validator": {
+			"types": "./dist/validator.d.ts",
+			"import": "./dist/validator.js"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "rm -rf dist && tsc -p tsconfig.build.json",
+		"test": "vitest run"
+	},
+	"devDependencies": {
+		"@types/chroma-js": "^2.4.3",
+		"@types/lodash-es": "catalog:",
+		"@types/markdown-it": "^14.1.2",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	},
+	"dependencies": {
+		"@radix-ui/colors": "^3.0.0",
+		"bezier-easing": "^2.1.0",
+		"bndr-js": "catalog:",
+		"case": "^1.6.3",
+		"chroma-js": "^3.1.1",
+		"colorjs.io": "^0.5.0",
+		"line-intersect": "^3.0.0",
+		"linearly": "catalog:",
+		"lodash-es": "catalog:",
+		"markdown-it": "^14.0.0",
+		"markdown-it-anchor": "^9.0.1",
+		"markdown-it-deflist": "^3.0.0",
+		"markdown-it-footnote": "^4.0.0",
+		"markdown-it-toc-done-right": "^4.2.0",
+		"validate-color": "^2.2.4"
+	}
+}

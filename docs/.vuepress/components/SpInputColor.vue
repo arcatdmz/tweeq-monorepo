@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import chroma from 'chroma-js'
-import {InputColorProps, InputEmits, Popover} from 'tweeq'
+import {InputColorProps, InputEmits, Popover} from '@tweeq/vue'
 import {computed, ref, useTemplateRef} from 'vue'
 
 const model = defineModel<string>({required: true})
@@ -108,8 +108,6 @@ const $button = useTemplateRef('$button')
 </template>
 
 <style lang="stylus" scoped>
-@import '../../../src/InputColor/common.styl'
-
 .SpInputColor
 	margin 8px 0
 
@@ -122,7 +120,10 @@ const $button = useTemplateRef('$button')
 	height 32px
 	border 1px solid rgb(105, 105, 105)
 	border-radius 5px
-	background-checkerboard()
+	background-color white
+	background-image linear-gradient(45deg, #ddd 25%, transparent 25%), linear-gradient(-45deg, #ddd 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ddd 75%), linear-gradient(-45deg, transparent 75%, #ddd 75%)
+	background-size 8px 8px
+	background-position 0 0, 0 4px, 4px -4px, -4px 0
 
 .textfield
 	flex-grow 1

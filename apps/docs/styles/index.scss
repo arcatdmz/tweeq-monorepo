@@ -1,0 +1,18 @@
+// The docs site's styles, compiled from the SAME sources the original
+// VuePress build used (no scraped assets):
+//  1. @vuepress/theme-default's styles/ (the set its own index.scss loads,
+//     minus the @vuepress/plugin-palette injection point),
+//  2. the theme's SFC-authored chrome styles (extracted from source by
+//     ./extract-theme-styles.mjs),
+//  3. the docs' user styles (docs/.vuepress/styles), which the palette
+//     plugin would have injected last.
+@use '../node_modules/@vuepress/theme-default/lib/client/styles/vars';
+@use '../node_modules/@vuepress/theme-default/lib/client/styles/vars-dark';
+@use '../node_modules/@vuepress/theme-default/lib/client/styles/normalize';
+@use '../node_modules/@vuepress/theme-default/lib/client/styles/content';
+@use '../node_modules/@vuepress/theme-default/lib/client/styles/arrow';
+@use '../node_modules/@vuepress/theme-default/lib/client/styles/external-link-icon';
+@use '../node_modules/@vuepress/theme-default/lib/client/styles/layout';
+@use '../node_modules/@vuepress/theme-default/lib/client/styles/plugins';
+@use './theme-sfc';
+@use '../../../docs/.vuepress/styles/index' as user;

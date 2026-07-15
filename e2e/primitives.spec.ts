@@ -3,7 +3,7 @@ import {expect, test} from '@playwright/test'
 test('React primitives render, enter the top layer, and interact', async ({
 	page,
 }) => {
-	await page.goto('/#/all-components')
+	await page.goto('/all-components.html')
 
 	const background = await page
 		.locator('body')

@@ -1,0 +1,28 @@
+{
+	"name": "@tweeq/styles",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Design tokens, reset, and shared component style parts for Tweeq",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/arcatdmz/tweeq.git",
+		"directory": "packages/styles"
+	},
+	"homepage": "https://arcatdmz.github.io/tweeq/",
+	"bugs": "https://github.com/arcatdmz/tweeq/issues",
+	"type": "module",
+	"exports": {
+		"./style.css": "./dist/style.css"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "rm -rf dist && mkdir -p dist && stylus --compress --out dist src/style.styl && node ../../scripts/append-monaco-styles.mjs"
+	},
+	"devDependencies": {
+		"monaco-editor": "^0.54.0",
+		"stylus": "catalog:"
+	}
+}

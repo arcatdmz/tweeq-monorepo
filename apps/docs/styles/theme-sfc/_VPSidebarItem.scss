@@ -1,0 +1,86 @@
+
+@use '../../node_modules/@vuepress/theme-default/lib/client/styles/mixins';
+@use '../../node_modules/@vuepress/theme-default/lib/client/styles/variables' as *;
+
+.vp-sidebar-item {
+  border-left: 0.25rem solid transparent;
+  color: var(--vp-c-text);
+  cursor: default;
+
+  &:focus-visible {
+    outline-width: 1px;
+    outline-offset: -1px;
+  }
+
+  &.vp-sidebar-heading {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0.35rem 1.5rem 0.35rem 1.25rem;
+
+    font-weight: bold;
+    font-size: 1.1em;
+
+    transition: color 0.15s ease;
+
+    + .vp-sidebar-children {
+      @include mixins.dropdown-wrapper;
+
+      margin-bottom: 0.75rem;
+    }
+  }
+
+  &.collapsible {
+    cursor: pointer;
+  }
+
+  &:not(.vp-sidebar-heading) {
+    display: inline-block;
+
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0.35rem 1rem 0.35rem 2rem;
+
+    font-weight: 400;
+    font-size: 1em;
+    line-height: 1.4;
+
+    + .vp-sidebar-children {
+      padding-left: 1rem;
+      font-size: 0.95em;
+    }
+
+    .vp-sidebar-children .vp-sidebar-children & {
+      padding: 0.25rem 1rem 0.25rem 1.75rem;
+
+      &.active {
+        border-left-color: transparent;
+        font-weight: 500;
+      }
+    }
+
+    a.vp-sidebar-heading + .vp-sidebar-children &.active {
+      border-left-color: transparent;
+    }
+  }
+
+  &.active:not(p.vp-sidebar-heading) {
+    border-left-color: var(--vp-c-accent);
+    color: var(--vp-c-accent);
+    font-weight: 600;
+  }
+
+  .auto-link {
+    display: block;
+  }
+
+  &.auto-link {
+    display: block;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--vp-c-accent);
+    }
+  }
+}

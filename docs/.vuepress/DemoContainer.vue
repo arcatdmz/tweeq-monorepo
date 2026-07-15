@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as Tq from 'tweeq'
+import * as Tq from '@tweeq/vue'
 import {ref} from 'vue'
 
 withDefaults(

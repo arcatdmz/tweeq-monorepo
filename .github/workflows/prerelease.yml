@@ -1,0 +1,126 @@
+name: Publish npm release
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Publish a prerelease to next or a feedback-approved stable release to latest
+        required: true
+        default: next
+        type: choice
+        options:
+          - next
+          - latest
+      confirmation:
+        description: Type publish-next or publish-latest after all release gates are approved
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    if: >-
+      (inputs.channel == 'next' && inputs.confirmation == 'publish-next') ||
+      (inputs.channel == 'latest' && inputs.confirmation == 'publish-latest')
+    runs-on: ubuntu-latest
+    environment: npm-release
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4.4.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Verify trusted-publishing npm CLI
+        run: node -e "const v = require('node:child_process').execFileSync('npm', ['--version'], {encoding:'utf8'}).trim(); const [major, minor, patch] = v.split('.').map(Number); if (major < 11 || (major === 11 && (minor < 5 || (minor === 5 && patch < 1)))) throw new Error('npm 11.5.1 or newer is required for OIDC publishing; found ' + v)"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify approved package names and release version
+        env:
+          NPM_SCOPE_APPROVED: ${{ secrets.NPM_SCOPE_APPROVED }}
+          RELEASE_CHANNEL: ${{ inputs.channel }}
+          STABLE_RELEASE_APPROVED: ${{ secrets.STABLE_RELEASE_APPROVED }}
+        run: pnpm check:release -- --release
+
+      - name: Run reproducibility gates
+        run: pnpm lint && pnpm check:boundaries && pnpm build && pnpm docs:check && pnpm test:ssr && pnpm test && pnpm test:packed
+
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run browser parity tests
+        run: pnpm e2e
+
+      - name: Record release-runner baseline
+        run: pnpm baseline:record
+
+      - name: Upload release baseline
+        uses: actions/upload-artifact@v6
+        with:
+          name: release-baseline
+          path: docs/architecture/release-baseline.md
+
+      - name: Pack exact release artifacts
+        shell: bash
+        run: |
+          mkdir release-artifacts
+          for package in core dom styles react vue; do
+            pnpm --dir "packages/$package" pack --pack-destination ../../release-artifacts
+          done
+
+      - name: Upload exact release artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: npm-${{ inputs.channel }}-artifacts
+          path: release-artifacts/*.tgz
+
+      - name: Publish provenance-enabled release artifacts
+        shell: bash
+        run: |
+          for package in core dom styles react vue; do
+            npm publish release-artifacts/tweeq-$package-*.tgz --tag "$RELEASE_CHANNEL" --provenance --access public
+          done
+        env:
+          RELEASE_CHANNEL: ${{ inputs.channel }}
+          # npm 11.5.1+ prefers the workflow's OIDC identity. This protected
+          # fallback is needed only to bootstrap packages before npm trusted
+          # publishers can be configured, and should then be revoked.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Read published version
+        id: version
+        shell: bash
+        run: echo "version=$(node -p \"require('./packages/react/package.json').version\")" >> "$GITHUB_OUTPUT"
+
+      - name: Test registry-installed downstream applications
+        env:
+          TWEEQ_RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: node scripts/test-registry-release.mjs
+
+  tag:
+    name: Tag verified release
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+      - name: Tag the verified fixed release
+        env:
+          VERSION: ${{ needs.publish.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag --annotate "v$VERSION" --message "Tweeq v$VERSION"
+          git push origin "v$VERSION"

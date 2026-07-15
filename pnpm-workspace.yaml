@@ -1,0 +1,29 @@
+packages:
+  - packages/*
+  - apps/*
+  - examples/*
+
+allowBuilds:
+  '@parcel/watcher@2.5.6': true
+  esbuild: true
+  vue-demi: true
+
+# Shared tool and peer ranges. Packages reference these as `catalog:`.
+catalog:
+  typescript: ^5.5.3
+  vite: ^5.4.3
+  vitest: ^3.0.9
+  vite-plugin-dts: ^4.2.1
+  vite-plugin-glsl: ^1.3.3
+  react: ^19.2.7
+  react-dom: ^19.2.7
+  '@types/react': ^19.2.17
+  '@types/react-dom': ^19.2.3
+  '@vitejs/plugin-react': ^4.3.4
+  vue: ^3.5.13
+  '@vitejs/plugin-vue': ^5.1.3
+  stylus: ^0.63.0
+  linearly: ^0.33.0
+  lodash-es: ^4.17.21
+  '@types/lodash-es': ^4.17.12
+  bndr-js: ^0.18.6

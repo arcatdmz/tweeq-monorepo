@@ -1,0 +1,33 @@
+{
+	"name": "@tweeq/docs",
+	"version": "0.0.0",
+	"private": true,
+	"description": "React-based documentation shell and component demos for Tweeq",
+	"type": "module",
+	"scripts": {
+		"dev": "vite --port 5174",
+		"build": "vite build",
+		"extract:theme-styles": "node styles/extract-theme-styles.mjs",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@tweeq/react": "workspace:*",
+		"react": "catalog:",
+		"react-dom": "catalog:"
+	},
+	"devDependencies": {
+		"@mdx-js/rollup": "^3.1.1",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"@vitejs/plugin-react": "catalog:",
+		"@vuepress/helper": "2.0.0-rc.80",
+		"@vuepress/theme-default": "2.0.0-rc.80",
+		"rehype-slug": "^6.0.0",
+		"sass-embedded": "^1.100.0",
+		"stylus": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:",
+		"vite-plugin-glsl": "catalog:",
+		"yaml": "^2.9.0"
+	}
+}

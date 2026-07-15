@@ -1,7 +1,7 @@
 import {expect, test} from '@playwright/test'
 
 test('temporal and rotary controls render and update', async ({page}) => {
-	await page.goto('/#/all-components')
+	await page.goto('/all-components.html')
 
 	const angleInput = page.getByTestId('InputAngle').locator('input')
 	await angleInput.fill('90')
@@ -44,16 +44,17 @@ test('temporal and rotary controls render and update', async ({page}) => {
 	// movementX values under lock (observed ±700px jumps for 20px moves), so
 	// assert only that dragging scrubs the value — the drag math itself is
 	// unit-tested in core against the legacy formula, and direction should be
-	// verified manually in a real browser.
+	// verified manually in a real browser. Keep this to one CDP move: stepped
+	// moves under pointer lock can queue synthetic locked-pointer events and
+	// monopolize the page's main thread without adding browser-level coverage.
 	await page.mouse.move(
 		drumBox.x + drumBox.width / 2 - 150,
-		drumBox.y + drumBox.height / 2,
-		{steps: 6}
+		drumBox.y + drumBox.height / 2
 	)
 	await page.mouse.up()
 	await expect(page.getByTestId('drum-value')).not.toHaveText('200')
 
-	const timeRoot = page.getByTestId('InputTime').locator('[class*="tqInputTime"]')
+	const timeRoot = page.getByTestId('InputTime').locator('[data-tq-input-time]')
 	// Raw mouse coordinates don't auto-scroll; measure only in-viewport.
 	await timeRoot.scrollIntoViewIfNeeded()
 	const timeBox = await timeRoot.boundingBox()
@@ -64,7 +65,9 @@ test('temporal and rotary controls render and update', async ({page}) => {
 	)
 	await page.mouse.down()
 	await page.mouse.move(timeBox.x + timeBox.width / 2 + 12, timeBox.y + 10)
-	const timeOverlay = page.locator('[class*="overlaySvg"]')
+	const timeOverlay = page
+		.locator('[data-tq-component="input-time-overlay"]')
+		.locator('[data-tq-part="overlay-svg"]')
 	await expect(timeOverlay).toBeVisible()
 	await expect(timeOverlay).toHaveCSS('width', '360px')
 	await expect(timeOverlay).toHaveCSS('height', '360px')

@@ -30,62 +30,101 @@ features:
 
 <div class="badges">
 	<p>
-		<a href="http://spdx.org/licenses/MIT">
-			<img src="https://img.shields.io/npm/l/tweeq.svg?style=flat-square" alt="npm license">
+		<a href="https://spdx.org/licenses/MIT.html">
+			<img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT license">
 		</a>
 	</p>
 </div>
 
-Tweeq is a collection of [Vue.js](https://vuejs.org) components for creative professionals. The components range from fundamental UIs such as numeric sliders, color pickers, to advanced and niche controls like a cubic-bezier editor. It also supports various micro-interactions suitable for professional use.
+This repository maintains [React](https://react.dev) and [Vue 3](https://vuejs.org)
+renderers over the shared behavior of [baku89/tweeq](https://github.com/baku89/tweeq).
+Both use the same parameter semantics, interaction controllers, and visual system.
 
 It is continuously developed by the visual artist [Baku Hashimoto](https://baku89.com).
 
 ## How to Use
 
-### Installation
+### React
 
-```bash
-yarn add baku89/tweeq pinia
+```sh
+npm install @tweeq/react react react-dom
 ```
 
-### index.ts 
+`@tweeq/core` and `@tweeq/dom` are transitive renderer dependencies. Install
+them explicitly only when application code imports their APIs directly.
+
+#### main.tsx
+
+```tsx
+import {createRoot} from 'react-dom/client'
+import '@tweeq/react/style.css'
+import {MyApp} from './App'
+
+createRoot(document.getElementById('root')!).render(<MyApp />)
+```
+
+#### App.tsx
+
+```tsx
+import {useState} from 'react'
+import {App, InputNumber, Parameter, ParameterGrid, TitleBar} from '@tweeq/react'
+
+export function MyApp() {
+  const [opacity, setOpacity] = useState(1)
+
+  return (
+    <App
+      appId="com.yourid.yourapp"
+      colorMode="dark"
+      accentColor="#ff0000"
+      title={<TitleBar name="My App" icon="favicon.svg" />}
+    >
+      <ParameterGrid>
+        <Parameter label="Opacity">
+          <InputNumber value={opacity} min={0} max={1} onChange={setOpacity} />
+        </Parameter>
+      </ParameterGrid>
+    </App>
+  )
+}
+```
+
+### Vue
+
+```sh
+npm install @tweeq/vue vue
+```
+
+#### main.ts
 
 ```ts
-import {createPinia} from 'pinia'
-import {initTweeq} from 'baku89/tweeq'
+import {createApp} from 'vue'
+import '@tweeq/vue/style.css'
+import Root from './App.vue'
 
-app.use(pinia)
-
-initTweeq('com.yourid.yourapp', {
-	colorMode: 'dark',
-	accentColor: '#ff0000',
-})
+createApp(Root).mount('#app')
 ```
 
-### App.vue
+#### App.vue
 
-```ts
-import {useTweeq} from 'baku89/tweeq'
+```vue
+<script setup lang="ts">
+import {ref} from 'vue'
+import {App, InputNumber, Parameter, ParameterGrid, TitleBar} from '@tweeq/vue'
 
-const Tq = useTweeq()
+const opacity = ref(1)
+</script>
 
-const projectName = Tq.config.ref('projectName', 'Untitled')
-const accentColor = Tq.theme.accentColor
+<template>
+  <App app-id="com.yourid.yourapp" color-mode="dark" accent-color="#ff0000">
+    <template #title>
+      <TitleBar name="My App" icon="favicon.svg" />
+    </template>
+    <ParameterGrid>
+      <Parameter label="Opacity">
+        <InputNumber v-model="opacity" :min="0" :max="1" />
+      </Parameter>
+    </ParameterGrid>
+  </App>
+</template>
 ```
-
-```html
-<Tq.App>
-  <template #title>
-    <Tq.TitleBar name="My App" icon="favicon.svg">
-  </template>
-  <template #default>
-    <Tq.ParameterGrid>
-      <Tq.Parameter label="Opacity">
-        <Tq.InputNumber v-model="opacity" :min="0" :max="1" />
-      </Tq.Parameter>
-    </Tq.ParameterGrid>
-  </template>
-</Tq.App>
-```
-
-

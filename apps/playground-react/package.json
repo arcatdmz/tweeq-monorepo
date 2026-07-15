@@ -1,0 +1,28 @@
+{
+	"name": "@tweeq/playground-react",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Exhaustive React behavior playground compiled from workspace sources",
+	"type": "module",
+	"scripts": {
+		"dev": "vite --port 5176",
+		"build": "tsc --noEmit && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@iconify/react": "^6.0.2",
+		"@tweeq/react": "workspace:*",
+		"linearly": "catalog:",
+		"react": "catalog:",
+		"react-dom": "catalog:"
+	},
+	"devDependencies": {
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"@vitejs/plugin-react": "catalog:",
+		"stylus": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:",
+		"vite-plugin-glsl": "catalog:"
+	}
+}

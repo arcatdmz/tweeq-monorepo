@@ -1,54 +1,40 @@
-import {defineClientConfig} from '@vuepress/client'
-import {createPinia} from 'pinia'
-import {App} from 'vue'
+import '../../apps/shared/gallery.css'
 
-const registerComponents = async (app: App) => {
-	const Tq = await import('tweeq')
-	const DemoComponent = await import('./DemoComponent.vue')
-	const ExampleContainer = await import('./ExampleContainer.vue')
-	const UserTestThreePointLighting = await import(
-		'./UserTestThreePointLighting.vue'
-	)
-	const UserTestSpring = await import('./UserTestSpring.vue')
-	const UserTestDropShadow = await import('./UserTestDropShadow.vue')
-	const UserTestTime = await import('./UserTestTime.vue')
-	const PresentationThreePointLighting = await import(
-		'./PresentationThreePointLighting.vue'
-	)
-	const ColorPaletteDemo = await import('./ColorPaletteDemo.vue')
-	// Tweeqコンポーネントを登録
+import * as Tq from '@tweeq/vue'
+import {defineClientConfig} from '@vuepress/client'
+import type {App} from 'vue'
+
+import ComponentGallery from '../../apps/playground-vue/src/ComponentGallery.vue'
+import ColorPaletteDemo from './ColorPaletteDemo.vue'
+import DemoComponent from './DemoComponent.vue'
+import ExampleContainer from './ExampleContainer.vue'
+import PresentationThreePointLighting from './PresentationThreePointLighting.vue'
+import RendererSwitch from './RendererSwitch.vue'
+import UserTestDropShadow from './UserTestDropShadow.vue'
+import UserTestSpring from './UserTestSpring.vue'
+import UserTestThreePointLighting from './UserTestThreePointLighting.vue'
+import UserTestTime from './UserTestTime.vue'
+
+const registerComponents = (app: App) => {
 	for (const [key, value] of Object.entries(Tq)) {
 		if (typeof value === 'function') continue
 		app.component(key, value)
 	}
 
-	// ドキュメント用のカスタムコンポーネントを登録
-	app.component('DemoComponent', DemoComponent.default)
-	app.component('ExampleContainer', ExampleContainer.default)
-	app.component(
-		'UserTestThreePointLighting',
-		UserTestThreePointLighting.default
-	)
-	app.component('UserTestSpring', UserTestSpring.default)
-	app.component('UserTestTime', UserTestTime.default)
-	app.component('UserTestDropShadow', UserTestDropShadow.default)
-	app.component(
-		'PresentationThreePointLighting',
-		PresentationThreePointLighting.default
-	)
-	app.component('ColorPaletteDemo', ColorPaletteDemo.default)
+	app.component('DemoComponent', DemoComponent)
+	app.component('ExampleContainer', ExampleContainer)
+	app.component('UserTestThreePointLighting', UserTestThreePointLighting)
+	app.component('UserTestSpring', UserTestSpring)
+	app.component('UserTestTime', UserTestTime)
+	app.component('UserTestDropShadow', UserTestDropShadow)
+	app.component('PresentationThreePointLighting', PresentationThreePointLighting)
+	app.component('ColorPaletteDemo', ColorPaletteDemo)
+	app.component('ComponentGallery', ComponentGallery)
 }
 
 export default defineClientConfig({
-	enhance: async ({app}) => {
-		// Piniaの設定
-		const pinia = createPinia()
-		app.use(pinia)
-
-		// クライアントサイドでのみコンポーネントを登録
-		if (typeof window !== 'undefined') {
-			// ブラウザ環境でのみ実行される
-			await registerComponents(app)
-		}
+	rootComponents: [RendererSwitch],
+	enhance: ({app}) => {
+		registerComponents(app)
 	},
 })

@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
-import {InputComplex, Viewport} from 'tweeq'
+import {InputComplex, Viewport} from '@tweeq/vue'
 import {shallowRef} from 'vue'
 
 interface Props {

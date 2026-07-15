@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {InputEmits, InputNumberProps} from 'tweeq'
+import {InputEmits, InputNumberProps} from '@tweeq/vue'
 
 const model = defineModel<number>({required: true})
 

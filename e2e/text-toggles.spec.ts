@@ -1,7 +1,7 @@
 import {expect, test} from '@playwright/test'
 
 test('text and toggle inputs update controlled values', async ({page}) => {
-	await page.goto('/#/all-components')
+	await page.goto('/all-components.html')
 
 	const stringInput = page.getByTestId('InputString').locator('input')
 	await stringInput.fill('updated')
@@ -21,7 +21,7 @@ test('text and toggle inputs update controlled values', async ({page}) => {
 
 	await page
 		.getByTestId('InputRadio')
-		.locator('[data-radio-label]')
+		.locator('[data-tq-radio-label]')
 		.filter({hasText: 'Beta'})
 		.click()
 	await expect(page.getByTestId('radio-value')).toHaveText('beta')

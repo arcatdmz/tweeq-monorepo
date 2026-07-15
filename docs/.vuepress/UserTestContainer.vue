@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
 import {useEventListener, useUrlSearchParams} from '@vueuse/core'
 import {kebab} from 'case'
-import {Icon, InputComplex, Viewport} from 'tweeq'
+import {Icon, InputComplex, Viewport} from '@tweeq/vue'
 import {computed, ref, shallowRef, watch} from 'vue'
 
 import {usePersonalInfo} from './usePersonalInfo'

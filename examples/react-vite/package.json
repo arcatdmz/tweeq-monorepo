@@ -1,0 +1,24 @@
+{
+	"name": "@tweeq/example-react-vite",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Minimal React consumer; used by scripts/test-packed.mjs to smoke-test packed @tweeq tarballs",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@tweeq/react": "workspace:*",
+		"react": "catalog:",
+		"react-dom": "catalog:"
+	},
+	"devDependencies": {
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"@vitejs/plugin-react": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:"
+	}
+}

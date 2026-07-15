@@ -1,0 +1,216 @@
+#!/usr/bin/env node
+import {execFileSync} from 'node:child_process'
+import {
+	mkdtempSync,
+	readdirSync,
+	readFileSync,
+	rmSync,
+	statSync,
+	writeFileSync,
+} from 'node:fs'
+import {tmpdir} from 'node:os'
+import {dirname, extname, join, relative, resolve} from 'node:path'
+import {fileURLToPath} from 'node:url'
+import {gzipSync} from 'node:zlib'
+
+import {
+	getRulerValueAtPixel,
+	resolveActiveTabId,
+	unsignedMod,
+} from '../packages/core/dist/index.js'
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const output = process.env.TWEEQ_RELEASE_BASELINE_OUTPUT
+	? resolve(process.env.TWEEQ_RELEASE_BASELINE_OUTPUT)
+	: join(root, 'docs', 'architecture', 'release-baseline.md')
+const artifacts = [
+	['@tweeq/core JavaScript', 'packages/core/dist', new Set(['.js'])],
+	['@tweeq/dom JavaScript', 'packages/dom/dist', new Set(['.js'])],
+	['@tweeq/styles CSS', 'packages/styles/dist', new Set(['.css'])],
+	['@tweeq/react JavaScript', 'packages/react/dist', new Set(['.js', '.cjs'])],
+	['@tweeq/react CSS', 'packages/react/dist', new Set(['.css'])],
+	['@tweeq/vue JavaScript', 'packages/vue/dist', new Set(['.js', '.cjs'])],
+	['@tweeq/vue CSS', 'packages/vue/dist', new Set(['.css'])],
+]
+
+const rows = artifacts.map(([label, directory, extensions]) => {
+	const files = walk(join(root, directory)).filter(path => extensions.has(extname(path)))
+	const buffers = files.map(path => readFileSync(path))
+	return {
+		label,
+		files: files.length,
+		raw: buffers.reduce((sum, value) => sum + value.byteLength, 0),
+		gzip: buffers.reduce((sum, value) => sum + gzipSync(value).byteLength, 0),
+	}
+})
+
+const canonicalStyle = readFileSync(join(root, 'packages/styles/dist/style.css'))
+if (!canonicalStyle.includes(Buffer.from('.monaco-editor'))) {
+	throw new Error('@tweeq/styles is missing the shared Monaco base CSS')
+}
+for (const renderer of ['react', 'vue']) {
+	const rendererStyle = readFileSync(
+		join(root, `packages/${renderer}/dist/style.css`)
+	)
+	if (!canonicalStyle.equals(rendererStyle)) {
+		throw new Error(`@tweeq/${renderer}/style.css is not the canonical artifact`)
+	}
+}
+
+const iterations = 100_000
+const samples = Array.from({length: 7}, () => benchmark(iterations)).sort((a, b) => a - b)
+const medianMs = samples[Math.floor(samples.length / 2)]
+const operationsPerSecond = Math.round(iterations * 3 / (medianMs / 1000))
+const reactTests = countVitestTests('@tweeq/react')
+const vueTests = countVitestTests('@tweeq/vue')
+const playwrightTests = countPlaywrightTests()
+const now = new Date()
+const recordedDate = [
+	now.getFullYear(),
+	String(now.getMonth() + 1).padStart(2, '0'),
+	String(now.getDate()).padStart(2, '0'),
+].join('-')
+const recordedTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+const markdown = `# Release baseline
+
+Recorded: ${recordedDate} (${recordedTimeZone})
+Runtime: Node ${process.versions.node}, ${process.platform}/${process.arch}
+Command: \`pnpm build && pnpm baseline:record\`
+
+This snapshot can seed a future prerelease comparison. Artifact sizes sum the
+actual emitted JavaScript/CSS files; gzip compresses each file independently,
+matching per-asset HTTP transfer behavior. Source maps and declarations are
+excluded from runtime size totals.
+
+## Artifact size
+
+| Artifact | Files | Raw | Gzip |
+| --- | ---: | ---: | ---: |
+${rows.map(row => `| ${row.label} | ${row.files} | ${formatBytes(row.raw)} | ${formatBytes(row.gzip)} |`).join('\n')}
+
+The renderer totals include Monaco and its language workers. Evaluate code
+splitting against these numbers rather than Vite's 500 kB warning alone.
+
+The three CSS rows are byte-identical aliases of the canonical shared style
+artifact, which includes Monaco's common base rules before Tweeq's editor
+overrides. Renderer builds and the packed-artifact gate verify both invariants;
+renderer source no longer emits independent owned CSS.
+
+## Core transition throughput
+
+The benchmark runs \`unsignedMod\`, ruler coordinate conversion, and enabled-tab
+resolution once per iteration (${iterations.toLocaleString()} iterations, seven samples).
+
+- Median: ${medianMs.toFixed(2)} ms
+- Aggregate operations: ${operationsPerSecond.toLocaleString()} operations/second
+
+This is a comparison baseline, not a CI timing threshold. Functional runtime
+parity remains enforced by the renderer-neutral contracts and browser suite.
+
+## Interaction evidence
+
+- React renderer contracts: ${reactTests.toLocaleString()} tests
+- Vue renderer contracts and compatibility warning: ${vueTests.toLocaleString()} tests
+- Cross-page Playwright interaction/visual suite: ${playwrightTests.toLocaleString()} tests
+- Packed downstream consumers: React Vite and Vue Vite, each typechecked and built
+
+Regenerate this document on the release runner immediately before each
+prerelease and retain the result with the release commit.
+`
+
+writeFileSync(output, markdown)
+console.log(`recorded ${relative(root, output)}`)
+
+function walk(directory) {
+	return readdirSync(directory, {withFileTypes: true}).flatMap(entry => {
+		const path = join(directory, entry.name)
+		if (entry.isDirectory()) return walk(path)
+		return statSync(path).isFile() ? [path] : []
+	})
+}
+
+function countVitestTests(packageName) {
+	const scratch = mkdtempSync(join(tmpdir(), 'tweeq-vitest-list-'))
+	const output = join(scratch, 'tests.json')
+	const packageDirectory = join(root, 'packages', packageName.slice('@tweeq/'.length))
+	const vitest = join(
+		packageDirectory,
+		'node_modules',
+		'.bin',
+		process.platform === 'win32' ? 'vitest.cmd' : 'vitest',
+	)
+	try {
+		execFileSync(
+			vitest,
+			['list', `--json=${output}`],
+			{cwd: packageDirectory, stdio: ['ignore', 'inherit', 'inherit']},
+		)
+		const tests = JSON.parse(readFileSync(output, 'utf8'))
+		if (!Array.isArray(tests) || tests.some(test => typeof test.name !== 'string')) {
+			throw new Error(`${packageName} did not return a valid Vitest inventory`)
+		}
+		return tests.length
+	} finally {
+		rmSync(scratch, {recursive: true, force: true})
+	}
+}
+
+function countPlaywrightTests() {
+	const scratch = mkdtempSync(join(tmpdir(), 'tweeq-playwright-report-'))
+	const output = join(scratch, 'report.json')
+	const playwright = join(
+		root,
+		'node_modules',
+		'.bin',
+		process.platform === 'win32' ? 'playwright.cmd' : 'playwright',
+	)
+	try {
+		execFileSync(
+			playwright,
+			['test', '--list', '--reporter=json'],
+			{
+				cwd: root,
+				env: {...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: output},
+				stdio: ['ignore', 'inherit', 'inherit'],
+			},
+		)
+		const report = JSON.parse(readFileSync(output, 'utf8'))
+		if (report.errors.length > 0) {
+			throw new Error('Playwright could not enumerate the browser suite')
+		}
+		return countSpecs(report.suites)
+	} finally {
+		rmSync(scratch, {recursive: true, force: true})
+	}
+}
+
+function countSpecs(suites) {
+	return suites.reduce(
+		(total, suite) =>
+			total +
+			(suite.specs ?? []).reduce(
+				(sum, spec) => sum + spec.tests.length,
+				0,
+			) +
+			countSpecs(suite.suites ?? []),
+		0,
+	)
+}
+
+function benchmark(count) {
+	const tabs = [{id: 'one'}, {id: 'two', isDisabled: true}, {id: 'three'}]
+	let sink = 0
+	const start = performance.now()
+	for (let index = 0; index < count; index += 1) {
+		sink += unsignedMod(index - 7, 13)
+		sink += getRulerValueAtPixel(index % 640, 640, [0, 100])
+		sink += resolveActiveTabId(tabs, index % 2 ? 'one' : 'missing').length
+	}
+	if (!Number.isFinite(sink)) throw new Error('benchmark produced a non-finite result')
+	return performance.now() - start
+}
+
+function formatBytes(bytes) {
+	return `${(bytes / 1024).toFixed(2)} KiB`
+}

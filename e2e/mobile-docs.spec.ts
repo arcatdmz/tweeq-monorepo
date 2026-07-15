@@ -15,7 +15,7 @@ test.use({viewport: {width: 320, height: 844}})
 test('mobile docs keep navigation and demos within the viewport', async ({
 	page,
 }) => {
-	await page.goto('/#/home')
+	await page.goto('/')
 	await expect(page.locator('.vp-navbar-items-wrapper .vp-hide-mobile')).toBeHidden()
 	await expect(page.locator('.vp-site-name')).toBeHidden()
 	await expect(page.locator('.vp-toggle-sidebar-button')).toBeVisible()
@@ -25,7 +25,7 @@ test('mobile docs keep navigation and demos within the viewport', async ({
 	await expect(page.locator('.vp-theme-container')).toHaveClass(/sidebar-open/)
 	await expect(page.locator('.vp-sidebar')).toBeInViewport()
 
-	await page.goto('/#/components')
+	await page.goto('/components.html')
 	const firstDemo = page.locator('.DemoComponent').first()
 	await expect(firstDemo).toBeVisible()
 	const columns = await firstDemo.evaluate(
@@ -41,14 +41,14 @@ test('mobile docs keep navigation and demos within the viewport', async ({
 	expect(fullscreenBox?.height).toBeLessThanOrEqual(844 - 32)
 	await firstDemo.getByRole('button', {name: 'Exit Full Screen'}).click()
 
-	await page.goto('/#/all-components')
+	await page.goto('/all-components.html')
 	await expect(page.getByTestId('Ruler')).toBeVisible()
 	await expectNoPageOverflow(page)
 })
 
 test('component option editors also stack at tablet width', async ({page}) => {
 	await page.setViewportSize({width: 768, height: 1024})
-	await page.goto('/#/components')
+	await page.goto('/components.html')
 	const firstDemo = page.locator('.DemoComponent').first()
 	const columns = await firstDemo.evaluate(
 		element => getComputedStyle(element).gridTemplateColumns

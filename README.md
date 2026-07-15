@@ -3,38 +3,42 @@
 <img src="./docs/.vuepress/public/logo.svg" width="200" />
 <h1>Tweeq</h1>
 
-<a href="https://arcatdmz.github.io/tweeq/">React Documentation</a> ⌇ <a href="https://github.com/baku89/tweeq">Original Vue Version</a> ⌇ <a href="https://github.com/sponsors/baku89">Sponsor Baku</a>
+<a href="https://arcatdmz.github.io/tweeq/">React and Vue Documentation</a> ⌇ <a href="https://arcatdmz.github.io/tweeq/vue/">Vue Demo</a> ⌇ <a href="https://github.com/baku89/tweeq">Original Project</a> ⌇ <a href="https://github.com/sponsors/baku89">Sponsor Baku</a>
 
 </div>
 
 > [!NOTE]
-> This repository is a React fork of [baku89/tweeq](https://github.com/baku89/tweeq), the original Vue implementation created by [Baku Hashimoto](https://baku89.com). The component design, interaction model, and research originate from Baku's work; this fork ports that work to React.
+> This repository is a fork of [baku89/tweeq](https://github.com/baku89/tweeq), the original Vue implementation created by [Baku Hashimoto](https://baku89.com). The component design, interaction model, and research originate from Baku's work. This fork maintains React and Vue renderers; see the [architecture overview](docs/architecture/README.md) for their shared package structure.
 
 > [!NOTE]
-> For the React live demo of [the UIST paper](https://dl.acm.org/doi/10.1145/3746059.3747723), see [the UIST 2025 page](https://arcatdmz.github.io/tweeq/#/uist2025). The [original Vue demo](https://baku89.github.io/tweeq/uist2025.html) remains available as the source reference.
+> For the React live demo of [the UIST paper](https://dl.acm.org/doi/10.1145/3746059.3747723), see [the UIST 2025 page](https://arcatdmz.github.io/tweeq/uist2025.html). The [original Vue demo](https://baku89.github.io/tweeq/uist2025.html) remains available as the source reference.
 
-Tweeq is a collection of [React](https://react.dev) components for design tools. The components range from fundamental UIs such as numeric sliders and color pickers to advanced, niche controls such as a cubic-bezier editor. It supports the precise micro-interactions used by creative professionals.
+Tweeq is a collection of maintained [React](https://react.dev) and [Vue 3](https://vuejs.org) components for design tools. The components range from fundamental UIs such as numeric sliders and color pickers to advanced, niche controls such as a cubic-bezier editor. Both renderers share the precise micro-interactions used by creative professionals.
 
-The original project has been continuously developed by Baku Hashimoto. This fork preserves the Vue implementation as its upstream reference while providing the React API documented below.
+## Using Tweeq
 
-## Project Setup
+Applications normally depend on one renderer package: `@tweeq/react` or
+`@tweeq/vue`. Most applications do not install `@tweeq/core`, `@tweeq/dom`,
+or `@tweeq/styles` directly; the renderer packages expose the framework API
+and compiled stylesheet.
 
-```
-yarn
-yarn dev
-yarn build
-```
+> [!IMPORTANT]
+> The `@tweeq/*` names remain workspace-internal until npm ownership and
+> publishing are settled. See [ADR 0001](docs/architecture/0001-package-naming-and-publishing.md)
+> for the current release status.
 
-## React usage
+### React
 
-Tweeq requires React 18 or newer. Import the generated stylesheet once and wrap the application in `TweeqProvider`; inputs use controlled `value` / `onChange` props.
+Tweeq requires React 18 or newer. Import the generated stylesheet once and
+wrap the application in `TweeqProvider`; inputs use controlled `value` /
+`onChange` props.
 
 **All base styles (font, CSS reset, selection/scrollbar chrome) are scoped to `<Viewport>`'s subtree** — same as the Vue version, where they were tied to `.TqViewport`. `TweeqProvider` alone only provides stores and overlay roots; components rendered outside a `<Viewport>` (or `<App>`, which includes one) will look unstyled.
 
 ```tsx
 import {useState} from 'react'
-import {InputNumber, TweeqProvider, Viewport} from 'tweeq'
-import 'tweeq/style.css'
+import {InputNumber, TweeqProvider, Viewport} from '@tweeq/react'
+import '@tweeq/react/style.css'
 
 export function Example() {
   const [value, setValue] = useState(24)
@@ -49,7 +53,83 @@ export function Example() {
 }
 ```
 
-## Project Background
+### Vue
+
+Tweeq requires Vue 3. Import the generated stylesheet once and use `App` for
+the standard application shell. Vue inputs use `v-model` for controlled
+values.
+
+```vue
+<script setup lang="ts">
+import {ref} from 'vue'
+import {App, InputNumber} from '@tweeq/vue'
+import '@tweeq/vue/style.css'
+
+const value = ref(24)
+</script>
+
+<template>
+  <App app-id="example">
+    <InputNumber v-model="value" :min="0" :max="100" />
+  </App>
+</template>
+```
+
+For complete setup and browser-support details, see the
+[React package guide](packages/react/README.md) or
+[Vue package guide](packages/vue/README.md).
+
+## Documentation
+
+- [Live React and Vue documentation](https://arcatdmz.github.io/tweeq/)
+- [Repository documentation map](docs/README.md)
+- [Migration guide for original Vue users](docs/migration.md)
+- [Architecture overview](docs/architecture/README.md)
+
+## Development
+
+Tweeq is developed as a [pnpm workspace](https://pnpm.io/workspaces).
+
+### Repository layout
+
+| Directory | Purpose |
+| --- | --- |
+| [`packages/core`](packages/core) | Framework-neutral types, parsing, geometry, and state transitions. |
+| [`packages/dom`](packages/dom) | Browser controllers, stores, and lifecycle ownership shared by both renderers. |
+| [`packages/styles`](packages/styles) | Shared design tokens and component styles. |
+| [`packages/react`](packages/react) | React components and hooks. |
+| [`packages/vue`](packages/vue) | Vue components and composables. |
+| [`packages/test-contracts`](packages/test-contracts) | Private conformance suites run against both renderers. |
+| [`apps/docs`](apps/docs) | React documentation shell, which compiles the shared Markdown through MDX. |
+| [`apps/playground-react`](apps/playground-react), [`apps/playground-vue`](apps/playground-vue) | Exhaustive renderer galleries used for integration and visual comparison. |
+| [`apps/shared`](apps/shared) | Gallery fixtures and styles shared by the playgrounds and documentation. |
+| [`docs`](docs) | Shared Markdown pages, VuePress renderer configuration, migration guidance, and architecture records. |
+| [`examples`](examples) | Minimal React and Vue consumers used to verify packed package artifacts. |
+| [`e2e`](e2e) | Playwright integration, parity, and visual regression tests. |
+| [`scripts`](scripts) | Repository checks, release measurements, and package-consumer test utilities. |
+| [`.changeset`](.changeset) | Pending package release notes and Changesets configuration. |
+| [`.github/workflows`](.github/workflows) | Continuous integration, documentation deployment, and npm release workflows. |
+
+See the [architecture overview](docs/architecture/README.md) for package
+dependency rules and cross-renderer design constraints.
+
+### Common commands
+
+```sh
+pnpm install
+pnpm dev          # React docs app (apps/docs)
+pnpm --filter @tweeq/playground-react dev # React playground
+pnpm --filter @tweeq/playground-vue dev   # Vue playground
+pnpm build        # build every package, app, and documentation renderer
+pnpm test         # package unit tests
+pnpm lint         # lint packages, docs app, and browser tests
+pnpm check:boundaries # enforce package layers and an acyclic workspace graph
+pnpm test:ssr     # import every JavaScript package entry in plain Node
+pnpm e2e          # Playwright suite against both documentation renderers
+pnpm test:packed  # pack + install + build the example consumers
+```
+
+## Project background
 
 Tweeq has been developed in parallel with Baku's animation projects, as part of the design tools used in those projects ([Koma](https://github.com/baku89/koma) and [Unim](https://github.com/baku89/unim)). Many of its components follow the following design principles:
 
@@ -59,7 +139,7 @@ Tweeq has been developed in parallel with Baku's animation projects, as part of 
 
 The design principles were derived from a study that sampled parameter-tuning GUI widgets from popular production software and analyzed their interaction design.
 
-Research-wise, the project has been carried out by Baku, partly in his capacity of a collaborative researcher at AIST, in collaboration with [Jun Kato](https://junkato.jp), a senior researcher at AIST. For more details, please refer to [the project page](https://junkato.jp/tweeq) and the following open-access paper (to appear):
+The research behind Tweeq was conducted by Baku, partly in his capacity as a collaborative researcher at AIST, in collaboration with [Jun Kato](https://junkato.jp), a chief senior researcher at AIST. For more details, see [the project page](https://junkato.jp/tweeq) and the published open-access paper:
 
 > Baku Hashimoto and Jun Kato. 2025. Tweeq: Parameter-Tuning GUI Widgets by/for Creative Professionals. In <i>The 38th Annual ACM Symposium on User Interface Software and Technology (UIST '25), September 28–October 01, 2025, Busan, Republic of Korea</i>. ACM, New York, NY, USA, 16 pages. https://doi.org/10.1145/3746059.3747723
 

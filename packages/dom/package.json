@@ -1,0 +1,46 @@
+{
+	"name": "@tweeq/dom",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Framework-neutral browser controllers, gestures, and stores for Tweeq",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/arcatdmz/tweeq.git",
+		"directory": "packages/dom"
+	},
+	"homepage": "https://arcatdmz.github.io/tweeq/",
+	"bugs": "https://github.com/arcatdmz/tweeq/issues",
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./shaders/*.frag": "./src/shaders/*.frag"
+	},
+	"files": [
+		"dist",
+		"src/shaders"
+	],
+	"scripts": {
+		"build": "rm -rf dist && tsc -p tsconfig.build.json",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@tweeq/core": "workspace:^",
+		"bndr-js": "catalog:",
+		"case": "^1.6.3",
+		"linearly": "catalog:",
+		"p-queue": "^8.0.1",
+		"regl": "^2.1.1",
+		"zustand": "^5.0.14"
+	},
+	"devDependencies": {
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	}
+}

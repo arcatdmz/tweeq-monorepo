@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="T extends Record<string, unknown>">
 import {useMagicKeys} from '@vueuse/core'
 import {cloneDeep} from 'lodash-es'
-import {Icon, InputComplex} from 'tweeq'
+import {Icon, InputComplex} from '@tweeq/vue'
 import {ref, shallowRef} from 'vue'
 
 import DemoContainer from './DemoContainer.vue'

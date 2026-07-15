@@ -4,8 +4,94 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4.4.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
       - name: Install modules
-        run: yarn
-      - name: Run tests
-        run: yarn test
+        run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Check package boundaries
+        run: pnpm check:boundaries
+      - name: Enforce pre-ownership publish guard
+        run: pnpm check:release
+      - name: Build workspace packages and applications
+        run: pnpm build
+      - name: Validate documentation links and snippets
+        run: pnpm docs:check
+      - name: Test Node SSR imports
+        run: pnpm test:ssr
+      - name: Packed example smoke test
+        run: pnpm test:packed
+      - name: Run package tests
+        run: pnpm test
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run browser parity tests
+        run: pnpm e2e
+
+      - name: Upload browser parity failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: browser-parity-failure-${{ github.sha }}
+          path: test-results
+          retention-days: 7
+
+      - name: Record non-blocking release baseline
+        id: release-baseline
+        continue-on-error: true
+        env:
+          TWEEQ_RELEASE_BASELINE_OUTPUT: ${{ runner.temp }}/release-baseline.md
+        run: pnpm baseline:record
+
+      - name: Upload non-blocking release baseline
+        if: steps.release-baseline.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: release-baseline-${{ github.sha }}
+          path: ${{ runner.temp }}/release-baseline.md
+          retention-days: 14
+
+  deploy:
+    name: Deploy renderer documentation to GitHub Pages
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: deploy
+      cancel-in-progress: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4.4.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/configure-pages@v5
+      - name: Build workspace libraries
+        run: pnpm build:packages
+      - name: Build React documentation
+        run: pnpm build:demo --base "/${{ github.event.repository.name }}/"
+      - name: Build Vue documentation
+        env:
+          TWEEQ_VUE_DOCS_BASE: "/${{ github.event.repository.name }}/vue/"
+        run: pnpm build:docs:vue
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/docs/dist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

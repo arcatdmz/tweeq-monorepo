@@ -7,7 +7,7 @@ async function angleValue(page: Page) {
 test('InputAngle snaps from live keys and the radial meter without jitter', async ({
 	page,
 }) => {
-	await page.goto('/#/all-components')
+	await page.goto('/all-components.html')
 	const rotary = page.getByTestId('InputAngle').getByRole('button')
 	// Raw page.mouse coordinates don't auto-scroll like locator.click() does;
 	// without this the knob sits below the fold and the drag hits <html>.
@@ -20,7 +20,7 @@ test('InputAngle snaps from live keys and the radial meter without jitter', asyn
 	await page.mouse.move(center.x + 4, center.y)
 	await page.mouse.down()
 	await page.mouse.move(center.x + 120, center.y)
-	await expect(page.locator('[class*="arrows"]')).toBeVisible()
+	await expect(page.locator('[data-tq-part="arrows"]')).toBeVisible()
 	await page.mouse.move(center.x, center.y + 120, {steps: 8})
 	expect((await angleValue(page)) % 45).toBe(0)
 	await page.mouse.move(center.x - 120, center.y, {steps: 8})

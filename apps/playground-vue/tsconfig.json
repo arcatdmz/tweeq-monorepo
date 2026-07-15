@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"strict": true,
+		"skipLibCheck": true,
+		"noEmit": true,
+		"types": ["vite/client"]
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.vue",
+		"vite.config.ts"
+	]
+}

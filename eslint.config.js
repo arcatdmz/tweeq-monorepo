@@ -8,10 +8,11 @@ export default tseslint.config(
 	{
 		ignores: [
 			'lib/**',
+			'**/dist/**',
 			'test-results/**',
 			'src/**/*.vue',
 			// node maintenance script, not app code
-			'demo/styles/extract-theme-styles.mjs',
+			'apps/docs/styles/extract-theme-styles.mjs',
 		],
 	},
 	eslint.configs.recommended,

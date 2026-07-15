@@ -1,0 +1,24 @@
+{
+	"name": "@tweeq/playground-vue",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Vue behavior playground compiled from workspace sources",
+	"type": "module",
+	"scripts": {
+		"dev": "vite --port 5175",
+		"build": "vue-tsc --noEmit && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@tweeq/vue": "workspace:*",
+		"vue": "catalog:"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "catalog:",
+		"stylus": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:",
+		"vite-plugin-glsl": "catalog:",
+		"vue-tsc": "^2.1.10"
+	}
+}

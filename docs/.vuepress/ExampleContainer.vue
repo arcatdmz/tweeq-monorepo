@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
-import {InputComplex} from 'tweeq'
+import {InputComplex} from '@tweeq/vue'
 import {shallowRef} from 'vue'
 
 import DemoContainer from './DemoContainer.vue'

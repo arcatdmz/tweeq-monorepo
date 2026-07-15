@@ -1,0 +1,410 @@
+/* Demo-specific styles. Page chrome/typography comes from
+   vendor/vuepress-style.css (the published site's compiled stylesheet);
+   this file only ports the docs' Vue-scoped styles (DemoContainer.vue,
+   DemoComponent.vue, ExampleContainer.vue) and styles our extra
+   All Components gallery page. */
+
+/* ---- docs/.vuepress/DemoContainer.vue (scoped) ---- */
+
+.DemoContainer {
+	--demo-margin: 1rem;
+	position: relative;
+	padding: calc(var(--demo-margin) * 2 + var(--tq-input-height, 24px)) 0 2rem;
+}
+
+.DemoContainer.fullscreen {
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+	inset: 0;
+	background-color: var(--tq-color-background);
+}
+
+/* !important like the original: InputButton's own position wins the tie. */
+.DemoContainer .full-screen-button {
+	position: absolute !important;
+	top: var(--demo-margin);
+	right: 0;
+}
+
+/* ---- docs/.vuepress/DemoComponent.vue (scoped) ---- */
+
+.DemoComponent {
+	display: grid;
+	grid-template-columns: min-content 1fr;
+}
+
+.DemoComponent .input-wrapper {
+	width: 15rem;
+}
+
+.DemoComponent .input-wrapper.fullscreen {
+	position: relative;
+	width: 640px;
+	height: 480px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	outline: 1px solid var(--tq-color-border);
+}
+
+.DemoComponent .input {
+	min-width: 15em;
+}
+
+.DemoComponent .pressed-keys {
+	position: absolute;
+	bottom: 2em;
+	display: flex;
+	box-sizing: border-box;
+	gap: 0.5em;
+	font-family: var(--tq-font-code);
+}
+
+.DemoComponent .pressed-keys div {
+	height: 36px;
+	font-size: 24px;
+	background-color: var(--tq-color-text-subtle);
+	color: var(--tq-color-background);
+	border-radius: var(--tq-radius-popup);
+	padding: 0 0.4em 3px;
+	display: flex;
+	align-items: center;
+}
+
+.DemoComponent .pressed-keys div span,
+.DemoComponent .pressed-keys div svg {
+	display: block;
+	vertical-align: middle;
+	margin-top: 3px;
+}
+
+.DemoComponent .options {
+	border-left: 1px solid black;
+	margin-left: 2rem;
+	padding-left: 2rem;
+}
+
+[data-theme='dark'] .DemoComponent .options {
+	border-left-color: white;
+}
+
+/* ---- docs/.vuepress/ExampleContainer.vue (scoped) ---- */
+
+.ExampleContainer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.ExampleContainer .sandbox {
+	display: flex;
+	gap: 2rem;
+	align-items: start;
+	min-width: 18rem;
+	max-width: 18rem;
+}
+
+.ExampleContainer .sandbox.fullscreen {
+	width: 640px;
+	max-width: 640px;
+	height: 480px;
+	align-items: center;
+}
+
+.ExampleContainer .sandbox > :first-child {
+	flex-grow: 1;
+}
+
+/* ---- Colors page demo widgets (React port of ColorPaletteDemo.vue) ---- */
+
+.framework-switcher {
+	display: inline-flex;
+	margin: 0.5rem 0 1rem;
+	padding: 2px;
+	border: 1px solid var(--vp-c-border);
+	border-radius: 8px;
+	background: var(--vp-c-bg-alt);
+}
+
+.framework-switcher button {
+	min-width: 5rem;
+	padding: 0.4rem 0.8rem;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--vp-c-text);
+	cursor: pointer;
+}
+
+.framework-switcher button[aria-pressed='true'] {
+	background: var(--vp-c-accent-bg);
+	color: var(--vp-c-accent-text);
+}
+
+.renderer-gallery-links {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+	margin: 1.5rem 0 2rem;
+}
+
+.renderer-gallery-link {
+	display: grid;
+	gap: 0.25rem;
+	padding: 1rem;
+	border: 1px solid var(--vp-c-border);
+	border-radius: 10px;
+	background: var(--vp-c-bg-alt);
+	text-decoration: none !important;
+}
+
+.renderer-gallery-link:hover {
+	border-color: var(--vp-c-accent);
+}
+
+.renderer-gallery-link span {
+	color: var(--vp-c-text-mute);
+}
+
+.renderer-switcher {
+	display: inline-flex;
+	gap: 0.25rem;
+	margin: 0.5rem 0 1.5rem;
+	padding: 0.25rem;
+	border: 1px solid var(--vp-c-border);
+	border-radius: 8px;
+	background: var(--vp-c-bg-alt);
+}
+
+.renderer-switcher a {
+	padding: 0.45rem 0.8rem;
+	border-radius: 6px;
+	text-decoration: none !important;
+}
+
+.renderer-switcher a[aria-current='page'] {
+	background: var(--vp-c-accent-bg);
+	color: var(--vp-c-accent-text);
+}
+
+/* Match the Vue gallery's 64rem outer canvas (2rem gutters around a 60rem
+   component area), so the two pages can be placed side-by-side at like scale. */
+.renderer-gallery-page {
+	--content-width: 64rem;
+}
+
+.ColorPaletteDemo {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 1.5rem;
+	border-radius: var(--tq-radius-pane);
+}
+
+.color-controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
+.color-controls label {
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+	font-size: 0.8rem;
+}
+
+.color-controls [class*='TqInputColor'] {
+	width: 9rem;
+}
+
+.color-controls label:first-child ul {
+	width: 9rem;
+}
+
+.color-controls [data-tq-radio-label] {
+	gap: 0.35em;
+}
+
+.color-preview {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 1.25rem 0;
+	border-radius: var(--tq-radius-input);
+}
+
+.color-preview h3 {
+	margin: 0.75rem 0 0.25rem;
+	font-size: 0.95rem;
+}
+
+.color-scale {
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	gap: 2px;
+}
+
+.color-swatch {
+	display: flex;
+	align-items: end;
+	justify-content: center;
+	min-width: 0;
+	aspect-ratio: 1 / 1.4;
+	border-radius: 3px;
+}
+
+.color-swatch span {
+	padding-bottom: 2px;
+	color: white;
+	font-size: 9px;
+	mix-blend-mode: difference;
+}
+
+.semantic-colors,
+.palette-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.semantic-color {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 7px 11px;
+	border: 2px solid;
+	border-radius: 4px;
+}
+
+.palette-chip {
+	display: grid;
+	justify-items: center;
+	gap: 5px;
+	font-size: 12px;
+}
+
+.palette-chip i {
+	display: block;
+	width: 40px;
+	height: 40px;
+	border-radius: 4px;
+}
+
+/* ---- misc ---- */
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* ---- responsive docs/demo layout ---- */
+
+/* Code and API tables may be intrinsically wider than the article. Keep that
+   overflow local so a single example cannot widen the entire mobile page. */
+[vp-content] pre,
+[vp-content] table {
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+[vp-content] table {
+	display: block;
+}
+
+[vp-content] pre code {
+	display: block;
+	width: max-content;
+	min-width: 100%;
+	box-sizing: border-box;
+}
+
+@media (max-width: 959px) {
+	/* The options editor needs more room than the normal VuePress content column
+	   has beside its sidebar. Stack it on narrow desktop, tablet, and mobile. */
+	.DemoComponent {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 1.5rem;
+	}
+
+	.DemoComponent .input-wrapper,
+	.DemoComponent .input {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.DemoComponent .options {
+		min-width: 0;
+		margin-left: 0;
+		padding-top: 1.5rem;
+		padding-left: 0;
+		border-top: 1px solid black;
+		border-left: 0;
+	}
+
+	[data-theme='dark'] .DemoComponent .options {
+		border-top-color: white;
+	}
+}
+
+@media (max-width: 719px) {
+	.renderer-gallery-links {
+		grid-template-columns: 1fr;
+	}
+	/* VPNavbar normally relies on a VuePress utility class that is not part of
+	   the source-extracted SFC styles. Preserve the color toggle, but move the
+	   full desktop nav into the slide-out sidebar. */
+	.vp-navbar-items-wrapper {
+		right: 1rem;
+		width: auto;
+		padding-left: 0;
+	}
+
+	.vp-hide-mobile {
+		display: none !important;
+	}
+
+	/* Keep the article title in the normal gutter, but let the exhaustive
+	   component gallery use the full mobile width like its former top-level
+	   page did. Auto width plus symmetric negative margins includes its own
+	   padding without creating horizontal overflow. */
+	.all-components {
+		margin-inline: -1.5rem;
+	}
+
+	.ExampleContainer .sandbox {
+		width: min(18rem, 100%);
+		min-width: 0;
+	}
+
+	.DemoComponent .TqParameter > :last-child,
+	.ExampleContainer .TqParameter > :last-child {
+		/* InputComplex sets the comfortable desktop width from inside the
+		   component's cascade layer. The demo shell deliberately overrides it. */
+		min-width: 0 !important;
+	}
+
+	.DemoComponent .input-wrapper.fullscreen,
+	.ExampleContainer .sandbox.fullscreen {
+		width: calc(100vw - 2rem);
+		max-width: calc(100vw - 2rem);
+		height: calc(100dvh - 2rem);
+	}
+}
+
+@media (max-width: 419px) {
+	.vp-feature {
+		padding-right: 0;
+		padding-left: 0;
+	}
+}

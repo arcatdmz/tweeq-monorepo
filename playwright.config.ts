@@ -1,9 +1,6 @@
 import {defineConfig} from '@playwright/test'
 
-/**
- * Run via `npm run e2e` — it sets LD_LIBRARY_PATH for the locally-extracted
- * chromium system libs (see docs/react-port/PLAN.md, "E2E" row).
- */
+/** Run via `pnpm e2e` after installing Chromium with Playwright's OS dependencies. */
 export default defineConfig({
 	testDir: './e2e',
 	fullyParallel: true,
@@ -15,10 +12,33 @@ export default defineConfig({
 		// prefers-reduced-motion (scroll-behavior: auto), so force it.
 		contextOptions: {reducedMotion: 'reduce'},
 	},
-	webServer: {
-		command: 'npx vite serve demo --port 5174 --strictPort',
-		url: 'http://localhost:5174',
-		reuseExistingServer: true,
-		stdout: 'ignore',
-	},
+	webServer: [
+		{
+			command: 'pnpm --filter @tweeq/docs exec vite --port 5174 --strictPort',
+			url: 'http://localhost:5174',
+			reuseExistingServer: true,
+			stdout: 'ignore',
+		},
+		{
+			command:
+				'pnpm --filter @tweeq/playground-vue exec vite --port 5175 --strictPort',
+			url: 'http://localhost:5175',
+			reuseExistingServer: true,
+			stdout: 'ignore',
+		},
+		{
+			command:
+				'pnpm --filter @tweeq/playground-react exec vite --port 5176 --strictPort',
+			url: 'http://localhost:5176',
+			reuseExistingServer: true,
+			stdout: 'ignore',
+		},
+		{
+			command:
+				'pnpm exec vuepress dev docs --port 5177 --host 127.0.0.1',
+			url: 'http://localhost:5177/vue/',
+			reuseExistingServer: true,
+			stdout: 'ignore',
+		},
+	],
 })

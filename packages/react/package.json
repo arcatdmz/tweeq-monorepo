@@ -1,0 +1,73 @@
+{
+	"name": "@tweeq/react",
+	"version": "0.0.0",
+	"private": true,
+	"description": "React renderer for Tweeq",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/arcatdmz/tweeq.git",
+		"directory": "packages/react"
+	},
+	"homepage": "https://arcatdmz.github.io/tweeq/",
+	"bugs": "https://github.com/arcatdmz/tweeq/issues",
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.es.js",
+	"style": "./dist/style.css",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.es.js",
+			"require": "./dist/index.cjs"
+		},
+		"./style.css": "./dist/style.css"
+	},
+	"sideEffects": [
+		"**/*.css"
+	],
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "rm -rf dist && vite build && node ../../scripts/copy-style-artifact.mjs react",
+		"test": "vitest run --passWithNoTests"
+	},
+	"peerDependencies": {
+		"react": ">=18.0.0",
+		"react-dom": ">=18.0.0"
+	},
+	"devDependencies": {
+		"@tweeq/test-contracts": "workspace:*",
+		"@tweeq/styles": "workspace:^",
+		"@types/chroma-js": "^2.4.3",
+		"@types/lodash-es": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"@vitejs/plugin-react": "catalog:",
+		"jsdom": "^26.1.0",
+		"react": "catalog:",
+		"react-dom": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:",
+		"vite-plugin-dts": "catalog:",
+		"vite-plugin-glsl": "catalog:",
+		"vitest": "catalog:"
+	},
+	"dependencies": {
+		"@iconify/react": "^6.0.2",
+		"@monaco-editor/react": "^4.7.0",
+		"@tweeq/core": "workspace:^",
+		"@tweeq/dom": "workspace:^",
+		"bndr-js": "catalog:",
+		"case": "^1.6.3",
+		"chroma-js": "^3.1.1",
+		"colorjs.io": "^0.5.0",
+		"fast-fuzzy": "^1.12.0",
+		"linearly": "catalog:",
+		"lodash-es": "catalog:",
+		"monaco-editor": "^0.54.0",
+		"zustand": "^5.0.14"
+	}
+}
