@@ -15,38 +15,23 @@
 
 Tweeq is a collection of maintained [React](https://react.dev) and [Vue 3](https://vuejs.org) components for design tools. The components range from fundamental UIs such as numeric sliders and color pickers to advanced, niche controls such as a cubic-bezier editor. Both renderers share the precise micro-interactions used by creative professionals.
 
-## Documentation
+## Using Tweeq
 
-- [Live React and Vue documentation](https://arcatdmz.github.io/tweeq/)
-- [Repository documentation map](docs/README.md)
-- [Architecture overview](docs/architecture/README.md)
-- [React package guide](packages/react/README.md) and [Vue package guide](packages/vue/README.md)
-- [Migration guide for original Vue users](docs/migration.md)
+Applications normally depend on one renderer package: `@tweeq/react` or
+`@tweeq/vue`. Most applications do not install `@tweeq/core`, `@tweeq/dom`,
+or `@tweeq/styles` directly; the renderer packages expose the framework API
+and compiled stylesheet.
 
-## Project Setup
-
-This is a [pnpm workspace](https://pnpm.io/workspaces). Package responsibilities,
-dependency rules, and the repository layout are documented in the
-[architecture overview](docs/architecture/README.md).
-
-```sh
-pnpm install
-pnpm dev          # React docs/demo app (apps/docs)
-pnpm --filter @tweeq/playground-vue dev   # Vue playground
-pnpm build        # build every package and app
-pnpm test         # package unit tests
-pnpm lint         # lint packages, docs app, and browser tests
-pnpm check:boundaries # enforce package layers and an acyclic workspace graph
-pnpm test:ssr     # import every JavaScript package entry in plain Node
-pnpm e2e          # Playwright suite against the docs app
-pnpm test:packed  # pack + install + build the example consumers
-```
-
-## Renderer usage
+> [!IMPORTANT]
+> The `@tweeq/*` names remain workspace-internal until npm ownership and
+> publishing are settled. See [ADR 0001](docs/architecture/0001-package-naming-and-publishing.md)
+> for the current release status.
 
 ### React
 
-Tweeq requires React 18 or newer. Import the generated stylesheet once and wrap the application in `TweeqProvider`; inputs use controlled `value` / `onChange` props. (The `@tweeq/*` names are workspace-internal until publishing is settled — see [ADR 0001](docs/architecture/0001-package-naming-and-publishing.md).)
+Tweeq requires React 18 or newer. Import the generated stylesheet once and
+wrap the application in `TweeqProvider`; inputs use controlled `value` /
+`onChange` props.
 
 **All base styles (font, CSS reset, selection/scrollbar chrome) are scoped to `<Viewport>`'s subtree** — same as the Vue version, where they were tied to `.TqViewport`. `TweeqProvider` alone only provides stores and overlay roots; components rendered outside a `<Viewport>` (or `<App>`, which includes one) will look unstyled.
 
@@ -90,7 +75,61 @@ const value = ref(24)
 </template>
 ```
 
-## Project Background
+For complete setup and browser-support details, see the
+[React package guide](packages/react/README.md) or
+[Vue package guide](packages/vue/README.md).
+
+## Documentation
+
+- [Live React and Vue documentation](https://arcatdmz.github.io/tweeq/)
+- [Repository documentation map](docs/README.md)
+- [Migration guide for original Vue users](docs/migration.md)
+- [Architecture overview](docs/architecture/README.md)
+
+## Development
+
+Tweeq is developed as a [pnpm workspace](https://pnpm.io/workspaces).
+
+### Repository layout
+
+| Directory | Purpose |
+| --- | --- |
+| [`packages/core`](packages/core) | Framework-neutral types, parsing, geometry, and state transitions. |
+| [`packages/dom`](packages/dom) | Browser controllers, stores, and lifecycle ownership shared by both renderers. |
+| [`packages/styles`](packages/styles) | Shared design tokens and component styles. |
+| [`packages/react`](packages/react) | React components and hooks. |
+| [`packages/vue`](packages/vue) | Vue components and composables. |
+| [`packages/test-contracts`](packages/test-contracts) | Private conformance suites run against both renderers. |
+| [`apps/docs`](apps/docs) | React documentation shell, which compiles the shared Markdown through MDX. |
+| [`apps/playground-react`](apps/playground-react), [`apps/playground-vue`](apps/playground-vue) | Exhaustive renderer galleries used for integration and visual comparison. |
+| [`apps/shared`](apps/shared) | Gallery fixtures and styles shared by the playgrounds and documentation. |
+| [`docs`](docs) | Shared Markdown pages, VuePress renderer configuration, migration guidance, and architecture records. |
+| [`examples`](examples) | Minimal React and Vue consumers used to verify packed package artifacts. |
+| [`e2e`](e2e) | Playwright integration, parity, and visual regression tests. |
+| [`scripts`](scripts) | Repository checks, release measurements, and package-consumer test utilities. |
+| [`.changeset`](.changeset) | Pending package release notes and Changesets configuration. |
+| [`.github/workflows`](.github/workflows) | Continuous integration, documentation deployment, and npm release workflows. |
+
+See the [architecture overview](docs/architecture/README.md) for package
+dependency rules and cross-renderer design constraints.
+
+### Common commands
+
+```sh
+pnpm install
+pnpm dev          # React docs app (apps/docs)
+pnpm --filter @tweeq/playground-react dev # React playground
+pnpm --filter @tweeq/playground-vue dev   # Vue playground
+pnpm build        # build every package, app, and documentation renderer
+pnpm test         # package unit tests
+pnpm lint         # lint packages, docs app, and browser tests
+pnpm check:boundaries # enforce package layers and an acyclic workspace graph
+pnpm test:ssr     # import every JavaScript package entry in plain Node
+pnpm e2e          # Playwright suite against both documentation renderers
+pnpm test:packed  # pack + install + build the example consumers
+```
+
+## Project background
 
 Tweeq has been developed in parallel with Baku's animation projects, as part of the design tools used in those projects ([Koma](https://github.com/baku89/koma) and [Unim](https://github.com/baku89/unim)). Many of its components follow the following design principles:
 
