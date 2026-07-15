@@ -131,6 +131,16 @@ async function stabilizeVisualState(page: Page) {
 	})
 }
 
+async function setOpaqueVisualBackground(target: Locator) {
+	await target.evaluate(element => {
+		const root = element as HTMLElement
+		root.style.setProperty('background', 'white')
+		root
+			.querySelector<HTMLElement>('[data-tq-part="panels-wrapper"]')
+			?.style.setProperty('background', 'white')
+	})
+}
+
 async function imagesArePixelEquivalent(
 	page: Page,
 	reactImage: Buffer,
@@ -480,12 +490,8 @@ for (const visualCase of VIEWPORT_CASES) test(`React and Vue render matched comp
 		const vueTarget = vueSection.locator('[data-tq-component]').first()
 		if (name === 'Tabs') {
 			await Promise.all([
-				reactTarget.evaluate(element =>
-					(element as HTMLElement).style.setProperty('background', 'white')
-				),
-				vueTarget.evaluate(element =>
-					(element as HTMLElement).style.setProperty('background', 'white')
-				),
+				setOpaqueVisualBackground(reactTarget),
+				setOpaqueVisualBackground(vueTarget),
 			])
 		}
 		const reactImage = await reactTarget.screenshot({
@@ -752,12 +758,8 @@ test('React and Vue render matched interactive states pixel-for-pixel', async ({
 		await Promise.all([reactTarget.waitFor(), vueTarget.waitFor()])
 		if (state.component === 'Tabs' || state.component === 'TweakOverlay') {
 			await Promise.all([
-				reactTarget.evaluate(element =>
-					(element as HTMLElement).style.setProperty('background', 'white')
-				),
-				vueTarget.evaluate(element =>
-					(element as HTMLElement).style.setProperty('background', 'white')
-				),
+				setOpaqueVisualBackground(reactTarget),
+				setOpaqueVisualBackground(vueTarget),
 			])
 		}
 		const [reactImage, vueImage] = await Promise.all([
