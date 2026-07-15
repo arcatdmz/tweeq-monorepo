@@ -37,5 +37,4 @@ editor interactions activate only in a browser.
 JSON/CSS/HTML/TypeScript language workers. If the host already defines Monaco's
 `getWorker` or `getWorkerUrl` hook, Tweeq preserves that configuration.
 
-See the repository React migration guide and packed `examples/react-vite`
-application for complete setup.
+See the packed `examples/react-vite` application for a complete setup.

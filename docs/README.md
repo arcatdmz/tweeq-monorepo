@@ -1,22 +1,44 @@
 # Tweeq documentation map
 
-- [`architecture/monorepo-migration.md`](architecture/monorepo-migration.md) is
-  the active implementation plan for turning Tweeq into a shared-core
-  React/Vue monorepo. New architecture work starts there.
-- The Markdown pages in this directory and the helpers in `.vuepress/` are the
-  original Vue documentation and research demos. They remain behavioral and
-  content references until both renderer demos cover the same material.
+The Markdown pages in this directory are the shared documentation source.
+VuePress renders them under `/vue/`; the React documentation shell compiles
+the same files through MDX and exposes matching routes at the site root. A
+small build adapter maps the Vue-style demo bindings to React props. Renderer switches
+preserve the current page and anchor, so `components.html` corresponds to
+`vue/components.html`.
 
-The completed one-off React port handoff documents were removed after the port
-landed. Git history retains them if historical details are needed.
+The renderer playgrounds remain independent applications for exhaustive
+component coverage and visual regression tests. The Vue documentation reuses
+the Vue gallery at `vue/all-components.html` without turning the playground
+into the documentation shell.
 
-Renderer migration guides:
+## Using Tweeq
 
-- [`migration/vue.md`](migration/vue.md) for existing upstream Vue users;
-- [`migration/react.md`](migration/react.md) for users of the pre-monorepo
-  React fork.
+- [`../packages/react/README.md`](../packages/react/README.md) — React setup,
+  runtime ownership, and browser support
+- [`../packages/vue/README.md`](../packages/vue/README.md) — Vue setup, legacy
+  initialization, and browser support
+- [`migration.md`](migration.md) — migration from the original Vue package
 
-[`api-exports.md`](api-exports.md) is generated from the built public package
-entries. Refresh it with `pnpm docs:generate`; CI validates it after building
-the workspace. The same `pnpm docs:check` gate validates local Markdown links;
-the migration guides link to packed consumers used as executable snippets.
+The runnable package-consumer examples live in `examples/react-vite` and
+`examples/vue-vite`.
+
+## Architecture and maintenance
+
+- [`architecture/README.md`](architecture/README.md) — package layers, design
+  rules, and repository layout
+- [`architecture/0001-package-naming-and-publishing.md`](architecture/0001-package-naming-and-publishing.md)
+  — package names and release policy
+- [`architecture/0002-browser-support-and-ssr-imports.md`](architecture/0002-browser-support-and-ssr-imports.md)
+  — browser and SSR support
+- [`architecture/parity-matrix.md`](architecture/parity-matrix.md) — current
+  cross-renderer behavior and intentional differences
+- [`architecture/release-baseline.md`](architecture/release-baseline.md) —
+  generated size, performance, and test evidence
+
+## Documentation checks
+
+Run `pnpm docs:check` to verify that local Markdown links resolve and migration
+snippets match the packed consumer examples. Run `pnpm test:packed` to verify
+the published export maps, declarations, and package contents against real
+React and Vue consumers.

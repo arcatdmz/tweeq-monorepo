@@ -2,14 +2,13 @@
 
 Status: accepted  
 Date: 2026-07-12  
-Phase: 0 (monorepo migration)
 
 ## Context
 
 Tweeq relies on comparatively new platform features: the native Popover API,
 CSS anchor positioning, pointer lock/capture, `ResizeObserver`, WebGL (regl),
-and top-layer animations. The migration plan (architecture rule 4) also
-requires every package to be importable in Node for SSR and tests.
+and top-layer animations. Every package must also be importable in Node for SSR
+and tests.
 
 ## Decision
 
@@ -18,11 +17,11 @@ requires every package to be importable in Node for SSR and tests.
 - **Supported**: the last 2 major versions of Chromium-based browsers, i.e.
   the set where the Popover API *and* CSS anchor positioning are native.
   Chromium is the reference implementation and the only required Playwright
-  target (CI gate 7).
+  target in CI.
 - **Best effort**: current Firefox and Safari. Feature detection lives in
   `@tweeq/dom` and must degrade to actionable fallbacks or explicit errors —
   never silent misbehavior. Replacing native popover/anchor mechanics with a
-  polyfill/library is out of scope (plan §11) and would need its own ADR plus
+  polyfill/library is out of scope and would need its own ADR plus
   interaction benchmarks.
 - No IE/legacy-Edge support. No dynamic polyfill injection by the library;
   consumers own polyfills.
@@ -46,6 +45,6 @@ requires every package to be importable in Node for SSR and tests.
 - `typeof document === 'undefined'` guards are allowed only in `@tweeq/dom`
   and renderer packages, not in core.
 - The Playwright matrix stays Chromium-first; adding WebKit/Firefox jobs is an
-  additive change that doesn't block the migration.
-- Documented feature requirements (popover, anchor, pointer lock) become part
-  of the public README of each renderer package in Phase 5.
+  additive change.
+- Feature requirements (popover, anchor, pointer lock) are documented in each
+  renderer package README.

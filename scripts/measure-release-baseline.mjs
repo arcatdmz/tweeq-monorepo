@@ -72,14 +72,13 @@ const recordedDate = [
 ].join('-')
 const recordedTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
-const markdown = `# Phase 6 release baseline
+const markdown = `# Release baseline
 
 Recorded: ${recordedDate} (${recordedTimeZone})
 Runtime: Node ${process.versions.node}, ${process.platform}/${process.arch}
 Command: \`pnpm build && pnpm baseline:record\`
 
-This is the completed shared-core migration baseline and can seed a future
-prerelease. Artifact sizes sum the
+This snapshot can seed a future prerelease comparison. Artifact sizes sum the
 actual emitted JavaScript/CSS files; gzip compresses each file independently,
 matching per-asset HTTP transfer behavior. Source maps and declarations are
 excluded from runtime size totals.
@@ -90,9 +89,8 @@ excluded from runtime size totals.
 | --- | ---: | ---: | ---: |
 ${rows.map(row => `| ${row.label} | ${row.files} | ${formatBytes(row.raw)} | ${formatBytes(row.gzip)} |`).join('\n')}
 
-The renderer totals include Monaco and its language workers. They establish
-the MF-011 starting point; code splitting should be evaluated against these
-numbers rather than inferred from Vite's 500 kB warning alone.
+The renderer totals include Monaco and its language workers. Evaluate code
+splitting against these numbers rather than Vite's 500 kB warning alone.
 
 The three CSS rows are byte-identical aliases of the canonical shared style
 artifact, which includes Monaco's common base rules before Tweeq's editor

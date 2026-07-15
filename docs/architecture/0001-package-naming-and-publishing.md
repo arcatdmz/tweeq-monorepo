@@ -2,11 +2,10 @@
 
 Status: accepted  
 Date: 2026-07-12  
-Phase: 0 (monorepo migration)
 
 ## Context
 
-The migration plan targets `@tweeq/core`, `@tweeq/dom`, `@tweeq/styles`,
+The workspace uses `@tweeq/core`, `@tweeq/dom`, `@tweeq/styles`,
 `@tweeq/react`, and `@tweeq/vue`. Neither the `@tweeq` npm scope nor the fate
 of the unscoped `tweeq` name (upstream [baku89/tweeq](https://github.com/baku89/tweeq),
 currently `"private": true` and unpublished) is under this fork's control.
@@ -23,8 +22,8 @@ currently `"private": true` and unpublished) is under this fork's control.
    `tweeq` name are settled with the upstream author. Publishing without that
    agreement is prohibited.
 3. Changesets is configured now, with the public-facing packages in one fixed
-   version group, so that version intent accumulates during the migration and
-   a future first prerelease (`next` tag) needs no versioning retrofit.
+   version group so a future first prerelease (`next` tag) needs no versioning
+   retrofit.
 4. If scope negotiation fails, the fallback is publishing under a scope this
    repository's owner controls (e.g. `@archinc/tweeq-*`); only `package.json`
    `name` fields and import docs change, because all internal references use
@@ -52,9 +51,8 @@ release change:
 5. an `NPM_SCOPE_APPROVED` secret in the protected `npm-release` GitHub
    environment.
 
-These external publication steps are deliberately outside the completed
-monorepo migration gate. MF-131 keeps them blocked until the ownership and
-protected-environment requirements are actually satisfied.
+Publication remains blocked until the ownership and protected-environment
+requirements are satisfied.
 
 Publishing locally remains prohibited. Each public manifest records the exact
 GitHub repository URL required by npm trusted publishing. Because npm permits
