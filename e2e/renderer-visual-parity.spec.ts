@@ -259,7 +259,7 @@ test('React and Vue galleries share their complete shell, order, and layout', as
 	const vue = await context.newPage()
 	await Promise.all([
 		preparePage(react, '/#/all-components', false),
-		preparePage(vue, 'http://127.0.0.1:5175/', false),
+		preparePage(vue, 'http://localhost:5175/', false),
 	])
 	await Promise.all([
 		react
@@ -446,7 +446,7 @@ for (const visualCase of VIEWPORT_CASES) test(`React and Vue render matched comp
 	const vue = await context.newPage()
 	await Promise.all([
 		preparePage(react, '/#/all-components'),
-		preparePage(vue, 'http://127.0.0.1:5175/'),
+		preparePage(vue, 'http://localhost:5175/'),
 	])
 
 	const mismatches: string[] = []
@@ -506,7 +506,7 @@ test('React and Vue gallery hosts give Markdown the same typography', async ({
 	const vue = await context.newPage()
 	await Promise.all([
 		react.goto('/#/all-components'),
-		vue.goto('http://127.0.0.1:5175/'),
+		vue.goto('http://localhost:5175/'),
 	])
 
 	const properties = [
@@ -692,7 +692,7 @@ test('React and Vue render matched interactive states pixel-for-pixel', async ({
 	const vue = await context.newPage()
 	await Promise.all([
 		preparePage(react, '/#/all-components', false),
-		preparePage(vue, 'http://127.0.0.1:5175/', false),
+		preparePage(vue, 'http://localhost:5175/', false),
 	])
 
 	const mismatches: string[] = []
