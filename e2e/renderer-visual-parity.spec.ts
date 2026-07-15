@@ -121,6 +121,16 @@ async function pinFixture(section: Locator, width: number) {
 	}, width)
 }
 
+async function stabilizeVisualState(page: Page) {
+	const viewport = page.viewportSize()
+	if (viewport) await page.mouse.move(viewport.width - 1, viewport.height - 1)
+	await page.evaluate(() => {
+		if (document.activeElement instanceof HTMLElement) {
+			document.activeElement.blur()
+		}
+	})
+}
+
 async function imagesArePixelEquivalent(
 	page: Page,
 	reactImage: Buffer,
@@ -461,6 +471,10 @@ for (const visualCase of VIEWPORT_CASES) test(`React and Vue render matched comp
 			pinFixture(reactSection, visualCase.width),
 			pinFixture(vueSection, visualCase.width),
 		])
+		await Promise.all([
+			stabilizeVisualState(react),
+			stabilizeVisualState(vue),
+		])
 
 		const reactImage = await reactSection
 			.locator('[data-tq-component]')
@@ -674,7 +688,8 @@ const INTERACTION_STATES: {
 		component: 'TweakOverlay',
 		activate: async (_page, section) =>
 			section.getByTestId('tweak-overlay-trigger').dispatchEvent('pointerdown'),
-		target: (page) => page.locator('[data-tq-component="tweak-overlay"]'),
+		target: (page) =>
+			page.locator('[data-tq-component="tweak-overlay"]:popover-open'),
 	},
 ]
 
@@ -707,10 +722,18 @@ test('React and Vue render matched interactive states pixel-for-pixel', async ({
 			pinFixture(reactSection, 360),
 			pinFixture(vueSection, 360),
 		])
+		await Promise.all([
+			stabilizeVisualState(react),
+			stabilizeVisualState(vue),
+		])
 		// Input actions across two pages share one browser focus. Run them in
 		// sequence so one page cannot steal pointer/keyboard focus mid-click.
 		await state.activate(react, reactSection)
 		await state.activate(vue, vueSection)
+		await Promise.all([
+			react.evaluate(() => (document.activeElement as HTMLElement)?.blur()),
+			vue.evaluate(() => (document.activeElement as HTMLElement)?.blur()),
+		])
 
 		const reactTarget = state.target(react, reactSection)
 		const vueTarget = state.target(vue, vueSection)
