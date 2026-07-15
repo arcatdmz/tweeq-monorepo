@@ -84,10 +84,10 @@ jobs:
       - name: Build workspace libraries
         run: pnpm build:packages
       - name: Build React documentation
-        run: pnpm build:demo --base "/${{ github.event.repository.name }}/"
+        run: pnpm build:demo
       - name: Build Vue documentation
         env:
-          TWEEQ_VUE_DOCS_BASE: "/${{ github.event.repository.name }}/vue/"
+          TWEEQ_VUE_DOCS_BASE: "/vue/"
         run: pnpm build:docs:vue
       - uses: actions/upload-pages-artifact@v3
         with:
