@@ -23,6 +23,7 @@
 		"@vuepress/helper": "2.0.0-rc.80",
 		"@vuepress/theme-default": "2.0.0-rc.80",
 		"rehype-slug": "^6.0.0",
+		"remark-gfm": "^4.0.1",
 		"sass-embedded": "^1.100.0",
 		"stylus": "catalog:",
 		"typescript": "catalog:",

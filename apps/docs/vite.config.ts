@@ -4,6 +4,7 @@ import {join, resolve} from 'node:path'
 import mdx from '@mdx-js/rollup'
 import react from '@vitejs/plugin-react'
 import rehypeSlug from 'rehype-slug'
+import remarkGfm from 'remark-gfm'
 import {defineConfig, type Plugin, type ResolvedConfig} from 'vite'
 import glsl from 'vite-plugin-glsl'
 
@@ -47,6 +48,7 @@ export default defineConfig({
 			mdxExtensions: ['.md'],
 			include: /\/docs\/.*\.md$/,
 			rehypePlugins: [rehypeSlug],
+			remarkPlugins: [remarkGfm],
 		}),
 		react(),
 		staticDocumentationRoutes(),
