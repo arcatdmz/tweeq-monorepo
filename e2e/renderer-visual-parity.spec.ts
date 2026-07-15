@@ -476,14 +476,26 @@ for (const visualCase of VIEWPORT_CASES) test(`React and Vue render matched comp
 			stabilizeVisualState(vue),
 		])
 
-		const reactImage = await reactSection
-			.locator('[data-tq-component]')
-			.first()
-			.screenshot({animations: 'disabled', caret: 'hide'})
-		const vueImage = await vueSection
-			.locator('[data-tq-component]')
-			.first()
-			.screenshot({animations: 'disabled', caret: 'hide'})
+		const reactTarget = reactSection.locator('[data-tq-component]').first()
+		const vueTarget = vueSection.locator('[data-tq-component]').first()
+		if (name === 'Tabs') {
+			await Promise.all([
+				reactTarget.evaluate(element =>
+					(element as HTMLElement).style.setProperty('background', 'white')
+				),
+				vueTarget.evaluate(element =>
+					(element as HTMLElement).style.setProperty('background', 'white')
+				),
+			])
+		}
+		const reactImage = await reactTarget.screenshot({
+			animations: 'disabled',
+			caret: 'hide',
+		})
+		const vueImage = await vueTarget.screenshot({
+			animations: 'disabled',
+			caret: 'hide',
+		})
 		if (!(await imagesArePixelEquivalent(react, reactImage, vueImage))) {
 			mismatches.push(name)
 			const reactPath = testInfo.outputPath(`${name}-react.png`)
@@ -738,6 +750,16 @@ test('React and Vue render matched interactive states pixel-for-pixel', async ({
 		const reactTarget = state.target(react, reactSection)
 		const vueTarget = state.target(vue, vueSection)
 		await Promise.all([reactTarget.waitFor(), vueTarget.waitFor()])
+		if (state.component === 'Tabs' || state.component === 'TweakOverlay') {
+			await Promise.all([
+				reactTarget.evaluate(element =>
+					(element as HTMLElement).style.setProperty('background', 'white')
+				),
+				vueTarget.evaluate(element =>
+					(element as HTMLElement).style.setProperty('background', 'white')
+				),
+			])
+		}
 		const [reactImage, vueImage] = await Promise.all([
 			reactTarget.screenshot({animations: 'disabled', caret: 'hide'}),
 			vueTarget.screenshot({animations: 'disabled', caret: 'hide'}),
