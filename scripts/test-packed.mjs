@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Packed-package smoke test (plan §7, CI gate 9): `pnpm pack` every public
- * package, install the tarballs into copies of the clean example apps
+ * Packed-package smoke test: `pnpm pack` every public package, install the
+ * tarballs into copies of the clean example apps
  * outside the workspace, and build them. Catches missing files, bad export
  * maps, accidental source aliases, and undeclared dependencies.
  *

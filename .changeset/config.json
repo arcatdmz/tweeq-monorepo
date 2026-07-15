@@ -7,7 +7,7 @@
 	],
 	"linked": [],
 	"access": "public",
-	"baseBranch": "feat/react",
+	"baseBranch": "main",
 	"updateInternalDependencies": "patch",
 	"privatePackages": {
 		"version": true,

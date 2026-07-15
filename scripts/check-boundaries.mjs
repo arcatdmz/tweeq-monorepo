@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Dependency-boundary test (plan §8 Phase 2): a small equivalent of
- * dependency-cruiser that fails when a package imports something its layer
- * forbids (architecture rule 3) or when renderers import each other.
+ * Dependency-boundary test: a small equivalent of dependency-cruiser that
+ * fails when a package imports something its layer forbids or when renderers
+ * import each other.
  */
 import {readdirSync, readFileSync, statSync} from 'node:fs'
 import {join, relative} from 'node:path'

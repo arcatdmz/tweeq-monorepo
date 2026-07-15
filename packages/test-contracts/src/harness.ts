@@ -1,10 +1,9 @@
 /**
- * The renderer harness interface (plan §3.1, `@tweeq/test-contracts`).
+ * The renderer harness interface for `@tweeq/test-contracts`.
  *
  * Each renderer package implements this once; every conformance suite is
  * parameterized over it so the same behavioral contract runs against React
- * and Vue. Suites live next to the component families they cover and are
- * added as families migrate (Phase 4).
+ * and Vue. Suites live next to the component families they cover.
  */
 
 export interface PointerAction {

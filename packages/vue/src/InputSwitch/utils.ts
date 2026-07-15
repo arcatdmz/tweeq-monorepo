@@ -43,7 +43,6 @@ export function useInputSwitch({
 		},
 	})
 
-	// Stage V2: the drag-to-toggle transition lives in @tweeq/core.
 	const tweakingValue = computed(() =>
 		getSwitchTweakValue({
 			dragging: dragging.value,
@@ -61,7 +60,6 @@ export function useInputSwitch({
 	})
 
 	useEventListener(input, 'keydown', (e: KeyboardEvent) => {
-		// Stage V2: the shortcut mapping lives in @tweeq/core.
 		const value = getSwitchKeyValue(e.key, props.modelValue)
 		if (value === undefined) return
 

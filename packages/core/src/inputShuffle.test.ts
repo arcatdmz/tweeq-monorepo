@@ -2,9 +2,8 @@ import {afterEach, describe, expect, it, vi} from 'vitest'
 
 import {fromEnum, fromNumber, fromString} from './inputShuffle'
 
-// Fixtures written while replacing the legacy Vue copy (Stage V2): both
-// implementations promise a re-roll so the previous value never repeats
-// while an alternative exists.
+// Generators re-roll so the previous value never repeats while an alternative
+// exists.
 
 afterEach(() => {
 	vi.restoreAllMocks()

@@ -1,6 +1,4 @@
-// Stage V2: the color-channel implementations live in @tweeq/core (see
-// core/src/color.test.ts for the shared fixtures). This module keeps the
-// original './utils' import paths working unchanged.
+// Preserve the public './utils' import path while core owns the implementation.
 export {
 	css2hsva,
 	getColorPadTweak,

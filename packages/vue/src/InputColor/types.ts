@@ -5,7 +5,6 @@ import {
 
 import type {InputBoxProps} from '../types'
 
-// Stage V2: the shared color types live in @tweeq/core.
 export type {
 	ColorChannel,
 	ColorPicker,

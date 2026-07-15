@@ -1,12 +1,9 @@
 import {createStore, type StoreApi} from 'zustand/vanilla'
 
 /**
- * Structural stand-in for InputComplex's `Scheme` type. The legacy `Scheme`
- * (src/InputComplex/types.ts) is assembled from component prop types, which
- * belong to the (framework-specific) component layer; the modal store only
- * passes schemes through, so this minimal shape keeps it framework-free.
- * Phase 3's InputComplex defines the concrete `Scheme<T>` — it is assignable
- * to this one.
+ * Structural stand-in for InputComplex's framework-specific `Scheme` type.
+ * The modal store only passes schemes through, so this minimal shape keeps it
+ * framework-free while accepting each renderer's concrete `Scheme<T>`.
  */
 export type ModalScheme<T extends Record<string, unknown>> = {
 	[K in keyof T]: {type: string}

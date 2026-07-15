@@ -1,15 +1,16 @@
-You are an expert in Vue.js 3.
+This is a pnpm monorepo maintaining React and Vue renderers over shared core,
+DOM, and style packages.
 
-Always write comments, commit messages in English.
-
-For linear algebra, use https://github.com/baku89/linearly.
-
-The stack technology is:
-
- - Stylus
- - Vue 3
- - VueUse
-
-Always use scoped CSS, and <script lang="ts" setup> as well.
-
-As for commit messages, you don't need to explain the intention of the changes, just write what you did.
+- Keep framework-neutral behavior in packages/core or packages/dom.
+- Preserve equivalent behavior and visual styling across packages/react and
+  packages/vue while using framework-native APIs.
+- Keep shared component styles in packages/styles rather than duplicating them
+  in renderer packages.
+- Use the shared contract suites and both playgrounds when changing public
+  component behavior.
+- Follow the existing TypeScript, React, Vue 3, and Stylus conventions in the
+  surrounding code. Vue SFCs use <script setup lang="ts">.
+- For linear algebra, use https://github.com/baku89/linearly.
+- Write comments and commit messages in English.
+- Publish npm packages only through GitHub Actions, never from a local
+  environment.

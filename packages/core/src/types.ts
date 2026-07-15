@@ -68,9 +68,6 @@ export function getLabelizer<T>(props: LabelizerProps<T>): Labelizer<T> {
 	}
 }
 
-// Color value types (copied from the legacy src/InputColor/types.ts so the
-// multiSelect store — and later the React InputColor — can stay
-// framework-free).
 export type RGB = {r: number; g: number; b: number}
 export type RGBA = [r: number, g: number, b: number, a: number]
 export type HSV = {h: number; s: number; v: number}

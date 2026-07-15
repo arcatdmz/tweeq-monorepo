@@ -1,6 +1,5 @@
 import {InputBoxProps} from '../types'
 
-// Stage V2: shared with @tweeq/core.
 export type {TimeFormat} from '@tweeq/core'
 
 export type InputTimeProps = InputBoxProps & {
