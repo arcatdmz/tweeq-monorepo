@@ -1,3 +1,4 @@
+import '@tweeq/vue/style.css'
 import '../../apps/shared/gallery.css'
 
 import * as Tq from '@tweeq/vue'
