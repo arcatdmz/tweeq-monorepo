@@ -57,7 +57,7 @@ try {
 		}
 		if (
 			packedManifest.repository?.url !==
-			'https://github.com/arcatdmz/tweeq.git'
+			'https://github.com/arcatdmz/tweeq-monorepo.git'
 		) {
 			throw new Error(`@tweeq/${name} packed manifest has the wrong repository URL`)
 		}

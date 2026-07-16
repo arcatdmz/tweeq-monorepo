@@ -3,7 +3,7 @@
 <img src="./docs/.vuepress/public/logo.svg" width="200" />
 <h1>Tweeq</h1>
 
-<a href="https://arcatdmz.github.io/tweeq/">React and Vue Documentation</a> ⌇ <a href="https://arcatdmz.github.io/tweeq/vue/">Vue Demo</a> ⌇ <a href="https://github.com/baku89/tweeq">Original Project</a> ⌇ <a href="https://github.com/sponsors/baku89">Sponsor Baku</a>
+<a href="https://tweeq.junkato.jp/">React and Vue Documentation</a> ⌇ <a href="https://tweeq.junkato.jp/vue/">Vue Demo</a> ⌇ <a href="https://github.com/baku89/tweeq">Original Project</a> ⌇ <a href="https://github.com/sponsors/baku89">Sponsor Baku</a>
 
 </div>
 
@@ -11,7 +11,7 @@
 > This repository is a fork of [baku89/tweeq](https://github.com/baku89/tweeq), the original Vue implementation created by [Baku Hashimoto](https://baku89.com). The component design, interaction model, and research originate from Baku's work. This fork maintains React and Vue renderers; see the [architecture overview](docs/architecture/README.md) for their shared package structure.
 
 > [!NOTE]
-> For the React live demo of [the UIST paper](https://dl.acm.org/doi/10.1145/3746059.3747723), see [the UIST 2025 page](https://arcatdmz.github.io/tweeq/uist2025.html). The [original Vue demo](https://baku89.github.io/tweeq/uist2025.html) remains available as the source reference.
+> For the React live demo of [the UIST paper](https://dl.acm.org/doi/10.1145/3746059.3747723), see [the UIST 2025 page](https://tweeq.junkato.jp/uist2025.html). The [original Vue demo](https://baku89.github.io/tweeq/uist2025.html) remains available as the source reference.
 
 Tweeq is a collection of maintained [React](https://react.dev) and [Vue 3](https://vuejs.org) components for design tools. The components range from fundamental UIs such as numeric sliders and color pickers to advanced, niche controls such as a cubic-bezier editor. Both renderers share the precise micro-interactions used by creative professionals.
 
@@ -81,7 +81,7 @@ For complete setup and browser-support details, see the
 
 ## Documentation
 
-- [Live React and Vue documentation](https://arcatdmz.github.io/tweeq/)
+- [Live React and Vue documentation](https://tweeq.junkato.jp/)
 - [Repository documentation map](docs/README.md)
 - [Migration guide for original Vue users](docs/migration.md)
 - [Architecture overview](docs/architecture/README.md)

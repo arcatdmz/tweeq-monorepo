@@ -63,7 +63,7 @@ export default defineUserConfig({
 			},
 		],
 		logo: './logo.svg',
-		repo: 'baku89/tweeq',
+		repo: 'arcatdmz/tweeq-monorepo',
 	}),
 	locales: {
 		'/': {

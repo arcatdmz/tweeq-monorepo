@@ -20,7 +20,7 @@ for (const {directory, manifest} of manifests) {
 	if (manifest.license !== 'MIT') {
 		failures.push(`${manifest.name}: license must be MIT`)
 	}
-	if (manifest.repository?.url !== 'https://github.com/arcatdmz/tweeq.git') {
+	if (manifest.repository?.url !== 'https://github.com/arcatdmz/tweeq-monorepo.git') {
 		failures.push(`${manifest.name}: repository URL must match the GitHub repository`)
 	}
 	if (manifest.repository?.directory !== `packages/${directory}`) {

@@ -161,7 +161,7 @@ function NavbarItems({page}: {page: Page}) {
 			<div className="vp-navbar-item">
 				<a
 					className="auto-link external-link"
-					href="https://github.com/baku89/tweeq"
+					href="https://github.com/arcatdmz/tweeq-monorepo"
 					aria-label="GitHub"
 					rel="noopener noreferrer"
 					target="_blank"

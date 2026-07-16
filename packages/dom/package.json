@@ -6,11 +6,11 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/arcatdmz/tweeq.git",
+		"url": "https://github.com/arcatdmz/tweeq-monorepo.git",
 		"directory": "packages/dom"
 	},
-	"homepage": "https://arcatdmz.github.io/tweeq/",
-	"bugs": "https://github.com/arcatdmz/tweeq/issues",
+	"homepage": "https://tweeq.junkato.jp/",
+	"bugs": "https://github.com/arcatdmz/tweeq-monorepo/issues",
 	"type": "module",
 	"types": "./dist/index.d.ts",
 	"main": "./dist/index.js",
